@@ -1,0 +1,168 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "mobile": "+201156596754",
+      "fullName": "Super Admin",
+      "username": "admin",
+      "role": "super_admin",
+      "points": 0,
+      "password": "12345678"
+    }
+  ],
+  "checklists": [
+    {
+      "id": "1",
+      "game": "Pokemon TCG",
+      "name": "151 Set",
+      "category": "Cartoon",
+      "subcategory": "Pokemon",
+      "totalCards": 165,
+      "cards": [
+        {
+          "number": "001/165",
+          "name": "Bulbasaur",
+          "type": "Grass",
+          "section": "Base Set"
+        },
+        {
+          "number": "002/165",
+          "name": "Ivysaur",
+          "type": "Grass",
+          "section": "Base Set"
+        },
+        {
+          "number": "003/165",
+          "name": "Venusaur ex",
+          "type": "Grass",
+          "section": "ex Cards"
+        },
+        {
+          "number": "004/165",
+          "name": "Charmander",
+          "type": "Fire",
+          "section": "Base Set"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "game": "Magic: The Gathering",
+      "name": "Bloomburrow",
+      "category": "Fantasy",
+      "subcategory": "Magic",
+      "totalCards": 281,
+      "cards": [
+        {
+          "number": "001",
+          "name": "Mabel, Heir to Cragflame",
+          "type": "Legendary Creature",
+          "section": "Main"
+        },
+        {
+          "number": "002",
+          "name": "Gev, Scaled Scorch",
+          "type": "Legendary Creature",
+          "section": "Main"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "game": "Panini Adrenalyn XL",
+      "name": "2022 Qatar",
+      "category": "Football",
+      "subcategory": "World Cup",
+      "totalCards": 495,
+      "cards": [
+        {
+          "number": "001",
+          "name": "Lionel Messi",
+          "type": "Top Master",
+          "section": "Argentina"
+        },
+        {
+          "number": "002",
+          "name": "Kylian Mbappe",
+          "type": "Top Master",
+          "section": "France"
+        },
+        {
+          "number": "100",
+          "name": "Cristiano Ronaldo",
+          "type": "Invincible",
+          "section": "Portugal"
+        },
+        {
+          "number": "101",
+          "name": "Kevin De Bruyne",
+          "type": "Base Card",
+          "section": "Belgium"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "game": "Topps Match Attax",
+      "name": "Champions League 23/24",
+      "category": "Football",
+      "subcategory": "Club Tournaments",
+      "totalCards": 500,
+      "cards": [
+        {
+          "number": "001",
+          "name": "Erling Haaland",
+          "type": "100 Club",
+          "section": "Man City"
+        },
+        {
+          "number": "002",
+          "name": "Vinicius Jr",
+          "type": "Black Edge",
+          "section": "Real Madrid"
+        }
+      ]
+    },
+    {
+      "id": "1774963943062",
+      "game": "Adrenalyn XL",
+      "name": "World Cup 2026",
+      "totalCards": 630
+    },
+    {
+      "id": "1774964822399",
+      "game": "Match Attax",
+      "name": "Match Attax 2026",
+      "totalCards": 200
+    },
+    {
+      "id": "1774965443114",
+      "game": "Topps Premier League 2026",
+      "name": "Premier League",
+      "totalCards": 600
+    }
+  ],
+  "categories": [
+    {
+      "id": "1774965388036",
+      "name": "Football",
+      "subcategories": ["England", "World Cup"]
+    }
+  ],
+  "reviews": [
+    {
+      "id": "1",
+      "reviewerId": "1",
+      "targetUserId": "2",
+      "type": "positive",
+      "comment": "Great trade, cards in perfect condition!"
+    },
+    {
+      "id": "1774963731027",
+      "reviewerId": "1",
+      "targetUserId": "2",
+      "type": "positive",
+      "comment": "Great First Swap"
+    }
+  ]
+}

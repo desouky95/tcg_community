@@ -1,0 +1,228 @@
+{
+  "nav": {
+    "checklists": "Checklists",
+    "login": "Login",
+    "signup": "Sign Up",
+    "dashboard": "Dashboard",
+    "logout": "Logout",
+    "profile": "Profile",
+    "admin": "Admin",
+    "swap_search": "Swap",
+    "settings": "Settings"
+  },
+  "landing": {
+    "hero": {
+      "badge": "Professional Sticker Nexus",
+      "title_line1": "THE",
+      "title_highlight": "HOME",
+      "title_line2": "for Serious Collectors",
+      "description": "Connect with others who share your passion, rate your trading experiences, and help each other track down that final piece.",
+      "cta_join": "Join the Transfer market",
+      "cta_signin": "Sign In",
+      "cta_enter": "Find Your Community"
+    },
+    "features": {
+      "reviews": {
+        "title": "Verified Reviews",
+        "desc": "Build trust with every trade. Our reputation system ensures fair play."
+      },
+      "checklists": {
+        "title": "Digital Checklists",
+        "desc": "Track your collections across every album with precision."
+      },
+      "trading": {
+        "title": "Elite Trading",
+        "desc": "Join thousands of collectors in a secure transfer market."
+      }
+    },
+    "gallery": {
+      "badge": "Interactive Archive",
+      "title": "Explore The",
+      "highlight": "Sticker History",
+      "subtitle": "Find your lucky pack"
+    },
+    "cta": {
+      "title": "COMPLETE",
+      "highlight": "EVERY",
+      "title_end": "ALBUM.",
+      "description": "Use our detailed checklists to track every sticker you own and find exactly what you're missing. The ultimate tool for completionists.",
+      "button": "Explore all checklists"
+    },
+    "footer": {
+      "rights": "All rights reserved."
+    }
+  },
+  "common": {
+    "back": "Back",
+    "search": "Search",
+    "loading": "Loading...",
+    "no_data": "No data available.",
+    "edit": "Edit",
+    "update": "Update",
+    "publish": "Publish",
+    "region": "Region",
+    "governorates": {
+      "Cairo": "Cairo",
+      "Alexandria": "Alexandria",
+      "Giza": "Giza",
+      "Dakahlia": "Dakahlia",
+      "Red Sea": "Red Sea",
+      "Beheira": "Beheira",
+      "Fayoum": "Fayoum",
+      "Gharbia": "Gharbia",
+      "Ismailia": "Ismailia",
+      "Monufia": "Monufia",
+      "Minya": "Minya",
+      "Qalyubia": "Qalyubia",
+      "New Valley": "New Valley",
+      "Sharqia": "Sharqia",
+      "Suez": "Suez",
+      "Aswan": "Aswan",
+      "Assiut": "Assiut",
+      "Beni Suef": "Beni Suef",
+      "Port Said": "Port Said",
+      "Damietta": "Damietta",
+      "South Sinai": "South Sinai",
+      "Kafr El Sheikh": "Kafr El Sheikh",
+      "Matrouh": "Matrouh",
+      "Luxor": "Luxor",
+      "Qena": "Qena",
+      "Sohag": "Sohag",
+      "North Sinai": "North Sinai"
+    }
+  },
+  "checklists": {
+    "all_collections": "All Collections",
+    "browse_subtitle": "Browse and track every sticker and card in your collection.",
+    "search_placeholder": "Search categories...",
+    "no_categories": "No categories found matching your search.",
+    "available": "Checklists Available",
+    "view_list": "List View",
+    "view_grid": "Grid View",
+    "no_checklists": "No checklists found in this category yet.",
+    "path": "Checklists"
+  },
+  "collection": {
+    "not_found": "Collection not found.",
+    "download_excel": "Download Excel",
+    "edit_my_list": "Edit My List",
+    "filter_placeholder": "Filter {{label}}...",
+    "no_match": "No cards match your filters.",
+    "total_displayed": "Total displayed: {{count}}",
+    "total_in_collection": "Total in collection: {{count}}",
+    "columns": {
+      "number": "Number",
+      "name": "Name",
+      "type": "Type",
+      "section": "Section",
+      "hold": "Hold",
+      "duplicates": "Duplicates"
+    }
+  },
+  "admin": {
+    "users": {
+      "title": "Member Directory",
+      "subtitle": "Manage community permissions and reputation.",
+      "info": "User Info",
+      "status": "Status",
+      "reputation": "Reputation",
+      "actions": "Actions",
+      "blocked": "Blocked",
+      "active": "Active",
+      "unblock": "Unblock Member",
+      "restrict": "Restrict Access",
+      "admin_badge": "Admin"
+    },
+    "categories": {
+      "title": "Taxonomy Manager",
+      "subtitle": "Define community categories and sub-types.",
+      "new_cat": "New Category",
+      "cat_name": "Category Name",
+      "add_parent": "Add Parent Category",
+      "new_sub": "New subcategory...",
+      "add": "Add",
+      "no_subs": "No subcategories defined"
+    },
+    "collections": {
+      "title": "Checklist Vault",
+      "subtitle": "Manage and publish new community checklists.",
+      "new": "New Checklist",
+      "name": "Checklist Title",
+      "year": "Release Year",
+      "total": "Total Items",
+      "category": "Category",
+      "sub": "Sub-Category",
+      "type": "Collection Type",
+      "sticker": "Stickers",
+      "card": "Cards",
+      "csv": "CSV Data Source",
+      "xlsx": "Checklist File (XLSX)",
+      "upload_help": "Drop XLSX file here or click to browse",
+      "publish": "Publish Checklist"
+    }
+  },
+  "dashboard": {
+    "title": "Community Vault",
+    "subtitle": "Explore curated collections by category.",
+    "categories": "Categories",
+    "all": "All Collections",
+    "no_results": "No collections found in this category.",
+    "clear": "Clear filters"
+  },
+  "profile": {
+    "edit": "Edit Profile",
+    "full_name": "Full Name",
+    "email": "Email",
+    "loading": "Loading Profile...",
+    "not_found": "User not found.",
+    "reputation": "Reputation",
+    "role": "Role",
+    "positive_ratio": "Positivity Ratio",
+    "positive": "Positive",
+    "negative": "Negative",
+    "no_reviews": "No reviews yet for this user.",
+    "recent_feedback": "Recent Feedback",
+    "lead_review": "Lead a Trade Review",
+    "comment_placeholder": "Describe your swap experience with {{name}}...",
+    "submit_review": "Post Review",
+    "submitting": "Submitting...",
+    "reviewer_id": "Reviewer ID",
+    "blocked_badge": "BLOCKED",
+    "pt": "Pts",
+    "level": {
+      "untrusted": "Untrusted Novice",
+      "new": "New Trader",
+      "reliable": "Reliable Swapper",
+      "master": "Master Collector"
+    },
+    "collections": "Collections",
+    "no_collections": "This user hasn't started any collections yet.",
+    "missing": "Missing",
+    "duplicates": "Duplicates",
+    "collected": "Collected",
+    "total": "Total",
+    "progress": "Progress",
+    "show_more": "Show more",
+    "show_less": "Show less",
+    "uncategorized": "Uncategorized",
+    "sub_category": "Sub Category",
+    "view_collection": "View Collection",
+    "phone": "Phone Number",
+    "swap_status": "Not Ready for Swap",
+    "swap_hint": "Temporarily hide your swap lists"
+  },
+  "collection_edit": {
+    "title": "Edit My Collection",
+    "save": "Save Changes",
+    "missing_list": "Missing List (comma separated numbers)",
+    "duplicates": "Duplicates List (comma separated numbers)",
+    "my_collection": "My Collection List (comma separated numbers)",
+    "success": "Collection updated successfully",
+    "placeholder": "e.g. 1, 2, 3, 5, 10...",
+    "import_excel": "Import Excel",
+    "import_success": "Checklist imported successfully from Excel",
+    "import_error": "Error importing Excel file. Please check the format.",
+    "import_help": "Import card numbers from Excel. Columns should contain 'Missing', 'Duplicates', or 'Collected'.",
+    "treat_empty_as_missing": "Include empty Hold as missing"
+  }
+}

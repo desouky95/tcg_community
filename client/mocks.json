@@ -1,0 +1,69 @@
+{
+  "pages": {
+    "landing": {
+      "hero": {
+        "title": "Build the Ultimate Collection",
+        "highlight": "TCG Nexus",
+        "subtitle": "The complete companion for card collectors. Track, trade, and discover the rarest cards in the world."
+      },
+      "features": [
+        { "title": "Verified Reviews", "desc": "Trade with confidence using our community reputation system." },
+        { "title": "Interactive Checklists", "desc": "Keep track of every set with digital checklists." }
+      ]
+    },
+    "dashboard": {
+      "categories": [
+        {
+          "id": "pokemon",
+          "name": "Pokémon TCG",
+          "subcategories": ["Base Set", "Vivid Voltage", "Evolving Skies"]
+        },
+        {
+          "id": "yugioh",
+          "name": "Yu-Gi-Oh!",
+          "subcategories": ["Legend of Blue Eyes", "Metal Raiders"]
+        }
+      ],
+      "recent_checklists": [
+        { "id": "cl1", "name": "Sword & Shield: Brilliant Stars", "total": 172, "category": "Pokémon" },
+        { "id": "cl2", "name": "Darkwing Blast", "total": 100, "category": "Yu-Gi-Oh!" }
+      ]
+    },
+    "collection": {
+      "id": "cl1",
+      "name": "Brilliant Stars",
+      "stats": { "collected": 45, "missing": 127, "duplicates": 12 },
+      "cards": [
+        { "no": "154/172", "name": "Arceus VSTAR", "type": "Colorless", "rarity": "Ultra Rare", "hold": 1, "need": 5, "ratio": "5.0" },
+        { "no": "018/172", "name": "Charizard V", "type": "Fire", "rarity": "Ultra Rare", "hold": 0, "need": 15, "ratio": "15.0" }
+      ]
+    },
+    "profile": {
+      "user": {
+        "username": "AshKetchum",
+        "name": "Ash Ketchum",
+        "points": 250,
+        "level": "Elite Collector",
+        "avatar_color": "bg-red-500"
+      },
+      "stats": {
+        "positive_reviews": 42,
+        "negative_reviews": 0,
+        "completion_rate": 85
+      },
+      "recent_feedback": [
+        { "from": "GaryOak", "type": "positive", "comment": "Fast and fair trade! Top tier condition." }
+      ]
+    },
+    "admin": {
+      "stats": {
+        "total_users": 1250,
+        "total_collections": 45000,
+        "active_trades": 89
+      },
+      "pending_approvals": [
+        { "type": "category", "name": "Magic: The Gathering", "requested_by": "jace_b" }
+      ]
+    }
+  }
+}

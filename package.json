@@ -1,0 +1,13 @@
+{
+  "name": "tcg-community-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel dev",
+    "build": "pnpm --recursive run build"
+  }
+}
