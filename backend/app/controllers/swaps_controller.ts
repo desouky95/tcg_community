@@ -43,7 +43,7 @@ export default class SwapsController {
   async match({ request, response }: HttpContext) {
     const targetUserId = request.param('userId')
     const targetUser = await User.findByOrFail('id', targetUserId!)
-    await targetUser.load('checklists')
+    await targetUser.load('checklists', (q) => q.preload('checklist'))
     const swapInfo = await this.swapService.getUserSwapMeta()
     const matches = await this.swapService.getSwapMatchPerUser(
       targetUser,

@@ -1,9 +1,9 @@
 import { Users, ShieldCheck, ArrowRight, Star, X } from "lucide-react";
 import { useStore } from "../store/useStore";
 import { useTranslation } from "react-i18next";
-import { useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValueEvent } from "framer-motion";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Link, Navigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import { SectionHeading } from "../components/layout/SectionHeading";
 import { CardFan } from "../components/interactive/CardFan";
@@ -15,6 +15,7 @@ export default function Landing() {
   const { t } = useTranslation();
   const [expandedCard, setExpandedCard] = useState<number | null>(null);
 
+  if (user) return <Navigate to={"/dashboard"} replace />;
   return (
     <Layout transparent hideNav>
       <div className="relative overflow-hidden selection:bg-primary-500 selection:text-black">

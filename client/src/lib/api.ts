@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { useStore, type User } from "../store/useStore";
 
@@ -93,4 +94,28 @@ export const api = {
     lastLogin?: "online" | "today" | "week" | "month" | "6months" | "all";
   }) => instance.post("/swaps/search", filters),
   userSwapMatch: (id: number | string) => instance.get(`/swaps/${id}`),
+
+  // Conversations
+  getConversations: () => instance.get("/conversations"),
+  findOrCreateConversation: (targetUserId: number) =>
+    instance.post("/conversations/find-or-create", { targetUserId }),
+  getMessages: (conversationId: number | string, page = 1) =>
+    instance.get(`/conversations/${conversationId}?page=${page}`),
+  sendMessage: (conversationId: number, content: string) =>
+    instance.post(`/conversations/${conversationId}/messages`, { content }),
+
+  // Swap Deals
+  proposeSwapDeal: (data: {
+    conversation_id: number;
+    swap_type: "in_person" | "postal";
+    offered_cards: string;
+    requested_cards: string;
+  }) => instance.post("/swap-deals", data),
+  acceptSwapDeal: (id: number) => instance.post(`/swap-deals/${id}/accept`),
+  updatePostalDeal: (id: number, data: FormData) =>
+    instance.post(`/swap-deals/${id}/postal`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  markDealReceived: (id: number) => instance.post(`/swap-deals/${id}/received`),
+  scanDealQr: (id: number) => instance.post(`/swap-deals/${id}/scan-qr`),
 };

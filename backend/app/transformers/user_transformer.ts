@@ -22,6 +22,7 @@ export default class UserTransformer extends BaseTransformer<User> {
         'createdAt',
         'updatedAt',
       ]),
+      ...this.resource.$extras,
 
       // checklists: UserChecklistTransformer.transform(this.resource.checklists),
     }

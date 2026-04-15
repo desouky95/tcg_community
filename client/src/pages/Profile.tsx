@@ -2,8 +2,9 @@ import { useCallback, useMemo, useState } from "react";
 import { useProfile, useUserInfo } from "../hooks/useUsers";
 import { useReviews, useAddReview } from "../hooks/useReviews";
 import { useStore, type UserChecklist } from "../store/useStore";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
+import { useFindOrCreateConversation } from "../hooks/useConversations";
 import {
   ThumbsUp,
   ThumbsDown,
@@ -16,11 +17,13 @@ import {
   Book,
   MapPin,
   Settings as SettingsIcon,
+  Repeat,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import type { TFunction } from "i18next";
 import { useSwapMatch } from "../hooks/useSwapMatch";
+import type { SwapResultMatch } from "../hooks/useSwapSearch";
 
 interface CollectionItemListProps {
   title: string;
@@ -106,6 +109,19 @@ export default function Profile() {
   const { data: reviews = [], isLoading: reviewsLoading } =
     useReviews(targetId);
   const addReview = useAddReview();
+
+  const navigate = useNavigate();
+  const createConversation = useFindOrCreateConversation();
+
+  const handleMessageClick = async () => {
+    if (!profileUser?.id) return;
+    try {
+      const conv = await createConversation.mutateAsync(profileUser.id);
+      navigate(`/chat/${conv.id}`);
+    } catch {
+      toast.error(t("Failed to start conversation"));
+    }
+  };
 
   // Review form state
   const [reviewType, setReviewType] = useState<"positive" | "negative">(
@@ -293,7 +309,7 @@ export default function Profile() {
                     </div>
                   </div>
                 </div>
-                {isOwnProfile && (
+                {isOwnProfile ? (
                   <Link
                     to="/profile/edit"
                     className="flex items-center gap-2 px-4 py-2 bg-green-500/10 hover:bg-green-500/20 text-green-500 rounded-xl text-xs font-black uppercase tracking-wider transition-all border border-green-500/20"
@@ -304,12 +320,99 @@ export default function Profile() {
                       {t("profile.edit")}
                     </span>
                   </Link>
+                ) : (
+                  <button
+                    onClick={handleMessageClick}
+                    disabled={createConversation.isPending}
+                    className="flex items-center justify-center gap-2 px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-md shadow-primary-500/20"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">
+                      {createConversation.isPending ? "..." : "Message"}
+                    </span>
+                  </button>
                 )}
               </div>
             </div>
           </div>
 
           <hr className="border-border/50" />
+
+          {/* Swap Matches Highlight */}
+          {!isOwnProfile && match && match.matches?.length > 0 && (
+            <>
+            <div className="bg-linear-to-r from-primary-500/10 to-indigo-500/10 border border-primary-500/20 rounded-3xl p-6 md:p-8 relative overflow-hidden flex flex-col group mt-8">
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity pointer-events-none rtl:left-0 rtl:right-auto rtl:-scale-x-100">
+                <Repeat className="w-32 h-32 text-primary-500 transform -rotate-12 scale-150" />
+              </div>
+              
+              <div className="flex items-center justify-between mb-6 relative z-10 rtl:flex-row-reverse">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-primary-500/20 rounded-2xl text-primary-500 backdrop-blur-sm border border-primary-500/20">
+                    <Repeat className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black uppercase tracking-widest text-primary-500 leading-none">
+                      Perfect Match!
+                    </h3>
+                    <p className="text-xs font-bold text-muted-foreground mt-1">
+                      You can make <span className="text-foreground text-sm">{match.totalMutalTrades}</span> mutual trades.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 relative z-10 w-full">
+                {match.matches.map((m: SwapResultMatch) => (
+                  <div key={m.checklistId} className="bg-card/60 backdrop-blur-md border border-primary-500/10 rounded-2xl p-5 hover:border-primary-500/30 transition-colors shadow-sm">
+                    <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-4 pb-3 border-b border-border border-dashed rtl:text-right">
+                      {m.checklist?.name}
+                    </h4>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+                      {/* Divider for desktop */}
+                      <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-border border-dashed -translate-x-1/2" />
+                      
+                      <div className="rtl:text-right">
+                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-success-500 mb-3 flex items-center gap-2 rtl:flex-row-reverse">
+                          <span className="w-1.5 h-1.5 rounded-full bg-success-500"></span>
+                          They Offer You
+                        </div>
+                        {m.theyOffer?.length > 0 ? (
+                          <div className="flex flex-wrap gap-1.5">
+                            {m.theyOffer.map((num: string) => (
+                              <span key={num} className="px-2.5 py-1 bg-success-500/10 text-success-500 border border-success-500/20 text-xs font-black rounded-lg">{num}</span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground italic font-medium">Nothing they can offer</span>
+                        )}
+                      </div>
+                      
+                      <div className="rtl:text-right">
+                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-500 mb-3 flex items-center gap-2 rtl:flex-row-reverse">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
+                          They Need From You
+                        </div>
+                        {m.theyNeed?.length > 0 ? (
+                          <div className="flex flex-wrap gap-1.5">
+                            {m.theyNeed.map((num: string) => (
+                              <span key={num} className="px-2.5 py-1 bg-primary-500/10 text-primary-500 border border-primary-500/20 text-xs font-black rounded-lg">{num}</span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground italic font-medium">Nothing they need</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <hr className="border-border/50 my-8" />
+            </>
+          )}
 
           {/* Collections Section */}
           <div className="rtl:text-right">

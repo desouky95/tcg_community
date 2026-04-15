@@ -8,8 +8,10 @@ export const controllers = {
   Auth: () => import('#controllers/auth_controller'),
   Categories: () => import('#controllers/categories_controller'),
   Checklists: () => import('#controllers/checklists_controller'),
+  Conversations: () => import('#controllers/conversations_controller'),
   Profile: () => import('#controllers/profile_controller'),
   Reviews: () => import('#controllers/reviews_controller'),
   Swaps: () => import('#controllers/swaps_controller'),
   UserChecklists: () => import('#controllers/user_checklists_controller'),
+  SwapDeals: () => import('#controllers/swap_deals_controller'),
 }

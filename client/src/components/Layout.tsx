@@ -9,6 +9,7 @@ import {
   ChevronDown,
   Repeat,
   MapPin,
+  MessageCircle,
 } from "lucide-react";
 import { useStore } from "../store/useStore";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -20,7 +21,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useClickAway } from "@reactuses/core";
 import { EGYPT_GOVERNORATES } from "../lib/constants";
 import { useUpdateProfile } from "../hooks/useUsers";
+import { useConversations } from "../hooks/useConversations";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Layout({
   children,
@@ -42,11 +45,17 @@ export default function Layout({
   const menuRef = useRef<HTMLDivElement>(null);
   const updateProfile = useUpdateProfile();
 
+  // Polling total unread messages count
+  const { data: conversations } = useConversations();
+  const unreadCount =
+    conversations?.reduce((acc, conv) => acc + conv.unreadCount, 0) || 0;
+  const queryClient = useQueryClient();
   useClickAway(menuRef, () => {
     setIsSettingsOpen(false);
   });
   const handleLogout = () => {
     logout();
+    queryClient.clear();
     navigate("/");
   };
 
@@ -128,6 +137,23 @@ export default function Layout({
                   >
                     <Repeat className="w-4 h-4 opacity-70" />
                     <span>{t("nav.swap_search")}</span>
+                  </Link>
+
+                  <Link
+                    to="/chat"
+                    className={`relative text-sm font-bold flex items-center gap-2 rtl:space-x-reverse transition-colors ${
+                      location.pathname.startsWith("/chat")
+                        ? "text-primary-500"
+                        : "hover:text-primary-500"
+                    }`}
+                  >
+                    <MessageCircle className="w-4 h-4 opacity-70" />
+                    <span>Chats</span>
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1.5 -right-3.5 rtl:-left-3.5 rtl:right-auto bg-primary-500 text-white text-[9px] font-black px-1.5 h-4 min-w-4 rounded-full flex items-center justify-center border-2 border-card shadow-sm shadow-primary-500/30">
+                        {unreadCount > 9 ? "9+" : unreadCount}
+                      </span>
+                    )}
                   </Link>
 
                   <Link
@@ -316,9 +342,6 @@ export default function Layout({
               {user && !hideNav && (
                 <div className="flex items-center border-l rtl:border-r rtl:border-l-0 pl-4 border-border">
                   <div className="flex flex-col items-end">
-                    <span className="text-sm font-bold tracking-tight text-foreground/90">
-                      @{user.username}
-                    </span>
                     <span className="text-[10px] bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">
                       {user.points} pts
                     </span>

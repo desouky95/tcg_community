@@ -136,6 +136,54 @@ export class ChecklistSchema extends BaseModel {
   declare year: number
 }
 
+export class ConversationSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'updatedAt', 'user1Id', 'user2Id'] as const
+  $columns = ConversationSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare user1Id: number | null
+  @column()
+  declare user2Id: number | null
+}
+
+export class MessageSchema extends BaseModel {
+  static $columns = [
+    'content',
+    'conversationId',
+    'createdAt',
+    'dealId',
+    'id',
+    'isRead',
+    'senderId',
+    'type',
+    'updatedAt',
+  ] as const
+  $columns = MessageSchema.$columns
+  @column()
+  declare content: string
+  @column()
+  declare conversationId: number | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare dealId: number | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare isRead: boolean | null
+  @column()
+  declare senderId: number | null
+  @column()
+  declare type: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class QueueJobSchema extends BaseModel {
   static $columns = [
     'acquiredAt',
@@ -245,6 +293,63 @@ export class ReviewSchema extends BaseModel {
   declare type: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+}
+
+export class SwapDealSchema extends BaseModel {
+  static $columns = [
+    'conversationId',
+    'createdAt',
+    'createdByUserId',
+    'id',
+    'offeredCards',
+    'requestedCards',
+    'status',
+    'swapType',
+    'updatedAt',
+    'user1PhotoUrl',
+    'user1QrScanned',
+    'user1Received',
+    'user1Tracking',
+    'user2PhotoUrl',
+    'user2QrScanned',
+    'user2Received',
+    'user2Tracking',
+  ] as const
+  $columns = SwapDealSchema.$columns
+  @column()
+  declare conversationId: number | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column()
+  declare createdByUserId: number | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare offeredCards: string
+  @column()
+  declare requestedCards: string
+  @column()
+  declare status: string | null
+  @column()
+  declare swapType: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare user1PhotoUrl: string | null
+  @column()
+  declare user1QrScanned: boolean | null
+  @column()
+  declare user1Received: boolean | null
+  @column()
+  declare user1Tracking: string | null
+  @column()
+  declare user2PhotoUrl: string | null
+  @column()
+  declare user2QrScanned: boolean | null
+  @column()
+  declare user2Received: boolean | null
+  @column()
+  declare user2Tracking: string | null
 }
 
 export class UserChecklistSchema extends BaseModel {

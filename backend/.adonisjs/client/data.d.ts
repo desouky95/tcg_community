@@ -7,6 +7,8 @@
 import type { InferData, InferVariants } from '@adonisjs/core/types/transformers'
 import type CategoryTransformer from '#transformers/category_transformer'
 import type ChecklistTransformer from '#transformers/checklist_transformer'
+import type ConversationTransformer from '#transformers/conversation_transformer'
+import type MessageTransformer from '#transformers/message_transformer'
 import type UserChecklistTransformer from '#transformers/user_checklist_transformer'
 import type UserTransformer from '#transformers/user_transformer'
 
@@ -18,6 +20,14 @@ export namespace Data {
   export type Checklist = InferData<ChecklistTransformer>
   export namespace Checklist {
     export type Variants = InferVariants<ChecklistTransformer>
+  }
+  export type Conversation = InferData<ConversationTransformer>
+  export namespace Conversation {
+    export type Variants = InferVariants<ConversationTransformer>
+  }
+  export type Message = InferData<MessageTransformer>
+  export namespace Message {
+    export type Variants = InferVariants<MessageTransformer>
   }
   export type UserChecklist = InferData<UserChecklistTransformer>
   export namespace UserChecklist {

@@ -162,6 +162,60 @@ const routes = {
     tokens: [{"old":"/api/v1/swaps/:userId","type":0,"val":"api","end":""},{"old":"/api/v1/swaps/:userId","type":0,"val":"v1","end":""},{"old":"/api/v1/swaps/:userId","type":0,"val":"swaps","end":""},{"old":"/api/v1/swaps/:userId","type":1,"val":"userId","end":""}],
     types: placeholder as Registry['swaps.match']['types'],
   },
+  'conversations.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/conversations',
+    tokens: [{"old":"/api/v1/conversations","type":0,"val":"api","end":""},{"old":"/api/v1/conversations","type":0,"val":"v1","end":""},{"old":"/api/v1/conversations","type":0,"val":"conversations","end":""}],
+    types: placeholder as Registry['conversations.index']['types'],
+  },
+  'conversations.find_or_create': {
+    methods: ["POST"],
+    pattern: '/api/v1/conversations/find-or-create',
+    tokens: [{"old":"/api/v1/conversations/find-or-create","type":0,"val":"api","end":""},{"old":"/api/v1/conversations/find-or-create","type":0,"val":"v1","end":""},{"old":"/api/v1/conversations/find-or-create","type":0,"val":"conversations","end":""},{"old":"/api/v1/conversations/find-or-create","type":0,"val":"find-or-create","end":""}],
+    types: placeholder as Registry['conversations.find_or_create']['types'],
+  },
+  'conversations.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/conversations/:id',
+    tokens: [{"old":"/api/v1/conversations/:id","type":0,"val":"api","end":""},{"old":"/api/v1/conversations/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/conversations/:id","type":0,"val":"conversations","end":""},{"old":"/api/v1/conversations/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['conversations.show']['types'],
+  },
+  'conversations.store_message': {
+    methods: ["POST"],
+    pattern: '/api/v1/conversations/:id/messages',
+    tokens: [{"old":"/api/v1/conversations/:id/messages","type":0,"val":"api","end":""},{"old":"/api/v1/conversations/:id/messages","type":0,"val":"v1","end":""},{"old":"/api/v1/conversations/:id/messages","type":0,"val":"conversations","end":""},{"old":"/api/v1/conversations/:id/messages","type":1,"val":"id","end":""},{"old":"/api/v1/conversations/:id/messages","type":0,"val":"messages","end":""}],
+    types: placeholder as Registry['conversations.store_message']['types'],
+  },
+  'swap_deals.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/swap-deals',
+    tokens: [{"old":"/api/v1/swap-deals","type":0,"val":"api","end":""},{"old":"/api/v1/swap-deals","type":0,"val":"v1","end":""},{"old":"/api/v1/swap-deals","type":0,"val":"swap-deals","end":""}],
+    types: placeholder as Registry['swap_deals.store']['types'],
+  },
+  'swap_deals.accept': {
+    methods: ["POST"],
+    pattern: '/api/v1/swap-deals/:id/accept',
+    tokens: [{"old":"/api/v1/swap-deals/:id/accept","type":0,"val":"api","end":""},{"old":"/api/v1/swap-deals/:id/accept","type":0,"val":"v1","end":""},{"old":"/api/v1/swap-deals/:id/accept","type":0,"val":"swap-deals","end":""},{"old":"/api/v1/swap-deals/:id/accept","type":1,"val":"id","end":""},{"old":"/api/v1/swap-deals/:id/accept","type":0,"val":"accept","end":""}],
+    types: placeholder as Registry['swap_deals.accept']['types'],
+  },
+  'swap_deals.update_postal': {
+    methods: ["POST"],
+    pattern: '/api/v1/swap-deals/:id/postal',
+    tokens: [{"old":"/api/v1/swap-deals/:id/postal","type":0,"val":"api","end":""},{"old":"/api/v1/swap-deals/:id/postal","type":0,"val":"v1","end":""},{"old":"/api/v1/swap-deals/:id/postal","type":0,"val":"swap-deals","end":""},{"old":"/api/v1/swap-deals/:id/postal","type":1,"val":"id","end":""},{"old":"/api/v1/swap-deals/:id/postal","type":0,"val":"postal","end":""}],
+    types: placeholder as Registry['swap_deals.update_postal']['types'],
+  },
+  'swap_deals.mark_received': {
+    methods: ["POST"],
+    pattern: '/api/v1/swap-deals/:id/received',
+    tokens: [{"old":"/api/v1/swap-deals/:id/received","type":0,"val":"api","end":""},{"old":"/api/v1/swap-deals/:id/received","type":0,"val":"v1","end":""},{"old":"/api/v1/swap-deals/:id/received","type":0,"val":"swap-deals","end":""},{"old":"/api/v1/swap-deals/:id/received","type":1,"val":"id","end":""},{"old":"/api/v1/swap-deals/:id/received","type":0,"val":"received","end":""}],
+    types: placeholder as Registry['swap_deals.mark_received']['types'],
+  },
+  'swap_deals.scan_qr': {
+    methods: ["POST"],
+    pattern: '/api/v1/swap-deals/:id/scan-qr',
+    tokens: [{"old":"/api/v1/swap-deals/:id/scan-qr","type":0,"val":"api","end":""},{"old":"/api/v1/swap-deals/:id/scan-qr","type":0,"val":"v1","end":""},{"old":"/api/v1/swap-deals/:id/scan-qr","type":0,"val":"swap-deals","end":""},{"old":"/api/v1/swap-deals/:id/scan-qr","type":1,"val":"id","end":""},{"old":"/api/v1/swap-deals/:id/scan-qr","type":0,"val":"scan-qr","end":""}],
+    types: placeholder as Registry['swap_deals.scan_qr']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

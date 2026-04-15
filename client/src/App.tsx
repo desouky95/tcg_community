@@ -4,6 +4,8 @@ import {
   Route,
   Navigate,
   Outlet,
+  useLocation,
+  useNavigationType,
 } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { useStore } from "./store/useStore";
@@ -24,6 +26,7 @@ import Landing from "./pages/Landing";
 import Checklists from "./pages/Checklists";
 import Swapping from "./pages/Swapping";
 import CategoryDetail from "./pages/CategoryDetail";
+import Chat from "./pages/Chat";
 
 const ProtectedRoute = ({ requireAdmin }: { requireAdmin?: boolean }) => {
   const user = useStore((state) => state.user);
@@ -42,7 +45,19 @@ import {
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Test from "./pages/Test";
 import { AxiosError } from "axios";
+import { useEffect } from "react";
 
+const DebugLayout = () => {
+  const location = useLocation();
+  const navigationType = useNavigationType(); // "POP" | "PUSH" | "REPLACE"
+
+  useEffect(() => {
+    console.log("The current URL is", { ...location });
+    console.log("The last navigation action was", navigationType);
+  }, [location, navigationType]);
+
+  return <Outlet />;
+};
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -84,33 +99,37 @@ function App() {
           <Toaster position="top-right" />
           <Router>
             <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/verify-otp" element={<VerifyOTP />} />
-              <Route path="/test" element={<Test />} />
+              <Route element={<DebugLayout />}>
+                <Route path="/" element={<Landing />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/verify-otp" element={<VerifyOTP />} />
+                <Route path="/test" element={<Test />} />
 
-              <Route path="/checklists" element={<Checklists />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/category/:id" element={<CategoryDetail />} />
-                <Route path="/collection/:id" element={<Collection />} />
-                <Route
-                  path="/collection/:id/edit"
-                  element={<CollectionEdit />}
-                />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/profile/edit" element={<ProfileEdit />} />
-                <Route path="/profile/:id" element={<Profile />} />
-                <Route path="/swapping" element={<Swapping />} />
-              </Route>
+                <Route path="/checklists" element={<Checklists />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/category/:id" element={<CategoryDetail />} />
+                  <Route path="/collection/:id" element={<Collection />} />
+                  <Route
+                    path="/collection/:id/edit"
+                    element={<CollectionEdit />}
+                  />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/profile/edit" element={<ProfileEdit />} />
+                  <Route path="/profile/:id" element={<Profile />} />
+                  <Route path="/swapping" element={<Swapping />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/chat/:id" element={<Chat />} />
+                </Route>
 
-              {/* Admin Routes */}
-              <Route path="/admin" element={<ProtectedRoute requireAdmin />}>
-                <Route index element={<AdminDashboard />} />
-                <Route path="users" element={<AdminUsers />} />
-                <Route path="collections" element={<AdminCollections />} />
-                <Route path="categories" element={<AdminCategories />} />
+                {/* Admin Routes */}
+                <Route path="/admin" element={<ProtectedRoute requireAdmin />}>
+                  <Route index element={<AdminDashboard />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="collections" element={<AdminCollections />} />
+                  <Route path="categories" element={<AdminCategories />} />
+                </Route>
               </Route>
             </Routes>
           </Router>

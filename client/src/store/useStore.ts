@@ -13,7 +13,7 @@ export type ExtendedCategory = Omit<Category, "children"> & {
 };
 
 export type User = {
-  id: string;
+  id: number | string;
   fullName: string;
   username: string;
   email: string | null;

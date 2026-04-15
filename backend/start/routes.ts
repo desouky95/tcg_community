@@ -102,5 +102,38 @@ router
       })
       .prefix('swaps')
       .use(middleware.auth())
+
+    router
+      .group(() => {
+        router.get('/', [() => import('#controllers/conversations_controller'), 'index'])
+        router.post('/find-or-create', [
+          () => import('#controllers/conversations_controller'),
+          'findOrCreate',
+        ])
+        router.get('/:id', [() => import('#controllers/conversations_controller'), 'show'])
+        router.post('/:id/messages', [
+          () => import('#controllers/conversations_controller'),
+          'storeMessage',
+        ])
+      })
+      .prefix('conversations')
+      .use(middleware.auth())
+
+    router
+      .group(() => {
+        router.post('/', [() => import('#controllers/swap_deals_controller'), 'store'])
+        router.post('/:id/accept', [() => import('#controllers/swap_deals_controller'), 'accept'])
+        router.post('/:id/postal', [
+          () => import('#controllers/swap_deals_controller'),
+          'updatePostal',
+        ])
+        router.post('/:id/received', [
+          () => import('#controllers/swap_deals_controller'),
+          'markReceived',
+        ])
+        router.post('/:id/scan-qr', [() => import('#controllers/swap_deals_controller'), 'scanQr'])
+      })
+      .prefix('swap-deals')
+      .use(middleware.auth())
   })
   .prefix('/api/v1')

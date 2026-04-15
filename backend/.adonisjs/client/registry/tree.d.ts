@@ -43,4 +43,17 @@ export interface ApiDefinition {
     search: typeof routes['swaps.search']
     match: typeof routes['swaps.match']
   }
+  conversations: {
+    index: typeof routes['conversations.index']
+    findOrCreate: typeof routes['conversations.find_or_create']
+    show: typeof routes['conversations.show']
+    storeMessage: typeof routes['conversations.store_message']
+  }
+  swapDeals: {
+    store: typeof routes['swap_deals.store']
+    accept: typeof routes['swap_deals.accept']
+    updatePostal: typeof routes['swap_deals.update_postal']
+    markReceived: typeof routes['swap_deals.mark_received']
+    scanQr: typeof routes['swap_deals.scan_qr']
+  }
 }
