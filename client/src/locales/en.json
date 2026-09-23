@@ -8,7 +8,10 @@
     "profile": "Profile",
     "admin": "Admin",
     "swap_search": "Swap",
-    "settings": "Settings"
+    "chats": "Chats",
+    "settings": "Settings",
+    "welcome_guest": "Welcome, Guest!",
+    "guest_account": "Guest Account"
   },
   "landing": {
     "hero": {

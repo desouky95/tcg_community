@@ -31,7 +31,7 @@ export const api = {
   getUserChecklist: (id: string) => instance.get(`/user-checklists/${id}`),
   updateUserChecklist: (id: string, data: any) =>
     instance.post(`/user-checklists/${id}`, data),
-  getChecklists: () => instance.get("/checklists"),
+  getChecklists: (params?: any) => instance.get("/checklists", { params }),
   getChecklist: (id: string) => instance.get(`/checklists/${id}`),
   addChecklist: (data: any) => {
     if (data instanceof FormData) {
@@ -52,6 +52,7 @@ export const api = {
 
   // Category Management
   getCategories: () => instance.get("/categories"),
+  getCategory: (idOrSlug: string) => instance.get(`/categories/${idOrSlug}`),
   addCategory: (name: string) => instance.post("/categories", { name }),
   addSubcategory: (categoryId: string, name: string) =>
     instance.post(`/categories/${categoryId}/subcategories`, { name }),

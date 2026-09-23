@@ -3,13 +3,19 @@ import { create } from "zustand";
 export type Category = {
   id: string;
   name: string;
+  slug?: string;
   parentId: number;
   children: Category[];
+  parent?: Category;
+  checklists?: Checklist[];
 };
 
 export type ExtendedCategory = Omit<Category, "children"> & {
   userChecklists: UserChecklist[];
   children: ExtendedCategory[];
+  slug?: string;
+  parent?: Category;
+  checklists?: Checklist[];
 };
 
 export type User = {

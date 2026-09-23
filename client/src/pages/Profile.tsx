@@ -92,7 +92,7 @@ export default function Profile() {
   const updatePoints = useStore((state) => state.updatePoints);
 
   // If no ID is provided, assume we want the logged-in user's profile
-  const isOwnProfile = !id || id === currentUser?.id;
+  const isOwnProfile = !id || id == currentUser?.id;
 
   const useProfileHook = isOwnProfile ? useProfile : useUserInfo;
   const { data, isLoading: userLoading } = useProfileHook(id);
@@ -341,76 +341,97 @@ export default function Profile() {
           {/* Swap Matches Highlight */}
           {!isOwnProfile && match && match.matches?.length > 0 && (
             <>
-            <div className="bg-linear-to-r from-primary-500/10 to-indigo-500/10 border border-primary-500/20 rounded-3xl p-6 md:p-8 relative overflow-hidden flex flex-col group mt-8">
-              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity pointer-events-none rtl:left-0 rtl:right-auto rtl:-scale-x-100">
-                <Repeat className="w-32 h-32 text-primary-500 transform -rotate-12 scale-150" />
-              </div>
-              
-              <div className="flex items-center justify-between mb-6 relative z-10 rtl:flex-row-reverse">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 bg-primary-500/20 rounded-2xl text-primary-500 backdrop-blur-sm border border-primary-500/20">
-                    <Repeat className="w-5 h-5" />
+              <div className="bg-linear-to-r from-primary-500/10 to-indigo-500/10 border border-primary-500/20 rounded-3xl p-6 md:p-8 relative overflow-hidden flex flex-col group mt-8">
+                <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity pointer-events-none rtl:left-0 rtl:right-auto rtl:-scale-x-100">
+                  <Repeat className="w-32 h-32 text-primary-500 transform -rotate-12 scale-150" />
+                </div>
+
+                <div className="flex items-center justify-between mb-6 relative z-10 rtl:flex-row-reverse">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-primary-500/20 rounded-2xl text-primary-500 backdrop-blur-sm border border-primary-500/20">
+                      <Repeat className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black uppercase tracking-widest text-primary-500 leading-none">
+                        Perfect Match!
+                      </h3>
+                      <p className="text-xs font-bold text-muted-foreground mt-1">
+                        You can make{" "}
+                        <span className="text-foreground text-sm">
+                          {match.totalMutalTrades}
+                        </span>{" "}
+                        mutual trades.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-black uppercase tracking-widest text-primary-500 leading-none">
-                      Perfect Match!
-                    </h3>
-                    <p className="text-xs font-bold text-muted-foreground mt-1">
-                      You can make <span className="text-foreground text-sm">{match.totalMutalTrades}</span> mutual trades.
-                    </p>
-                  </div>
+                </div>
+
+                <div className="space-y-4 relative z-10 w-full">
+                  {match.matches.map((m: SwapResultMatch) => (
+                    <div
+                      key={m.checklistId}
+                      className="bg-card/60 backdrop-blur-md border border-primary-500/10 rounded-2xl p-5 hover:border-primary-500/30 transition-colors shadow-sm"
+                    >
+                      <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-4 pb-3 border-b border-border border-dashed rtl:text-right">
+                        {m.checklist?.name}
+                      </h4>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+                        {/* Divider for desktop */}
+                        <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-border border-dashed -translate-x-1/2" />
+
+                        <div className="rtl:text-right">
+                          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-success-500 mb-3 flex items-center gap-2 rtl:flex-row-reverse">
+                            <span className="w-1.5 h-1.5 rounded-full bg-success-500"></span>
+                            They Offer You
+                          </div>
+                          {m.theyOffer?.length > 0 ? (
+                            <div className="flex flex-wrap gap-1.5">
+                              {m.theyOffer.map((num: string) => (
+                                <span
+                                  key={num}
+                                  className="px-2.5 py-1 bg-success-500/10 text-success-500 border border-success-500/20 text-xs font-black rounded-lg"
+                                >
+                                  {num}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-muted-foreground italic font-medium">
+                              Nothing they can offer
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="rtl:text-right">
+                          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-500 mb-3 flex items-center gap-2 rtl:flex-row-reverse">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
+                            They Need From You
+                          </div>
+                          {m.theyNeed?.length > 0 ? (
+                            <div className="flex flex-wrap gap-1.5">
+                              {m.theyNeed.map((num: string) => (
+                                <span
+                                  key={num}
+                                  className="px-2.5 py-1 bg-primary-500/10 text-primary-500 border border-primary-500/20 text-xs font-black rounded-lg"
+                                >
+                                  {num}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-muted-foreground italic font-medium">
+                              Nothing they need
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="space-y-4 relative z-10 w-full">
-                {match.matches.map((m: SwapResultMatch) => (
-                  <div key={m.checklistId} className="bg-card/60 backdrop-blur-md border border-primary-500/10 rounded-2xl p-5 hover:border-primary-500/30 transition-colors shadow-sm">
-                    <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-4 pb-3 border-b border-border border-dashed rtl:text-right">
-                      {m.checklist?.name}
-                    </h4>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-                      {/* Divider for desktop */}
-                      <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-border border-dashed -translate-x-1/2" />
-                      
-                      <div className="rtl:text-right">
-                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-success-500 mb-3 flex items-center gap-2 rtl:flex-row-reverse">
-                          <span className="w-1.5 h-1.5 rounded-full bg-success-500"></span>
-                          They Offer You
-                        </div>
-                        {m.theyOffer?.length > 0 ? (
-                          <div className="flex flex-wrap gap-1.5">
-                            {m.theyOffer.map((num: string) => (
-                              <span key={num} className="px-2.5 py-1 bg-success-500/10 text-success-500 border border-success-500/20 text-xs font-black rounded-lg">{num}</span>
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground italic font-medium">Nothing they can offer</span>
-                        )}
-                      </div>
-                      
-                      <div className="rtl:text-right">
-                        <div className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-500 mb-3 flex items-center gap-2 rtl:flex-row-reverse">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
-                          They Need From You
-                        </div>
-                        {m.theyNeed?.length > 0 ? (
-                          <div className="flex flex-wrap gap-1.5">
-                            {m.theyNeed.map((num: string) => (
-                              <span key={num} className="px-2.5 py-1 bg-primary-500/10 text-primary-500 border border-primary-500/20 text-xs font-black rounded-lg">{num}</span>
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-xs text-muted-foreground italic font-medium">Nothing they need</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            <hr className="border-border/50 my-8" />
+              <hr className="border-border/50 my-8" />
             </>
           )}
 

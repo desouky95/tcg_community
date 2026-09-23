@@ -8,7 +8,10 @@
     "profile": "الملف الشخصي",
     "admin": "الإشراف",
     "swap_search": "بحث عن المقايضة",
-    "settings": "الإعدادات"
+    "chats": "الدردشات",
+    "settings": "الإعدادات",
+    "welcome_guest": "مرحباً بك!",
+    "guest_account": "حساب زائر"
   },
   "landing": {
     "hero": {

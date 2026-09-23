@@ -11,7 +11,7 @@ export const controllers = {
   Conversations: () => import('#controllers/conversations_controller'),
   Profile: () => import('#controllers/profile_controller'),
   Reviews: () => import('#controllers/reviews_controller'),
+  SwapDeals: () => import('#controllers/swap_deals_controller'),
   Swaps: () => import('#controllers/swaps_controller'),
   UserChecklists: () => import('#controllers/user_checklists_controller'),
-  SwapDeals: () => import('#controllers/swap_deals_controller'),
 }

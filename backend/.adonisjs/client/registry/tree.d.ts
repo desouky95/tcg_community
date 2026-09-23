@@ -11,6 +11,7 @@ export interface ApiDefinition {
   }
   categories: {
     index: typeof routes['categories.index']
+    show: typeof routes['categories.show']
     store: typeof routes['categories.store']
     addSubcategory: typeof routes['categories.add_subcategory']
     destroy: typeof routes['categories.destroy']

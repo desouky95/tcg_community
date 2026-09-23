@@ -1,12 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Oswald:wght@200..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Space+Grotesk:wght@500;600;700&display=swap");
 
 @import "tailwindcss";
 
 @theme {
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
+  --color-primary-50: #fff0ea;
+  --color-primary-100: #ffd9ca;
+  --color-primary-500: #f26b3a;
+  --color-primary-600: #db5428;
 
   --color-success-500: #10b981;
   --color-danger-500: #ef4444;
@@ -24,7 +24,9 @@
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
   /* Custom Font Strategy */
-  --font-brand: "Almarai", ui-sans-serif, system-ui, sans-serif;
+  --font-brand: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
   --font-sans: var(--font-brand);
 
   @keyframes accordion-down {
@@ -52,24 +54,24 @@
 
 @layer base {
   :root {
-    --background: #ffffff;
-    --foreground: #09090b;
+    --background: #f4f0e8;
+    --foreground: #0b0f14;
     --card: #ffffff;
-    --card-foreground: #09090b;
-    --border: #e4e4e7;
-    --input: #e4e4e7;
-    --ring: #18181b;
-    --radius: 0.5rem;
+    --card-foreground: #0b0f14;
+    --border: #d8d2c7;
+    --input: #e5dfd5;
+    --ring: #f26b3a;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: #09090b;
-    --foreground: #fafafa;
-    --card: #18181b;
-    --card-foreground: #fafafa;
-    --border: #27272a;
-    --input: #27272a;
-    --ring: #d4d4d8;
+    --background: #0b0f14;
+    --foreground: #f4f0e8;
+    --card: #121820;
+    --card-foreground: #f4f0e8;
+    --border: #2b3744;
+    --input: #1a232d;
+    --ring: #f26b3a;
   }
 
   html,
@@ -88,7 +90,14 @@
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-brand);
+    line-height: 1.5;
   }
+}
+
+@layer utilities {
+  .font-display { font-family: var(--font-display); }
+  .font-mono { font-family: var(--font-mono); }
+  .focus-ring:focus-visible { outline: 3px solid var(--primary, #f26b3a); outline-offset: 3px; }
 }
 
 /* Base styles for gamification elements */

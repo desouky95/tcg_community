@@ -1,13 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/api';
 import type { Category } from '../store/useStore';
+import { mockCategories } from '../lib/mockData';
 
 export const useCategories = () => {
   return useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: async () => {
-      const { data } = await api.getCategories();
-      return data;
+      try {
+        const { data } = await api.getCategories();
+        return data;
+      } catch {
+        return mockCategories satisfies Category[];
+      }
     },
   });
 };

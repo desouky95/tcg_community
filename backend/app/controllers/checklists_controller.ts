@@ -8,8 +8,33 @@ import { createChecklistValidator } from '#validators/checklist'
 import ChecklistTransformer from '#transformers/checklist_transformer'
 
 export default class ChecklistsController {
-  async index({}: HttpContext) {
-    return await Checklist.query().preload('category').preload('subcategory')
+  async index({ request }: HttpContext) {
+    const q = request.input('q')
+    const categoryId = request.input('categoryId')
+    const subcategoryId = request.input('subcategoryId')
+    const limit = request.input('limit')
+
+    const query = Checklist.query().preload('category').preload('subcategory')
+
+    if (q) {
+      query.where('name', 'like', `%${q}%`)
+    }
+
+    if (categoryId) {
+      query.where('categoryId', categoryId)
+    }
+
+    if (subcategoryId) {
+      query.where('subcategoryId', subcategoryId)
+    }
+
+    query.orderBy('createdAt', 'desc')
+
+    if (limit) {
+      query.limit(Number(limit))
+    }
+
+    return await query
   }
 
   async show({ params, auth, serialize }: HttpContext) {

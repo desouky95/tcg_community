@@ -32,6 +32,7 @@ router
     router
       .group(() => {
         router.get('/', [() => import('#controllers/categories_controller'), 'index'])
+        router.get('/:id', [() => import('#controllers/categories_controller'), 'show'])
         router.post('/', [() => import('#controllers/categories_controller'), 'store'])
         router.post('/:id/subcategories', [
           () => import('#controllers/categories_controller'),

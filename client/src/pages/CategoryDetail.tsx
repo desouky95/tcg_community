@@ -5,160 +5,211 @@ import Layout from "../components/Layout";
 import { SectionHeading } from "../components/layout/SectionHeading";
 import { ChecklistListItem } from "../components/checklists/ChecklistListItem";
 import { MinimalChecklistCard } from "../components/checklists/MinimalChecklistCard";
-import { CategoryListSection } from "../components/checklists/CategoryListSection";
-import { useCategories } from "../hooks/useCategories";
 import { BackButton } from "../components/common/BackButton";
-import { LayoutGrid, List as ListIcon } from "lucide-react";
+import { LayoutGrid, List as ListIcon, Search, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { Checklist } from "../store/useStore";
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import type { Category } from "../store/useStore";
 
 export default function CategoryDetail() {
   const { t } = useTranslation();
-  const { categoryId } = useParams<{ categoryId: string }>();
-  const { data: categories, isLoading: loadingCategories } = useCategories();
-  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+  const { categoryId: idOrSlug } = useParams<{ categoryId: string }>();
+  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
+  const [search, setSearch] = useState("");
 
-  const { data: checklists, isLoading: loadingChecklists } = useQuery({
-    queryKey: ["checklists-all"],
+  const { data: category, isLoading } = useQuery({
+    queryKey: ["category", idOrSlug],
     queryFn: async () => {
-      const { data } = await api.getChecklists();
-      return data as Checklist[];
+      const { data } = await api.getCategory(idOrSlug!);
+      return data as Category;
     },
+    enabled: !!idOrSlug,
   });
 
-  const category = categories
-    ?.flatMap((c) => [c, ...(c.children || [])])
-    .find((c) => c.id.toString() === categoryId);
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="animate-pulse space-y-8">
+            <div className="h-10 w-48 bg-muted rounded-xl" />
+            <div className="h-12 w-96 bg-muted rounded-xl" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-48 bg-muted rounded-2xl" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
-  const subcategories = category?.children || [];
-  const categoryChecklists = checklists?.filter(
-    (c) =>
-      c.categoryId.toString() === categoryId ||
-      c.subcategoryId?.toString() === categoryId,
+  if (!category) {
+    return (
+      <Layout>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+          <h1 className="text-2xl font-bold text-muted-foreground">{t("category_not_found") || "Category not found"}</h1>
+          <Link to="/checklists" className="text-primary mt-4 inline-block hover:underline">{t("back_to_checklists") || "Back to all collections"}</Link>
+        </div>
+      </Layout>
+    );
+  }
+
+  const isParent = category.parentId === -1 || !category.parentId;
+  const filteredChecklists = category.checklists?.filter(c => 
+    c.name.toLowerCase().includes(search.toLowerCase()) || 
+    c.year.toString().includes(search)
   );
 
-  // Calculate counts for categories and subcategories
-  const counts = useMemo(() => {
-    if (!checklists) return {};
-    const map: Record<string, number> = {};
-    checklists.forEach((c) => {
-      if (c.categoryId) {
-        const catId = c.categoryId.toString();
-        map[catId] = (map[catId] || 0) + 1;
-      }
-      if (c.subcategoryId) {
-        const subId = c.subcategoryId.toString();
-        map[subId] = (map[subId] || 0) + 1;
-      }
-    });
-    return map;
-  }, [checklists]);
-
-  const isLoading = loadingCategories || loadingChecklists;
-
   return (
-    <Layout transparent hideNav>
+    <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="flex items-center space-x-4 mb-10 rtl:space-x-reverse">
+        {/* Breadcrumbs & Navigation */}
+        <div className="flex items-center space-x-4 mb-8 rtl:space-x-reverse">
           <BackButton to="/checklists" />
           <div className="w-px h-10 bg-border/50 mx-2" />
-          <h1 className="text-sm font-black uppercase tracking-widest text-muted-foreground flex items-center">
-            <LayoutGrid className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0 text-primary" />
-            {t("checklists.path")} / {category?.name}
-          </h1>
-        </div>
-
-        <div className="flex items-start justify-between mb-8">
-          <SectionHeading
-            title={category?.name || t("common.loading")}
-            highlight=""
-            align="left"
-            className="mb-0! px-0!"
-          />
-
-          {!isLoading && subcategories.length === 0 && (
-            <div className="flex items-center bg-muted/50 p-1 rounded-xl border border-border mt-2">
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition-all ${
-                  viewMode === "list"
-                    ? "bg-background shadow-sm text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-                title={t("checklists.view_list")}
-              >
-                <ListIcon className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-all ${
-                  viewMode === "grid"
-                    ? "bg-background shadow-sm text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-                title={t("checklists.view_grid")}
-              >
-                <LayoutGrid className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-        </div>
-
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-10">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="animate-pulse space-y-2">
-                <div className="h-3 w-3/4 bg-border rounded" />
-                <div className="h-3 w-1/2 bg-border rounded" />
-              </div>
-            ))}
+          <div className="flex items-center gap-2 text-sm text-muted-foreground overflow-x-auto whitespace-nowrap pb-1">
+            <Link to="/checklists" className="hover:text-primary transition-colors">{t("checklists.path") || "Checklists"}</Link>
+            {category.parent && (
+              <>
+                <ChevronRight className="w-4 h-4" />
+                <Link to={`/s/${category.parent.slug || category.parent.id}`} className="hover:text-primary transition-colors">
+                  {category.parent.name}
+                </Link>
+              </>
+            )}
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-foreground font-semibold">{category.name}</span>
           </div>
-        ) : (
-          <>
-            {subcategories.length > 0 ? (
-              <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-x-12 space-y-10">
-                {subcategories.map((sub) => (
-                  <CategoryListSection
-                    key={sub.id}
-                    category={sub}
-                    counts={counts}
-                  />
-                ))}
+        </div>
+
+        <div className="flex flex-col gap-10">
+          {/* Header & Search */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <SectionHeading
+              title={category.name}
+              subtitle={isParent ? t("category.parent_subtitle") : t("category.sub_subtitle")}
+              align="left"
+              className="px-0 mb-0"
+            />
+
+            {!isParent && (
+              <div className="relative max-w-md w-full">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder={t("category.search_in_category") || `Search in ${category.name}...`}
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border bg-card focus:ring-2 focus:ring-primary/20 outline-none"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
               </div>
-            ) : (
-              <div className="border-t border-border pt-8">
-                {viewMode === "list" ? (
-                  <div className="columns-1 sm:columns-2 md:columns-3 gap-x-12">
-                    {categoryChecklists?.map((checklist) => (
-                      <ChecklistListItem
-                        key={checklist.id}
-                        checklist={checklist}
-                      />
+            )}
+          </div>
+
+          {isParent ? (
+            /* Parent Category Layout */
+            <div className="space-y-16">
+              {/* Top Grid: Recent/Featured in this Category */}
+              <section>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold">{t("category.featured_collections") || "Featured Collections"}</h3>
+                  <div className="flex items-center bg-muted/50 p-1 rounded-xl border border-border">
+                    <button
+                      onClick={() => setViewMode("list")}
+                      className={`p-2 rounded-lg transition-all ${viewMode === "list" ? "bg-background shadow-sm text-primary" : "text-muted-foreground"}`}
+                    >
+                      <ListIcon className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setViewMode("grid")}
+                      className={`p-2 rounded-lg transition-all ${viewMode === "grid" ? "bg-background shadow-sm text-primary" : "text-muted-foreground"}`}
+                    >
+                      <LayoutGrid className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {viewMode === "grid" ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {category.checklists?.slice(0, 9).map((checklist) => (
+                      <MinimalChecklistCard key={checklist.id} checklist={checklist} />
                     ))}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    {categoryChecklists?.map((checklist) => (
-                      <MinimalChecklistCard
-                        key={checklist.id}
-                        checklist={checklist}
-                      />
+                  <div className="space-y-3">
+                    {category.checklists?.slice(0, 10).map((checklist) => (
+                      <ChecklistListItem key={checklist.id} checklist={checklist} />
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* Bottom Grid: Sub-categories */}
+              <section>
+                <h3 className="text-xl font-bold mb-6">{t("category.browse_subcategories") || "Browse Subcategories"}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {category.children?.map((sub) => (
+                    <Link
+                      key={sub.id}
+                      to={`/s/${sub.slug || sub.id}`}
+                      className="group p-6 rounded-2xl border bg-card hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all text-center"
+                    >
+                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <LayoutGrid className="w-6 h-6 text-primary" />
+                      </div>
+                      <span className="font-bold text-lg group-hover:text-primary transition-colors">{sub.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            </div>
+          ) : (
+            /* Sub-category Layout */
+            <section>
+               <div className="flex items-center justify-between mb-6">
+                  <span className="text-muted-foreground">
+                    {filteredChecklists?.length || 0} {t("checklists.collections_found") || "collections found"}
+                  </span>
+                  <div className="flex items-center bg-muted/50 p-1 rounded-xl border border-border">
+                    <button
+                      onClick={() => setViewMode("list")}
+                      className={`p-2 rounded-lg transition-all ${viewMode === "list" ? "bg-background shadow-sm text-primary" : "text-muted-foreground"}`}
+                    >
+                      <ListIcon className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setViewMode("grid")}
+                      className={`p-2 rounded-lg transition-all ${viewMode === "grid" ? "bg-background shadow-sm text-primary" : "text-muted-foreground"}`}
+                    >
+                      <LayoutGrid className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {viewMode === "grid" ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {filteredChecklists?.map((checklist) => (
+                      <MinimalChecklistCard key={checklist.id} checklist={checklist} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {filteredChecklists?.map((checklist) => (
+                      <ChecklistListItem key={checklist.id} checklist={checklist} />
                     ))}
                   </div>
                 )}
 
-                {categoryChecklists?.length === 0 && (
-                  <div className="col-span-full py-12 text-center bg-zinc-50 dark:bg-zinc-900/50 rounded-3xl border border-dashed border-border opacity-60">
-                    <p className="text-lg font-bold text-muted-foreground">
-                      {t("checklists.no_checklists")}
-                    </p>
+                {filteredChecklists?.length === 0 && (
+                  <div className="py-20 text-center opacity-50">
+                    <p className="text-lg font-medium">{t("checklists.no_results") || "No collections match your search"}</p>
                   </div>
                 )}
-              </div>
-            )}
-          </>
-        )}
+            </section>
+          )}
+        </div>
       </div>
     </Layout>
   );

@@ -4,22 +4,11 @@
  * Run "node ace migration:run" command to re-generate this file
  */
 
-import { BaseModel, column, computed } from '@adonisjs/lucid/orm'
+import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AuthAccessTokenSchema extends BaseModel {
-  static $columns = [
-    'abilities',
-    'createdAt',
-    'expiresAt',
-    'hash',
-    'id',
-    'lastUsedAt',
-    'name',
-    'tokenableId',
-    'type',
-    'updatedAt',
-  ] as const
+  static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
   $columns = AuthAccessTokenSchema.$columns
   @column()
   declare abilities: string
@@ -44,21 +33,7 @@ export class AuthAccessTokenSchema extends BaseModel {
 }
 
 export class CardSchema extends BaseModel {
-  static $columns = [
-    'checklistId',
-    'createdAt',
-    'holdCount',
-    'id',
-    'name',
-    'needCount',
-    'number',
-    'offerCount',
-    'order',
-    'ratio',
-    'section',
-    'type',
-    'updatedAt',
-  ] as const
+  static $columns = ['checklistId', 'createdAt', 'holdCount', 'id', 'name', 'needCount', 'number', 'offerCount', 'order', 'ratio', 'section', 'type', 'updatedAt'] as const
   $columns = CardSchema.$columns
   @column()
   declare checklistId: number | null
@@ -89,7 +64,7 @@ export class CardSchema extends BaseModel {
 }
 
 export class CategorySchema extends BaseModel {
-  static $columns = ['createdAt', 'id', 'name', 'parentId', 'updatedAt'] as const
+  static $columns = ['createdAt', 'id', 'name', 'parentId', 'slug', 'updatedAt'] as const
   $columns = CategorySchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
@@ -99,22 +74,14 @@ export class CategorySchema extends BaseModel {
   declare name: string
   @column()
   declare parentId: number
+  @column()
+  declare slug: string | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }
 
 export class ChecklistSchema extends BaseModel {
-  static $columns = [
-    'categoryId',
-    'createdAt',
-    'id',
-    'name',
-    'subcategoryId',
-    'totalCards',
-    'type',
-    'updatedAt',
-    'year',
-  ] as const
+  static $columns = ['categoryId', 'createdAt', 'id', 'name', 'subcategoryId', 'totalCards', 'type', 'updatedAt', 'year'] as const
   $columns = ChecklistSchema.$columns
   @column()
   declare categoryId: number | null
@@ -152,17 +119,7 @@ export class ConversationSchema extends BaseModel {
 }
 
 export class MessageSchema extends BaseModel {
-  static $columns = [
-    'content',
-    'conversationId',
-    'createdAt',
-    'dealId',
-    'id',
-    'isRead',
-    'senderId',
-    'type',
-    'updatedAt',
-  ] as const
+  static $columns = ['content', 'conversationId', 'createdAt', 'dealId', 'id', 'isRead', 'senderId', 'type', 'updatedAt'] as const
   $columns = MessageSchema.$columns
   @column()
   declare content: string
@@ -185,18 +142,7 @@ export class MessageSchema extends BaseModel {
 }
 
 export class QueueJobSchema extends BaseModel {
-  static $columns = [
-    'acquiredAt',
-    'data',
-    'error',
-    'executeAt',
-    'finishedAt',
-    'id',
-    'queue',
-    'score',
-    'status',
-    'workerId',
-  ] as const
+  static $columns = ['acquiredAt', 'data', 'error', 'executeAt', 'finishedAt', 'id', 'queue', 'score', 'status', 'workerId'] as const
   $columns = QueueJobSchema.$columns
   @column()
   declare acquiredAt: bigint | number | null
@@ -221,22 +167,7 @@ export class QueueJobSchema extends BaseModel {
 }
 
 export class QueueScheduleSchema extends BaseModel {
-  static $columns = [
-    'createdAt',
-    'cronExpression',
-    'everyMs',
-    'fromDate',
-    'id',
-    'lastRunAt',
-    'name',
-    'nextRunAt',
-    'payload',
-    'runCount',
-    'runLimit',
-    'status',
-    'timezone',
-    'toDate',
-  ] as const
+  static $columns = ['createdAt', 'cronExpression', 'everyMs', 'fromDate', 'id', 'lastRunAt', 'name', 'nextRunAt', 'payload', 'runCount', 'runLimit', 'status', 'timezone', 'toDate'] as const
   $columns = QueueScheduleSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -269,15 +200,7 @@ export class QueueScheduleSchema extends BaseModel {
 }
 
 export class ReviewSchema extends BaseModel {
-  static $columns = [
-    'comment',
-    'createdAt',
-    'id',
-    'reviewerId',
-    'targetUserId',
-    'type',
-    'updatedAt',
-  ] as const
+  static $columns = ['comment', 'createdAt', 'id', 'reviewerId', 'targetUserId', 'type', 'updatedAt'] as const
   $columns = ReviewSchema.$columns
   @column()
   declare comment: string | null
@@ -296,25 +219,7 @@ export class ReviewSchema extends BaseModel {
 }
 
 export class SwapDealSchema extends BaseModel {
-  static $columns = [
-    'conversationId',
-    'createdAt',
-    'createdByUserId',
-    'id',
-    'offeredCards',
-    'requestedCards',
-    'status',
-    'swapType',
-    'updatedAt',
-    'user1PhotoUrl',
-    'user1QrScanned',
-    'user1Received',
-    'user1Tracking',
-    'user2PhotoUrl',
-    'user2QrScanned',
-    'user2Received',
-    'user2Tracking',
-  ] as const
+  static $columns = ['conversationId', 'createdAt', 'createdByUserId', 'id', 'offeredCards', 'requestedCards', 'status', 'swapType', 'updatedAt', 'user1PhotoUrl', 'user1QrScanned', 'user1Received', 'user1Tracking', 'user2PhotoUrl', 'user2QrScanned', 'user2Received', 'user2Tracking'] as const
   $columns = SwapDealSchema.$columns
   @column()
   declare conversationId: number | null
@@ -353,16 +258,7 @@ export class SwapDealSchema extends BaseModel {
 }
 
 export class UserChecklistSchema extends BaseModel {
-  static $columns = [
-    'checklistId',
-    'collectedList',
-    'createdAt',
-    'duplicatesList',
-    'id',
-    'missingList',
-    'updatedAt',
-    'userId',
-  ] as const
+  static $columns = ['checklistId', 'collectedList', 'createdAt', 'duplicatesList', 'id', 'missingList', 'updatedAt', 'userId'] as const
   $columns = UserChecklistSchema.$columns
   @column()
   declare checklistId: number | null
@@ -380,38 +276,10 @@ export class UserChecklistSchema extends BaseModel {
   declare updatedAt: DateTime | null
   @column()
   declare userId: number | null
-  @computed()
-  get missingListArray() {
-    return this.missingList?.split(',').filter((_) => _)
-  }
-  @computed()
-  get collectedListArray() {
-    return this.collectedList?.split(',').filter((_) => _)
-  }
-  @computed()
-  get duplicatesListArray() {
-    return this.duplicatesList?.split(',').filter((_) => _)
-  }
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = [
-    'blocked',
-    'createdAt',
-    'email',
-    'fullName',
-    'governorate',
-    'id',
-    'isVerified',
-    'lastLoginAt',
-    'mobile',
-    'notReadyForSwap',
-    'otpCode',
-    'password',
-    'role',
-    'updatedAt',
-    'username',
-  ] as const
+  static $columns = ['blocked', 'createdAt', 'email', 'fullName', 'governorate', 'id', 'isVerified', 'lastLoginAt', 'mobile', 'notReadyForSwap', 'otpCode', 'password', 'role', 'updatedAt', 'username'] as const
   $columns = UserSchema.$columns
   @column()
   declare blocked: boolean

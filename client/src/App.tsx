@@ -27,6 +27,7 @@ import Checklists from "./pages/Checklists";
 import Swapping from "./pages/Swapping";
 import CategoryDetail from "./pages/CategoryDetail";
 import Chat from "./pages/Chat";
+import Marketplace from "./pages/Marketplace";
 
 const ProtectedRoute = ({ requireAdmin }: { requireAdmin?: boolean }) => {
   const user = useStore((state) => state.user);
@@ -106,10 +107,12 @@ function App() {
                 <Route path="/verify-otp" element={<VerifyOTP />} />
                 <Route path="/test" element={<Test />} />
 
-                <Route path="/checklists" element={<Checklists />} />
+                <Route path="/checklists/*" element={<Checklists />} />
+                <Route path="/s/:categoryId" element={<CategoryDetail />} />
+                <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/marketplace/:id" element={<Marketplace />} />
                 <Route element={<ProtectedRoute />}>
                   <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/category/:id" element={<CategoryDetail />} />
                   <Route path="/collection/:id" element={<Collection />} />
                   <Route
                     path="/collection/:id/edit"

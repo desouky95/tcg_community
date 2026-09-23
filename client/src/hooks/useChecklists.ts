@@ -1,13 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import type { Checklist } from "../store/useStore";
+import { mockChecklists } from "../lib/mockData";
 
 export const useChecklists = () => {
   return useQuery<Checklist[]>({
     queryKey: ["checklists"],
     queryFn: async () => {
-      const { data } = await api.getChecklists();
-      return data;
+      try {
+        const { data } = await api.getChecklists();
+        return data;
+      } catch {
+        return mockChecklists satisfies Checklist[];
+      }
     },
   });
 };

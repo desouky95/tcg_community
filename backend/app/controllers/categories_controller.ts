@@ -6,6 +6,22 @@ export default class CategoriesController {
     return await Category.query().where('parentId', -1).preload('children')
   }
 
+  async show({ params, response }: HttpContext) {
+    const category = await Category.query()
+      .where('slug', params.id)
+      .orWhere('id', params.id) // Fallback for transition
+      .preload('children')
+      .preload('checklists')
+      .preload('parent')
+      .first()
+
+    if (!category) {
+      return response.notFound({ error: 'Category not found' })
+    }
+
+    return category
+  }
+
   async store({ request, response }: HttpContext) {
     const name = request.input('name')
     const parentId = request.input('parentId', -1)

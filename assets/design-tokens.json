@@ -1,0 +1,19 @@
+{
+  "color": {
+    "background": "#0B0F14",
+    "surface": "#121820",
+    "surfaceElevated": "#1A232D",
+    "text": "#F4F0E8",
+    "muted": "#9BA7B5",
+    "primary": "#F26B3A",
+    "secondary": "#4E7BFF",
+    "success": "#63C6A2",
+    "border": "#2B3744"
+  },
+  "font": {
+    "display": "Space Grotesk",
+    "body": "DM Sans",
+    "utility": "IBM Plex Mono"
+  },
+  "radius": { "panel": "18px", "control": "10px", "pill": "999px" }
+}
