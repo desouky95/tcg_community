@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-24T00:00:00.000Z",
+  "title": "Design System: TCG Nexus",
+  "extensions": {
+    "colorMeta": {
+      "graphite-950": { "role": "neutral", "displayName": "Graphite 950", "canonical": "#0B0F14" },
+      "graphite-900": { "role": "neutral", "displayName": "Graphite 900", "canonical": "#121820" },
+      "graphite-800": { "role": "neutral", "displayName": "Graphite 800", "canonical": "#1A232D" },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "#F4F0E8" },
+      "slate": { "role": "neutral", "displayName": "Slate", "canonical": "#9BA7B5" },
+      "ember": { "role": "primary", "displayName": "Ember", "canonical": "#F26B3A" },
+      "ember-deep": { "role": "primary", "displayName": "Ember Deep", "canonical": "#DB5428" },
+      "cobalt": { "role": "secondary", "displayName": "Cobalt", "canonical": "#4E7BFF" },
+      "mint": { "role": "tertiary", "displayName": "Mint", "canonical": "#63C6A2" },
+      "border": { "role": "neutral", "displayName": "Border", "canonical": "#2B3744" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Space Grotesk Display", "purpose": "Hero and major section statements." },
+      "body": { "displayName": "DM Sans Body", "purpose": "Readable product and explanatory copy." },
+      "label": { "displayName": "IBM Plex Mono Label", "purpose": "Card numbers, counts, prices, IDs, and catalogue labels." }
+    },
+    "shadows": [
+      { "name": "primary-action-lift", "value": "0 20px 32px rgba(242, 107, 58, 0.20)", "purpose": "Soft depth under the main CTA." },
+      { "name": "featured-card-lift", "value": "0 24px 60px -20px rgba(242, 107, 58, 0.55)", "purpose": "Focused featured specimen in the card fan." }
+    ],
+    "motion": [
+      { "name": "hero-entrance", "value": "opacity 0->1, translateY(30px)->0, 800ms", "purpose": "Introduce the landing message without blocking interaction." },
+      { "name": "feature-stagger", "value": "opacity 0->1, translateY(10px)->0, 100ms stagger", "purpose": "Reveal feature panels as they enter the viewport." },
+      { "name": "card-inspection", "value": "Framer Motion shared layout with row stagger", "purpose": "Open a checklist tile into an inspectable catalogue panel." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary action for joining, saving, publishing, or committing a collector workflow.",
+      "html": "<button class=\"ds-btn-primary\">JOIN THE COMMUNITY</button>",
+      "css": ".ds-btn-primary { background: #DB5428; color: #FFFFFF; min-height: 48px; padding: 16px 28px; border: 0; border-radius: 10px; font: 700 16px/1.2 'DM Sans', sans-serif; transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease; box-shadow: 0 20px 32px rgba(242, 107, 58, 0.20); } .ds-btn-primary:hover { background: #F26B3A; } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 3px solid #F26B3A; outline-offset: 3px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Subordinate navigation or authentication action next to the primary CTA.",
+      "html": "<button class=\"ds-btn-secondary\">SIGN IN</button>",
+      "css": ".ds-btn-secondary { background: #121820; color: #F4F0E8; min-height: 48px; padding: 16px 28px; border: 1px solid #2B3744; border-radius: 10px; font: 700 16px/1.2 'DM Sans', sans-serif; transition: border-color 200ms ease, background-color 200ms ease, transform 200ms ease; } .ds-btn-secondary:hover { background: #1A232D; border-color: #F26B3A; } .ds-btn-secondary:active { transform: scale(0.98); } .ds-btn-secondary:focus-visible { outline: 3px solid #F26B3A; outline-offset: 3px; }"
+    },
+    {
+      "name": "Collector Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Tonal graphite container for collector information and feature content.",
+      "html": "<article class=\"ds-card\"><span class=\"ds-card-label\">COLLECTION INDEX</span><h2>Digital Checklists</h2><p>Track every card with precision.</p></article>",
+      "css": ".ds-card { background: #121820; color: #F4F0E8; padding: 32px; border: 1px solid #2B3744; border-radius: 16px; } .ds-card-label { display: block; margin-bottom: 24px; color: #9BA7B5; font: 600 10px/1.2 'IBM Plex Mono', monospace; letter-spacing: .16em; text-transform: uppercase; } .ds-card h2 { margin: 0 0 12px; font: 700 24px/1.2 'Space Grotesk', sans-serif; } .ds-card p { margin: 0; color: #9BA7B5; font: 500 16px/1.5 'DM Sans', sans-serif; }"
+    },
+    {
+      "name": "Checklist Tile",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Keyboard-operable tile that expands into a shared-layout catalogue preview.",
+      "html": "<button class=\"ds-checklist-tile\" aria-label=\"Open checklist preview\"><span class=\"ds-progress\"></span><span class=\"ds-line ds-line-wide\"></span><span class=\"ds-line ds-line-short\"></span></button>",
+      "css": ".ds-checklist-tile { display: flex; flex-direction: column; gap: 16px; min-height: 120px; padding: 20px; background: #121820; border: 1px solid #2B3744; border-radius: 10px; cursor: pointer; text-align: left; transition: border-color 200ms ease; } .ds-checklist-tile:hover { border-color: #F26B3A; } .ds-checklist-tile:focus-visible { outline: 3px solid #F26B3A; outline-offset: 3px; } .ds-progress { width: 66%; height: 8px; background: #2B3744; border-radius: 999px; } .ds-line { height: 12px; background: #2B3744; border-radius: 8px; } .ds-line-wide { width: 100%; } .ds-line-short { width: 50%; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Collector's Index Desk",
+    "overview": "TCG Nexus is a tactile digital collector desk: dark graphite surfaces, indexed labels, warm action ink, and real card imagery create an environment that feels considered and trustworthy. The system is dense enough for catalogue work but calm enough for discovery and community use.",
+    "keyCharacteristics": ["Graphite desk surfaces", "Binder-index labels", "Ember action ink", "Card-led motion", "Readable metadata"],
+    "rules": [
+      { "name": "The Action Ink Rule", "body": "Use Ember for the action or state that matters, not as general decoration.", "section": "colors" },
+      { "name": "The Data Has a Uniform Rule", "body": "Use IBM Plex Mono only for data, measurement, IDs, and compact catalogue labels.", "section": "typography" },
+      { "name": "The Tonal Desk Rule", "body": "Establish depth with surface value and quiet borders before adding shadows.", "section": "elevation" }
+    ],
+    "dos": ["Do preserve the card and checklist motion language.", "Do use one obvious primary action per screen.", "Do pair functional color with text, icon, or position."],
+    "donts": ["Don't introduce generic purple SaaS gradients.", "Don't use emoji as structural icons.", "Don't rely on color alone for state."]
+  }
+}

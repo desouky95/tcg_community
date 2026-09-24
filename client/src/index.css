@@ -100,6 +100,69 @@
   .focus-ring:focus-visible { outline: 3px solid var(--primary, #f26b3a); outline-offset: 3px; }
 }
 
+@layer components {
+  .landing-shell {
+    background:
+      radial-gradient(circle at 78% 12%, rgba(78, 123, 255, 0.12), transparent 28rem),
+      radial-gradient(circle at 12% 42%, rgba(242, 107, 58, 0.08), transparent 24rem),
+      var(--background);
+  }
+
+  .landing-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.28;
+    background-image: linear-gradient(rgba(244, 240, 232, 0.035) 1px, transparent 1px);
+    background-size: 100% 72px;
+    mask-image: linear-gradient(to bottom, black, transparent 82%);
+  }
+
+  .landing-wordmark {
+    color: color-mix(in srgb, var(--foreground) 7%, transparent);
+  }
+
+  .landing-title {
+    text-wrap: balance;
+  }
+
+  .landing-title-mark {
+    color: var(--color-primary-500);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--color-primary-500) 45%, transparent);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.12em;
+  }
+
+  .landing-primary-action {
+    min-height: 48px;
+  }
+
+  .landing-feature {
+    min-height: 220px;
+  }
+
+  .landing-feature.featured {
+    background: var(--color-primary-600);
+  }
+
+  .landing-checklist-panel {
+    background-image:
+      linear-gradient(135deg, rgba(244, 240, 232, 0.06), transparent 45%),
+      linear-gradient(rgba(244, 240, 232, 0.04) 1px, transparent 1px);
+    background-size: auto, 100% 36px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .landing-feature,
+    .landing-feature-icon,
+    .landing-primary-action {
+      transition: none;
+    }
+  }
+}
+
 /* Base styles for gamification elements */
 .gamified-badge {
   @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold shadow-sm transition-transform hover:scale-105;

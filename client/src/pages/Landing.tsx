@@ -1,40 +1,62 @@
-import { Users, ShieldCheck, ArrowRight, Star, X } from "lucide-react";
-import { useStore } from "../store/useStore";
-import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { ArrowRight, ShieldCheck, Star, Users, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, Navigate } from "react-router-dom";
 import Layout from "../components/Layout";
-import { SectionHeading } from "../components/layout/SectionHeading";
 import { CardFan } from "../components/interactive/CardFan";
 import { PackGallery } from "../components/interactive/PackGallery";
 import { Footer } from "../components/layout/Footer";
+import { SectionHeading } from "../components/layout/SectionHeading";
+import { useStore } from "../store/useStore";
 import { PACKS } from "../lib/packs.data";
+
 export default function Landing() {
   const user = useStore((state) => state.user);
   const { t } = useTranslation();
   const [expandedCard, setExpandedCard] = useState<number | null>(null);
 
-  if (user) return <Navigate to={"/dashboard"} replace />;
+  if (user) return <Navigate to="/dashboard" replace />;
+
+  const features = [
+    {
+      title: t("landing.features.reviews.title"),
+      description: t("landing.features.reviews.desc"),
+      icon: <ShieldCheck className="h-9 w-9" aria-hidden="true" />,
+      label: "Trust layer",
+    },
+    {
+      title: t("landing.features.checklists.title"),
+      description: t("landing.features.checklists.desc"),
+      icon: <Star className="h-9 w-9" aria-hidden="true" />,
+      label: "Collection index",
+      featured: true,
+    },
+    {
+      title: t("landing.features.trading.title"),
+      description: t("landing.features.trading.desc"),
+      icon: <Users className="h-9 w-9" aria-hidden="true" />,
+      label: "Community exchange",
+    },
+  ];
+
   return (
     <Layout transparent hideNav>
-      <div className="relative overflow-hidden selection:bg-primary-500 selection:text-black">
-        {/* Large Background Typography */}
-        <div className="absolute top-20 -left-20 text-[20vw] font-black tracking-tighter text-gray-200 dark:text-zinc-900 leading-none select-none pointer-events-none opacity-40 hidden lg:block uppercase rtl:left-auto rtl:-right-20">
+      <div className="landing-shell relative overflow-hidden selection:bg-primary-500 selection:text-black">
+        <div className="landing-wordmark absolute top-24 -left-24 hidden select-none text-[20vw] font-display font-bold leading-none tracking-[-0.05em] pointer-events-none lg:block rtl:left-auto rtl:-right-24">
           {t("nav.checklists")}
         </div>
 
-        {/* Asymmetric Hero Section */}
-        <section className="relative min-h-[90vh] flex flex-col lg:flex-row items-center gap-12 lg:gap-0 mt-20 lg:mt-0">
-          <div className="lg:w-1/2 flex flex-col items-start px-4 rtl:items-start">
+        <section className="landing-hero relative mt-20 flex min-h-[90vh] flex-col items-center gap-12 lg:mt-0 lg:flex-row lg:gap-0">
+          <div className="flex w-full flex-col items-start px-4 lg:w-[52%] lg:pl-8 rtl:items-start">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="text-6xl lg:text-[5.5rem] font-black tracking-tighter mb-8 uppercase"
+              className="landing-title mb-8 max-w-3xl text-5xl font-display font-bold tracking-[-0.04em] sm:text-6xl lg:text-[5.5rem]"
             >
               {t("landing.hero.title_line1")} <br />
-              <span className="text-primary-600 dark:text-primary-400">
+              <span className="landing-title-mark">
                 {t("landing.hero.title_highlight")}
               </span>{" "}
               <br />
@@ -45,130 +67,110 @@ export default function Landing() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-lg text-muted-foreground max-w-md font-medium leading-relaxed mb-10"
+              className="mb-10 max-w-xl text-lg font-medium leading-relaxed text-muted-foreground"
             >
               {t("landing.hero.description")}
             </motion.p>
 
-            <div className="flex flex-col sm:flex-row gap-4 rtl:space-x-reverse">
-              {user ? (
-                <Link
-                  to="/dashboard"
-                  className="px-10 py-5 bg-primary-600 text-white rounded-2xl font-black text-xl hover:bg-primary-500 transition-all shadow-xl shadow-primary-500/20 active:scale-95 flex items-center space-x-3 rtl:space-x-reverse"
-                >
-                  <span>{t("landing.hero.cta_enter")}</span>
-                  <ArrowRight className="w-6 h-6 rtl:rotate-180" />
-                </Link>
-              ) : (
-                <>
-                  <Link
-                    to="/signup"
-                    className="px-10 py-5 bg-primary-600 text-white rounded-2xl font-black text-xl hover:bg-primary-500 transition-all shadow-xl shadow-primary-500/20 active:scale-95 flex items-center space-x-3 rtl:space-x-reverse"
-                  >
-                    <span>{t("landing.hero.cta_join")}</span>
-                    <ArrowRight className="w-6 h-6 rtl:rotate-180" />
-                  </Link>
-                  <Link
-                    to="/login"
-                    className="px-10 py-5 bg-card border border-border rounded-2xl font-black text-xl hover:border-primary-500/50 transition-all active:scale-95"
-                  >
-                    {t("landing.hero.cta_signin")}
-                  </Link>
-                </>
-              )}
+            <div className="flex flex-col gap-3 sm:flex-row rtl:space-x-reverse">
+              <Link
+                to="/signup"
+                className="landing-primary-action focus-ring flex items-center justify-center gap-3 rounded-xl bg-primary-600 px-7 py-4 text-base font-bold text-white shadow-xl shadow-primary-500/20 transition-all hover:bg-primary-500 active:scale-95 rtl:flex-row-reverse"
+              >
+                <span>{t("landing.hero.cta_join")}</span>
+                <ArrowRight className="h-5 w-5 rtl:rotate-180" aria-hidden="true" />
+              </Link>
+              <Link
+                to="/login"
+                className="focus-ring rounded-xl border border-border bg-card/70 px-7 py-4 text-center text-base font-bold transition-all hover:border-primary-500/70 hover:bg-card active:scale-95"
+              >
+                {t("landing.hero.cta_signin")}
+              </Link>
             </div>
           </div>
 
-          <div className="lg:w-1/2 w-full">
+          <div className="w-full lg:w-[48%]">
             <CardFan />
           </div>
         </section>
-        {/* Unique Feature Ticker (Masonry Style) */}
-        <section className="py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 px-4 overflow-hidden">
-            {[
-              {
-                t: t("landing.features.reviews.title"),
-                desc: t("landing.features.reviews.desc"),
-                icon: <ShieldCheck className="w-10 h-10" />,
-              },
-              {
-                t: t("landing.features.checklists.title"),
-                desc: t("landing.features.checklists.desc"),
-                icon: <Star className="w-10 h-10" />,
-                span: "lg:col-span-2 bg-primary-600 text-white border-none",
-              },
-              {
-                t: t("landing.features.trading.title"),
-                desc: t("landing.features.trading.desc"),
-                icon: <Users className="w-10 h-10" />,
-              },
-            ].map((f, i) => (
-              <motion.div
-                key={i}
+
+        <section className="landing-section py-24 lg:py-32">
+          <div className="landing-feature-grid grid grid-cols-1 gap-4 px-4 lg:grid-cols-4">
+            {features.map((feature, index) => (
+              <motion.article
+                key={feature.title}
                 whileInView={{ opacity: 1, y: 0 }}
                 initial={{ opacity: 0, y: 10 }}
-                transition={{ ease: "linear", delay: i * 0.1 }}
-                className={`p-8 rounded-4xl border border-border bg-card group transition-all hover:border-primary-500 ${f.span || ""}`}
+                viewport={{ once: true, amount: 0.25 }}
+                transition={{ ease: "easeOut", delay: index * 0.1 }}
+                className={`landing-feature group rounded-2xl border border-border bg-card p-8 transition-all hover:-translate-y-0.5 hover:border-primary-500/70 ${feature.featured ? "lg:col-span-2 bg-primary-600 text-white border-primary-500" : ""}`}
               >
-                <div className="p-3 mb-4 bg-primary-500/10 rounded-2xl w-fit group-hover:scale-110 transition-transform">
-                  {f.icon}
+                <div className="mb-6 flex items-center justify-between gap-4">
+                  <div className="landing-feature-icon w-fit rounded-xl bg-primary-500/10 p-3 transition-transform group-hover:scale-110">
+                    {feature.icon}
+                  </div>
+                  <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] opacity-60">
+                    {feature.label}
+                  </span>
                 </div>
-                <h3 className="text-2xl font-black mb-3 italic">{f.t}</h3>
-                <p className="opacity-80 font-medium leading-relaxed">
-                  {f.desc}
+                <h2 className="mb-3 text-2xl font-display font-bold tracking-tight">
+                  {feature.title}
+                </h2>
+                <p className="font-medium leading-relaxed opacity-80">
+                  {feature.description}
                 </p>
-              </motion.div>
+              </motion.article>
             ))}
           </div>
         </section>
-        <section className="py-2 relative overflow-hidden dark:bg-zinc-950/20">
+
+        <section className="landing-shelf relative overflow-hidden py-2">
           <SectionHeading
-            // badge={t('landing.gallery.badge')}
             title={t("landing.gallery.title")}
             highlight={t("landing.gallery.highlight")}
             subtitle={t("landing.gallery.subtitle")}
           />
-
           <PackGallery packs={PACKS} />
         </section>
 
-        {/* Checklist Section */}
-        <section className="max-w-7xl mx-auto px-4  lg:py-36 border-t border-border/50">
-          <div className="flex flex-col lg:flex-row items-center gap-20">
+        <section className="landing-section mx-auto max-w-7xl border-t border-border/50 px-4 py-20 lg:py-36">
+          <div className="flex flex-col items-center gap-20 lg:flex-row">
             <motion.div
               onViewportLeave={() => setExpandedCard(null)}
               viewport={{ amount: 0.1 }}
-              className="lg:w-1/2 w-full relative h-[450px] bg-gray-300/50 dark:bg-zinc-950/50 rounded-[3rem] border border-white/5 p-12 overflow-hidden"
+              className="landing-checklist-panel relative h-[450px] w-full overflow-hidden rounded-[2rem] border border-white/5 bg-gray-300/50 p-8 dark:bg-zinc-950/50 sm:p-12 lg:w-1/2"
             >
-              <div className="absolute inset-0 p-12 pointer-events-none opacity-20 border-2 border-white/10 rounded-[3rem] m-8 border-dashed" />
+              <div className="pointer-events-none absolute inset-0 m-6 rounded-[2rem] border border-dashed border-white/10 p-12 opacity-20" />
 
-              <div className="grid grid-cols-2 gap-6 h-full">
-                {[1, 2, 3, 4].map((i) => (
+              <div className="grid h-full grid-cols-2 gap-5">
+                {[1, 2, 3, 4].map((card) => (
                   <motion.div
-                    key={i}
-                    layoutId={`skeleton-${i}`}
-                    onClick={() => setExpandedCard(i)}
-                    className="bg-card border border-border rounded-2xl p-6 flex flex-col space-y-4 hover:border-primary-500 transition-colors cursor-pointer group relative"
+                    key={card}
+                    layoutId={`skeleton-${card}`}
+                    onClick={() => setExpandedCard(card)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setExpandedCard(card);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Open checklist preview ${card}`}
+                    className="group relative flex cursor-pointer flex-col space-y-4 rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   >
                     <motion.div
-                      layoutId={`progress-bg-${i}`}
-                      className="h-2 w-2/3 bg-border rounded-full group-hover:bg-primary-500/30 overflow-hidden"
+                      layoutId={`progress-bg-${card}`}
+                      className="h-2 w-2/3 overflow-hidden rounded-full bg-border group-hover:bg-primary-500/30"
                     >
                       <motion.div
-                        layoutId={`progress-fill-${i}`}
-                        className={`h-full bg-primary-500 w-${i * 25}`}
+                        layoutId={`progress-fill-${card}`}
+                        className={`h-full bg-primary-500 w-${card * 25}`}
                       />
                     </motion.div>
                     <div className="space-y-2">
-                      <motion.div
-                        layoutId={`line-1-${i}`}
-                        className="h-3 w-full bg-border rounded-lg"
-                      />
-                      <motion.div
-                        layoutId={`line-2-${i}`}
-                        className="h-3 w-1/2 bg-border rounded-lg"
-                      />
+                      <motion.div layoutId={`line-1-${card}`} className="h-3 w-full rounded-lg bg-border" />
+                      <motion.div layoutId={`line-2-${card}`} className="h-3 w-1/2 rounded-lg bg-border" />
                     </div>
                   </motion.div>
                 ))}
@@ -177,107 +179,92 @@ export default function Landing() {
               <AnimatePresence>
                 {expandedCard !== null && (
                   <>
-                    {/* Click Outside Overlay */}
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       onClick={() => setExpandedCard(null)}
-                      className="absolute inset-0 bg-black/40 z-40 backdrop-blur-sm cursor-zoom-out"
+                      className="absolute inset-0 z-40 cursor-zoom-out bg-black/40 backdrop-blur-sm"
                     />
 
                     <motion.div
                       layoutId={`skeleton-${expandedCard}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="absolute inset-0 z-50 bg-card border-2 border-primary-500/50 rounded-[3rem] p-12 flex flex-col cursor-default"
+                      onClick={(event) => event.stopPropagation()}
+                      className="absolute inset-0 z-50 flex cursor-default flex-col rounded-[2rem] border-2 border-primary-500/50 bg-card p-8 sm:p-12"
                     >
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setExpandedCard(null);
-                        }}
-                        className="absolute top-6 right-6 p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors rtl:right-auto rtl:left-6 z-10"
+                        onClick={() => setExpandedCard(null)}
+                        aria-label="Close checklist preview"
+                        className="focus-ring absolute right-6 top-6 rounded-full p-2 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800 rtl:left-6 rtl:right-auto"
                       >
-                        <X className="w-6 h-6" />
+                        <X className="h-6 w-6" aria-hidden="true" />
                       </button>
 
-                      <div className="flex items-center justify-between mb-10">
-                        <motion.div
-                          layoutId={`progress-bg-${expandedCard}`}
-                          className="h-4 w-1/3 bg-border rounded-full overflow-hidden"
-                        >
-                          <motion.div
-                            layoutId={`progress-fill-${expandedCard}`}
-                            className={`h-full bg-primary-500 w-${expandedCard * 25}`}
-                          />
+                      <div className="mb-10 flex items-center justify-between">
+                        <motion.div layoutId={`progress-bg-${expandedCard}`} className="h-4 w-1/3 overflow-hidden rounded-full bg-border">
+                          <motion.div layoutId={`progress-fill-${expandedCard}`} className={`h-full bg-primary-500 w-${expandedCard * 25}`} />
                         </motion.div>
-                        <div className="flex space-x-2 rtl:space-x-reverse">
-                          <div className="h-4 w-20 bg-border rounded-full animate-pulse" />
-                          <div className="h-4 w-20 bg-border rounded-full animate-pulse" />
+                        <div className="flex gap-2 rtl:flex-row-reverse">
+                          <div className="h-4 w-20 animate-pulse rounded-full bg-border" />
+                          <div className="h-4 w-20 animate-pulse rounded-full bg-border" />
                         </div>
                       </div>
 
-                      <div className="space-y-6 flex-1 overflow-hidden">
-                        {/* Table Header Skeleton */}
-                        <div className="grid grid-cols-4 gap-4 pb-4 border-b border-border/50">
-                          <div className="h-3 bg-border rounded-lg w-1/2" />
-                          <div className="h-3 bg-border rounded-lg w-full" />
-                          <div className="h-3 bg-border rounded-lg w-3/4" />
-                          <div className="h-3 bg-border rounded-lg w-1/2 text-right" />
+                      <div className="flex-1 space-y-6 overflow-hidden">
+                        <div className="grid grid-cols-4 gap-4 border-b border-border/50 pb-4">
+                          <div className="h-3 w-1/2 rounded-lg bg-border" />
+                          <div className="h-3 w-full rounded-lg bg-border" />
+                          <div className="h-3 w-3/4 rounded-lg bg-border" />
+                          <div className="h-3 w-1/2 rounded-lg bg-border" />
                         </div>
-
-                        {/* Table Row Skeletons */}
                         {[1, 2, 3, 4, 5].map((row) => (
                           <motion.div
                             key={row}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.1 + row * 0.05 }}
-                            className="grid grid-cols-4 gap-4 items-center"
+                            className="grid grid-cols-4 items-center gap-4"
                           >
-                            <div className="h-3 bg-border/40 rounded-lg w-1/3" />
-                            <div className="h-3 bg-zinc-200 dark:bg-zinc-800 rounded-lg w-full" />
-                            <div className="h-3 bg-border/40 rounded-lg w-2/3" />
-                            <div className="h-6 bg-primary-500/10 rounded-full w-1/2 ml-auto" />
+                            <div className="h-3 w-1/3 rounded-lg bg-border/40" />
+                            <div className="h-3 w-full rounded-lg bg-zinc-200 dark:bg-zinc-800" />
+                            <div className="h-3 w-2/3 rounded-lg bg-border/40" />
+                            <div className="ml-auto h-6 w-1/2 rounded-full bg-primary-500/10" />
                           </motion.div>
                         ))}
                       </div>
 
-                      <div className="mt-auto pt-6 border-t border-border/50 flex justify-between items-center">
-                        <motion.div
-                          layoutId={`line-2-${expandedCard}`}
-                          className="h-3 w-32 bg-border rounded-lg"
-                        />
-                        <div className="h-8 w-32 bg-primary-500/20 rounded-xl" />
+                      <div className="mt-auto flex items-center justify-between border-t border-border/50 pt-6">
+                        <motion.div layoutId={`line-2-${expandedCard}`} className="h-3 w-32 rounded-lg bg-border" />
+                        <div className="h-8 w-32 rounded-xl bg-primary-500/20" />
                       </div>
                     </motion.div>
                   </>
                 )}
               </AnimatePresence>
             </motion.div>
+
             <div className="lg:w-1/2">
-              <h2 className="text-5xl lg:text-7xl font-black tracking-tight mb-8">
+              <h2 className="mb-8 text-5xl font-display font-bold tracking-[-0.04em] lg:text-7xl">
                 {t("landing.cta.title")} <br />
-                <span className="text-primary-600 tracking-tighter italic uppercase">
+                <span className="landing-title-mark tracking-[-0.03em]">
                   {t("landing.cta.highlight")}
                 </span>{" "}
                 {t("landing.cta.title_end")}
               </h2>
-              <p className="text-xl text-muted-foreground leading-relaxed font-medium mb-10">
+              <p className="mb-10 max-w-xl text-xl font-medium leading-relaxed text-muted-foreground">
                 {t("landing.cta.description")}
               </p>
               <Link
                 to="/checklists"
-                className="inline-flex items-center space-x-3 rtl:space-x-reverse text-lg font-black text-primary-600 hover:text-primary-500 group"
+                className="focus-ring group inline-flex items-center gap-3 rounded-md text-base font-bold text-primary-600 hover:text-primary-500 rtl:flex-row-reverse"
               >
                 <span>{t("landing.cta.button")}</span>
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-2 rtl:group-hover:-translate-x-2 transition-transform rtl:rotate-180" />
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-2 rtl:rotate-180 rtl:group-hover:-translate-x-2" aria-hidden="true" />
               </Link>
             </div>
           </div>
         </section>
       </div>
-
       <Footer />
     </Layout>
   );
