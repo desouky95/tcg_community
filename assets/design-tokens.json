@@ -1,19 +1,23 @@
 {
   "color": {
-    "background": "#0B0F14",
-    "surface": "#121820",
-    "surfaceElevated": "#1A232D",
-    "text": "#F4F0E8",
-    "muted": "#9BA7B5",
-    "primary": "#F26B3A",
-    "secondary": "#4E7BFF",
-    "success": "#63C6A2",
-    "border": "#2B3744"
+    "background": "#F6F0E6",
+    "surface": "#FFFAF1",
+    "surfaceElevated": "#17385E",
+    "text": "#102D4D",
+    "muted": "#5C6872",
+    "primary": "#17385E",
+    "action": "#C83430",
+    "highlight": "#EFBD35",
+    "discovery": "#3C8BBD",
+    "success": "#278B55",
+    "border": "#B9B7B0"
   },
   "font": {
-    "display": "Space Grotesk",
+    "display": "Roboto Condensed",
     "body": "DM Sans",
     "utility": "IBM Plex Mono"
   },
-  "radius": { "panel": "18px", "control": "10px", "pill": "999px" }
+  "radius": { "panel": "0px", "control": "0px", "pill": "999px" },
+  "reference": "rolls/pop-culture-shelf-wax-pack-card-hero.webp",
+  "direction": "Wax Pack Club: collectible specimens, set labels, checklist clarity, and community exchange."
 }

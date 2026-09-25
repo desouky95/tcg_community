@@ -1,11 +1,13 @@
 :root {
-  --brand-bg: #0b0f14;
-  --brand-surface: #121820;
-  --brand-surface-elevated: #1a232d;
-  --brand-text: #f4f0e8;
-  --brand-muted: #9ba7b5;
-  --brand-primary: #f26b3a;
-  --brand-secondary: #4e7bff;
-  --brand-success: #63c6a2;
-  --brand-border: #2b3744;
+  --brand-bg: #f6f0e6;
+  --brand-surface: #fffaf1;
+  --brand-surface-elevated: #17385e;
+  --brand-text: #102d4d;
+  --brand-muted: #5c6872;
+  --brand-primary: #17385e;
+  --brand-action: #c83430;
+  --brand-highlight: #efbd35;
+  --brand-discovery: #3c8bbd;
+  --brand-success: #278b55;
+  --brand-border: #b9b7b0;
 }

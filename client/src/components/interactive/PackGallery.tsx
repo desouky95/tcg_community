@@ -52,17 +52,18 @@ export const PackGallery: React.FC<PackGalleryProps> = ({ packs }) => {
 
   return (
     <div
-      className="relative group overflow-hidden"
+      className="wax-pack-gallery group"
+      aria-label="Featured card packs"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="absolute left-0 top-0 bottom-0 w-32 bg-linear-to-r from-background to-transparent z-20 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-32 bg-linear-to-l from-background to-transparent z-20 pointer-events-none" />
+      <div className="wax-pack-fade wax-pack-fade-left" aria-hidden="true" />
+      <div className="wax-pack-fade wax-pack-fade-right" aria-hidden="true" />
 
-      <motion.div className="flex gap-8 px-4 w-max" style={{ x }}>
+      <motion.div className="wax-pack-track" style={{ x }}>
         {duplicatedPacks.map((pack, i) => (
-          <div key={i} className="shrink-0 py-10 perspective-1000">
-            <TiltCard pack={pack}>
+          <div key={i} className="wax-pack-item">
+            <TiltCard pack={pack} className="wax-pack-card">
               {packs[random].name === pack.name &&
                 pack.canOpen &&
                 pack.cardImages?.length && (
