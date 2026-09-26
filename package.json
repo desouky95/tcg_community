@@ -2,12 +2,17 @@
   "name": "tcg-community-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@11.24.0",
   "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8"
+    "node": ">=24.0.0",
+    "pnpm": ">=11.24.0"
   },
   "scripts": {
-    "dev": "pnpm --parallel dev",
-    "build": "pnpm --recursive run build"
+    "dev": "pnpm --parallel --filter './apps/*' run dev",
+    "dev:web": "pnpm --filter @tcg/web dev",
+    "dev:api": "pnpm --filter @tcg/api dev",
+    "build": "pnpm --recursive --filter './packages/*' --filter './apps/*' run build",
+    "typecheck": "pnpm --recursive --filter './packages/*' --filter './apps/*' run typecheck",
+    "test": "pnpm --recursive --if-present --filter './packages/*' --filter './apps/*' run test"
   }
 }

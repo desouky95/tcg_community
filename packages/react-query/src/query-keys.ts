@@ -1,0 +1,15 @@
+export const queryKeys = {
+  categories: ["categories"] as const,
+  category: (id: string | undefined) => ["category", id] as const,
+  checklists: ["checklists"] as const,
+  checklist: (id: string | undefined) => ["checklists", id] as const,
+  userChecklist: (id: string | undefined) => ["user-checklist", id] as const,
+  users: ["users"] as const,
+  user: (id: string | undefined) => ["users", id] as const,
+  profile: ["profile"] as const,
+  reviews: (id: string | undefined) => ["reviews", id] as const,
+  conversations: ["conversations"] as const,
+  messages: (id: string | number | undefined) => ["messages", id] as const,
+  swapMatch: (id: string | number) => ["user-match", id] as const,
+  swaps: ["swaps"] as const,
+};

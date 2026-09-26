@@ -1,7 +1,6 @@
 packages:
-  - "client"
-  - "mock-server"
-  - "backend"
+  - "apps/*"
+  - "packages/*"
 allowBuilds:
   '@swc/core': true
   better-sqlite3: true
