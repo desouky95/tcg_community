@@ -13,6 +13,23 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: unknown, ctx: HttpContext) {
+    const candidate = error as {
+      status?: number
+      messages?: Array<{ field?: string; message?: string; rule?: string }>
+    }
+    if (candidate?.status === 422 && Array.isArray(candidate.messages)) {
+      return ctx.response.status(422).json({
+        error: {
+          code: 'validation_error',
+          message: 'Request validation failed',
+          details: candidate.messages.map((item) => ({
+            field: item.field,
+            message: item.message,
+            code: item.rule,
+          })),
+        },
+      })
+    }
     return super.handle(error, ctx)
   }
 

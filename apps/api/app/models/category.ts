@@ -8,6 +8,12 @@ export default class Category extends CategorySchema {
   @column()
   declare slug: string
 
+  @column()
+  declare status: 'draft' | 'published' | 'archived'
+
+  @column()
+  declare version: number
+
   @beforeSave()
   public static async generateSlug(category: Category) {
     if (category.$dirty.name && !category.slug) {

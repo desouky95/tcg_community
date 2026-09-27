@@ -14,6 +14,7 @@ export default function Checklists() {
   const { data: categories, isLoading: loadingCategories } = useCategories();
   const { data: checklists, isLoading: loadingChecklists } = useChecklists();
 
+  console.log({ categories, checklists });
   const filteredChecklists = useMemo(() => {
     const query = search.trim().toLowerCase();
     if (!query) return checklists?.slice(0, 9) ?? [];

@@ -1,0 +1,9 @@
+{
+  "data": {
+    "id": 501,
+    "status": "queued",
+    "expiresAt": "2026-10-04T00:00:00.000Z"
+  },
+  "requestId": "mock-privacy-export-request",
+  "serverTimestamp": "2026-09-27T00:00:00.000Z"
+}

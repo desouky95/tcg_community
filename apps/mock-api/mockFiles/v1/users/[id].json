@@ -1,0 +1,12 @@
+{
+  "data": {
+    "id": "[id]",
+    "username": "collector_[id]",
+    "fullName": "Public Collector [id]",
+    "governorate": "Cairo",
+    "isVerified": true,
+    "status": "active"
+  },
+  "requestId": "mock-public-profile-request",
+  "serverTimestamp": "2026-09-27T00:00:00.000Z"
+}

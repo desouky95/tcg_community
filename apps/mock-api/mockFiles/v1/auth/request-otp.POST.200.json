@@ -1,0 +1,5 @@
+{
+  "data": { "challenge": "issued", "expiresInSeconds": 600 },
+  "requestId": "mock-otp-request",
+  "serverTimestamp": "2026-09-27T00:00:00.000Z"
+}

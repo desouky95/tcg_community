@@ -1,5 +1,16 @@
 export type Id = string | number;
 
+export type APIResponseMeta = {
+  version?: number;
+  serverTimestamp?: string;
+  nextCursor?: string | null;
+};
+
+export type APIResponse<T, M extends object = APIResponseMeta> = {
+  data: T;
+  meta?: M;
+  requestId?: string;
+};
 export type Category = {
   id: string;
   name: string;
@@ -93,12 +104,23 @@ export type UserSnippet = { id: number; username: string; fullName: string };
 export type ConversationListDto = {
   id: number;
   otherUser: UserSnippet;
-  lastMessage: { content: string; createdAt: string; senderId: number; isRead: boolean } | null;
+  lastMessage: {
+    content: string;
+    createdAt: string;
+    senderId: number;
+    isRead: boolean;
+  } | null;
   unreadCount: number;
   updatedAt: string;
 };
 
-export type SwapDealStatus = "pending" | "accepted" | "in_progress" | "shipping" | "completed" | "cancelled";
+export type SwapDealStatus =
+  | "pending"
+  | "accepted"
+  | "in_progress"
+  | "shipping"
+  | "completed"
+  | "cancelled";
 export type SwapType = "in_person" | "postal";
 
 export type SwapDealDto = {
@@ -138,25 +160,77 @@ export type ConversationMeta = {
   conversationId: number;
   otherUser: UserSnippet & { lastLoginAt: string | null };
   activeDeal: SwapDealDto | null;
-  pagination: { total: number; perPage: number; currentPage: number; lastPage: number };
+  pagination: {
+    total: number;
+    perPage: number;
+    currentPage: number;
+    lastPage: number;
+  };
 };
 
-export type ConversationMessagesResponse = { meta: ConversationMeta; data: MessageDto[] };
+export type ConversationMessagesResponse = {
+  meta: ConversationMeta;
+  data: MessageDto[];
+};
 
-export type LastLogin = "online" | "today" | "week" | "month" | "6months" | "all";
-export type SearchFilters = { checklists?: number[]; regions: string; lastLogin: LastLogin };
-export type SwapResultMatch = { checklistId: number; checklist: Checklist; theyOffer: string[]; theyNeed: string[] };
+export type ConversationMessagesApiResponse = APIResponse<MessageDto[], ConversationMeta> & {
+  meta: ConversationMeta;
+};
+
+export type LastLogin =
+  | "online"
+  | "today"
+  | "week"
+  | "month"
+  | "6months"
+  | "all";
+export type SearchFilters = {
+  checklists?: number[];
+  regions: string;
+  lastLogin: LastLogin;
+};
+export type SwapResultMatch = {
+  checklistId: number;
+  checklist: Checklist;
+  theyOffer: string[];
+  theyNeed: string[];
+};
 export type SwapResult = {
-  user: { id: number; fullName: string; username: string; governorate: string | null; lastLoginAt: string };
+  user: {
+    id: number;
+    fullName: string;
+    username: string;
+    governorate: string | null;
+    lastLoginAt: string;
+  };
   totalMutalTrades: number;
   matches: SwapResultMatch[];
 };
 
-export type SignupInput = { mobile: string; fullName: string; username: string; email: string; password?: string };
+export type SignupInput = {
+  mobile: string;
+  fullName: string;
+  username: string;
+  email: string;
+  password?: string;
+};
 export type LoginInput = { uid: string; password: string };
 export type AuthSession = { user: User; token: string };
-export type AuthResponse = { data: AuthSession };
-export type SwapSearchInput = { checklists?: number[]; regions?: string; lastLogin?: LastLogin };
+export type AuthResponse = APIResponse<AuthSession>;
+export type SignupResponse = APIResponse<{
+  challenge: "issued";
+  expiresInSeconds: number;
+  user: User;
+}>;
+export type ProfileUpdateResponse = APIResponse<{
+  message: string;
+  user: User;
+}>;
+export type SwapSearchInput = {
+  checklists?: number[];
+  regions?: string;
+  lastLogin?: LastLogin;
+};
 export type ProposeSwapDealInput = {
   conversation_id: number;
   swap_type: SwapType;
@@ -164,5 +238,10 @@ export type ProposeSwapDealInput = {
   requested_cards: string;
 };
 
-export type ChecklistWriteInput = Partial<Pick<Checklist, "name" | "year" | "type" | "totalCards" | "categoryId" | "subcategoryId">>;
+export type ChecklistWriteInput = Partial<
+  Pick<
+    Checklist,
+    "name" | "year" | "type" | "totalCards" | "categoryId" | "subcategoryId"
+  >
+>;
 export type ChecklistWritePayload = ChecklistWriteInput | FormData;

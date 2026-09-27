@@ -23,6 +23,8 @@ router
         router.post('signup', [() => import('#controllers/auth_controller'), 'signup'])
         router.post('verify-otp', [() => import('#controllers/auth_controller'), 'verifyOtp'])
         router.post('login', [() => import('#controllers/auth_controller'), 'login'])
+        router.post('otp-login', [() => import('#controllers/identity_controller'), 'otpLogin'])
+        router.post('password-recovery', [() => import('#controllers/identity_controller'), 'recoverPassword'])
         router
           .post('logout', [() => import('#controllers/auth_controller'), 'logout'])
           .use(middleware.auth())
@@ -31,26 +33,45 @@ router
 
     router
       .group(() => {
-        router.get('/', [() => import('#controllers/categories_controller'), 'index'])
-        router.get('/:id', [() => import('#controllers/categories_controller'), 'show'])
-        router.post('/', [() => import('#controllers/categories_controller'), 'store'])
-        router.post('/:id/subcategories', [
-          () => import('#controllers/categories_controller'),
-          'addSubcategory',
-        ])
-        router.delete('/:id', [() => import('#controllers/categories_controller'), 'destroy'])
+        router.get('/', [() => import('#controllers/catalogue_controller'), 'categories'])
+        router.get('/:id', [() => import('#controllers/catalogue_controller'), 'category'])
       })
       .prefix('categories')
 
     router
       .group(() => {
-        router.get('/', [() => import('#controllers/checklists_controller'), 'index'])
-        router.get('/:id', [() => import('#controllers/checklists_controller'), 'show'])
-        router.post('/', [() => import('#controllers/checklists_controller'), 'store'])
-        router.put('/:id', [() => import('#controllers/checklists_controller'), 'update'])
-        router.delete('/:id', [() => import('#controllers/checklists_controller'), 'destroy'])
+        router.get('/', [() => import('#controllers/catalogue_controller'), 'checklists'])
+        router.get('/:id', [() => import('#controllers/catalogue_controller'), 'checklist'])
       })
       .prefix('checklists')
+
+    router
+      .group(() => {
+        router.get('/', [() => import('#controllers/catalogue_controller'), 'cards'])
+        router.get('/:id', [() => import('#controllers/catalogue_controller'), 'card'])
+      })
+      .prefix('catalogue/cards')
+
+    router
+      .group(() => {
+        router.post('/categories', [() => import('#controllers/catalogue_controller'), 'createCategory'])
+        router.put('/categories/:id', [() => import('#controllers/catalogue_controller'), 'updateCategory'])
+        router.delete('/categories/:id', [() => import('#controllers/catalogue_controller'), 'archiveCategory'])
+        router.post('/categories/:id/subcategories', [() => import('#controllers/catalogue_controller'), 'createSubcategory'])
+        router.post('/checklists', [() => import('#controllers/catalogue_controller'), 'createChecklist'])
+        router.put('/checklists/:id', [() => import('#controllers/catalogue_controller'), 'updateChecklist'])
+        router.delete('/checklists/:id', [() => import('#controllers/catalogue_controller'), 'archiveChecklist'])
+      })
+      .use(middleware.admin())
+
+    router
+      .group(() => {
+        router.post('/catalogue-imports/validate', [() => import('#controllers/catalogue_controller'), 'validateImport'])
+        router.post('/catalogue-imports/:id/commit', [() => import('#controllers/catalogue_controller'), 'commitImport'])
+        router.post('/catalogue-imports/:id/rollback', [() => import('#controllers/catalogue_controller'), 'rollbackImport'])
+      })
+      .prefix('admin')
+      .use(middleware.admin())
 
     router
       .group(() => {
@@ -92,6 +113,10 @@ router
       .group(() => {
         router.get('/profile', [controllers.Profile, 'show'])
         router.put('/profile', [controllers.Profile, 'update'])
+        router.put('/preferences', [() => import('#controllers/identity_controller'), 'preferences'])
+        router.post('/deactivate', [() => import('#controllers/identity_controller'), 'deactivate'])
+        router.post('/privacy-exports', [() => import('#controllers/identity_controller'), 'exportPersonalData'])
+        router.post('/privacy-deletions', [() => import('#controllers/identity_controller'), 'deletePersonalData'])
       })
       .prefix('account')
       .use(middleware.auth())

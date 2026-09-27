@@ -31,7 +31,7 @@ export default function GlobalSearch() {
         ]);
         setAllData({
           users: usersRes.data.data,
-          collections: collectionsRes.data,
+          collections: collectionsRes.data.data,
         });
       } catch (error) {
         console.error("Failed to fetch search data", error);

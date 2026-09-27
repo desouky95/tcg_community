@@ -33,7 +33,7 @@ export class AuthAccessTokenSchema extends BaseModel {
 }
 
 export class CardSchema extends BaseModel {
-  static $columns = ['checklistId', 'createdAt', 'holdCount', 'id', 'name', 'needCount', 'number', 'offerCount', 'order', 'ratio', 'section', 'type', 'updatedAt'] as const
+  static $columns = ['checklistId', 'createdAt', 'holdCount', 'id', 'name', 'needCount', 'number', 'offerCount', 'order', 'ratio', 'section', 'status', 'type', 'updatedAt', 'version'] as const
   $columns = CardSchema.$columns
   @column()
   declare checklistId: number | null
@@ -58,13 +58,36 @@ export class CardSchema extends BaseModel {
   @column()
   declare section: string | null
   @column()
+  declare status: string
+  @column()
   declare type: string | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare version: number
+}
+
+export class CatalogueImportSchema extends BaseModel {
+  static $columns = ['actorId', 'checksum', 'createdAt', 'id', 'status', 'summary', 'updatedAt'] as const
+  $columns = CatalogueImportSchema.$columns
+  @column()
+  declare actorId: number | null
+  @column()
+  declare checksum: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare status: string
+  @column()
+  declare summary: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }
 
 export class CategorySchema extends BaseModel {
-  static $columns = ['createdAt', 'id', 'name', 'parentId', 'slug', 'updatedAt'] as const
+  static $columns = ['createdAt', 'id', 'name', 'parentId', 'slug', 'status', 'updatedAt', 'version'] as const
   $columns = CategorySchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
@@ -76,12 +99,16 @@ export class CategorySchema extends BaseModel {
   declare parentId: number
   @column()
   declare slug: string | null
+  @column()
+  declare status: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+  @column()
+  declare version: number
 }
 
 export class ChecklistSchema extends BaseModel {
-  static $columns = ['categoryId', 'createdAt', 'id', 'name', 'subcategoryId', 'totalCards', 'type', 'updatedAt', 'year'] as const
+  static $columns = ['categoryId', 'createdAt', 'id', 'name', 'status', 'subcategoryId', 'totalCards', 'type', 'updatedAt', 'version', 'year'] as const
   $columns = ChecklistSchema.$columns
   @column()
   declare categoryId: number | null
@@ -92,6 +119,8 @@ export class ChecklistSchema extends BaseModel {
   @column()
   declare name: string
   @column()
+  declare status: string
+  @column()
   declare subcategoryId: number | null
   @column()
   declare totalCards: number
@@ -99,6 +128,8 @@ export class ChecklistSchema extends BaseModel {
   declare type: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+  @column()
+  declare version: number
   @column()
   declare year: number
 }
@@ -116,6 +147,27 @@ export class ConversationSchema extends BaseModel {
   declare user1Id: number | null
   @column()
   declare user2Id: number | null
+}
+
+export class IdentityIdempotencyKeySchema extends BaseModel {
+  static $columns = ['createdAt', 'expiresAt', 'fingerprint', 'id', 'key', 'responseJson', 'scope', 'status'] as const
+  $columns = IdentityIdempotencyKeySchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column.dateTime()
+  declare expiresAt: DateTime
+  @column()
+  declare fingerprint: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare key: string
+  @column()
+  declare responseJson: string
+  @column()
+  declare scope: string
+  @column()
+  declare status: number
 }
 
 export class MessageSchema extends BaseModel {
@@ -139,6 +191,52 @@ export class MessageSchema extends BaseModel {
   declare type: string | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+}
+
+export class OtpChallengeSchema extends BaseModel {
+  static $columns = ['attempts', 'codeHash', 'consumedAt', 'createdAt', 'expiresAt', 'id', 'maxAttempts', 'mobile', 'purpose', 'updatedAt', 'userId'] as const
+  $columns = OtpChallengeSchema.$columns
+  @column()
+  declare attempts: number
+  @column()
+  declare codeHash: string
+  @column.dateTime()
+  declare consumedAt: DateTime | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column.dateTime()
+  declare expiresAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare maxAttempts: number
+  @column()
+  declare mobile: string
+  @column()
+  declare purpose: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number | null
+}
+
+export class PrivacyExportSchema extends BaseModel {
+  static $columns = ['createdAt', 'downloadToken', 'expiresAt', 'id', 'status', 'updatedAt', 'userId'] as const
+  $columns = PrivacyExportSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare downloadToken: string | null
+  @column.dateTime()
+  declare expiresAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare status: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
 }
 
 export class QueueJobSchema extends BaseModel {
@@ -279,12 +377,18 @@ export class UserChecklistSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['blocked', 'createdAt', 'email', 'fullName', 'governorate', 'id', 'isVerified', 'lastLoginAt', 'mobile', 'notReadyForSwap', 'otpCode', 'password', 'role', 'updatedAt', 'username'] as const
+  static $columns = ['anonymizedAt', 'blocked', 'communicationPreferences', 'createdAt', 'deactivatedAt', 'email', 'fullName', 'governorate', 'id', 'isVerified', 'lastLoginAt', 'locale', 'mobile', 'notReadyForSwap', 'otpCode', 'password', 'privacyPreferences', 'role', 'status', 'theme', 'updatedAt', 'username', 'version'] as const
   $columns = UserSchema.$columns
+  @column.dateTime()
+  declare anonymizedAt: DateTime | null
   @column()
   declare blocked: boolean
+  @column()
+  declare communicationPreferences: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
+  @column.dateTime()
+  declare deactivatedAt: DateTime | null
   @column()
   declare email: string | null
   @column()
@@ -298,6 +402,8 @@ export class UserSchema extends BaseModel {
   @column.dateTime()
   declare lastLoginAt: DateTime | null
   @column()
+  declare locale: string
+  @column()
   declare mobile: string
   @column()
   declare notReadyForSwap: boolean
@@ -306,9 +412,17 @@ export class UserSchema extends BaseModel {
   @column({ serializeAs: null })
   declare password: string | null
   @column()
+  declare privacyPreferences: string | null
+  @column()
   declare role: string
+  @column()
+  declare status: string
+  @column()
+  declare theme: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
   @column()
   declare username: string
+  @column()
+  declare version: number
 }

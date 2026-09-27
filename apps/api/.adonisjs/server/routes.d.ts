@@ -15,10 +15,10 @@ export type ScannedRoutes = {
   }
   POST: {
   }
-  DELETE: {
-  }
   PUT: {
     'profile.update': { paramsTuple?: []; params?: {} }
+  }
+  DELETE: {
   }
 }
 declare module '@adonisjs/core/types/http' {

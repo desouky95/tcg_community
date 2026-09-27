@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
   Category,
+  APIResponse,
   Checklist,
   ChecklistWritePayload,
   ConversationListDto,
@@ -20,7 +21,7 @@ import { queryKeys } from "./query-keys";
 
 export function useAuth() {
   const { client, onAuthenticated } = useApiHooksContext();
-  const requestOtp = useMutation({ mutationFn: (mobile: string) => client.requestOtp(mobile) });
+  const requestOtp = useMutation({ mutationFn: async (mobile: string) => (await client.requestOtp(mobile)).data });
   const verifyOtp = useMutation({
     mutationFn: async ({ mobile, otp }: { mobile: string; otp: string }) => (await client.verifyOtp(mobile, otp)).data,
     onSuccess: (response) => onAuthenticated?.(response.data),
@@ -29,7 +30,7 @@ export function useAuth() {
     mutationFn: async (credentials: LoginInput) => (await client.login(credentials)).data,
     onSuccess: (response) => onAuthenticated?.(response.data),
   });
-  const signup = useMutation({ mutationFn: (data: SignupInput) => client.signup(data) });
+  const signup = useMutation({ mutationFn: async (data: SignupInput) => (await client.signup(data)).data });
   return { requestOtp, verifyOtp, login, signup };
 }
 
@@ -38,7 +39,7 @@ export function useCategories() {
   return useQuery<Category[]>({
     queryKey: queryKeys.categories,
     queryFn: async () => {
-      try { return (await client.getCategories()).data; }
+      try { return (await client.getCategories()).data.data; }
       catch (error) { if (fallbacks?.categories) return fallbacks.categories(); throw error; }
     },
   });
@@ -50,7 +51,7 @@ export function useCategory(idOrSlug: string | undefined) {
     queryKey: queryKeys.category(idOrSlug),
     enabled: Boolean(idOrSlug),
     queryFn: async () => {
-      try { return (await client.getCategory(idOrSlug!)).data; }
+      try { return (await client.getCategory(idOrSlug!)).data.data; }
       catch (error) { if (fallbacks?.category) return fallbacks.category(idOrSlug!) ?? null; throw error; }
     },
   });
@@ -61,9 +62,9 @@ export function useCategoryMutations() {
   const queryClient = useQueryClient();
   const invalidate = () => queryClient.invalidateQueries({ queryKey: queryKeys.categories });
   return {
-    addCategory: useMutation({ mutationFn: (name: string) => client.addCategory(name), onSuccess: invalidate }),
-    addSubcategory: useMutation({ mutationFn: ({ categoryId, name }: { categoryId: string; name: string }) => client.addSubcategory(categoryId, name), onSuccess: invalidate }),
-    deleteCategory: useMutation({ mutationFn: (id: string) => client.deleteCategory(id), onSuccess: invalidate }),
+    addCategory: useMutation({ mutationFn: async (name: string) => (await client.addCategory(name)).data, onSuccess: invalidate }),
+    addSubcategory: useMutation({ mutationFn: async ({ categoryId, name }: { categoryId: string; name: string }) => (await client.addSubcategory(categoryId, name)).data, onSuccess: invalidate }),
+    deleteCategory: useMutation({ mutationFn: async (id: string) => (await client.deleteCategory(id)).data, onSuccess: invalidate }),
   };
 }
 
@@ -72,7 +73,7 @@ export function useChecklists() {
   return useQuery<Checklist[]>({
     queryKey: queryKeys.checklists,
     queryFn: async () => {
-      try { return (await client.getChecklists()).data; }
+      try { return (await client.getChecklists()).data.data; }
       catch (error) { if (fallbacks?.checklists) return fallbacks.checklists(); throw error; }
     },
   });
@@ -97,14 +98,14 @@ export function useChecklist(id: string | undefined) {
 export function useAddChecklist() {
   const { client } = useApiHooksContext();
   const queryClient = useQueryClient();
-  return useMutation({ mutationFn: (data: ChecklistWritePayload) => client.addChecklist(data), onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.checklists }) });
+  return useMutation({ mutationFn: async (data: ChecklistWritePayload) => (await client.addChecklist(data)).data, onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.checklists }) });
 }
 
 export function useUpdateChecklist() {
   const { client } = useApiHooksContext();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: ChecklistWritePayload }) => client.updateChecklist(id, data),
+    mutationFn: async ({ id, data }: { id: string; data: ChecklistWritePayload }) => (await client.updateChecklist(id, data)).data,
     onSuccess: (response) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.checklists });
       void queryClient.invalidateQueries({ queryKey: queryKeys.checklist(String(response.data.id)) });
@@ -115,7 +116,7 @@ export function useUpdateChecklist() {
 export function useDeleteChecklist() {
   const { client } = useApiHooksContext();
   const queryClient = useQueryClient();
-  return useMutation({ mutationFn: (id: string) => client.deleteChecklist(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.checklists }) });
+  return useMutation({ mutationFn: async (id: string) => (await client.deleteChecklist(id)).data, onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.checklists }) });
 }
 
 export function useUserChecklist(id?: string) {
@@ -145,19 +146,19 @@ export function useUsers() {
 
 export function useProfile() {
   const { client } = useApiHooksContext();
-  return useQuery<{ data: ExtendedUser }>({ queryKey: queryKeys.profile, queryFn: async () => (await client.getProfile()).data });
+  return useQuery<APIResponse<ExtendedUser>>({ queryKey: queryKeys.profile, queryFn: async () => (await client.getProfile()).data });
 }
 
 export function useUserInfo(id: string | undefined) {
   const { client } = useApiHooksContext();
-  return useQuery<{ data: ExtendedUser }>({ queryKey: queryKeys.user(id), enabled: Boolean(id), queryFn: async () => (await client.getUserInfo(id!)).data });
+  return useQuery<APIResponse<ExtendedUser>>({ queryKey: queryKeys.user(id), enabled: Boolean(id), queryFn: async () => (await client.getUserInfo(id!)).data });
 }
 
 export function useBlockUser() {
   const { client } = useApiHooksContext();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, blocked }: { id: string; blocked: boolean }) => client.blockUser(id, blocked),
+    mutationFn: async ({ id, blocked }: { id: string; blocked: boolean }) => (await client.blockUser(id, blocked)).data,
     onSuccess: (_, { id }) => { void queryClient.invalidateQueries({ queryKey: queryKeys.users }); void queryClient.invalidateQueries({ queryKey: queryKeys.user(id) }); },
   });
 }
@@ -166,7 +167,7 @@ export function useUpdateProfile() {
   const { client, onProfileUpdated } = useApiHooksContext();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: Partial<User>) => client.updateProfile(data),
+    mutationFn: async (data: Partial<User>) => (await client.updateProfile(data)).data,
     onSuccess: (response) => {
       const user = response.data.user;
       onProfileUpdated?.(user);
@@ -192,12 +193,12 @@ export function useAddReview() {
 
 export function useConversations() {
   const { client, isAuthenticated } = useApiHooksContext();
-  return useQuery<ConversationListDto[]>({ queryKey: queryKeys.conversations, enabled: isAuthenticated, refetchInterval: 10_000, queryFn: async () => (await client.getConversations()).data.data as ConversationListDto[] });
+  return useQuery<ConversationListDto[]>({ queryKey: queryKeys.conversations, enabled: isAuthenticated, refetchInterval: 10_000, queryFn: async () => (await client.getConversations()).data.data });
 }
 
 export function useConversationMessages(conversationId: string | number | undefined) {
   const { client } = useApiHooksContext();
-  return useQuery<ConversationMessagesResponse>({ queryKey: queryKeys.messages(conversationId), enabled: Boolean(conversationId), refetchInterval: 3_000, queryFn: async () => (await client.getMessages(conversationId!)).data as ConversationMessagesResponse });
+  return useQuery<ConversationMessagesResponse>({ queryKey: queryKeys.messages(conversationId), enabled: Boolean(conversationId), refetchInterval: 3_000, queryFn: async () => (await client.getMessages(conversationId!)).data });
 }
 
 export function useFindOrCreateConversation() {
@@ -229,15 +230,15 @@ export function useProposeSwapDeal() {
   const { client } = useApiHooksContext();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: ProposeSwapDealInput) => client.proposeSwapDeal(data),
+    mutationFn: async (data: ProposeSwapDealInput) => (await client.proposeSwapDeal(data)).data,
     onSuccess: (_, data) => { void queryClient.invalidateQueries({ queryKey: queryKeys.messages(data.conversation_id) }); void queryClient.invalidateQueries({ queryKey: queryKeys.conversations }); },
   });
 }
 
-function useDealMutation(conversationId: number, mutation: (client: ReturnType<typeof useApiHooksContext>["client"], id: number) => Promise<unknown>) {
+function useDealMutation<T>(conversationId: number, mutation: (client: ReturnType<typeof useApiHooksContext>["client"], id: number) => Promise<{ data: APIResponse<T> }>) {
   const context = useApiHooksContext();
   const queryClient = useQueryClient();
-  return useMutation({ mutationFn: (id: number) => mutation(context.client, id), onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.messages(conversationId) }) });
+  return useMutation({ mutationFn: async (id: number) => (await mutation(context.client, id)).data, onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.messages(conversationId) }) });
 }
 
 export const useAcceptSwapDeal = (conversationId: number) => useDealMutation(conversationId, (client, id) => client.acceptSwapDeal(id));
@@ -247,7 +248,7 @@ export const useScanDealQr = (conversationId: number) => useDealMutation(convers
 export function useUpdatePostalDeal(conversationId: number) {
   const { client } = useApiHooksContext();
   const queryClient = useQueryClient();
-  return useMutation({ mutationFn: ({ id, data }: { id: number; data: FormData }) => client.updatePostalDeal(id, data), onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.messages(conversationId) }) });
+  return useMutation({ mutationFn: async ({ id, data }: { id: number; data: FormData }) => (await client.updatePostalDeal(id, data)).data, onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.messages(conversationId) }) });
 }
 
 export function useDashboardStats() {

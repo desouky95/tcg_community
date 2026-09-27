@@ -6,6 +6,12 @@
       "sourceType": "github",
       "computedHash": "082be44c6320ce348b19c33f08f527ad604eed2da48f92e8c7010e206d5450cd"
     },
+    "msw": {
+      "source": "pproenca/dot-skills",
+      "sourceType": "github",
+      "skillPath": "skills/.curated/msw/SKILL.md",
+      "computedHash": "2a8ef7934bbda4992bd1ee44e521922768e55ae7134dfc668efd5cf88bfe4b40"
+    },
     "postgres": {
       "source": "planetscale/database-skills",
       "sourceType": "github",

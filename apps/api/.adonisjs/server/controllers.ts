@@ -9,9 +9,11 @@ export const controllers = {
   Categories: () => import('#controllers/categories_controller'),
   Checklists: () => import('#controllers/checklists_controller'),
   Conversations: () => import('#controllers/conversations_controller'),
+  Identity: () => import('#controllers/identity_controller'),
   Profile: () => import('#controllers/profile_controller'),
   Reviews: () => import('#controllers/reviews_controller'),
   SwapDeals: () => import('#controllers/swap_deals_controller'),
   Swaps: () => import('#controllers/swaps_controller'),
   UserChecklists: () => import('#controllers/user_checklists_controller'),
+  Catalogue: () => import('#controllers/catalogue_controller'),
 }

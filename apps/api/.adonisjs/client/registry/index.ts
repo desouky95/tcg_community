@@ -30,71 +30,119 @@ const routes = {
     tokens: [{"old":"/api/v1/auth/login","type":0,"val":"api","end":""},{"old":"/api/v1/auth/login","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/login","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/login","type":0,"val":"login","end":""}],
     types: placeholder as Registry['auth.login']['types'],
   },
+  'identity.otp_login': {
+    methods: ["POST"],
+    pattern: '/api/v1/auth/otp-login',
+    tokens: [{"old":"/api/v1/auth/otp-login","type":0,"val":"api","end":""},{"old":"/api/v1/auth/otp-login","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/otp-login","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/otp-login","type":0,"val":"otp-login","end":""}],
+    types: placeholder as Registry['identity.otp_login']['types'],
+  },
+  'identity.recover_password': {
+    methods: ["POST"],
+    pattern: '/api/v1/auth/password-recovery',
+    tokens: [{"old":"/api/v1/auth/password-recovery","type":0,"val":"api","end":""},{"old":"/api/v1/auth/password-recovery","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/password-recovery","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/password-recovery","type":0,"val":"password-recovery","end":""}],
+    types: placeholder as Registry['identity.recover_password']['types'],
+  },
   'auth.logout': {
     methods: ["POST"],
     pattern: '/api/v1/auth/logout',
     tokens: [{"old":"/api/v1/auth/logout","type":0,"val":"api","end":""},{"old":"/api/v1/auth/logout","type":0,"val":"v1","end":""},{"old":"/api/v1/auth/logout","type":0,"val":"auth","end":""},{"old":"/api/v1/auth/logout","type":0,"val":"logout","end":""}],
     types: placeholder as Registry['auth.logout']['types'],
   },
-  'categories.index': {
+  'catalogue.categories': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/categories',
     tokens: [{"old":"/api/v1/categories","type":0,"val":"api","end":""},{"old":"/api/v1/categories","type":0,"val":"v1","end":""},{"old":"/api/v1/categories","type":0,"val":"categories","end":""}],
-    types: placeholder as Registry['categories.index']['types'],
+    types: placeholder as Registry['catalogue.categories']['types'],
   },
-  'categories.show': {
+  'catalogue.category': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/categories/:id',
     tokens: [{"old":"/api/v1/categories/:id","type":0,"val":"api","end":""},{"old":"/api/v1/categories/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/categories/:id","type":0,"val":"categories","end":""},{"old":"/api/v1/categories/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['categories.show']['types'],
+    types: placeholder as Registry['catalogue.category']['types'],
   },
-  'categories.store': {
+  'catalogue.checklists': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/checklists',
+    tokens: [{"old":"/api/v1/checklists","type":0,"val":"api","end":""},{"old":"/api/v1/checklists","type":0,"val":"v1","end":""},{"old":"/api/v1/checklists","type":0,"val":"checklists","end":""}],
+    types: placeholder as Registry['catalogue.checklists']['types'],
+  },
+  'catalogue.checklist': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/checklists/:id',
+    tokens: [{"old":"/api/v1/checklists/:id","type":0,"val":"api","end":""},{"old":"/api/v1/checklists/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/checklists/:id","type":0,"val":"checklists","end":""},{"old":"/api/v1/checklists/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['catalogue.checklist']['types'],
+  },
+  'catalogue.cards': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/catalogue/cards',
+    tokens: [{"old":"/api/v1/catalogue/cards","type":0,"val":"api","end":""},{"old":"/api/v1/catalogue/cards","type":0,"val":"v1","end":""},{"old":"/api/v1/catalogue/cards","type":0,"val":"catalogue","end":""},{"old":"/api/v1/catalogue/cards","type":0,"val":"cards","end":""}],
+    types: placeholder as Registry['catalogue.cards']['types'],
+  },
+  'catalogue.card': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/catalogue/cards/:id',
+    tokens: [{"old":"/api/v1/catalogue/cards/:id","type":0,"val":"api","end":""},{"old":"/api/v1/catalogue/cards/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/catalogue/cards/:id","type":0,"val":"catalogue","end":""},{"old":"/api/v1/catalogue/cards/:id","type":0,"val":"cards","end":""},{"old":"/api/v1/catalogue/cards/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['catalogue.card']['types'],
+  },
+  'catalogue.create_category': {
     methods: ["POST"],
     pattern: '/api/v1/categories',
     tokens: [{"old":"/api/v1/categories","type":0,"val":"api","end":""},{"old":"/api/v1/categories","type":0,"val":"v1","end":""},{"old":"/api/v1/categories","type":0,"val":"categories","end":""}],
-    types: placeholder as Registry['categories.store']['types'],
+    types: placeholder as Registry['catalogue.create_category']['types'],
   },
-  'categories.add_subcategory': {
+  'catalogue.update_category': {
+    methods: ["PUT"],
+    pattern: '/api/v1/categories/:id',
+    tokens: [{"old":"/api/v1/categories/:id","type":0,"val":"api","end":""},{"old":"/api/v1/categories/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/categories/:id","type":0,"val":"categories","end":""},{"old":"/api/v1/categories/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['catalogue.update_category']['types'],
+  },
+  'catalogue.archive_category': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/categories/:id',
+    tokens: [{"old":"/api/v1/categories/:id","type":0,"val":"api","end":""},{"old":"/api/v1/categories/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/categories/:id","type":0,"val":"categories","end":""},{"old":"/api/v1/categories/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['catalogue.archive_category']['types'],
+  },
+  'catalogue.create_subcategory': {
     methods: ["POST"],
     pattern: '/api/v1/categories/:id/subcategories',
     tokens: [{"old":"/api/v1/categories/:id/subcategories","type":0,"val":"api","end":""},{"old":"/api/v1/categories/:id/subcategories","type":0,"val":"v1","end":""},{"old":"/api/v1/categories/:id/subcategories","type":0,"val":"categories","end":""},{"old":"/api/v1/categories/:id/subcategories","type":1,"val":"id","end":""},{"old":"/api/v1/categories/:id/subcategories","type":0,"val":"subcategories","end":""}],
-    types: placeholder as Registry['categories.add_subcategory']['types'],
+    types: placeholder as Registry['catalogue.create_subcategory']['types'],
   },
-  'categories.destroy': {
-    methods: ["DELETE"],
-    pattern: '/api/v1/categories/:id',
-    tokens: [{"old":"/api/v1/categories/:id","type":0,"val":"api","end":""},{"old":"/api/v1/categories/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/categories/:id","type":0,"val":"categories","end":""},{"old":"/api/v1/categories/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['categories.destroy']['types'],
-  },
-  'checklists.index': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/checklists',
-    tokens: [{"old":"/api/v1/checklists","type":0,"val":"api","end":""},{"old":"/api/v1/checklists","type":0,"val":"v1","end":""},{"old":"/api/v1/checklists","type":0,"val":"checklists","end":""}],
-    types: placeholder as Registry['checklists.index']['types'],
-  },
-  'checklists.show': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/checklists/:id',
-    tokens: [{"old":"/api/v1/checklists/:id","type":0,"val":"api","end":""},{"old":"/api/v1/checklists/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/checklists/:id","type":0,"val":"checklists","end":""},{"old":"/api/v1/checklists/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['checklists.show']['types'],
-  },
-  'checklists.store': {
+  'catalogue.create_checklist': {
     methods: ["POST"],
     pattern: '/api/v1/checklists',
     tokens: [{"old":"/api/v1/checklists","type":0,"val":"api","end":""},{"old":"/api/v1/checklists","type":0,"val":"v1","end":""},{"old":"/api/v1/checklists","type":0,"val":"checklists","end":""}],
-    types: placeholder as Registry['checklists.store']['types'],
+    types: placeholder as Registry['catalogue.create_checklist']['types'],
   },
-  'checklists.update': {
+  'catalogue.update_checklist': {
     methods: ["PUT"],
     pattern: '/api/v1/checklists/:id',
     tokens: [{"old":"/api/v1/checklists/:id","type":0,"val":"api","end":""},{"old":"/api/v1/checklists/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/checklists/:id","type":0,"val":"checklists","end":""},{"old":"/api/v1/checklists/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['checklists.update']['types'],
+    types: placeholder as Registry['catalogue.update_checklist']['types'],
   },
-  'checklists.destroy': {
+  'catalogue.archive_checklist': {
     methods: ["DELETE"],
     pattern: '/api/v1/checklists/:id',
     tokens: [{"old":"/api/v1/checklists/:id","type":0,"val":"api","end":""},{"old":"/api/v1/checklists/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/checklists/:id","type":0,"val":"checklists","end":""},{"old":"/api/v1/checklists/:id","type":1,"val":"id","end":""}],
-    types: placeholder as Registry['checklists.destroy']['types'],
+    types: placeholder as Registry['catalogue.archive_checklist']['types'],
+  },
+  'catalogue.validate_import': {
+    methods: ["POST"],
+    pattern: '/api/v1/admin/catalogue-imports/validate',
+    tokens: [{"old":"/api/v1/admin/catalogue-imports/validate","type":0,"val":"api","end":""},{"old":"/api/v1/admin/catalogue-imports/validate","type":0,"val":"v1","end":""},{"old":"/api/v1/admin/catalogue-imports/validate","type":0,"val":"admin","end":""},{"old":"/api/v1/admin/catalogue-imports/validate","type":0,"val":"catalogue-imports","end":""},{"old":"/api/v1/admin/catalogue-imports/validate","type":0,"val":"validate","end":""}],
+    types: placeholder as Registry['catalogue.validate_import']['types'],
+  },
+  'catalogue.commit_import': {
+    methods: ["POST"],
+    pattern: '/api/v1/admin/catalogue-imports/:id/commit',
+    tokens: [{"old":"/api/v1/admin/catalogue-imports/:id/commit","type":0,"val":"api","end":""},{"old":"/api/v1/admin/catalogue-imports/:id/commit","type":0,"val":"v1","end":""},{"old":"/api/v1/admin/catalogue-imports/:id/commit","type":0,"val":"admin","end":""},{"old":"/api/v1/admin/catalogue-imports/:id/commit","type":0,"val":"catalogue-imports","end":""},{"old":"/api/v1/admin/catalogue-imports/:id/commit","type":1,"val":"id","end":""},{"old":"/api/v1/admin/catalogue-imports/:id/commit","type":0,"val":"commit","end":""}],
+    types: placeholder as Registry['catalogue.commit_import']['types'],
+  },
+  'catalogue.rollback_import': {
+    methods: ["POST"],
+    pattern: '/api/v1/admin/catalogue-imports/:id/rollback',
+    tokens: [{"old":"/api/v1/admin/catalogue-imports/:id/rollback","type":0,"val":"api","end":""},{"old":"/api/v1/admin/catalogue-imports/:id/rollback","type":0,"val":"v1","end":""},{"old":"/api/v1/admin/catalogue-imports/:id/rollback","type":0,"val":"admin","end":""},{"old":"/api/v1/admin/catalogue-imports/:id/rollback","type":0,"val":"catalogue-imports","end":""},{"old":"/api/v1/admin/catalogue-imports/:id/rollback","type":1,"val":"id","end":""},{"old":"/api/v1/admin/catalogue-imports/:id/rollback","type":0,"val":"rollback","end":""}],
+    types: placeholder as Registry['catalogue.rollback_import']['types'],
   },
   'reviews.index': {
     methods: ["GET","HEAD"],
@@ -155,6 +203,30 @@ const routes = {
     pattern: '/api/v1/account/profile',
     tokens: [{"old":"/api/v1/account/profile","type":0,"val":"api","end":""},{"old":"/api/v1/account/profile","type":0,"val":"v1","end":""},{"old":"/api/v1/account/profile","type":0,"val":"account","end":""},{"old":"/api/v1/account/profile","type":0,"val":"profile","end":""}],
     types: placeholder as Registry['profile.update']['types'],
+  },
+  'identity.preferences': {
+    methods: ["PUT"],
+    pattern: '/api/v1/account/preferences',
+    tokens: [{"old":"/api/v1/account/preferences","type":0,"val":"api","end":""},{"old":"/api/v1/account/preferences","type":0,"val":"v1","end":""},{"old":"/api/v1/account/preferences","type":0,"val":"account","end":""},{"old":"/api/v1/account/preferences","type":0,"val":"preferences","end":""}],
+    types: placeholder as Registry['identity.preferences']['types'],
+  },
+  'identity.deactivate': {
+    methods: ["POST"],
+    pattern: '/api/v1/account/deactivate',
+    tokens: [{"old":"/api/v1/account/deactivate","type":0,"val":"api","end":""},{"old":"/api/v1/account/deactivate","type":0,"val":"v1","end":""},{"old":"/api/v1/account/deactivate","type":0,"val":"account","end":""},{"old":"/api/v1/account/deactivate","type":0,"val":"deactivate","end":""}],
+    types: placeholder as Registry['identity.deactivate']['types'],
+  },
+  'identity.export_personal_data': {
+    methods: ["POST"],
+    pattern: '/api/v1/account/privacy-exports',
+    tokens: [{"old":"/api/v1/account/privacy-exports","type":0,"val":"api","end":""},{"old":"/api/v1/account/privacy-exports","type":0,"val":"v1","end":""},{"old":"/api/v1/account/privacy-exports","type":0,"val":"account","end":""},{"old":"/api/v1/account/privacy-exports","type":0,"val":"privacy-exports","end":""}],
+    types: placeholder as Registry['identity.export_personal_data']['types'],
+  },
+  'identity.delete_personal_data': {
+    methods: ["POST"],
+    pattern: '/api/v1/account/privacy-deletions',
+    tokens: [{"old":"/api/v1/account/privacy-deletions","type":0,"val":"api","end":""},{"old":"/api/v1/account/privacy-deletions","type":0,"val":"v1","end":""},{"old":"/api/v1/account/privacy-deletions","type":0,"val":"account","end":""},{"old":"/api/v1/account/privacy-deletions","type":0,"val":"privacy-deletions","end":""}],
+    types: placeholder as Registry['identity.delete_personal_data']['types'],
   },
   'swaps.search': {
     methods: ["POST"],

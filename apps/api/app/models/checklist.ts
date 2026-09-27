@@ -1,11 +1,16 @@
 import { ChecklistSchema } from '#database/schema'
-import { belongsTo, hasMany, hasManyThrough } from '@adonisjs/lucid/orm'
+import { belongsTo, hasMany, hasManyThrough, column } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Card from '#models/card'
 import Category from '#models/category'
 import UserChecklist from './user_checklist.ts'
 
 export default class Checklist extends ChecklistSchema {
+  @column()
+  declare status: 'draft' | 'published' | 'archived'
+  @column()
+  declare version: number
+
   @belongsTo(() => Category, { foreignKey: 'categoryId' })
   declare category: BelongsTo<typeof Category>
 

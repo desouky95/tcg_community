@@ -1,0 +1,8 @@
+{
+  "data": {
+    "user": { "id": 101, "username": "collector_egypt", "isVerified": true, "status": "active", "version": 4 },
+    "token": "mock-access-token"
+  },
+  "requestId": "mock-otp-login-request",
+  "serverTimestamp": "2026-09-27T00:00:00.000Z"
+}

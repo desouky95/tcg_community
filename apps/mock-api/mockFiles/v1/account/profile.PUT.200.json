@@ -1,0 +1,15 @@
+{
+  "data": {
+    "id": 101,
+    "username": "collector_egypt",
+    "fullName": "Mina Collector Updated",
+    "email": "mina@example.test",
+    "mobile": "+201000000001",
+    "governorate": "Giza",
+    "isVerified": true,
+    "status": "active",
+    "version": 5
+  },
+  "requestId": "mock-profile-update-request",
+  "serverTimestamp": "2026-09-27T00:00:00.000Z"
+}

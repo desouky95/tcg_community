@@ -2,9 +2,7 @@ import User from '#models/user'
 import UserTransformer from '#transformers/user_transformer'
 import type { HttpContext } from '@adonisjs/core/http'
 import { updateProfileValidator } from '#validators/user'
-import { randomInt } from 'node:crypto'
-import axios from 'axios'
-import env from '#start/env'
+import { issueOtp } from '#services/identity_service'
 
 export default class ProfileController {
   async update({ auth, request, response, serialize }: HttpContext) {
@@ -13,35 +11,20 @@ export default class ProfileController {
       meta: { userId: user.id },
     })
 
-    // If mobile changed, unverify user and send OTP
+    // If mobile changed, unverify user and send a bounded challenge.
     if (data.mobile && data.mobile !== user.mobile) {
-      const otp = randomInt(100000, 999999).toString()
       user.isVerified = false
-      user.otpCode = otp
-
-      // Send SMS via TextBee
-      try {
-        await axios.post(
-          `https://api.textbee.dev/api/v1/gateway/devices/${env.get('TEXT_BEE_DEVICE_ID')}/send-sms`,
-          {
-            recipients: [data.mobile],
-            message: `Your verification code is ${otp}`,
-          },
-          {
-            headers: {
-              'x-api-key': env.get('TEXT_BEE_API_KEY'),
-            },
-          }
-        )
-      } catch (error) {
-        console.error('Failed to send OTP SMS', error)
-      }
+      await issueOtp(data.mobile, 'mobile_change', user.id)
     }
 
     user.merge(data)
     await user.save()
 
     return response.json({
+      data: {
+        message: 'Profile updated successfully',
+        user: serialize(UserTransformer.transform(user)),
+      },
       message: 'Profile updated successfully',
       user: serialize(UserTransformer.transform(user)),
     })
@@ -52,7 +35,14 @@ export default class ProfileController {
     if (id) {
       const user = await User.findByOrFail('id', id)
       await user.load('checklists', (q) => q.preload('checklist').preload('subCategory'))
-      return serialize(UserTransformer.transform(user).useVariant('toExtendedProfile'))
+      return serialize({
+        id: user.id,
+        username: user.username,
+        fullName: user.fullName,
+        governorate: user.governorate,
+        isVerified: user.isVerified,
+        status: user.status,
+      })
     }
     const user = await auth.authenticate()
 

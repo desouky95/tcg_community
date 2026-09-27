@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "validation_error",
+    "message": "Request validation failed",
+    "details": [
+      { "field": "mobile", "message": "Must be a valid Egyptian mobile number", "code": "mobile" },
+      { "field": "passwordConfirmation", "message": "Must match password", "code": "sameAs" }
+    ]
+  }
+}

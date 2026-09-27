@@ -55,6 +55,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['login']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'identity.otp_login': {
+    methods: ["POST"]
+    pattern: '/api/v1/auth/otp-login'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/identity').otpLoginValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/identity').otpLoginValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['otpLogin']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['otpLogin']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'identity.recover_password': {
+    methods: ["POST"]
+    pattern: '/api/v1/auth/password-recovery'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/identity').passwordRecoveryValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/identity').passwordRecoveryValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['recoverPassword']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['recoverPassword']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'auth.logout': {
     methods: ["POST"]
     pattern: '/api/v1/auth/logout'
@@ -67,7 +91,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['logout']>>>
     }
   }
-  'categories.index': {
+  'catalogue.categories': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/categories'
     types: {
@@ -75,11 +99,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['index']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['categories']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['categories']>>>
     }
   }
-  'categories.show': {
+  'catalogue.category': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/categories/:id'
     types: {
@@ -87,11 +111,59 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['show']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['category']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['category']>>>
     }
   }
-  'categories.store': {
+  'catalogue.checklists': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/checklists'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['checklists']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['checklists']>>>
+    }
+  }
+  'catalogue.checklist': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/checklists/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['checklist']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['checklist']>>>
+    }
+  }
+  'catalogue.cards': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/catalogue/cards'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['cards']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['cards']>>>
+    }
+  }
+  'catalogue.card': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/catalogue/cards/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['card']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['card']>>>
+    }
+  }
+  'catalogue.create_category': {
     methods: ["POST"]
     pattern: '/api/v1/categories'
     types: {
@@ -99,11 +171,35 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['store']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createCategory']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createCategory']>>>
     }
   }
-  'categories.add_subcategory': {
+  'catalogue.update_category': {
+    methods: ["PUT"]
+    pattern: '/api/v1/categories/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['updateCategory']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['updateCategory']>>>
+    }
+  }
+  'catalogue.archive_category': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/categories/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveCategory']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveCategory']>>>
+    }
+  }
+  'catalogue.create_subcategory': {
     methods: ["POST"]
     pattern: '/api/v1/categories/:id/subcategories'
     types: {
@@ -111,59 +207,23 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['addSubcategory']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['addSubcategory']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createSubcategory']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createSubcategory']>>>
     }
   }
-  'categories.destroy': {
-    methods: ["DELETE"]
-    pattern: '/api/v1/categories/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['destroy']>>>
-    }
-  }
-  'checklists.index': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/checklists'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['index']>>>
-    }
-  }
-  'checklists.show': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/checklists/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['show']>>>
-    }
-  }
-  'checklists.store': {
+  'catalogue.create_checklist': {
     methods: ["POST"]
     pattern: '/api/v1/checklists'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/checklist').createChecklistValidator)>>
+      body: {}
       paramsTuple: []
       params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/checklist').createChecklistValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createChecklist']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createChecklist']>>>
     }
   }
-  'checklists.update': {
+  'catalogue.update_checklist': {
     methods: ["PUT"]
     pattern: '/api/v1/checklists/:id'
     types: {
@@ -171,11 +231,11 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['update']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['updateChecklist']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['updateChecklist']>>>
     }
   }
-  'checklists.destroy': {
+  'catalogue.archive_checklist': {
     methods: ["DELETE"]
     pattern: '/api/v1/checklists/:id'
     types: {
@@ -183,8 +243,44 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['destroy']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveChecklist']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveChecklist']>>>
+    }
+  }
+  'catalogue.validate_import': {
+    methods: ["POST"]
+    pattern: '/api/v1/admin/catalogue-imports/validate'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['validateImport']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['validateImport']>>>
+    }
+  }
+  'catalogue.commit_import': {
+    methods: ["POST"]
+    pattern: '/api/v1/admin/catalogue-imports/:id/commit'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['commitImport']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['commitImport']>>>
+    }
+  }
+  'catalogue.rollback_import': {
+    methods: ["POST"]
+    pattern: '/api/v1/admin/catalogue-imports/:id/rollback'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['rollbackImport']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['rollbackImport']>>>
     }
   }
   'reviews.index': {
@@ -305,6 +401,54 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/user').updateProfileValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/profile_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/profile_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'identity.preferences': {
+    methods: ["PUT"]
+    pattern: '/api/v1/account/preferences'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/identity').preferencesValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/identity').preferencesValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['preferences']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['preferences']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'identity.deactivate': {
+    methods: ["POST"]
+    pattern: '/api/v1/account/deactivate'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/identity').accountActionValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/identity').accountActionValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deactivate']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deactivate']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'identity.export_personal_data': {
+    methods: ["POST"]
+    pattern: '/api/v1/account/privacy-exports'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['exportPersonalData']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['exportPersonalData']>>>
+    }
+  }
+  'identity.delete_personal_data': {
+    methods: ["POST"]
+    pattern: '/api/v1/account/privacy-deletions'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/identity').accountActionValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/identity').accountActionValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deletePersonalData']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deletePersonalData']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'swaps.search': {

@@ -1,0 +1,16 @@
+{
+  "data": {
+    "user": {
+      "id": 101,
+      "username": "collector_egypt",
+      "fullName": "Mina Collector",
+      "mobile": "+201000000001",
+      "isVerified": true,
+      "status": "active",
+      "version": 2
+    },
+    "token": "mock-access-token"
+  },
+  "requestId": "mock-verify-request",
+  "serverTimestamp": "2026-09-27T00:00:00.000Z"
+}

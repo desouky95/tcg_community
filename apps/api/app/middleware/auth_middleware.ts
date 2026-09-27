@@ -14,7 +14,18 @@ export default class AuthMiddleware {
       guards?: (keyof Authenticators)[]
     } = {}
   ) {
-    const user = await ctx.auth.authenticateUsing(options.guards)
-    return next()
+    try {
+      const user = await ctx.auth.authenticateUsing(options.guards)
+      if (user.status !== 'active' || user.blocked) {
+        return ctx.response.status(401).json({
+          error: { code: 'session_expired', message: 'Your session is no longer active' },
+        })
+      }
+      return next()
+    } catch {
+      return ctx.response.status(401).json({
+        error: { code: 'unauthenticated', message: 'Authentication is required' },
+      })
+    }
   }
 }

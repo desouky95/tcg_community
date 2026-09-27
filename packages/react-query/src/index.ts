@@ -2,6 +2,7 @@ export * from "./provider";
 export * from "./query-keys";
 export * from "./hooks";
 export type {
+  APIResponse,
   ConversationListDto,
   ConversationMessagesResponse,
   ConversationMeta,

@@ -1,0 +1,17 @@
+{
+  "data": {
+    "challenge": "issued",
+    "expiresInSeconds": 600,
+    "user": {
+      "id": 101,
+      "username": "collector_egypt",
+      "fullName": "Mina Collector",
+      "mobile": "+201000000001",
+      "isVerified": false,
+      "status": "active",
+      "version": 1
+    }
+  },
+  "requestId": "mock-signup-request",
+  "serverTimestamp": "2026-09-27T00:00:00.000Z"
+}

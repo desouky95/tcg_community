@@ -1,0 +1,10 @@
+{
+  "data": {
+    "locale": "en",
+    "theme": "system",
+    "privacy": { "showProfile": true, "showCollection": false },
+    "communication": { "whatsapp": true, "email": false }
+  },
+  "requestId": "mock-preferences-request",
+  "serverTimestamp": "2026-09-27T00:00:00.000Z"
+}

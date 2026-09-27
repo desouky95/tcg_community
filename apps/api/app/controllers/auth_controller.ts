@@ -8,10 +8,14 @@ import {
 import type { HttpContext } from '@adonisjs/core/http'
 import UserTransformer from '#transformers/user_transformer'
 import hash from '@adonisjs/core/services/hash'
-import { randomInt } from 'node:crypto'
-import axios from 'axios'
-import env from '#start/env'
 import { DateTime } from 'luxon'
+import {
+  consumeOtp,
+  errorBody,
+  issueOtp,
+  requestMeta,
+  issueSession,
+} from '#services/identity_service'
 export default class AuthController {
   /**
    * Request OTP for Mobile Login
@@ -27,25 +31,20 @@ export default class AuthController {
         .json({ error: 'No account found with this mobile number. Please sign up first.' })
     }
 
-    // Generate random 4-digit OTP
-    const otp = Math.floor(1000 + Math.random() * 9000).toString()
-    user.otpCode = otp
-    await user.save()
-
-    console.log(`[WHATSAPP MOCK] Sent Login OTP ${otp} to ${mobile}`)
-    return response.json({ message: 'OTP sent to WhatsApp' })
+    if (user.status !== 'active' || user.blocked) {
+      return response
+        .status(403)
+        .json(errorBody('account_unavailable', 'This account is not available'))
+    }
+    const challenge = await issueOtp(mobile, 'login', user.id)
+    return response.json({ data: { challenge: 'issued', ...challenge }, ...requestMeta(request) })
   }
 
   /**
    * Start Registration Flow (Signup)
    */
-  async signup({ request, response }: HttpContext) {
+  async signup({ request, response, serialize }: HttpContext) {
     const data = await request.validateUsing(signupValidator)
-
-    // Generate random 4-digit OTP
-    // const otp = Math.floor(1000 + Math.random() * 9000).toString()
-
-    const otp = randomInt(100000, 999999).toString()
 
     // Create user record immediately (unverified)
     const user = await User.create({
@@ -58,27 +57,21 @@ export default class AuthController {
       role: 'user',
       blocked: false,
       isVerified: false,
-      otpCode: otp,
+      otpCode: null,
+      status: 'active',
+      locale: 'en',
+      theme: 'system',
+      version: 1,
     })
-
-    axios.post(
-      `https://api.textbee.dev/api/v1/gateway/devices/${env.get('TEXT_BEE_DEVICE_ID')}/send-sms`,
-      {
-        recipients: [data.mobile],
-        message: `Your verification code is ${otp}`,
-      },
-      {
-        headers: {
-          'x-api-key': env.get('TEXT_BEE_API_KEY'),
-        },
-      }
+    const challenge = await issueOtp(data.mobile, 'signup', user.id)
+    return response.status(202).send(
+      await serialize({
+        challenge: 'issued',
+        ...challenge,
+        user: UserTransformer.transform(user),
+        ...requestMeta(request),
+      })
     )
-    console.log(`[WHATSAPP MOCK] Sent Verification OTP ${otp} to ${data.mobile}`)
-
-    return response.json({
-      message: 'OTP sent to WhatsApp',
-      user: UserTransformer.transform(user),
-    })
   }
 
   /**
@@ -92,25 +85,35 @@ export default class AuthController {
       return response.status(404).json({ error: 'User not found' })
     }
 
-    if (user.otpCode !== otp) {
-      return response.status(401).json({ error: 'Invalid OTP' })
+    let result = await consumeOtp(mobile, user.isVerified ? 'login' : 'signup', otp)
+    if (!result.ok && !user.isVerified) {
+      result = await consumeOtp(mobile, 'mobile_change', otp)
+    }
+    if (!result.ok) {
+      return response
+        .status(401)
+        .json(errorBody('invalid_otp', 'Invalid or expired verification code'))
     }
 
-    if (user.blocked) {
-      return response.status(403).json({ error: 'User is blocked by admin' })
+    if (user.blocked || user.status !== 'active') {
+      return response
+        .status(403)
+        .json(errorBody('account_unavailable', 'This account is not available'))
     }
 
     // Complete verification
     user.isVerified = true
     user.otpCode = null
     user.lastLoginAt = DateTime.now()
+    user.version += 1
     await user.save()
-
-    const token = await User.accessTokens.create(user)
+    const token = await issueSession(user)
 
     return serialize({
       user: UserTransformer.transform(user),
-      token: token.value!.release(),
+      token,
+      ...requestMeta(request),
+      version: user.version,
     })
   }
 
@@ -142,30 +145,36 @@ export default class AuthController {
       })
     }
 
-    if (user.blocked) {
-      return response.status(403).json({ error: 'User is blocked by admin' })
+    if (user.blocked || user.status !== 'active') {
+      return response
+        .status(403)
+        .json(errorBody('account_unavailable', 'This account is not available'))
     }
 
     user.lastLoginAt = DateTime.now()
     await user.save()
 
-    const token = await User.accessTokens.create(user)
+    user.version += 1
+    await user.save()
+    const token = await issueSession(user)
 
     return serialize({
       user: UserTransformer.transform(user),
-      token: token.value!.release(),
+      token,
+      ...requestMeta(request),
+      version: user.version,
     })
   }
 
   /**
    * Token Revocation
    */
-  async logout({ auth }: HttpContext) {
+  async logout({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
     if (user.currentAccessToken) {
       await User.accessTokens.delete(user as any, user.currentAccessToken.identifier)
     }
 
-    return { message: 'Logged out successfully' }
+    return response.json({ data: { loggedOut: true }, ...requestMeta(request) })
   }
 }

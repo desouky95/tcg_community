@@ -9,19 +9,31 @@ export interface ApiDefinition {
     login: typeof routes['auth.login']
     logout: typeof routes['auth.logout']
   }
-  categories: {
-    index: typeof routes['categories.index']
-    show: typeof routes['categories.show']
-    store: typeof routes['categories.store']
-    addSubcategory: typeof routes['categories.add_subcategory']
-    destroy: typeof routes['categories.destroy']
+  identity: {
+    otpLogin: typeof routes['identity.otp_login']
+    recoverPassword: typeof routes['identity.recover_password']
+    preferences: typeof routes['identity.preferences']
+    deactivate: typeof routes['identity.deactivate']
+    exportPersonalData: typeof routes['identity.export_personal_data']
+    deletePersonalData: typeof routes['identity.delete_personal_data']
   }
-  checklists: {
-    index: typeof routes['checklists.index']
-    show: typeof routes['checklists.show']
-    store: typeof routes['checklists.store']
-    update: typeof routes['checklists.update']
-    destroy: typeof routes['checklists.destroy']
+  catalogue: {
+    categories: typeof routes['catalogue.categories']
+    category: typeof routes['catalogue.category']
+    checklists: typeof routes['catalogue.checklists']
+    checklist: typeof routes['catalogue.checklist']
+    cards: typeof routes['catalogue.cards']
+    card: typeof routes['catalogue.card']
+    createCategory: typeof routes['catalogue.create_category']
+    updateCategory: typeof routes['catalogue.update_category']
+    archiveCategory: typeof routes['catalogue.archive_category']
+    createSubcategory: typeof routes['catalogue.create_subcategory']
+    createChecklist: typeof routes['catalogue.create_checklist']
+    updateChecklist: typeof routes['catalogue.update_checklist']
+    archiveChecklist: typeof routes['catalogue.archive_checklist']
+    validateImport: typeof routes['catalogue.validate_import']
+    commitImport: typeof routes['catalogue.commit_import']
+    rollbackImport: typeof routes['catalogue.rollback_import']
   }
   reviews: {
     index: typeof routes['reviews.index']
