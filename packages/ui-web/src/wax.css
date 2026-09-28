@@ -109,7 +109,7 @@
 }
 
 .wax-swap-explainer-copy h1 {
-  max-width: 12ch;
+  /* max-width: 12ch; */
   margin: 0;
   color: var(--wax-navy);
   font-family: "Roboto Condensed", sans-serif;
@@ -133,134 +133,6 @@
   line-height: 1.65;
 }
 
-.wax-swap-animation {
-  min-width: 0;
-  border: 2px solid var(--wax-ink);
-  background: var(--wax-navy);
-  box-shadow: 9px 9px 0 var(--wax-gold);
-}
-
-.wax-swap-svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.wax-swap-route {
-  fill: none;
-  stroke: rgba(246, 240, 230, 0.28);
-  stroke-width: 2;
-  stroke-dasharray: 3 10;
-}
-
-.wax-swap-route-return {
-  opacity: 0.72;
-}
-
-.wax-swap-motion {
-  fill: none;
-  color: var(--wax-gold);
-  stroke: currentColor;
-  stroke-width: 4;
-  stroke-dasharray: 10 18;
-  animation: wax-swap-dash 2.6s linear infinite;
-}
-
-.wax-swap-motion-return {
-  color: var(--wax-red);
-  animation-delay: -1.3s;
-}
-
-.wax-swap-person circle,
-.wax-swap-person path {
-  fill: none;
-  stroke: var(--wax-paper);
-  stroke-width: 3;
-}
-
-.wax-swap-person text,
-.wax-swap-card text {
-  fill: var(--wax-paper);
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-}
-
-.wax-swap-card rect:first-child {
-  fill: var(--wax-paper);
-  stroke: var(--wax-ink);
-  stroke-width: 3;
-}
-
-.wax-swap-card rect:nth-child(2) {
-  fill: var(--wax-blue);
-  stroke: var(--wax-ink);
-  stroke-width: 2;
-}
-
-.wax-swap-card path {
-  fill: none;
-  stroke: var(--wax-paper);
-  stroke-width: 3;
-}
-
-.wax-swap-card text {
-  fill: var(--wax-ink);
-}
-
-.wax-swap-card-wanted rect:nth-child(2) {
-  fill: var(--wax-red);
-}
-
-.wax-swap-card-offered rect:nth-child(2) {
-  fill: var(--wax-blue);
-}
-
-.wax-swap-stamp circle {
-  fill: var(--wax-gold);
-  stroke: var(--wax-ink);
-  stroke-width: 3;
-}
-
-.wax-swap-stamp path {
-  fill: none;
-  stroke: var(--wax-ink);
-  stroke-width: 5;
-}
-
-.wax-swap-steps {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-block: 1px solid var(--wax-line);
-  background: var(--wax-line);
-}
-
-.wax-swap-steps li {
-  display: flex;
-  gap: 0.9rem;
-  align-items: flex-start;
-  padding: 1.25rem 1rem;
-  background: var(--wax-paper);
-}
-
-.wax-swap-step-icon {
-  display: grid;
-  flex: 0 0 2.5rem;
-  width: 2.5rem;
-  height: 2.5rem;
-  place-items: center;
-  color: var(--wax-ink);
-  border: 1px solid var(--wax-ink);
-  background: var(--wax-gold);
-}
-
-.wax-swap-step-icon svg,
 .wax-swap-option-list svg,
 .wax-swap-rule-list svg {
   width: 1.05rem;
@@ -268,7 +140,6 @@
   stroke-width: 2;
 }
 
-.wax-swap-steps strong,
 .wax-swap-option-list strong {
   display: block;
   color: var(--wax-ink);
@@ -276,7 +147,6 @@
   font-size: 1.15rem;
 }
 
-.wax-swap-steps small,
 .wax-swap-option-list small {
   display: block;
   margin-top: 0.2rem;
@@ -371,10 +241,10 @@
   gap: 2rem;
   align-items: end;
   justify-content: space-between;
-  margin-bottom: clamp(3rem, 7vw, 7rem);
+  /* margin-bottom: clamp(3rem, 7vw, 7rem); */
   padding-block: clamp(3rem, 6vw, 6rem);
   color: var(--wax-paper);
-  background: var(--wax-navy);
+  background: var(--wax-red);
 }
 
 .wax-swap-cta h2 {
@@ -421,28 +291,15 @@
   height: 1rem;
 }
 
-@keyframes wax-swap-dash {
-  to { stroke-dashoffset: -56; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wax-swap-motion { animation: none; }
-}
-
 @media (max-width: 900px) {
   .wax-swap-explainer { grid-template-columns: 1fr; }
-  .wax-swap-animation { order: 2; }
-  .wax-swap-steps { order: 3; }
   .wax-swap-guide-layout { gap: 3rem; }
   .wax-swap-cta { align-items: flex-start; flex-direction: column; }
 }
 
 @media (max-width: 640px) {
   .wax-swap-explainer { padding-top: 3rem; }
-  .wax-swap-animation { box-shadow: 5px 5px 0 var(--wax-gold); }
-  .wax-swap-steps,
   .wax-swap-guide-layout { grid-template-columns: 1fr; }
-  .wax-swap-steps li { padding-inline: 0.75rem; }
   .wax-swap-cta-actions { width: 100%; }
   .wax-swap-cta-actions .wax-button { flex: 1; justify-content: center; }
 }
@@ -946,7 +803,7 @@
     grid-template-columns: repeat(4, 1fr);
   }
   .wax-trust-strip > div {
-    align-items: flex-start;
+    align-items: center;
     border-right: 1px solid var(--wax-line);
     display: flex;
     gap: 0.8rem;
