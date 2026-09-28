@@ -1,15 +1,197 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronRight, Grid3X3, List, Search } from "lucide-react";
+import * as React from "react";
+
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  ChevronRight,
+  Grid3X3,
+  Layers,
+  List,
+  Search,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { PublicShell } from "@tcg/ui-web";
 import { mockCategories, mockChecklists } from "../../../src/lib/mockData";
+import { useCategory } from "@tcg/react-query";
 
-export default function CategoryPage({ params }: { params: { categoryId: string } }) {
-  const category = mockCategories.find((item) => item.id === params.categoryId || item.children.some((child) => child.id === params.categoryId));
-  const [search, setSearch] = useState(""); const [view, setView] = useState<"grid" | "list">("grid");
-  const isParent = Boolean(category && params.categoryId === category.id); const selected = category ? (isParent ? category : category.children.find((child) => child.id === params.categoryId)) : undefined;
-  const results = useMemo(() => { const q = search.toLowerCase(); return selected ? mockChecklists.filter((item) => (item.category?.name === selected.name || item.subcategory?.name === selected.name || (isParent && item.category?.name === category?.name)) && (!q || item.name.toLowerCase().includes(q) || String(item.year).includes(q))) : []; }, [category?.name, isParent, search, selected?.name]);
-  if (!category || !selected) return <PublicShell><section className="wax-public-empty wax-public-empty-page"><h1>Category not found</h1><p>This shelf may have moved, or the catalogue is not available yet.</p><a href="/checklists" className="wax-button focus-ring"><ArrowLeft aria-hidden="true" /> Back to catalogues</a></section></PublicShell>;
-  return <PublicShell currentPath="/checklists"><div className="wax-category-page"><nav className="wax-breadcrumbs" aria-label="Breadcrumb"><a href="/checklists" className="focus-ring">Catalogues</a><ChevronRight aria-hidden="true" /><span aria-current="page">{selected.name}</span></nav><header className="wax-category-header"><div><h1>{selected.name}</h1><p>{isParent ? "Explore the sets and series on this shelf." : "Browse every catalogue in this series."}</p></div>{!isParent && <label className="wax-compact-search" htmlFor="category-search"><Search aria-hidden="true" /><span className="sr-only">Search this category</span><input id="category-search" type="search" placeholder={`Search in ${selected.name}`} value={search} onChange={(event) => setSearch(event.target.value)} /></label>}</header><section className="wax-category-results" aria-labelledby="category-results-heading"><div className="wax-category-results-bar"><div><h2 id="category-results-heading">{isParent ? "Featured collections" : "Sets in this category"}</h2><span>{results.length} collections</span></div><div className="wax-view-switch" aria-label="Choose catalogue view"><button type="button" className="focus-ring" aria-label="List view" aria-pressed={view === "list"} onClick={() => setView("list")}><List aria-hidden="true" /></button><button type="button" className="focus-ring" aria-label="Grid view" aria-pressed={view === "grid"} onClick={() => setView("grid")}><Grid3X3 aria-hidden="true" /></button></div></div>{results.length ? <div className={view === "grid" ? "wax-checklist-grid" : "wax-checklist-list"}>{results.map((item) => view === "grid" ? <a key={item.id} href={`/collection/${item.id}`} className="wax-checklist-card focus-ring"><div className="wax-checklist-card-meta"><span>{item.year}</span><span>Card set</span></div><div className="wax-checklist-card-body"><h3>{item.name}</h3><p>{item.category?.name}</p></div><div className="wax-checklist-card-foot"><span><strong>{item.totalCards}</strong> cards</span><ArrowUpRight aria-hidden="true" /></div></a> : <a key={item.id} href={`/collection/${item.id}`} className="wax-checklist-list-item focus-ring"><span className="wax-checklist-list-year">{item.year}</span><span className="wax-checklist-list-name">{item.name}</span><span className="wax-checklist-list-total">{item.totalCards} cards</span><ArrowRight aria-hidden="true" /></a>)}</div> : <div className="wax-public-empty"><h3>No sets match.</h3><p>Try another set name or release year.</p></div>}</section>{isParent && category.children.length > 0 && <section className="wax-subcategory-section" aria-labelledby="subcategory-heading"><div className="wax-public-section-heading"><div><h2 id="subcategory-heading">Browse subcategories</h2><p>Move from the main shelf into a specific series or era.</p></div></div><div className="wax-subcategory-list">{category.children.map((sub, index) => <a key={sub.id} href={`/s/${sub.id}`} className="wax-subcategory-row focus-ring"><span>{String(index + 1).padStart(2, "0")}</span><strong>{sub.name}</strong><ArrowRight aria-hidden="true" /></a>)}</div></section>}</div></PublicShell>;
+export default function CategoryPage({
+  params,
+}: {
+  params: { categoryId: string };
+}) {
+  const { categoryId } = React.use<{ categoryId: string }>(params as any);
+  const { data: category, isFetching , isError } = useCategory(categoryId);
+
+  const [search, setSearch] = useState("");
+  const [view, setView] = useState<"grid" | "list">("grid");
+  const isParent = Boolean(category?.parentId === -1);
+  const selected = category
+    ? isParent
+      ? category
+      : category.children.find((child) => child.id === categoryId)
+    : undefined;
+
+  if (!category)
+    return (
+      <PublicShell>
+        <section className="wax-public-empty wax-public-empty-page">
+          <h1>Category not found</h1>
+          <p>
+            This shelf may have moved, or the catalogue is not available yet.
+          </p>
+          <a href="/checklists" className="wax-button focus-ring">
+            <ArrowLeft aria-hidden="true" /> Back to catalogues
+          </a>
+        </section>
+      </PublicShell>
+    );
+  return (
+    <PublicShell currentPath="/checklists">
+      <div className="wax-category-page">
+        <nav className="wax-breadcrumbs" aria-label="Breadcrumb">
+          <a href="/checklists" className="focus-ring">
+            Catalogues
+          </a>
+          <ChevronRight aria-hidden="true" />
+          <span aria-current="page">{category.name}</span>
+        </nav>
+        <header className="wax-category-header">
+          <div>
+            <h1>{category.name}</h1>
+            <p>
+              {isParent
+                ? "Explore the sets and series on this shelf."
+                : "Browse every catalogue in this series."}
+            </p>
+          </div>
+          {!isParent && (
+            <label className="wax-compact-search" htmlFor="category-search">
+              <Search aria-hidden="true" />
+              <span className="sr-only">Search this category</span>
+              <input
+                id="category-search"
+                type="search"
+                placeholder={`Search in ${category.name}`}
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+              />
+            </label>
+          )}
+        </header>
+        <section
+          className="wax-category-results"
+          aria-labelledby="category-results-heading"
+        >
+          <div className="wax-category-results-bar">
+            <div>
+              <h2 id="category-results-heading">
+                {isParent ? "Featured collections" : "Sets in this category"}
+              </h2>
+              <span>{category.checklists?.length} collections</span>
+            </div>
+            <div className="wax-view-switch" aria-label="Choose catalogue view">
+              <button
+                type="button"
+                className="focus-ring"
+                aria-label="List view"
+                aria-pressed={view === "list"}
+                onClick={() => setView("list")}
+              >
+                <List aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="focus-ring"
+                aria-label="Grid view"
+                aria-pressed={view === "grid"}
+                onClick={() => setView("grid")}
+              >
+                <Grid3X3 aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+          {category.checklists?.length ? (
+            <div
+              className={
+                view === "grid" ? "wax-checklist-grid" : "wax-checklist-list"
+              }
+            >
+              {category.checklists.map((item) =>
+                view === "grid" ? (
+                  <a
+                    key={item.id}
+                    href={`/collection/${item.id}`}
+                    className="wax-checklist-card focus-ring"
+                  >
+                    <div className="wax-checklist-card-meta">
+                      <span>{item.year}</span>
+                      <span>Card set</span>
+                    </div>
+                    <div className="wax-checklist-card-body">
+                      <Layers aria-hidden="true" />
+                      <h3>{item.name}</h3>
+                      <p>{item.category?.name}</p>
+                    </div>
+                    <div className="wax-checklist-card-foot">
+                      <span>
+                        <strong>{item.totalCards}</strong> cards
+                      </span>
+                      <ArrowUpRight aria-hidden="true" />
+                    </div>
+                  </a>
+                ) : (
+                  <a
+                    key={item.id}
+                    href={`/collection/${item.id}`}
+                    className="wax-checklist-list-item focus-ring"
+                  >
+                    <span className="wax-checklist-list-year">{item.year}</span>
+                    <span className="wax-checklist-list-name">{item.name}</span>
+                    <span className="wax-checklist-list-total">
+                      {item.totalCards} cards
+                    </span>
+                    <ArrowRight aria-hidden="true" />
+                  </a>
+                ),
+              )}
+            </div>
+          ) : (
+            <div className="wax-public-empty">
+              <h3>No sets match.</h3>
+              <p>Try another set name or release year.</p>
+            </div>
+          )}
+        </section>
+        {isParent && category.children.length > 0 && (
+          <section
+            className="wax-subcategory-section"
+            aria-labelledby="subcategory-heading"
+          >
+            <div className="wax-public-section-heading">
+              <div>
+                <h2 id="subcategory-heading">Browse subcategories</h2>
+                <p>Move from the main shelf into a specific series or era.</p>
+              </div>
+            </div>
+            <div className="wax-subcategory-list">
+              {category.children.map((sub, index) => (
+                <a
+                  key={sub.id}
+                  href={`/s/${sub.id}`}
+                  className="wax-subcategory-row focus-ring"
+                >
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <strong>{sub.name}</strong>
+                  <ArrowRight aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </PublicShell>
+  );
 }
