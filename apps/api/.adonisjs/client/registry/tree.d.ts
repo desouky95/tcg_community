@@ -4,6 +4,7 @@ import type { routes } from './index.ts'
 export interface ApiDefinition {
   auth: {
     requestOtp: typeof routes['auth.request_otp']
+    me: typeof routes['auth.me']
     signup: typeof routes['auth.signup']
     verifyOtp: typeof routes['auth.verify_otp']
     login: typeof routes['auth.login']

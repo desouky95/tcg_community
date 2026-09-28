@@ -48,6 +48,7 @@ import Test from "./pages/Test";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { ApiHooksProvider } from "./providers/ApiHooksProvider";
+import { UserSessionProvider } from "./providers/UserSessionProvider";
 
 const DebugLayout = () => {
   const location = useLocation();
@@ -95,54 +96,62 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ApiHooksProvider>
-        <ThemeProvider defaultTheme="system" storageKey="tcg-theme">
-        <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
-          <Toaster position="top-right" />
-          <Router>
-            <Routes>
-              <Route element={<DebugLayout />}>
-                <Route path="/" element={<Landing />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/verify-otp" element={<VerifyOTP />} />
-                <Route path="/test" element={<Test />} />
+    <Router>
+      <QueryClientProvider client={queryClient}>
+        <ApiHooksProvider>
+          <UserSessionProvider>
+            <ThemeProvider defaultTheme="system" storageKey="tcg-theme">
+              <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
+                <Toaster position="top-right" />
+                <Routes>
+                  <Route element={<DebugLayout />}>
+                    <Route path="/" element={<Landing />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/verify-otp" element={<VerifyOTP />} />
+                    <Route path="/test" element={<Test />} />
 
-                <Route path="/checklists/*" element={<Checklists />} />
-                <Route path="/s/:categoryId" element={<CategoryDetail />} />
-                <Route path="/marketplace" element={<Marketplace />} />
-                <Route path="/marketplace/:id" element={<Marketplace />} />
-                <Route path="/collection/:id" element={<Collection />} />
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route
-                    path="/collection/:id/edit"
-                    element={<CollectionEdit />}
-                  />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/profile/edit" element={<ProfileEdit />} />
-                  <Route path="/profile/:id" element={<Profile />} />
-                  <Route path="/swapping" element={<Swapping />} />
-                  <Route path="/chat" element={<Chat />} />
-                  <Route path="/chat/:id" element={<Chat />} />
-                </Route>
+                    <Route path="/checklists/*" element={<Checklists />} />
+                    <Route path="/s/:categoryId" element={<CategoryDetail />} />
+                    <Route path="/marketplace" element={<Marketplace />} />
+                    <Route path="/marketplace/:id" element={<Marketplace />} />
+                    <Route path="/collection/:id" element={<Collection />} />
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route
+                        path="/collection/:id/edit"
+                        element={<CollectionEdit />}
+                      />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/profile/edit" element={<ProfileEdit />} />
+                      <Route path="/profile/:id" element={<Profile />} />
+                      <Route path="/swapping" element={<Swapping />} />
+                      <Route path="/chat" element={<Chat />} />
+                      <Route path="/chat/:id" element={<Chat />} />
+                    </Route>
 
-                {/* Admin Routes */}
-                <Route path="/admin" element={<ProtectedRoute requireAdmin />}>
-                  <Route index element={<AdminDashboard />} />
-                  <Route path="users" element={<AdminUsers />} />
-                  <Route path="collections" element={<AdminCollections />} />
-                  <Route path="categories" element={<AdminCategories />} />
-                </Route>
-              </Route>
-            </Routes>
-          </Router>
-        </div>
-        </ThemeProvider>
-      </ApiHooksProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+                    {/* Admin Routes */}
+                    <Route
+                      path="/admin"
+                      element={<ProtectedRoute requireAdmin />}
+                    >
+                      <Route index element={<AdminDashboard />} />
+                      <Route path="users" element={<AdminUsers />} />
+                      <Route
+                        path="collections"
+                        element={<AdminCollections />}
+                      />
+                      <Route path="categories" element={<AdminCategories />} />
+                    </Route>
+                  </Route>
+                </Routes>
+              </div>
+            </ThemeProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </UserSessionProvider>
+        </ApiHooksProvider>
+      </QueryClientProvider>
+    </Router>
   );
 }
 

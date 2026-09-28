@@ -4,19 +4,14 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
-    'profile.show': { paramsTuple?: []; params?: {} }
-    'profile.update': { paramsTuple?: []; params?: {} }
   }
   GET: {
-    'profile.show': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
-    'profile.show': { paramsTuple?: []; params?: {} }
   }
   POST: {
   }
   PUT: {
-    'profile.update': { paramsTuple?: []; params?: {} }
   }
   DELETE: {
   }

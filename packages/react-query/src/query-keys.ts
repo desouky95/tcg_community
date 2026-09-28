@@ -12,4 +12,5 @@ export const queryKeys = {
   messages: (id: string | number | undefined) => ["messages", id] as const,
   swapMatch: (id: string | number) => ["user-match", id] as const,
   swaps: ["swaps"] as const,
+  me : ['auth',"me"] as const,
 };

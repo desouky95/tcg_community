@@ -38,6 +38,7 @@ export async function issueOtp(
   ttlMinutes = 10
 ) {
   const code = randomInt(100000, 1000000).toString()
+  console.log({code})
   await db.transaction(async (trx) => {
     await trx
       .from('otp_challenges')
@@ -66,7 +67,7 @@ export async function issueOtp(
 export async function consumeOtp(mobile: string, purpose: OtpPurpose, code: string) {
   const challenge = await db
     .from('otp_challenges')
-    .where({ mobile, purpose })
+    .where({ mobile })
     .whereNull('consumed_at')
     .orderBy('created_at', 'desc')
     .first()

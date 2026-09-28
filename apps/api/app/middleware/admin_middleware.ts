@@ -13,7 +13,7 @@ export default class AdminMiddleware {
     /**
      * Middleware logic goes here (before the next call)
      */
-    const user = await ctx.auth.authenticateUsing(options.guards)
+    const user = await ctx.auth.authenticateUsing(['web'])
 
     if (user.role !== 'super_admin') {
       throw new Error('Unauthorized')

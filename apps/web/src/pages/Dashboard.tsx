@@ -6,6 +6,7 @@ import {
   List as ListIcon,
   Layers,
   ChevronRight,
+  ArrowUpRight,
 } from "lucide-react";
 import Layout from "../components/Layout";
 import { useTranslation } from "react-i18next";
@@ -37,6 +38,20 @@ export default function Dashboard() {
     });
   }, [checklists, selectedCategory, selectedSub]);
 
+  const relevantCollections = useMemo(() => {
+    const relevanceOrder = ["cl1", "cl2", "cl3"];
+    return [...filteredLists]
+      .sort((a, b) => {
+        const aIndex = relevanceOrder.indexOf(a.id);
+        const bIndex = relevanceOrder.indexOf(b.id);
+        if (aIndex === -1 && bIndex === -1) return a.name.localeCompare(b.name);
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        return aIndex - bIndex;
+      })
+      .slice(0, 3);
+  }, [filteredLists]);
+
   const handleCategorySelect = (cat: string | null) => {
     if (cat === selectedCategory) {
       searchParams.delete("sub");
@@ -56,34 +71,83 @@ export default function Dashboard() {
   return (
     <Layout>
       <div className="wax-workspace-view wax-dashboard-view">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 border-b border-border/50 pb-6">
-        <div className="rtl:text-right">
-          <h1 className="text-3xl font-extrabold tracking-tight">
-            {t("dashboard.title")}
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            {t("dashboard.subtitle")}
-          </p>
+        <div className="wax-dashboard-heading">
+          <div className="rtl:text-right">
+            <h1>{t("dashboard.title")}</h1>
+            <p>{t("dashboard.subtitle")}</p>
+          </div>
+          <div className="wax-dashboard-heading-meta">
+            <span>{t("dashboard.workspace_label", { defaultValue: "Collector workspace" })}</span>
+            <strong>{filteredLists.length} {t("dashboard.collection_count", { defaultValue: "collections" })}</strong>
+          </div>
         </div>
-        <div className="flex items-center space-x-2 rtl:space-x-reverse bg-input/20 p-1 rounded-lg border border-border">
-          <button
-            onClick={() => setViewMode("grid")}
-            className={`p-2 rounded-md transition-colors ${viewMode === "grid" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-            title={t("checklists.view_grid")}
-          >
-            <LayoutGrid className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => setViewMode("list")}
-            className={`p-2 rounded-md transition-colors ${viewMode === "list" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-            title={t("checklists.view_list")}
-          >
-            <ListIcon className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        <section className="wax-dashboard-relevance" aria-labelledby="dashboard-relevance-heading">
+          <div className="wax-dashboard-section-heading">
+            <div>
+              <h2 id="dashboard-relevance-heading">{t("dashboard.relevant_title", { defaultValue: "Most relevant collections" })}</h2>
+              <p>{t("dashboard.relevant_subtitle", { defaultValue: "Start with the shelves that give your collection the clearest next move." })}</p>
+            </div>
+            <span>{t("dashboard.relevant_label", { defaultValue: "CURATED FROM THE CATALOGUE" })}</span>
+          </div>
+
+          {isLoading ? (
+            <div className="wax-relevance-grid" aria-busy="true" aria-label={t("dashboard.loading", { defaultValue: "Loading relevant collections" })}>
+              {[1, 2, 3].map((item) => <div className="wax-relevance-skeleton" key={item} />)}
+            </div>
+          ) : relevantCollections.length > 0 ? (
+            <div className="wax-relevance-grid">
+              {relevantCollections.map((collection, index) => (
+                <Link to={`/collection/${collection.id}`} className={`wax-relevance-card wax-relevance-card-${index + 1}`} key={collection.id}>
+                  <div className="wax-relevance-card-mark">
+                    <span>{t("dashboard.relevant_pick", { defaultValue: "CATALOGUE PICK" })}</span>
+                    <Layers aria-hidden="true" />
+                  </div>
+                  <div className="wax-relevance-card-body">
+                    <span>{collection.category?.name || t("dashboard.uncategorized", { defaultValue: "Uncategorized" })}</span>
+                    <h3>{collection.name}</h3>
+                    <p>{collection.subcategory?.name || t("dashboard.collection_shelf", { defaultValue: "Collection shelf" })}</p>
+                    <div className="wax-relevance-card-footer">
+                      <strong>{collection.totalCards} {t("dashboard.cards", { defaultValue: "cards" })}</strong>
+                      <ArrowUpRight aria-hidden="true" />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="wax-relevance-empty">{t("dashboard.relevant_empty", { defaultValue: "Relevant collections will appear here once the catalogue is available." })}</div>
+          )}
+        </section>
+
+        <div className="wax-dashboard-catalogue-heading">
+          <div>
+            <h2>{t("dashboard.catalogue_title", { defaultValue: "Explore the full catalogue" })}</h2>
+            <p>{t("dashboard.catalogue_subtitle", { defaultValue: "Filter by category, then choose the view that fits your collecting session." })}</p>
+          </div>
+          <div className="wax-dashboard-view-toggle" role="group" aria-label={t("dashboard.view_label", { defaultValue: "Collection view" })}>
+            <button
+              onClick={() => setViewMode("grid")}
+              className={viewMode === "grid" ? "is-active" : ""}
+              title={t("checklists.view_grid")}
+              aria-pressed={viewMode === "grid"}
+            >
+              <LayoutGrid aria-hidden="true" />
+              <span>{t("dashboard.grid", { defaultValue: "Grid" })}</span>
+            </button>
+            <button
+              onClick={() => setViewMode("list")}
+              className={viewMode === "list" ? "is-active" : ""}
+              title={t("checklists.view_list")}
+              aria-pressed={viewMode === "list"}
+            >
+              <ListIcon aria-hidden="true" />
+              <span>{t("dashboard.list", { defaultValue: "List" })}</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="wax-dashboard-catalogue flex flex-col lg:flex-row gap-8 items-start">
         {/* Sidebar Filters */}
         <div className="w-full lg:w-64 shrink-0 space-y-2 rtl:text-right">
           <h3 className="font-bold uppercase tracking-widest text-xs text-muted-foreground mb-4">

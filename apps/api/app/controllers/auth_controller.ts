@@ -77,7 +77,7 @@ export default class AuthController {
   /**
    * Verify OTP (Dual Purpose: Mobile Login OR Signup Completion)
    */
-  async verifyOtp({ request, response, serialize }: HttpContext) {
+  async verifyOtp({ request, response, serialize,auth }: HttpContext) {
     const { mobile, otp } = await request.validateUsing(verifyOtpValidator)
 
     const user = await User.query().where('mobile', mobile).first()
@@ -109,6 +109,7 @@ export default class AuthController {
     await user.save()
     const token = await issueSession(user)
 
+    await auth.use('web').login(user)
     return serialize({
       user: UserTransformer.transform(user),
       token,
@@ -120,7 +121,7 @@ export default class AuthController {
   /**
    * Email/Mobile & Password Login
    */
-  async login({ request, response, serialize }: HttpContext) {
+  async login({ request, response, serialize, auth }: HttpContext) {
     const { uid, password } = await request.validateUsing(loginValidator)
 
     // Find user by email or mobile
@@ -132,7 +133,6 @@ export default class AuthController {
 
     // Verify password manually
     const isValid = await hash.verify(user.password!, password)
-    console.log({ isValid })
     if (!isValid) {
       return response.status(401).json({ error: 'Invalid credentials' })
     }
@@ -156,11 +156,11 @@ export default class AuthController {
 
     user.version += 1
     await user.save()
-    const token = await issueSession(user)
+    await auth.use('web').login(user)
 
     return serialize({
       user: UserTransformer.transform(user),
-      token,
+      // token,
       ...requestMeta(request),
       version: user.version,
     })
@@ -171,10 +171,20 @@ export default class AuthController {
    */
   async logout({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
+    await auth.use('web').logout()
     if (user.currentAccessToken) {
       await User.accessTokens.delete(user as any, user.currentAccessToken.identifier)
     }
 
     return response.json({ data: { loggedOut: true }, ...requestMeta(request) })
+  }
+  async me({ auth, request, serialize }: HttpContext) {
+    const user = await auth.authenticateUsing(['web'])
+    return  serialize({
+      user: UserTransformer.transform(user),
+      // token,
+      ...requestMeta(request),
+      version: user.version,
+    })
   }
 }

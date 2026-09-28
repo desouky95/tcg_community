@@ -40,10 +40,12 @@ export default function Landing() {
             <p className="wax-kicker">EGYPT FIRST · COLLECTORS TOGETHER</p>
             <h1>Build a collection worth sharing.</h1>
             <p className="wax-lede">Track what you own, discover what is missing, and trade with collectors who care about the details.</p>
+
             <div className="wax-hero-actions">
               <Link to="/marketplace" className="wax-button">Browse the collection <ArrowRight aria-hidden="true" /></Link>
               <Link to="/signup" className="wax-text-link">Join the club</Link>
             </div>
+
           </div>
 
           <div className="wax-hero-specimen" aria-roledescription="carousel" aria-label="Featured cards">

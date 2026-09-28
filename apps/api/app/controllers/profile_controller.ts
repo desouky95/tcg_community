@@ -44,7 +44,7 @@ export default class ProfileController {
         status: user.status,
       })
     }
-    const user = await auth.authenticate()
+    const user = await auth.authenticateUsing(['web'])
 
     await (user as User).load('checklists', (q) =>
       q.preload('checklist', (c) => c.preload('category').preload('subcategory'))

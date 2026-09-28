@@ -15,7 +15,7 @@ export default class AuthMiddleware {
     } = {}
   ) {
     try {
-      const user = await ctx.auth.authenticateUsing(options.guards)
+      const user = await ctx.auth.authenticateUsing(['web'])
       if (user.status !== 'active' || user.blocked) {
         return ctx.response.status(401).json({
           error: { code: 'session_expired', message: 'Your session is no longer active' },
