@@ -15,7 +15,6 @@ import {
   consumeOtp,
   errorBody,
   issueOtp,
-  issueSession,
   requestMeta,
   revokeAllSessions,
 } from '#services/identity_service'
@@ -29,7 +28,7 @@ export default class IdentityController {
     return { data, ...requestMeta(request), ...meta }
   }
 
-  async otpLogin({ request, response, serialize }: HttpContext) {
+  async otpLogin({ request, response, serialize, auth }: HttpContext) {
     const data = await request.validateUsing(otpLoginValidator)
     const user = await User.query().where('mobile', data.mobile).first()
     if (!user)
@@ -48,12 +47,12 @@ export default class IdentityController {
     user.isVerified = true
     user.version += 1
     await user.save()
+    await auth.use('web').login(user)
     return response.json(
       this.success(
         request,
         {
           user: await serialize(UserTransformer.transform(user)),
-          token: await issueSession(user),
         },
         { version: user.version }
       )

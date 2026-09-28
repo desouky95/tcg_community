@@ -7,6 +7,7 @@ import {
   useLocation,
   useNavigationType,
 } from "react-router-dom";
+import { safeReturnTo } from "@tcg/auth-client";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { useStore } from "./store/useStore";
 import Login from "./pages/Login";
@@ -31,7 +32,16 @@ import Marketplace from "./pages/Marketplace";
 
 const ProtectedRoute = ({ requireAdmin }: { requireAdmin?: boolean }) => {
   const user = useStore((state) => state.user);
-  if (!user) return <Navigate to="/login" replace />;
+  const location = useLocation();
+  if (!user) {
+    const publicWebUrl = import.meta.env.VITE_PUBLIC_WEB_URL;
+    if (publicWebUrl) {
+      const returnTo = safeReturnTo(`${location.pathname}${location.search}`, "/dashboard");
+      window.location.assign(`${publicWebUrl.replace(/\/$/, "")}/login?returnTo=${encodeURIComponent(returnTo)}`);
+      return null;
+    }
+    return <Navigate to="/login" replace />;
+  }
   if (requireAdmin && user.role !== "super_admin")
     return <Navigate to="/dashboard" replace />;
   return <Outlet />;

@@ -39,6 +39,7 @@ const sessionConfig = defineConfig({
      * Prevent JavaScript access to the cookie in the browser.
      */
     httpOnly: true,
+    domain: env.get('SESSION_COOKIE_DOMAIN'),
 
     /**
      * Send cookies only over HTTPS in production.

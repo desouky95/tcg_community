@@ -14,7 +14,6 @@ import {
   errorBody,
   issueOtp,
   requestMeta,
-  issueSession,
 } from '#services/identity_service'
 export default class AuthController {
   /**
@@ -107,12 +106,9 @@ export default class AuthController {
     user.lastLoginAt = DateTime.now()
     user.version += 1
     await user.save()
-    const token = await issueSession(user)
-
     await auth.use('web').login(user)
     return serialize({
       user: UserTransformer.transform(user),
-      token,
       ...requestMeta(request),
       version: user.version,
     })

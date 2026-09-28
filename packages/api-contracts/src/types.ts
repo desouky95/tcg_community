@@ -215,7 +215,8 @@ export type SignupInput = {
   password?: string;
 };
 export type LoginInput = { uid: string; password: string };
-export type AuthSession = { user: User; token: string };
+/** Browser authentication is established by the HttpOnly session cookie. */
+export type AuthSession = { user: User; token?: string };
 export type AuthResponse = APIResponse<AuthSession>;
 export type SignupResponse = APIResponse<{
   challenge: "issued";

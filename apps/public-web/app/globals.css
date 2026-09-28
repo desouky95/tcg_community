@@ -1,0 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Roboto+Condensed:wght@500;600;700;800&display=swap");
+@import "tailwindcss";
+@import "@tcg/ui-web/styles.css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-wax-paper: var(--wax-paper);
+  --color-wax-ink: var(--wax-ink);
+  --color-wax-navy: var(--wax-navy);
+  --color-wax-red: var(--wax-red);
+  --color-wax-gold: var(--wax-gold);
+  --color-wax-blue: var(--wax-blue);
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Roboto Condensed", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}

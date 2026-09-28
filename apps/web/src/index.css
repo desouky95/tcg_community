@@ -1,7 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Roboto+Condensed:wght@500;600;700;800&display=swap");
 
 @import "tailwindcss";
-@import "./styles/tokens.css";
-@import "./styles/foundations.css";
-@import "./styles/primitives.css";
-@import "./styles/wax.css";
+
+@import "@tcg/ui-web/styles.css";

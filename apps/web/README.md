@@ -71,3 +71,6 @@ export default defineConfig([
   },
 ])
 ```
+# Collector Web
+
+React + Vite application for authenticated collector workflows: dashboard, collections, profiles, swapping, chat, and administration. Public discovery routes are being migrated to `apps/public-web`.
