@@ -1,5 +1,6 @@
-import React from 'react';
 import { Search } from 'lucide-react';
+import { Input } from '../ui';
+import { cn } from '../../lib/cn';
 
 interface SearchInputProps {
   value: string;
@@ -12,17 +13,18 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   value, 
   onChange, 
   placeholder = "Search...", 
-  className = '' 
+  className = ''
 }) => {
   return (
-    <div className={`relative max-w-md w-full ${className}`}>
+    <div className={cn('relative max-w-md w-full', className)}>
       <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground rtl:left-auto rtl:right-4" />
-      <input
+      <Input
         type="text"
+        aria-label={placeholder}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-card border border-border rounded-2xl pl-12 pr-4 py-4 rtl:pl-4 rtl:pr-12 focus:ring-2 focus:ring-primary-500 focus:outline-none transition-all shadow-sm"
+        className="w-full rounded-2xl py-4 pl-12 pr-4 shadow-sm rtl:pl-4 rtl:pr-12"
       />
     </div>
   );
