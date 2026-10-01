@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react';
-import { Input } from '../ui';
+import { Input } from '@tcg/ui-web';
 import { cn } from '../../lib/cn';
 
 interface SearchInputProps {

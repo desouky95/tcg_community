@@ -1,35 +1,3 @@
-/* 
-:root {
-  --background: #f6f0e6;
-  --foreground: #102d4d;
-  --card: #fffaf1;
-  --card-foreground: #102d4d;
-  --border: #c5c0b6;
-  --input: #fffaf1;
-  --ring: #c83430;
-  --radius: 0.75rem;
-  --font-brand: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Roboto Condensed", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
-  --color-primary-50: #eef4f8;
-  --color-primary-500: #17385e;
-  --color-primary-600: #102d4d;
-  --color-accent-500: #c83430;
-  --color-success-500: #10b981;
-  --color-danger-500: #ef4444;
-  --color-warning-500: #f59e0b;
-}
-
-.dark {
-  --background: #102d4d;
-  --foreground: #f6f0e6;
-  --card: #17385e;
-  --card-foreground: #f6f0e6;
-  --border: #355776;
-  --input: #17385e;
-  --ring: #efbd35;
-} */
-
 @theme {
   --color-primary-50: #eef4f8;
   --color-primary-100: #d8e5ee;
@@ -37,9 +5,13 @@
   --color-primary-600: #102d4d;
   --color-accent-500: #c83430;
   --color-accent-600: #a92a27;
-  --color-success-500: #10b981;
-  --color-danger-500: #ef4444;
-  --color-warning-500: #f59e0b;
+  --color-discovery-500: #3c8bbd;
+  --color-success-500: #278b55;
+  --color-success-600: #196c3e;
+  --color-danger-500: #c83430;
+  --color-danger-600: #a92a27;
+  --color-warning-500: #efbd35;
+  --color-warning-600: #a15c00;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -47,14 +19,44 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-wax-paper: var(--wax-paper);
+  --color-wax-surface: var(--wax-surface);
+  --color-wax-card: var(--card);
+  --color-wax-ink: var(--foreground);
+  --color-wax-navy: #17385e;
+  --color-wax-input: var(--input);
+  --color-wax-line: var(--border);
+  --color-wax-muted: var(--muted-foreground);
+  --color-wax-red: var(--wax-red);
+  --color-wax-gold: var(--wax-gold);
   --font-brand: "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Roboto Condensed", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
   --font-sans: var(--font-brand);
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+  --spacing-control-sm: 2.75rem;
+  --spacing-control: 3.125rem;
+  --spacing-control-lg: 3.5rem;
+  --spacing-gutter: clamp(20px, 4vw, 64px);
+  --spacing-section: clamp(64px, 8vw, 128px);
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.5rem;
+  --text-utility: 0.6875rem;
+  --text-utility--line-height: 1.4;
+  --text-control: 0.875rem;
+  --text-control--line-height: 1.5;
+  --text-title: 2.5rem;
+  --text-title--line-height: 1.05;
+  --text-display: 3.5rem;
+  --text-display--line-height: 1;
+  --shadow-soft: 0 2px 4px color-mix(in srgb, var(--foreground) 12%, transparent);
+  --shadow-lifted: 0 4px 12px color-mix(in srgb, var(--foreground) 16%, transparent);
+  --shadow-pop: 0 8px 24px color-mix(in srgb, var(--foreground) 20%, transparent);
+  --z-index-60: 60;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -64,10 +66,30 @@
   --foreground: #102d4d;
   --card: #fffaf1;
   --card-foreground: #102d4d;
-  --border: #c5c0b6;
+  --border: #b9b7b0;
   --input: #fffaf1;
+  --muted: #eef4f8;
+  --muted-foreground: #5c6872;
   --ring: #c83430;
-  --radius: 0.75rem;
+  --radius: 0.25rem;
+  --wax-paper: #f6f0e6;
+  --wax-surface: #fffaf1;
+  --wax-ink: #102d4d;
+  --wax-navy: #17385e;
+  --wax-red: #c83430;
+  --wax-gold: #efbd35;
+  --wax-line: var(--border);
+  --wax-muted: var(--muted-foreground);
+  --wax-blue: var(--color-discovery-500);
+  --wax-red-dark: var(--color-accent-600);
+  --workspace-paper: var(--background);
+  --workspace-panel: var(--card);
+  --workspace-ink: var(--foreground);
+  --workspace-navy: var(--wax-navy);
+  --workspace-red: var(--wax-red);
+  --workspace-gold: var(--wax-gold);
+  --workspace-muted: var(--muted-foreground);
+  --workspace-line: var(--border);
 }
 
 .dark {
@@ -77,5 +99,9 @@
   --card-foreground: #f6f0e6;
   --border: #355776;
   --input: #17385e;
+  --muted: #17385e;
+  --muted-foreground: #d8e5ee;
   --ring: #efbd35;
+  --wax-ink: var(--foreground);
+  --wax-red: #ff8f88;
 }

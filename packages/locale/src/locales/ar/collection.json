@@ -1,0 +1,17 @@
+{
+  "not_found": "المجموعة غير موجودة.",
+  "download_excel": "تحميل إكسل",
+  "edit_my_list": "تعديل قائمتي",
+  "filter_placeholder": "تصفية {{label}}...",
+  "no_match": "لا توجد بطاقات تطابق التصفية.",
+  "total_displayed": "إجمالي المعروض: {{count}}",
+  "total_in_collection": "إجمالي المجموعة: {{count}}",
+  "columns": {
+    "number": "الرقم",
+    "name": "الاسم",
+    "type": "النوع",
+    "section": "القسم",
+    "hold": "تملك",
+    "duplicates": "مكرر"
+  }
+}

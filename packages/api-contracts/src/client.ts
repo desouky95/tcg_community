@@ -36,6 +36,7 @@ export function createApiClient(options: ApiClientOptions) {
     axios.create({
       baseURL: options.baseURL,
       withCredentials: options.withCredentials,
+      withXSRFToken: true,
       xsrfCookieName: "XSRF-TOKEN",
       xsrfHeaderName: "X-XSRF-TOKEN",
     });

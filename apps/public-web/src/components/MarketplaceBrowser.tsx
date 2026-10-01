@@ -1,13 +1,159 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, Bookmark, LayoutGrid, List, Search, SlidersHorizontal } from "lucide-react";
+import { SectionHeading } from "@tcg/ui-web";
 import { useMemo, useState } from "react";
+import {
+  EmptyStatePanel,
+  FilterSelect,
+  MarketplaceCard,
+  MarketplaceHeroAction,
+  MarketplaceToolbar,
+  SearchBox,
+  TextLink,
+} from "@tcg/ui-web";
 import { mockMarketplaceListings } from "../lib/mockData";
 
 export default function MarketplaceBrowser() {
-  const [search, setSearch] = useState(""); const [condition, setCondition] = useState("All conditions"); const [sort, setSort] = useState("relevance"); const [view, setView] = useState<"grid" | "list">("grid"); const [saved, setSaved] = useState<string[]>([]);
-  const conditions = ["All conditions", ...new Set(mockMarketplaceListings.map((item) => item.condition))];
-  const listings = useMemo(() => { const q = search.toLowerCase(); const result = mockMarketplaceListings.filter((item) => (!q || [item.title, item.set, item.seller].some((value) => value.toLowerCase().includes(q))) && (condition === "All conditions" || item.condition === condition)); return [...result].sort((a, b) => sort === "price-low" ? a.price - b.price : sort === "price-high" ? b.price - a.price : sort === "title" ? a.title.localeCompare(b.title) : 0); }, [condition, search, sort]);
-  const toggle = (id: string) => setSaved((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
-  return <><section className="wax-market-hero"><div><h1>Find the card<br />that completes the page.</h1><p>Browse current listings, compare condition, and keep the set context close.</p></div><div className="wax-market-hero-action"><span>Marketplace preview · Egypt</span><a href="/signup" className="wax-button focus-ring">Join to start listing <ArrowRight aria-hidden="true" /></a></div></section><section className="wax-market-section" aria-labelledby="market-listings-heading"><div className="wax-market-toolbar"><label className="wax-market-search" htmlFor="marketplace-search"><Search aria-hidden="true" /><span className="sr-only">Search marketplace</span><input id="marketplace-search" type="search" placeholder="Search cards, sets, or sellers" value={search} onChange={(event) => setSearch(event.target.value)} /></label><label className="wax-market-filter"><span>Condition</span><select value={condition} onChange={(event) => setCondition(event.target.value)}>{conditions.map((item) => <option key={item}>{item}</option>)}</select></label><label className="wax-market-filter"><span>Sort by</span><select value={sort} onChange={(event) => setSort(event.target.value)}><option value="relevance">Relevance</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option><option value="title">Card name</option></select></label></div><div className="wax-market-command-bar"><div className="wax-market-command-copy"><SlidersHorizontal aria-hidden="true" /><strong>{listings.length} listings</strong><span>{saved.length} saved</span></div><div className="wax-market-view-toggle" role="group" aria-label="Listing view"><button type="button" aria-label="Grid view" aria-pressed={view === "grid"} className={view === "grid" ? "is-active" : ""} onClick={() => setView("grid")}><LayoutGrid aria-hidden="true" /></button><button type="button" aria-label="List view" aria-pressed={view === "list"} className={view === "list" ? "is-active" : ""} onClick={() => setView("list")}><List aria-hidden="true" /></button></div></div><div className="wax-public-section-heading"><div><h2 id="market-listings-heading">Cards on the trade floor</h2><p>Compare condition, seller, and set context before you open a conversation.</p></div><span className="wax-result-count">{String(listings.length).padStart(2, "0")} results</span></div>{listings.length ? <div className={`wax-market-grid ${view === "list" ? "is-list" : ""}`}>{listings.map((listing) => <article key={listing.id} className={`wax-market-card ${saved.includes(listing.id) ? "is-saved" : ""}`}><a href={`/marketplace/${listing.id}`} className="wax-market-card-link focus-ring"><div className="wax-market-card-image"><img src={listing.image} alt={`${listing.title} card`} loading="lazy" /><span>{listing.condition}</span></div><div className="wax-market-card-copy"><span className="wax-market-card-set">{listing.set}</span><div><h2>{listing.title}</h2><ArrowUpRight aria-hidden="true" /></div><div className="wax-market-card-meta"><span>{listing.seller}</span><strong>EGP {listing.price.toLocaleString("en-EG")}</strong></div></div></a><div className="wax-market-card-actions"><button type="button" className={`wax-market-save ${saved.includes(listing.id) ? "is-active" : ""}`} aria-pressed={saved.includes(listing.id)} onClick={() => toggle(listing.id)}><Bookmark aria-hidden="true" /> {saved.includes(listing.id) ? "Saved" : "Save card"}</button><a href="/login" className="wax-market-ask focus-ring">Sign in to ask</a></div></article>)}</div> : <div className="wax-public-empty"><h3>No listings match those filters.</h3><p>Try another card name or reset the condition.</p><button type="button" className="wax-text-link focus-ring" onClick={() => { setSearch(""); setCondition("All conditions"); }}>Reset filters</button></div>}</section></>;
+  const [search, setSearch] = useState("");
+  const [condition, setCondition] = useState("All conditions");
+  const [sort, setSort] = useState("relevance");
+  const [view, setView] = useState<"grid" | "list">("grid");
+  const [saved, setSaved] = useState<string[]>([]);
+  const conditions = [
+    "All conditions",
+    ...new Set(mockMarketplaceListings.map((item) => item.condition)),
+  ];
+  const listings = useMemo(() => {
+    const q = search.toLowerCase();
+    const result = mockMarketplaceListings.filter(
+      (item) =>
+        (!q ||
+          [item.title, item.set, item.seller].some((value) =>
+            value.toLowerCase().includes(q),
+          )) &&
+        (condition === "All conditions" || item.condition === condition),
+    );
+    return [...result].sort((a, b) =>
+      sort === "price-low"
+        ? a.price - b.price
+        : sort === "price-high"
+          ? b.price - a.price
+          : sort === "title"
+            ? a.title.localeCompare(b.title)
+            : 0,
+    );
+  }, [condition, search, sort]);
+  const toggle = (id: string) =>
+    setSaved((items) =>
+      items.includes(id) ? items.filter((item) => item !== id) : [...items, id],
+    );
+  return (
+    <>
+      <section className="wax-market-hero">
+        <div>
+          <h1>
+            Find the card
+            <br />
+            that completes the page.
+          </h1>
+          <p>
+            Browse current listings, compare condition, and keep the set context
+            close.
+          </p>
+        </div>
+        <div className="wax-market-hero-action">
+          <span>Marketplace preview · Egypt</span>
+          <MarketplaceHeroAction href="/signup">
+            Join to start listing
+          </MarketplaceHeroAction>
+        </div>
+      </section>
+      <section
+        className="wax-market-section"
+        aria-labelledby="market-listings-heading"
+      >
+        <div className="mb-12 grid items-end gap-4 md:mb-16 md:grid-cols-[minmax(0,1fr)_minmax(10rem,0.4fr)_minmax(10rem,0.4fr)]">
+          <SearchBox
+            id="marketplace-search"
+            value={search}
+            onChange={setSearch}
+          />
+          <FilterSelect
+            id="marketplace-condition"
+            label="Condition"
+            value={condition}
+            onChange={setCondition}
+          >
+            {conditions.map((item) => (
+              <option key={item}>{item}</option>
+            ))}
+          </FilterSelect>
+          <FilterSelect
+            id="marketplace-sort"
+            label="Sort by"
+            value={sort}
+            onChange={setSort}
+          >
+            <option value="relevance">Relevance</option>
+            <option value="price-low">Price: low to high</option>
+            <option value="price-high">Price: high to low</option>
+            <option value="title">Card name</option>
+          </FilterSelect>
+        </div>
+        <MarketplaceToolbar
+          count={listings.length}
+          savedCount={saved.length}
+          view={view}
+          onViewChange={setView}
+        />
+        <SectionHeading >
+          <div>
+            <h2 id="market-listings-heading">Cards on the trade floor</h2>
+            <p>
+              Compare condition, seller, and set context before you open a
+              conversation.
+            </p>
+          </div>
+          <span className="whitespace-nowrap font-mono text-utility uppercase text-wax-red">
+            {String(listings.length).padStart(2, "0")} results
+          </span>
+        </SectionHeading>
+        {listings.length ? (
+          <div
+            className={`wax-market-grid ${view === "list" ? "is-list" : ""}`}
+          >
+            {listings.map((listing) => (
+              <MarketplaceCard
+                key={listing.id}
+                listing={listing}
+                href={`/marketplace/${listing.id}`}
+                askHref="/login"
+                askLabel="Sign in to ask"
+                saved={saved.includes(listing.id)}
+                onToggleSaved={() => toggle(listing.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyStatePanel
+            title="No listings match those filters."
+            description="Try another card name or reset the condition."
+            action={
+              <TextLink asChild>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearch("");
+                    setCondition("All conditions");
+                  }}
+                >
+                  Reset filters
+                </button>
+              </TextLink>
+            }
+          />
+        )}
+      </section>
+    </>
+  );
 }

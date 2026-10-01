@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { CardSpecimen, IconButton } from "@tcg/ui-web";
 
 export const CardsSlider = ({
   cards,
@@ -24,19 +25,15 @@ export const CardsSlider = ({
       <div className="wax-pack-label">FEATURED PULL · 01</div>
       <div className="wax-card-stack" aria-live="polite">
         {cards.map((card, index) => {
-          const position = (index - active + cards.length) % cards.length;
+          const position = (index - active + cards.length + 1) % cards.length;
           if (position > 2) return null;
           return (
-            <article
+            <CardSpecimen
               key={card.name}
-              className={`wax-card wax-card-${position + 1}`}
-            >
-              <img src={card.image} alt={`${card.name} card`} />
-              <div className="wax-card-caption">
-                <strong>{card.name}</strong>
-                <span>{card.set}</span>
-              </div>
-            </article>
+              {...card}
+              position={(position + 1) as 1 | 2 | 3}
+              href="/marketplace"
+            />
           );
         })}
       </div>
@@ -47,28 +44,29 @@ export const CardsSlider = ({
           {String(cards.length).padStart(2, "0")}
         </span>
         <strong>Good cards. Better connections.</strong>
-        <div className="wax-card-slider-controls">
-          <button
+        <div className="ms-auto flex gap-2">
+          <IconButton
             type="button"
-            className="wax-card-slider-button"
+            variant="outline"
+            className="border-wax-paper/60 text-wax-paper hover:bg-wax-red"
             aria-label="Previous featured card"
             onClick={() =>
               setActive(
-                (current) =>
-                  (current - 1 + cards.length) % cards.length,
+                (current) => (current - 1 + cards.length) % cards.length,
               )
             }
           >
             <ChevronLeft aria-hidden="true" />
-          </button>
-          <button
+          </IconButton>
+          <IconButton
+            variant="outline"
             type="button"
-            className="wax-card-slider-button"
+            className="border-wax-paper/60 text-wax-paper hover:bg-wax-red"
             aria-label="Next featured card"
             onClick={() => setActive((current) => (current + 1) % cards.length)}
           >
             <ChevronRight aria-hidden="true" />
-          </button>
+          </IconButton>
         </div>
       </div>
     </div>

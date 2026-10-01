@@ -20,8 +20,9 @@
   }
 
   :where(button, a, input, select, textarea):focus-visible {
-    outline: 3px solid var(--ring);
-    outline-offset: 3px;
+    outline : none;
+    /* outline: 3px solid var(--ring);
+    outline-offset: 3px; */
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -40,7 +41,7 @@
   .font-display { font-family: var(--font-display); }
   .font-mono { font-family: var(--font-mono); }
   .focus-ring:focus-visible {
-    outline: 3px solid var(--ring);
-    outline-offset: 3px;
+    /* outline: 3px solid var(--ring); */
+    /* outline-offset: 3px; */
   }
 }

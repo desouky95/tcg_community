@@ -1,15 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
-  Menu,
   MessageCircle,
   Repeat,
   ShieldCheck,
   Store,
   UserRound,
-  X,
 } from "lucide-react";
+import { Button, PublicHeader, type LinkComponent } from "@tcg/ui-web";
 import { useStore } from "../store/useStore";
 import GlobalSearch from "./GlobalSearch";
 import UserDrawer from "./UserDrawer";
@@ -20,14 +19,10 @@ type HeaderProps = {
   unreadCount?: number;
 };
 
-const publicLinks = [
-  { to: "/checklists", label: "Catalogue" },
-  { to: "/marketplace", label: "Marketplace" },
-  { to: "/swapping", label: "Swaps" },
-];
+const RouterLink: LinkComponent = ({ href, ...props }) => <Link to={href} {...props} />;
 
 const workspaceLinks = [
-  { to: "/dashboard", label: "Desk", icon: LayoutDashboard },
+  { to: "/", label: "Desk", icon: LayoutDashboard },
   { to: "/marketplace", label: "Market", icon: Store },
   { to: "/swapping", label: "Swaps", icon: Repeat },
   { to: "/chat", label: "Messages", icon: MessageCircle },
@@ -41,24 +36,22 @@ export default function Header({
 }: HeaderProps) {
   const user = useStore((state) => state.user);
   const location = useLocation();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const accountTrigger = useRef<HTMLButtonElement>(null);
 
   const isActive = (path: string) =>
     location.pathname === path || location.pathname.startsWith(`${path}/`);
 
-  const closeMenu = () => setMenuOpen(false);
-
   if (variant === "workspace") {
     return (
       <>
-        <header className="wax-workspace-header" data-header-variant="workspace">
+        <header className="sticky top-0 z-40 grid min-h-20 grid-cols-[auto_1fr] items-center gap-6 border-t-4 border-b border-t-accent-500 border-b-wax-line bg-card px-4 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:px-10" data-header-variant="workspace">
           <Link
-            to={user ? "/dashboard" : "/"}
-            className="wax-brand wax-workspace-brand focus-ring"
+            to={"/"}
+            className="flex shrink-0 items-center gap-2.5 [&_strong]:block [&_strong]:font-display [&_strong]:text-xl [&_strong]:font-extrabold [&_small]:block [&_small]:font-mono [&_small]:text-utility [&_small]:hidden [&_small]:text-wax-muted md:[&_small]:block focus-ring"
             aria-label="TCG Nexus collector desk"
           >
-            <span className="wax-brand-mark">TN</span>
+            <span className="grid size-10 shrink-0 -rotate-3 place-items-center bg-accent-500 font-display font-extrabold text-white">TN</span>
             <span>
               <strong>TCG NEXUS</strong>
               <small>COLLECTOR DESK</small>
@@ -66,7 +59,7 @@ export default function Header({
           </Link>
 
           {user && !hideNav && (
-            <nav className="wax-workspace-nav" aria-label="Collector workspace">
+            <nav className="hidden h-20 items-stretch justify-self-center xl:flex [&>a]:relative [&>a]:flex [&>a]:items-center [&>a]:gap-2 [&>a]:border-b-2 [&>a]:border-transparent [&>a]:px-3 [&>a]:text-sm [&>a]:font-bold [&>a]:text-wax-muted [&>a:hover]:text-wax-ink [&>a[aria-current=page]]:border-accent-500 [&>a[aria-current=page]]:text-wax-ink [&_svg]:size-4 [&_b]:inline-flex [&_b]:min-w-5 [&_b]:items-center [&_b]:justify-center [&_b]:rounded-full [&_b]:bg-accent-500 [&_b]:text-utility [&_b]:text-white" aria-label="Collector workspace">
               {workspaceLinks.map(({ to, label, icon: Icon }) => (
                 <Link
                   key={to}
@@ -84,103 +77,33 @@ export default function Header({
             </nav>
           )}
 
-          <div className="wax-workspace-tools">
+          <div className="flex items-center justify-self-end gap-3">
             {user && !hideNav && (
-              <div className="wax-workspace-search">
+              <div className="hidden w-64 md:block">
                 <GlobalSearch />
               </div>
             )}
-            {user?.role === "super_admin" && !hideNav && (
-              <Link to="/admin" className="wax-workspace-admin focus-ring">
+            {user?.role !== "super_admin" && !hideNav && (
+              <Link to="/admin" className="hidden items-center gap-2 text-xs font-bold uppercase text-wax-red md:inline-flex [&_svg]:size-4 focus-ring">
                 <ShieldCheck aria-hidden="true" /> Admin
               </Link>
             )}
-            <button
+            <Button variant="outline" size="sm"
+              ref={accountTrigger}
               type="button"
               onClick={() => setIsDrawerOpen(true)}
-              className="wax-workspace-account focus-ring"
+              className="[&_span]:hidden [&_span]:font-mono [&_span]:text-utility md:[&_span]:block [&_svg]:size-8 [&_svg]:bg-wax-navy [&_svg]:p-2 [&_svg]:text-wax-paper focus-ring"
               aria-label="Open account menu"
             >
               <span>{user ? `${user.points} pts` : "Guest"}</span>
               <UserRound aria-hidden="true" />
-            </button>
+            </Button>
           </div>
         </header>
-        <UserDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+        <UserDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} triggerRef={accountTrigger} />
       </>
     );
   }
 
-  return (
-    <>
-      <header className="wax-header" data-header-variant="public">
-        <Link to="/" className="wax-brand focus-ring" aria-label="TCG Nexus home">
-          <span className="wax-brand-mark">TN</span>
-          <span>
-            <strong>TCG NEXUS</strong>
-            <small>COLLECT · TRADE · BELONG</small>
-          </span>
-        </Link>
-
-        <nav
-          id="public-navigation"
-          className={`wax-nav ${menuOpen ? "is-open" : ""}`}
-          aria-label="Primary navigation"
-        >
-          {publicLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className="focus-ring"
-              aria-current={isActive(link.to) ? "page" : undefined}
-              onClick={closeMenu}
-            >
-              {link.label}
-            </Link>
-          ))}
-          {!user ? (
-            <>
-              <Link to="/login" className="wax-nav-mobile-action focus-ring" onClick={closeMenu}>
-                Sign in
-              </Link>
-              <Link to="/signup" className="wax-button wax-button-small wax-nav-mobile-action focus-ring" onClick={closeMenu}>
-                Join the club
-              </Link>
-            </>
-          ) : (
-            <Link to="/dashboard" className="wax-button wax-button-small wax-nav-mobile-action focus-ring" onClick={closeMenu}>
-              Collector desk
-            </Link>
-          )}
-        </nav>
-
-        <div className="wax-header-actions">
-          {user ? (
-            <Link to="/dashboard" className="wax-button wax-button-small focus-ring">
-              Collector desk
-            </Link>
-          ) : (
-            <>
-              <Link to="/login" className="wax-signin focus-ring">
-                Sign in
-              </Link>
-              <Link to="/signup" className="wax-button wax-button-small focus-ring">
-                Join the club
-              </Link>
-            </>
-          )}
-          <button
-            type="button"
-            className="wax-menu-button focus-ring"
-            aria-expanded={menuOpen}
-            aria-controls="public-navigation"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-          </button>
-        </div>
-      </header>
-    </>
-  );
+  return <PublicHeader Link={RouterLink} currentPath={location.pathname} authenticated={Boolean(user)} />;
 }

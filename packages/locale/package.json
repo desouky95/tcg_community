@@ -1,0 +1,18 @@
+{
+  "name": "@tcg/locale",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./ar/*.json": "./src/locales/ar/*.json",
+    "./en/*.json": "./src/locales/en/*.json"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "typescript": "~5.9.3"
+  }
+}

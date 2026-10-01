@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { User } from "@tcg/api-contracts";
+import type { AuthResponse, ExtendedUser, User } from "@tcg/api-contracts";
 import { persist } from "zustand/middleware";
 export type {
   Card,
@@ -14,7 +14,7 @@ export type {
 
 interface AppState {
   user: User | null;
-  setUser: (user: User | null) => void;
+  setUser: (user: User | ExtendedUser | null) => void;
 }
 
 export const useStore = create<AppState>()(

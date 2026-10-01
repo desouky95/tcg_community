@@ -1,14 +1,26 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
-import { ArrowUpDown, ChevronRight, Download, Edit3, Filter, Search } from "lucide-react";
+import {
+  ArrowUpDown,
+  ChevronRight,
+  Download,
+  Edit3,
+  Filter,
+  Search,
+} from "lucide-react";
 import { useChecklist } from "../hooks/useChecklists";
 import type { Card } from "../store/useStore";
 import { useStore } from "../store/useStore";
 import PublicShell from "../components/PublicShell";
-
+import Layout from "../components/Layout";
+import {
+  motion, useMotionValueEvent,
+  useScroll
+} from "motion/react";
+import { EmptyStatePanel, Skeleton, TextLink, buttonStyles, textLinkStyles } from "@tcg/ui-web";
 type SortDirection = "asc" | "desc";
 const metricKeys = ["needCount", "holdCount", "offerCount", "ratio"] as const;
 
@@ -41,10 +53,13 @@ export default function Collection() {
       const matchesQuery =
         normalizedQuery.length === 0 ||
         [card.number, card.name, card.type, card.section].some((value) =>
-          String(value ?? "").toLowerCase().includes(normalizedQuery),
+          String(value ?? "")
+            .toLowerCase()
+            .includes(normalizedQuery),
         );
       const matchesFacets = Object.entries(filters).every(
-        ([key, value]) => value === "" || String(card[key as keyof Card] ?? "") === value,
+        ([key, value]) =>
+          value === "" || String(card[key as keyof Card] ?? "") === value,
       );
       return matchesQuery && matchesFacets;
     });
@@ -52,7 +67,12 @@ export default function Collection() {
     return result.sort((a, b) => {
       const left = String(a[sortColumn] ?? "");
       const right = String(b[sortColumn] ?? "");
-      return left.localeCompare(right, undefined, { numeric: true, sensitivity: "base" }) * (sortDirection === "asc" ? 1 : -1);
+      return (
+        left.localeCompare(right, undefined, {
+          numeric: true,
+          sensitivity: "base",
+        }) * (sortDirection === "asc" ? 1 : -1)
+      );
     });
   }, [cards, filters, query, sortColumn, sortDirection]);
 
@@ -77,8 +97,31 @@ export default function Collection() {
 
   const resetFilters = () => {
     setQuery("");
-    setFilters({ type: "", section: "", needCount: "", holdCount: "", offerCount: "", ratio: "" });
+    setFilters({
+      type: "",
+      section: "",
+      needCount: "",
+      holdCount: "",
+      offerCount: "",
+      ratio: "",
+    });
   };
+
+  const scrollRef = useRef(null);
+  const { scrollY } = useScroll({
+    // target: scrollRef,
+  });
+  const [triggerAnimation, setTriggerAnimation] = useState(false);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    console.log(latest, triggerAnimation);
+    if (latest > 100 && !triggerAnimation) {
+      setTriggerAnimation(true);
+    }
+    if (latest < 100 && triggerAnimation) {
+      setTriggerAnimation(false);
+    }
+  });
 
   const handleDownloadExcel = async () => {
     if (!collection) return;
@@ -97,12 +140,18 @@ export default function Collection() {
     filteredAndSortedCards.forEach((card) => worksheet.addRow(card));
     const header = worksheet.getRow(1);
     header.font = { bold: true, color: { argb: "FFF6F0E6" } };
-    header.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF17385E" } };
+    header.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF17385E" },
+    };
     header.height = 24;
     worksheet.views = [{ state: "frozen", ySplit: 1 }];
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(
-      new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }),
+      new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      }),
       `${collection.name.replace(/\s+/g, "_")}_TCG.xlsx`,
     );
   };
@@ -110,9 +159,12 @@ export default function Collection() {
   if (isLoading) {
     return (
       <PublicShell>
-        <main className="wax-collection-page wax-collection-loading" aria-label="Loading collection">
-          <div className="wax-public-skeleton wax-heading-skeleton" />
-          <div className="wax-public-skeleton wax-collection-table-skeleton" />
+        <main
+          className="wax-collection-page wax-collection-loading"
+          aria-label="Loading collection"
+        >
+          <Skeleton className="mb-12 h-24 max-w-xl" />
+          <Skeleton className="wax-collection-table-skeleton" />
         </main>
       </PublicShell>
     );
@@ -121,11 +173,7 @@ export default function Collection() {
   if (!collection) {
     return (
       <PublicShell>
-        <main className="wax-public-empty wax-public-empty-page">
-          <h1>{t("collection.not_found")}</h1>
-          <p>This catalogue may have moved or is not available yet.</p>
-          <Link to="/checklists" className="wax-button focus-ring">Browse catalogues</Link>
-        </main>
+        <main className="mx-auto min-h-[70dvh] max-w-3xl border-0 px-5 py-section"><EmptyStatePanel title={t("collection.not_found")} description="This catalogue may have moved or is not available yet." action={<Link to="/checklists" className={buttonStyles()}>Browse catalogues</Link>} /></main>
       </PublicShell>
     );
   }
@@ -140,94 +188,226 @@ export default function Collection() {
     { key: "offerCount", label: t("profile.duplicates") },
     { key: "ratio", label: "Ratio" },
   ];
-  const hasActiveFilters = query.length > 0 || Object.values(filters).some(Boolean);
+  const hasActiveFilters =
+    query.length > 0 || Object.values(filters).some(Boolean);
 
   return (
-    <PublicShell>
-      <main className="wax-collection-page">
-        <nav className="wax-breadcrumbs" aria-label="Breadcrumb">
-          <Link to="/checklists" className="focus-ring">Catalogues</Link>
+    <Layout>
+      <main className="wax-collection-page" ref={scrollRef}>
+        <nav className="flex flex-wrap items-center gap-2 font-mono text-utility uppercase text-wax-muted [&_a:hover]:text-wax-red [&_svg]:size-3.5 rtl:[&_svg]:rotate-180 [&_span]:font-bold [&_span]:text-wax-ink" aria-label="Breadcrumb">
+          <Link to="/checklists" className="focus-ring">
+            Catalogues
+          </Link>
           <ChevronRight aria-hidden="true" />
-          <Link to={`/s/${collection.categoryId}`} className="focus-ring">{collection.category?.name ?? "Collection"}</Link>
+          <Link to={`/s/${collection.categoryId}`} className="focus-ring">
+            {collection.category?.name ?? "Collection"}
+          </Link>
           <ChevronRight aria-hidden="true" />
           <span>{collection.name}</span>
         </nav>
 
-        <header className="wax-collection-header">
+        <motion.header
+          className="wax-collection-header bg-wax-paper z-10"
+          animate={{
+            marginInline: triggerAnimation ? "-6%" : "0",
+          }}
+          transition={{
+            duration: 0.4,
+            ease: "easeInOut",
+          }}
+        >
           <div>
-            <p>{collection.category?.name} · {collection.year}</p>
-            <h1>{collection.name}</h1>
-            <span>{collection.subcategory?.name ?? "Community card index"}</span>
+            <p>
+              {collection.category?.name} · {collection.year}
+            </p>
+            <motion.h1
+              initial={{
+                fontSize: "",
+              }}
+              animate={{
+                fontSize: triggerAnimation
+                  ? "2rem"
+                  : "clamp(3.2rem, 7vw, 6rem)",
+              }}
+              transition={{
+                duration: 0.4,
+                ease: "easeInOut",
+              }}
+            >
+              {collection.name}
+            </motion.h1>
+            {/* <h1>{collection.name}</h1> */}
+            <span>
+              {collection.subcategory?.name ?? "Community card index"}
+            </span>
           </div>
           <div className="wax-collection-actions">
-            <button type="button" onClick={handleDownloadExcel} className="wax-button wax-button-secondary focus-ring">
+            <button
+              type="button"
+              onClick={handleDownloadExcel}
+              className={buttonStyles({ variant: "outline" })}
+            >
               <Download aria-hidden="true" /> Download current view
             </button>
             {currentUser && (
-              <Link to={`/collection/${id}/edit`} className="wax-button focus-ring"><Edit3 aria-hidden="true" /> Edit my list</Link>
+              <Link
+                to={`/collection/${id}/edit`}
+                className={buttonStyles()}
+              >
+                <Edit3 aria-hidden="true" /> Edit my list
+              </Link>
             )}
           </div>
-        </header>
+        </motion.header>
 
-        <section className="wax-collection-stats" aria-label="Collection summary">
-          <div><span>Indexed cards</span><strong>{stats.cards}</strong></div>
-          <div><span>Collector demand</span><strong>{stats.wanted}</strong></div>
-          <div><span>Known holds</span><strong>{stats.held}</strong></div>
-          <div><span>Trade offers</span><strong>{stats.offered}</strong></div>
+        <section
+          className="wax-collection-stats"
+          aria-label="Collection summary"
+        >
+          <div>
+            <span>Indexed cards</span>
+            <strong>{stats.cards}</strong>
+          </div>
+          <div>
+            <span>Collector demand</span>
+            <strong>{stats.wanted}</strong>
+          </div>
+          <div>
+            <span>Known holds</span>
+            <strong>{stats.held}</strong>
+          </div>
+          <div>
+            <span>Trade offers</span>
+            <strong>{stats.offered}</strong>
+          </div>
         </section>
 
-        <section className="wax-collection-index" aria-labelledby="collection-index-title">
+        <section
+          className="wax-collection-index"
+          aria-labelledby="collection-index-title"
+        >
           <div className="wax-collection-index-heading">
             <div>
               <h2 id="collection-index-title">Card index</h2>
-              <p>Search the set, compare community activity, and export the view you need.</p>
+              <p>
+                Search the set, compare community activity, and export the view
+                you need.
+              </p>
             </div>
-            <span>{filteredAndSortedCards.length} of {cards.length} shown</span>
+            <span>
+              {filteredAndSortedCards.length} of {cards.length} shown
+            </span>
           </div>
 
           <div className="wax-collection-toolbar">
             <label className="wax-collection-search">
-              <Search aria-hidden="true" /><span className="sr-only">Search cards</span>
-              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search number, card, type, or section" />
+              <Search aria-hidden="true" />
+              <span className="sr-only">Search cards</span>
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search number, card, type, or section"
+              />
             </label>
             <label>
               <span>Type</span>
-              <select value={filters.type} onChange={(event) => setFilters((current) => ({ ...current, type: event.target.value }))}>
+              <select
+                value={filters.type}
+                onChange={(event) =>
+                  setFilters((current) => ({
+                    ...current,
+                    type: event.target.value,
+                  }))
+                }
+              >
                 <option value="">All types</option>
-                {uniqueValues("type").map((value) => <option key={value} value={value}>{value}</option>)}
+                {uniqueValues("type").map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
               </select>
             </label>
             <label>
               <span>Section</span>
-              <select value={filters.section} onChange={(event) => setFilters((current) => ({ ...current, section: event.target.value }))}>
+              <select
+                value={filters.section}
+                onChange={(event) =>
+                  setFilters((current) => ({
+                    ...current,
+                    section: event.target.value,
+                  }))
+                }
+              >
                 <option value="">All sections</option>
-                {uniqueValues("section").map((value) => <option key={value} value={value}>{value}</option>)}
+                {uniqueValues("section").map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
               </select>
             </label>
           </div>
 
           <details className="wax-collection-advanced">
-            <summary className="focus-ring"><Filter aria-hidden="true" /> Filter community counts</summary>
+            <summary className="focus-ring">
+              <Filter aria-hidden="true" /> Filter community counts
+            </summary>
             <div>
               {metricKeys.map((key) => (
                 <label key={key}>
-                  <span>{columns.find((column) => column.key === key)?.label}</span>
-                  <select value={filters[key]} onChange={(event) => setFilters((current) => ({ ...current, [key]: event.target.value }))}>
+                  <span>
+                    {columns.find((column) => column.key === key)?.label}
+                  </span>
+                  <select
+                    value={filters[key]}
+                    onChange={(event) =>
+                      setFilters((current) => ({
+                        ...current,
+                        [key]: event.target.value,
+                      }))
+                    }
+                  >
                     <option value="">Any value</option>
-                    {uniqueValues(key).map((value) => <option key={value} value={value}>{value}</option>)}
+                    {uniqueValues(key).map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
                   </select>
                 </label>
               ))}
             </div>
           </details>
 
-          <div className="wax-collection-table-wrap" tabIndex={0} aria-label="Scrollable card index">
+          <div
+            className="wax-collection-table-wrap"
+            tabIndex={0}
+            aria-label="Scrollable card index"
+          >
             <table className="wax-collection-table">
               <thead>
                 <tr>
                   {columns.map((column) => (
-                    <th key={column.key} scope="col" aria-sort={sortColumn === column.key ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}>
-                      <button type="button" onClick={() => handleSort(column.key)} className="focus-ring">{column.label}<ArrowUpDown aria-hidden="true" /></button>
+                    <th
+                      key={column.key}
+                      scope="col"
+                      aria-sort={
+                        sortColumn === column.key
+                          ? sortDirection === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
+                    >
+                      <button
+                        type="button"
+                        onClick={() => handleSort(column.key)}
+                        className="focus-ring"
+                      >
+                        {column.label}
+                        <ArrowUpDown aria-hidden="true" />
+                      </button>
                     </th>
                   ))}
                 </tr>
@@ -235,14 +415,32 @@ export default function Collection() {
               <tbody>
                 {filteredAndSortedCards.map((card) => (
                   <tr key={card.number}>
-                    <td><span className="wax-card-number">{card.number}</span></td>
-                    <td><strong>{card.name}</strong></td>
+                    <td>
+                      <span className="wax-card-number">{card.number}</span>
+                    </td>
+                    <td>
+                      <strong>{card.name}</strong>
+                    </td>
                     <td>{card.type}</td>
                     <td>{card.section}</td>
-                    <td><span className="wax-count wax-count-wanted">{card.needCount ?? 0}</span></td>
-                    <td><span className="wax-count wax-count-held">{card.holdCount ?? 0}</span></td>
-                    <td><span className="wax-count wax-count-offered">{card.offerCount ?? 0}</span></td>
-                    <td><span className="wax-ratio">{card.ratio ?? "0.00"}</span></td>
+                    <td>
+                      <span className="wax-count wax-count-wanted">
+                        {card.needCount ?? 0}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="wax-count wax-count-held">
+                        {card.holdCount ?? 0}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="wax-count wax-count-offered">
+                        {card.offerCount ?? 0}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="wax-ratio">{card.ratio ?? "0.00"}</span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -250,19 +448,23 @@ export default function Collection() {
           </div>
 
           {filteredAndSortedCards.length === 0 && (
-            <div className="wax-public-empty wax-collection-empty">
-              <h3>{t("collection.no_match")}</h3>
-              <p>Clear the current search and filters to return to the full card index.</p>
-              <button type="button" onClick={resetFilters} className="wax-text-link focus-ring">Reset filters</button>
-            </div>
+            <EmptyStatePanel className="wax-collection-empty" title={t("collection.no_match")} description="Clear the current search and filters to return to the full card index." action={<TextLink asChild><button type="button" onClick={resetFilters}>Reset filters</button></TextLink>} />
           )}
 
           <footer className="wax-collection-index-footer">
             <span>{filteredAndSortedCards.length} cards displayed</span>
-            {hasActiveFilters && <button type="button" onClick={resetFilters} className="wax-text-link focus-ring">Reset all filters</button>}
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className={textLinkStyles()}
+              >
+                Reset all filters
+              </button>
+            )}
           </footer>
         </section>
       </main>
-    </PublicShell>
+    </Layout>
   );
 }

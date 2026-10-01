@@ -1,5 +1,9 @@
 import { type ReactNode } from "react";
-import { TcgApiProvider } from "@tcg/react-query";
+import {
+  TcgApiProvider,
+  TcgSessionProvider,
+  useTcgSession,
+} from "@tcg/react-query";
 import type { Category } from "@tcg/api-contracts";
 import toast from "react-hot-toast";
 import { api } from "../lib/api";
@@ -9,8 +13,6 @@ import {
   mockChecklists,
 } from "../lib/mockData";
 import { useStore } from "../store/useStore";
-import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 
 function findCategory(
   categories: Category[],
@@ -23,24 +25,26 @@ function findCategory(
   }
 }
 
-export function ApiHooksProvider({ children }: { children: ReactNode }) {
+export const SessionWrapper = ({ children }: { children: ReactNode }) => {
   const setUser = useStore((state) => state.setUser);
-  const user = useStore((state) => state.user);
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  return (
+    <TcgSessionProvider
+      onSessionChange={(session) => {
+        setUser(session.data);
+      }}
+      client={api}
+    >
+      {children}
+    </TcgSessionProvider>
+  );
+};
+export function ApiHooksProvider({ children }: { children: ReactNode }) {
+  const { client, status } = useTcgSession();
+
   return (
     <TcgApiProvider
-      client={api}
-      isAuthenticated={Boolean(user)}
-      onAuthenticated={({ user: authenticatedUser }) =>
-        setUser(authenticatedUser)
-      }
-      onLoggedOut={() => {
-        queryClient.clear();
-        setUser(null)
-        navigate("/");
-      }}
-      // onProfileUpdated={updateUser}
+      client={client}
+      isAuthenticated={status === "authenticated"}
       notify={{ success: toast.success, error: toast.error }}
       fallbacks={{
         categories: () => mockCategories,

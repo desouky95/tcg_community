@@ -155,7 +155,7 @@ export default class AuthController {
     await auth.use('web').login(user)
 
     return serialize({
-      user: UserTransformer.transform(user),
+      data: UserTransformer.transform(user),
       // token,
       ...requestMeta(request),
       version: user.version,
@@ -174,11 +174,10 @@ export default class AuthController {
 
     return response.json({ data: { loggedOut: true }, ...requestMeta(request) })
   }
-  async me({ auth, request, serialize }: HttpContext) {
+  async me({ auth, request, response }: HttpContext) {
     const user = await auth.authenticateUsing(['web'])
-    return  serialize({
-      user: UserTransformer.transform(user),
-      // token,
+    return  response.json({
+      data: user,
       ...requestMeta(request),
       version: user.version,
     })

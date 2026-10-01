@@ -10,6 +10,8 @@ export function UserSessionProvider({
   const setUser = useStore((s) => s.setUser);
   const { session } = useSession(!!user);
 
+  
+
   useEffect(() => {
     if (session.isSuccess) {
       setUser(session.data.data);

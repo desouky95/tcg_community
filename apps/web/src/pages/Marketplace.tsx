@@ -2,7 +2,6 @@ import { useMemo, useState, type ReactNode } from "react";
 import {
   ArrowLeft,
   ArrowRight,
-  ArrowUpRight,
   Bookmark,
   LayoutGrid,
   List,
@@ -12,6 +11,18 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import type { ComponentProps } from "react";
+import {
+  EmptyStatePanel,
+  Button,
+  FilterSelect,
+  MarketplaceCard,
+  MarketplaceToolbar,
+  SearchBox,
+  TextLink,
+  buttonStyles,
+  textLinkStyles,
+} from "@tcg/ui-web";
 import Layout from "../components/Layout";
 import PublicShell from "../components/PublicShell";
 import { mockMarketplaceListings } from "../lib/mockData";
@@ -24,6 +35,13 @@ const conditions = [
 type SortOption = "relevance" | "price-low" | "price-high" | "title";
 type ViewMode = "grid" | "list";
 type PriceFilter = "all" | "under-1000" | "1000-2000" | "over-2000";
+
+const RouterLink = ({
+  href,
+  ...props
+}: Omit<ComponentProps<typeof Link>, "to"> & { href: string }) => (
+  <Link to={href} {...props} />
+);
 
 function MarketplaceShell({ children }: { children: ReactNode }) {
   const user = useStore((state) => state.user);
@@ -75,20 +93,11 @@ function AuthenticatedMarketplace() {
   return (
     <MarketplaceShell>
       <div className="wax-market-auth-page">
-        <header className="wax-market-auth-header">
-          <div>
-            <p className="wax-market-auth-kicker">Collector marketplace · Egypt</p>
-            <h1>Find the next card<br />for your collection.</h1>
-            <p>Compare trusted listings by set, condition, seller, and price before you start a conversation.</p>
-          </div>
-          <Link to="/dashboard" className="wax-text-link focus-ring">Back to desk <ArrowRight aria-hidden="true" /></Link>
-        </header>
-
         <form className="wax-market-auth-search" onSubmit={(event) => event.preventDefault()}>
           <Search aria-hidden="true" />
           <label className="sr-only" htmlFor="auth-marketplace-search">Search marketplace</label>
           <input id="auth-marketplace-search" type="search" placeholder="Search cards, sets, or sellers" value={search} onChange={(event) => setSearch(event.target.value)} />
-          <button type="submit" className="wax-button focus-ring">Search <ArrowRight aria-hidden="true" /></button>
+          <Button type="submit">Search <ArrowRight aria-hidden="true" /></Button>
         </form>
 
         <div className="wax-market-auth-layout">
@@ -112,7 +121,7 @@ function AuthenticatedMarketplace() {
                 </label>
               ))}
             </fieldset>
-            <button type="button" className="wax-text-link focus-ring wax-market-reset" onClick={resetFilters}>Clear all filters</button>
+            <TextLink asChild><button type="button" className="wax-market-reset" onClick={resetFilters}>Clear all filters</button></TextLink>
           </aside>
 
           <main className="wax-market-auth-results" aria-labelledby="auth-market-results-heading">
@@ -134,13 +143,13 @@ function AuthenticatedMarketplace() {
                   return (
                     <article key={listing.id} className={`wax-market-result ${isSaved ? "is-saved" : ""}`}>
                       <Link to={`/marketplace/${listing.id}`} className="wax-market-result-image focus-ring"><img src={listing.image} alt={`${listing.title} card`} loading="lazy" /><span>{listing.condition}</span></Link>
-                      <div className="wax-market-result-body"><div className="wax-market-result-copy"><span className="wax-market-card-set">{listing.set}</span><Link to={`/marketplace/${listing.id}`} className="focus-ring"><h3>{listing.title}</h3></Link><p>Seller: <strong>{listing.seller}</strong> · Egypt</p><p className="wax-market-result-trust"><ShieldCheck aria-hidden="true" /> Seller details available in chat</p></div><div className="wax-market-result-buy"><strong>EGP {listing.price.toLocaleString("en-EG")}</strong><span>Conversation listing</span><Link to="/chat" className="wax-button wax-button-small focus-ring">Ask seller <ArrowRight aria-hidden="true" /></Link><button type="button" className={`wax-market-save ${isSaved ? "is-active" : ""}`} aria-label={`${isSaved ? "Remove" : "Save"} ${listing.title}`} aria-pressed={isSaved} onClick={() => toggleSaved(listing.id)}><Bookmark aria-hidden="true" /> {isSaved ? "Saved" : "Save"}</button></div></div>
+                      <div className="wax-market-result-body"><div className="wax-market-result-copy"><span className="wax-market-card-set">{listing.set}</span><Link to={`/marketplace/${listing.id}`} className="focus-ring"><h3>{listing.title}</h3></Link><p>Seller: <strong>{listing.seller}</strong> · Egypt</p><p className="wax-market-result-trust"><ShieldCheck aria-hidden="true" /> Seller details available in chat</p></div><div className="wax-market-result-buy"><strong>EGP {listing.price.toLocaleString("en-EG")}</strong><span>Conversation listing</span><Link to="/chat" className={buttonStyles({ size: "sm" })}>Ask seller <ArrowRight aria-hidden="true" /></Link><button type="button" className={`wax-market-save ${isSaved ? "is-active" : ""}`} aria-label={`${isSaved ? "Remove" : "Save"} ${listing.title}`} aria-pressed={isSaved} onClick={() => toggleSaved(listing.id)}><Bookmark aria-hidden="true" /> {isSaved ? "Saved" : "Save"}</button></div></div>
                     </article>
                   );
                 })}
               </div>
             ) : (
-              <div className="wax-public-empty"><h3>No listings match those filters.</h3><p>Try a broader card search or clear the price and condition filters.</p><button type="button" className="wax-text-link focus-ring" onClick={resetFilters}>Clear filters</button></div>
+              <EmptyStatePanel title="No listings match those filters." description="Try a broader card search or clear the price and condition filters." action={<TextLink asChild><button type="button" onClick={resetFilters}>Clear filters</button></TextLink>} />
             )}
           </main>
         </div>
@@ -191,11 +200,7 @@ export default function Marketplace() {
     if (!listing) {
       return (
         <MarketplaceShell>
-          <section className="wax-public-empty wax-public-empty-page">
-            <h1>Listing not found.</h1>
-            <p>This card may no longer be on the trade floor.</p>
-            <Link to="/marketplace" className="wax-button focus-ring"><ArrowLeft aria-hidden="true" /> Back to marketplace</Link>
-          </section>
+          <section className="mx-auto min-h-[70dvh] max-w-3xl border-0 px-5 py-section"><EmptyStatePanel title="Listing not found." description="This card may no longer be on the trade floor." action={<Link to="/marketplace" className={buttonStyles()}><ArrowLeft aria-hidden="true" /> Back to marketplace</Link>} /></section>
         </MarketplaceShell>
       );
     }
@@ -204,7 +209,7 @@ export default function Marketplace() {
       <MarketplaceShell>
         <article className="wax-market-detail">
           <div className="wax-market-detail-nav">
-            <Link to="/marketplace" className="wax-text-link focus-ring"><ArrowLeft aria-hidden="true" /> All listings</Link>
+            <Link to="/marketplace" className={textLinkStyles()}><ArrowLeft aria-hidden="true" /> All listings</Link>
             <span>{user ? "Collector marketplace" : "Demo marketplace listing"}</span>
           </div>
 
@@ -229,11 +234,11 @@ export default function Marketplace() {
               </dl>
 
               <div className="wax-market-actions">
-                <Link to={user ? "/chat" : "/login"} className="wax-button focus-ring">
+                <Link to={user ? "/chat" : "/login"} className={buttonStyles()}>
                   {user ? "Ask the seller" : "Sign in to contact seller"}
                   <ArrowRight aria-hidden="true" />
                 </Link>
-                <Link to="/checklists" className="wax-text-link focus-ring">Check the catalogue</Link>
+                <Link to="/checklists" className={textLinkStyles()}>Check the catalogue</Link>
               </div>
 
               <p className="wax-demo-note"><ShieldCheck aria-hidden="true" /> Demonstration listing. Confirm card and seller details before any exchange.</p>
@@ -253,7 +258,7 @@ export default function Marketplace() {
         </div>
         <div className="wax-market-hero-action">
           <span>{user ? "Collector marketplace · Egypt" : "Marketplace preview · Egypt"}</span>
-          <Link to={user ? "/dashboard" : "/signup"} className="wax-button focus-ring">
+          <Link to={user ? "/dashboard" : "/signup"} className={buttonStyles({ className: "border-wax-paper bg-wax-paper text-wax-ink hover:border-wax-gold hover:bg-wax-gold" })}>
             {user ? "Back to desk" : "Join to start listing"}
             <ArrowRight aria-hidden="true" />
           </Link>
@@ -262,42 +267,50 @@ export default function Marketplace() {
 
       <section className={`wax-market-section ${user ? "wax-market-section-auth" : ""}`} aria-labelledby="market-listings-heading">
         <div className="wax-market-toolbar">
-          <label className="wax-market-search" htmlFor="marketplace-search">
-            <Search aria-hidden="true" />
-            <span className="sr-only">Search marketplace</span>
-            <input id="marketplace-search" type="search" placeholder="Search cards, sets, or sellers" value={search} onChange={(event) => setSearch(event.target.value)} />
-          </label>
-          <label className="wax-market-filter" htmlFor="marketplace-condition">
-            <span>Condition</span>
-            <select id="marketplace-condition" value={condition} onChange={(event) => setCondition(event.target.value)}>
-              {conditions.map((item) => <option key={item}>{item}</option>)}
-            </select>
-          </label>
-          <label className="wax-market-filter" htmlFor="marketplace-sort">
-            <span>Sort by</span>
-            <select id="marketplace-sort" value={sort} onChange={(event) => setSort(event.target.value as SortOption)}>
-              <option value="relevance">Relevance</option>
-              <option value="price-low">Price: low to high</option>
-              <option value="price-high">Price: high to low</option>
-              <option value="title">Card name</option>
-            </select>
-          </label>
+          <SearchBox id="marketplace-search" value={search} onChange={setSearch} />
+          <FilterSelect
+            id="marketplace-condition"
+            label="Condition"
+            value={condition}
+            onChange={setCondition}
+          >
+            {conditions.map((item) => <option key={item}>{item}</option>)}
+          </FilterSelect>
+          <FilterSelect
+            id="marketplace-sort"
+            label="Sort by"
+            value={sort}
+            onChange={(value) => setSort(value as SortOption)}
+          >
+            <option value="relevance">Relevance</option>
+            <option value="price-low">Price: low to high</option>
+            <option value="price-high">Price: high to low</option>
+            <option value="title">Card name</option>
+          </FilterSelect>
         </div>
 
-        <div className="wax-market-command-bar">
-          <div className="wax-market-command-copy"><SlidersHorizontal aria-hidden="true" /><strong>{filteredListings.length} listings</strong><span>{savedListings.length} saved</span></div>
-          <div className="wax-market-command-actions">
-            {user && <button type="button" className={`wax-market-saved-toggle ${savedOnly ? "is-active" : ""}`} aria-pressed={savedOnly} onClick={() => setSavedOnly((value) => !value)}><Bookmark aria-hidden="true" /> Saved only</button>}
-            <div className="wax-market-view-toggle" role="group" aria-label="Listing view">
-              <button type="button" className={viewMode === "grid" ? "is-active" : ""} aria-label="Grid view" aria-pressed={viewMode === "grid"} onClick={() => setViewMode("grid")}><LayoutGrid aria-hidden="true" /></button>
-              <button type="button" className={viewMode === "list" ? "is-active" : ""} aria-label="List view" aria-pressed={viewMode === "list"} onClick={() => setViewMode("list")}><List aria-hidden="true" /></button>
-            </div>
-          </div>
-        </div>
+        <MarketplaceToolbar
+          count={filteredListings.length}
+          savedCount={savedListings.length}
+          view={viewMode}
+          onViewChange={setViewMode}
+          actions={
+            user && (
+              <button
+                type="button"
+                className={`wax-market-saved-toggle ${savedOnly ? "is-active" : ""}`}
+                aria-pressed={savedOnly}
+                onClick={() => setSavedOnly((value) => !value)}
+              >
+                <Bookmark aria-hidden="true" /> Saved only
+              </button>
+            )
+          }
+        />
 
-        <div className="wax-public-section-heading">
+        <div className="mb-8 flex flex-col items-start justify-between gap-4 border-b border-wax-line pb-5 md:flex-row md:items-end [&_h2]:font-display [&_h2]:text-3xl [&_h2]:font-extrabold [&_p]:mt-3 [&_p]:text-wax-muted">
           <div><h2 id="market-listings-heading">Cards on the trade floor</h2><p>Compare condition, seller, and set context before you open a conversation.</p></div>
-          <span className="wax-result-count">{String(filteredListings.length).padStart(2, "0")} results</span>
+          <span className="whitespace-nowrap font-mono text-utility uppercase text-wax-red">{String(filteredListings.length).padStart(2, "0")} results</span>
         </div>
 
         {filteredListings.length > 0 ? (
@@ -305,21 +318,36 @@ export default function Marketplace() {
             {filteredListings.map((listing) => {
               const isSaved = savedListings.includes(listing.id);
               return (
-                <article key={listing.id} className={`wax-market-card ${isSaved ? "is-saved" : ""}`}>
-                  <Link to={`/marketplace/${listing.id}`} className="wax-market-card-link focus-ring">
-                    <div className="wax-market-card-image"><img src={listing.image} alt={`${listing.title} card`} loading="lazy" /><span>{listing.condition}</span></div>
-                    <div className="wax-market-card-copy"><span className="wax-market-card-set">{listing.set}</span><div><h2>{listing.title}</h2><ArrowUpRight aria-hidden="true" /></div><div className="wax-market-card-meta"><span>{listing.seller}</span><strong>EGP {listing.price.toLocaleString("en-EG")}</strong></div></div>
-                  </Link>
-                  <div className="wax-market-card-actions">
-                    <button type="button" className={`wax-market-save ${isSaved ? "is-active" : ""}`} aria-label={`${isSaved ? "Remove" : "Save"} ${listing.title}`} aria-pressed={isSaved} onClick={() => toggleSaved(listing.id)}><Bookmark aria-hidden="true" /> {isSaved ? "Saved" : "Save card"}</button>
-                    <Link to={user ? "/chat" : "/login"} className="wax-market-ask focus-ring">{user ? "Ask seller" : "Sign in to ask"}</Link>
-                  </div>
-                </article>
+                <MarketplaceCard
+                  key={listing.id}
+                  listing={listing}
+                  href={`/marketplace/${listing.id}`}
+                  askHref={user ? "/chat" : "/login"}
+                  askLabel={user ? "Ask seller" : "Sign in to ask"}
+                  saved={isSaved}
+                  onToggleSaved={() => toggleSaved(listing.id)}
+                  Link={RouterLink}
+                />
               );
             })}
           </div>
         ) : (
-          <div className="wax-public-empty"><h3>{savedOnly ? "No saved cards yet." : "No listings match those filters."}</h3><p>{savedOnly ? "Save a card from the trade floor and it will stay close here." : "Try another card name or reset the condition."}</p><button type="button" className="wax-text-link focus-ring" onClick={() => { setSearch(""); setCondition("All conditions"); setSavedOnly(false); }}>Reset filters</button></div>
+          <EmptyStatePanel
+            title={savedOnly ? "No saved cards yet." : "No listings match those filters."}
+            description={savedOnly ? "Save a card from the trade floor and it will stay close here." : "Try another card name or reset the condition."}
+            action={
+              <TextLink asChild><button
+                type="button"
+                onClick={() => {
+                  setSearch("");
+                  setCondition("All conditions");
+                  setSavedOnly(false);
+                }}
+              >
+                Reset filters
+              </button></TextLink>
+            }
+          />
         )}
       </section>
     </MarketplaceShell>

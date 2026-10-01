@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import Header from "./Header";
+import { PublicFooter } from "@tcg/ui-web";
+import { useStore } from "../store/useStore";
 
 type PublicShellProps = {
   children: ReactNode;
@@ -7,17 +9,14 @@ type PublicShellProps = {
 };
 
 export default function PublicShell({ children, mainClassName }: PublicShellProps) {
+  const user = useStore(state => state.user);
   return (
     <div className="wax-page">
-      <Header variant="public" />
+      <Header variant={user ? "workspace" : "public"} />
 
       <main className={mainClassName}>{children}</main>
 
-      <footer className="wax-footer">
-        <span className="wax-brand-footer">TCG NEXUS</span>
-        <span>Cards bring people closer.</span>
-        <span>© 2026 · Egypt first, collectors everywhere.</span>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

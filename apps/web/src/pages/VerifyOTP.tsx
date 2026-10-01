@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import AuthShell from "../components/AuthShell";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
+import { Button, OtpField } from "@tcg/ui-web";
 
 const otpSchema = z.object({
   otp: z.string().regex(/^\d{6}$/, "Verification code must be 6 digits"),
@@ -80,15 +81,15 @@ export default function VerifyOTP() {
       footer={
         <>
           Need to start over?{" "}
-          <Link to="/login" className="wax-auth-link focus-ring">
+          <Link to="/login" className="font-mono text-utility uppercase text-wax-red hover:underline focus-ring">
             Return to sign in
           </Link>
         </>
       }
     >
       {!mobileNumber ? (
-        <div className="wax-auth-recovery" role="status">
-          <span className="wax-auth-recovery-icon">
+        <div className="grid gap-5 border-y border-wax-line py-6 [&_h2]:mb-2 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:uppercase [&_p]:max-w-md [&_p]:leading-relaxed [&_p]:text-wax-muted" role="status">
+          <span className="inline-flex size-control-sm items-center justify-center bg-wax-gold text-primary-600 [&_svg]:size-5">
             <MessageCircle aria-hidden="true" />
           </span>
           <div>
@@ -98,82 +99,61 @@ export default function VerifyOTP() {
               verification code to the right WhatsApp number.
             </p>
           </div>
-          <Link
-            to="/login"
-            className="wax-button wax-button-primary focus-ring"
-          >
-            Return to sign in <ArrowRight aria-hidden="true" />
-          </Link>
+          <Button asChild><Link to="/login">Return to sign in <ArrowRight aria-hidden="true" /></Link></Button>
         </div>
       ) : (
         <>
-          <form onSubmit={handleSubmit(onOtpSubmit)} className="wax-auth-form">
-            <div className="wax-auth-field">
-              <label htmlFor="verify-otp" className="wax-auth-label">
-                6-digit verification code
-              </label>
-              <div
-                className={`wax-otp-input-wrap${errors.otp ? " is-invalid" : ""}`}
-              >
-                <ShieldCheck aria-hidden="true" />
-                <Controller
-                  control={control}
-                  name="otp"
-                  render={({ field }) => (
-                    <input
-                      {...field}
-                      id="verify-otp"
-                      type="text"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      placeholder="000000"
-                      autoFocus
-                      autoComplete="one-time-code"
-                      className="wax-otp-input"
-                      aria-describedby={
-                        errors.otp
-                          ? "verify-otp-help verify-otp-error"
-                          : "verify-otp-help"
-                      }
-                      aria-invalid={Boolean(errors.otp)}
-                      disabled={loading}
-                      maxLength={6}
-                    />
+          <form onSubmit={handleSubmit(onOtpSubmit)} className="grid gap-5">
+            <Controller
+              control={control}
+              name="otp"
+              render={({ field }) => (
+                <>
+                  <OtpField
+                    {...field}
+                    id="verify-otp"
+                    label="6-digit verification code"
+                    type="text"
+                    placeholder="000000"
+                    autoFocus
+                    icon={<ShieldCheck aria-hidden="true" />}
+                    aria-describedby={
+                      errors.otp
+                        ? "verify-otp-help verify-otp-error"
+                        : "verify-otp-help"
+                    }
+                    aria-invalid={Boolean(errors.otp)}
+                    disabled={loading}
+                    help={
+                      <>
+                        <MessageCircle aria-hidden="true" /> Code sent to{" "}
+                        <strong>{mobileNumber}</strong>
+                      </>
+                    }
+                  />
+                  {errors.otp && (
+                    <p
+                      id="verify-otp-error"
+                      className="m-0 text-xs font-semibold text-danger-600"
+                      role="alert"
+                    >
+                      {errors.otp.message}
+                    </p>
                   )}
-                />
-              </div>
-              <p id="verify-otp-help" className="wax-otp-help">
-                <MessageCircle aria-hidden="true" /> Code sent to{" "}
-                <strong>{mobileNumber}</strong>
-              </p>
-              {errors.otp && (
-                <p
-                  id="verify-otp-error"
-                  className="wax-auth-error"
-                  role="alert"
-                >
-                  {errors.otp.message}
-                </p>
+                </>
               )}
-            </div>
+            />
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="wax-button wax-button-primary wax-auth-submit"
-            >
-              {loading ? "Checking code…" : "Verify and continue"}
-              {!loading && <ArrowRight aria-hidden="true" />}
-            </button>
+            <Button type="submit" loading={loading} className="w-full">Verify and continue{!loading && <ArrowRight aria-hidden="true" />}</Button>
           </form>
 
-          <div className="wax-otp-resend">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-1.5 text-sm text-wax-muted [&_button]:min-h-control-sm [&_button]:p-1.5 [&_button:disabled]:cursor-not-allowed [&_button:disabled]:opacity-50">
             <span>Didn't receive a code?</span>
             <button
               type="button"
               onClick={onResend}
               disabled={loading}
-              className="wax-auth-link focus-ring"
+              className="font-mono text-utility uppercase text-wax-red hover:underline focus-ring"
             >
               Resend via WhatsApp
             </button>

@@ -1,5 +1,6 @@
+'use client';
 export const queryKeys = {
-  categories: ["categories"] as const,
+  categories: ["categories"] ,
   category: (id: string | undefined) => ["category", id] as const,
   checklists: ["checklists"] as const,
   checklist: (id: string | undefined) => ["checklists", id] as const,
@@ -12,5 +13,5 @@ export const queryKeys = {
   messages: (id: string | number | undefined) => ["messages", id] as const,
   swapMatch: (id: string | number) => ["user-match", id] as const,
   swaps: ["swaps"] as const,
-  me : ['auth',"me"] as const,
+  me: ["auth", "me"] as const,
 };

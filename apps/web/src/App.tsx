@@ -2,48 +2,55 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
   Outlet,
   useLocation,
   useNavigationType,
 } from "react-router-dom";
-import { safeReturnTo } from "@tcg/auth-client";
+import { buildLoginUrl } from "@tcg/auth-client";
 import { ThemeProvider } from "./components/ThemeProvider";
-import { useStore } from "./store/useStore";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import VerifyOTP from "./pages/VerifyOTP";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminCollections from "./pages/admin/AdminCollections";
 import AdminCategories from "./pages/admin/AdminCategories";
 import toast, { Toaster } from "react-hot-toast";
 import Dashboard from "./pages/Dashboard";
-import Collection from "./pages/Collection";
 import CollectionEdit from "./pages/CollectionEdit";
 import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
-import Landing from "./pages/Landing";
-import Checklists from "./pages/Checklists";
 import Swapping from "./pages/Swapping";
-import CategoryDetail from "./pages/CategoryDetail";
 import Chat from "./pages/Chat";
-import Marketplace from "./pages/Marketplace";
 
-const ProtectedRoute = ({ requireAdmin }: { requireAdmin?: boolean }) => {
-  const user = useStore((state) => state.user);
+function RedirectToLogin() {
   const location = useLocation();
-  if (!user) {
-    const publicWebUrl = import.meta.env.VITE_PUBLIC_WEB_URL;
-    if (publicWebUrl) {
-      const returnTo = safeReturnTo(`${location.pathname}${location.search}`, "/dashboard");
-      window.location.assign(`${publicWebUrl.replace(/\/$/, "")}/login?returnTo=${encodeURIComponent(returnTo)}`);
-      return null;
-    }
-    return <Navigate to="/login" replace />;
+
+  useEffect(() => {
+    const returnTo = `${location.pathname}${location.search}${location.hash}`;
+
+    window.location.assign(
+      buildLoginUrl(import.meta.env.VITE_PUBLIC_WEB_URL, returnTo),
+    );
+  }, [location.hash, location.pathname, location.search]);
+
+  return <p role="status">Redirecting to sign in…</p>;
+}
+const ProtectedRoute = ({requireAdmin}: { requireAdmin?: boolean }) => {
+  const { status ,user} = useTcgSession();
+
+  if(requireAdmin && user?.role === 'user') {
+    return <p>You are not authorized to view this page</p>
   }
-  if (requireAdmin && user.role !== "super_admin")
-    return <Navigate to="/dashboard" replace />;
+  if (status === "loading") {
+    return <p role="status">Restoring your session…</p>;
+  }
+
+  if (status === "error") {
+    return <p role="alert">We could not verify your session.</p>;
+  }
+
+  if (status === "anonymous") {
+    return <RedirectToLogin />;
+  }
+
   return <Outlet />;
 };
 
@@ -54,11 +61,14 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Test from "./pages/Test";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
-import { ApiHooksProvider } from "./providers/ApiHooksProvider";
-import { UserSessionProvider } from "./providers/UserSessionProvider";
+import { ApiHooksProvider, SessionWrapper } from "./providers/ApiHooksProvider";
+import Checklists from "./pages/Checklists";
+import CategoryDetail from "./pages/CategoryDetail";
+import Marketplace from "./pages/Marketplace";
+import Collection from "./pages/Collection";
+import { useTcgSession } from "@tcg/react-query";
 
 const DebugLayout = () => {
   const location = useLocation();
@@ -108,26 +118,27 @@ function App() {
   return (
     <Router>
       <QueryClientProvider client={queryClient}>
-        <ApiHooksProvider>
-          <UserSessionProvider>
+        <SessionWrapper>
+          <ApiHooksProvider>
             <ThemeProvider defaultTheme="system" storageKey="tcg-theme">
               <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
                 <Toaster position="top-right" />
                 <Routes>
                   <Route element={<DebugLayout />}>
-                    <Route path="/" element={<Landing />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="/verify-otp" element={<VerifyOTP />} />
-                    <Route path="/test" element={<Test />} />
-
-                    <Route path="/checklists/*" element={<Checklists />} />
-                    <Route path="/s/:categoryId" element={<CategoryDetail />} />
-                    <Route path="/marketplace" element={<Marketplace />} />
-                    <Route path="/marketplace/:id" element={<Marketplace />} />
-                    <Route path="/collection/:id" element={<Collection />} />
                     <Route element={<ProtectedRoute />}>
-                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/checklists/*" element={<Checklists />} />
+                      <Route
+                        path="/s/:categoryId"
+                        element={<CategoryDetail />}
+                      />
+                      <Route path="/marketplace" element={<Marketplace />} />
+                      <Route
+                        path="/marketplace/:id"
+                        element={<Marketplace />}
+                      />
+                      <Route path="/collection/:id" element={<Collection />} />
+
                       <Route
                         path="/collection/:id/edit"
                         element={<CollectionEdit />}
@@ -158,8 +169,8 @@ function App() {
               </div>
             </ThemeProvider>
             <ReactQueryDevtools initialIsOpen={false} />
-          </UserSessionProvider>
-        </ApiHooksProvider>
+          </ApiHooksProvider>
+        </SessionWrapper>
       </QueryClientProvider>
     </Router>
   );

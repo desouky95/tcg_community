@@ -8,9 +8,8 @@ export const metadata: Metadata = {
     "An Egypt-first home for collectors, checklists, and thoughtful trades.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  
   return (
     <html lang="en">
       <body>
@@ -19,3 +18,4 @@ export default function RootLayout({
     </html>
   );
 }
+

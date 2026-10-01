@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useEffect, type ReactNode } from "react";
 import type {
   ApiClient,
   AuthSession,
@@ -18,6 +18,7 @@ export type ApiHooksContextValue = {
   client: ApiClient;
   isAuthenticated: boolean;
   onAuthenticated?: (session: AuthSession) => void;
+
   onLoggedOut?: () => void;
   onProfileUpdated?: (user: User) => void;
   notify?: {

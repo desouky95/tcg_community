@@ -1,3 +1,5 @@
+import type { AxiosError } from "axios";
+
 export type Id = string | number;
 
 export type APIResponseMeta = {
@@ -173,7 +175,10 @@ export type ConversationMessagesResponse = {
   data: MessageDto[];
 };
 
-export type ConversationMessagesApiResponse = APIResponse<MessageDto[], ConversationMeta> & {
+export type ConversationMessagesApiResponse = APIResponse<
+  MessageDto[],
+  ConversationMeta
+> & {
   meta: ConversationMeta;
 };
 
@@ -216,7 +221,7 @@ export type SignupInput = {
 };
 export type LoginInput = { uid: string; password: string };
 /** Browser authentication is established by the HttpOnly session cookie. */
-export type AuthSession = { user: User; token?: string };
+export type AuthSession = { user: ExtendedUser | User; token?: string };
 export type AuthResponse = APIResponse<AuthSession>;
 export type SignupResponse = APIResponse<{
   challenge: "issued";
@@ -246,3 +251,5 @@ export type ChecklistWriteInput = Partial<
   >
 >;
 export type ChecklistWritePayload = ChecklistWriteInput | FormData;
+
+export { AxiosError } from "axios";

@@ -1,5 +1,6 @@
-import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ChecklistListItem as SharedChecklistListItem } from "@tcg/ui-web";
+import type { ComponentProps } from "react";
 import type { Checklist } from "../../store/useStore";
 
 interface ChecklistListItemProps {
@@ -8,16 +9,12 @@ interface ChecklistListItemProps {
 
 export function ChecklistListItem({ checklist }: ChecklistListItemProps) {
   return (
-    <Link
-      to={`/collection/${checklist.id}`}
-      className="wax-checklist-list-item focus-ring"
-      aria-label={`${checklist.name} (${checklist.year})`}
-      title={`${checklist.name} (${checklist.year})`}
-    >
-      <span className="wax-checklist-list-year">{checklist.year}</span>
-      <span className="wax-checklist-list-name">{checklist.name}</span>
-      <span className="wax-checklist-list-total">{checklist.totalCards} cards</span>
-      <ArrowRight aria-hidden="true" />
-    </Link>
+    <SharedChecklistListItem
+      checklist={checklist}
+      href={`/collection/${checklist.id}`}
+      Link={({ href, ...props }: Omit<ComponentProps<typeof Link>, "to"> & { href: string }) => (
+        <Link to={href} {...props} />
+      )}
+    />
   );
 }
