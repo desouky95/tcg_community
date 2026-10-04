@@ -156,7 +156,8 @@ function App() {
                     <Route
                       element={<ProtectedRoute requireAdmin />}
                     >
-                      <Route path="/admin" Component={AdminLayout}>
+                      <Route path="/admin" element={<AdminLayout />}>
+                        <Route index element={<AdminDashboard />} />
                         <Route path="users" element={<AdminUsers />} />
                         <Route
                           path="collections"

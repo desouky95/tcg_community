@@ -295,15 +295,20 @@
   }
   @media (prefers-reduced-motion: reduce) {
   }
-  .wax-page ::selection {
+  .wax-page ::selection,
+  .wax-workspace ::selection {
     background: var(--wax-gold);
     color: var(--wax-ink);
   }
   .wax-page input,
-  .wax-page select {
+  .wax-page select,
+  .wax-workspace input,
+  .wax-workspace select,
+  .wax-workspace textarea {
     caret-color: var(--wax-red);
   }
-  .wax-page {
+  .wax-page,
+  .wax-workspace {
     scrollbar-color: var(--wax-red) var(--wax-paper);
   }
   .wax-public-hero,

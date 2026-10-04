@@ -6,7 +6,6 @@ import {
   useDeleteChecklist,
 } from "../../hooks/useChecklists";
 import { useCategories } from "../../hooks/useCategories";
-import Layout from "../../components/Layout";
 import {
   PlusCircle,
   Table2,
@@ -17,11 +16,9 @@ import {
   Pencil,
   XCircle,
 } from "lucide-react";
-import { BackButton } from "../../components/common/BackButton";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
-import AdminLayout from "../../components/AdminLayout";
 
 export default function AdminCollections() {
   const { t } = useTranslation();
@@ -131,10 +128,9 @@ export default function AdminCollections() {
   );
 
   return (
-    <AdminLayout>
+    <>
       <div className="flex items-center justify-between mb-10">
         <div className="flex items-center space-x-4 rtl:space-x-reverse">
-          <BackButton to="/admin" />
           <div>
             <h1 className="text-3xl font-black tracking-tight uppercase flex items-center text-foreground">
               <Table2 className="w-8 h-8 mr-3 rtl:ml-3 rtl:mr-0 text-primary-500" />{" "}
@@ -443,6 +439,6 @@ export default function AdminCollections() {
               ))}
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 }

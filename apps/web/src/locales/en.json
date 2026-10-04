@@ -123,6 +123,34 @@
     }
   },
   "admin": {
+    "navigation": {
+      "overview": "Overview",
+      "users": "Members",
+      "collections": "Checklists",
+      "categories": "Taxonomy"
+    },
+    "shell": {
+      "control_center": "Admin control center",
+      "navigation_label": "Administration",
+      "operations": "Operations",
+      "back_to_workspace": "Collector workspace",
+      "administrator": "Administrator",
+      "open_menu": "Open admin navigation",
+      "close_menu": "Close admin navigation",
+      "change_language": "Change language",
+      "toggle_theme": "Toggle color theme"
+    },
+    "dashboard": {
+      "title": "Community operations",
+      "subtitle": "Keep member access, published checklists, and the catalogue structure accurate from one workspace.",
+      "management_areas": "Management areas",
+      "users_description": "Review member status, reputation, and access.",
+      "collections_description": "Create, edit, and publish community checklists.",
+      "categories_description": "Maintain parent categories and their subcategories.",
+      "restricted": "{{count}} restricted",
+      "published": "Published sets",
+      "parent_categories": "Parent categories"
+    },
     "users": {
       "title": "Member Directory",
       "subtitle": "Manage community permissions and reputation.",

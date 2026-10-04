@@ -1,8 +1,6 @@
 import { useUsers, useBlockUser } from '../../hooks/useUsers';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../../components/Layout';
 import { Ban, CheckCircle, Users, Phone, Award } from 'lucide-react';
-import { BackButton } from '../../components/common/BackButton';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -16,16 +14,15 @@ export default function AdminUsers() {
     try {
       await blockMutation.mutateAsync({ id, blocked: !currentlyBlocked });
       toast.success(currentlyBlocked ? 'Member Unblocked' : 'Member Blocked');
-    } catch (err) {
+    } catch {
       toast.error('Action failed');
     }
   };
 
   return (
-    <Layout>
+    <>
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4 rtl:space-x-reverse">
-          <BackButton to="/admin" />
           <div>
             <h1 className="text-3xl font-black tracking-tight uppercase flex items-center">
               <Users className="w-8 h-8 mr-3 rtl:ml-3 rtl:mr-0 text-primary-500" /> {t('admin.users.title')}
@@ -58,7 +55,7 @@ export default function AdminUsers() {
                   <tr onClick={() => navigate(`/profile/${u.id}`)} key={u.id} className={`hover:bg-input/10 transition-colors ${u.blocked ? 'bg-danger-500/5' : ''}`}>
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-4 rtl:space-x-reverse">
-                        <div className="w-12 h-12 shrink-0 rounded-2xl bg-linear-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white text-xl font-black shadow-lg transform -rotate-3 rtl:rotate-3 transition-transform group-hover:rotate-0">
+                        <div className="flex size-12 shrink-0 -rotate-3 items-center justify-center border border-wax-gold bg-primary-500 font-display text-xl font-extrabold text-wax-paper shadow-soft transition-transform group-hover:rotate-0 rtl:rotate-3">
                           {u.fullName.charAt(0)}
                         </div>
                         <div>
@@ -120,6 +117,6 @@ export default function AdminUsers() {
           </table>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

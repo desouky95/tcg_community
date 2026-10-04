@@ -123,6 +123,34 @@
     }
   },
   "admin": {
+    "navigation": {
+      "overview": "نظرة عامة",
+      "users": "الأعضاء",
+      "collections": "القوائم",
+      "categories": "التصنيف"
+    },
+    "shell": {
+      "control_center": "مركز تحكم الإدارة",
+      "navigation_label": "الإدارة",
+      "operations": "العمليات",
+      "back_to_workspace": "مساحة الجامع",
+      "administrator": "مسؤول النظام",
+      "open_menu": "فتح قائمة الإدارة",
+      "close_menu": "إغلاق قائمة الإدارة",
+      "change_language": "تغيير اللغة",
+      "toggle_theme": "تبديل المظهر اللوني"
+    },
+    "dashboard": {
+      "title": "عمليات المجتمع",
+      "subtitle": "حافظ على دقة صلاحيات الأعضاء والقوائم المنشورة وهيكل الكتالوج من مساحة عمل واحدة.",
+      "management_areas": "مجالات الإدارة",
+      "users_description": "راجع حالة الأعضاء وسمعتهم وصلاحياتهم.",
+      "collections_description": "أنشئ قوائم المجتمع وعدّلها وانشرها.",
+      "categories_description": "أدر الفئات الرئيسية والفئات الفرعية التابعة لها.",
+      "restricted": "{{count}} مقيّد",
+      "published": "مجموعات منشورة",
+      "parent_categories": "فئات رئيسية"
+    },
     "users": {
       "title": "دليل الأعضاء",
       "subtitle": "إدارة أذونات المجتمع والسمعة.",

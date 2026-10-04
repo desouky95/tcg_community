@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { useCategories, useCategoryMutations } from "../../hooks/useCategories";
-import Layout from "../../components/Layout";
 import { Plus, Trash2, LayoutGrid, Tag } from "lucide-react";
-import { BackButton } from "../../components/common/BackButton";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { AxiosError } from "axios";
+
+function getMutationError(error: unknown, fallback: string) {
+  return error instanceof AxiosError
+    ? error.response?.data?.error || fallback
+    : fallback;
+}
 
 export default function AdminCategories() {
   const { t } = useTranslation();
@@ -22,8 +27,8 @@ export default function AdminCategories() {
       await addCategory.mutateAsync(newCatName);
       toast.success(t("admin.categories.new_cat"));
       setNewCatName("");
-    } catch (err: any) {
-      toast.error(err.response?.data?.error || "Failed to add category");
+    } catch (error: unknown) {
+      toast.error(getMutationError(error, "Failed to add category"));
     }
   };
 
@@ -34,8 +39,8 @@ export default function AdminCategories() {
       await addSubcategory.mutateAsync({ categoryId: catId, name: subName });
       toast.success(t("admin.categories.add"));
       setNewSubNames({ ...newSubNames, [catId]: "" });
-    } catch (err: any) {
-      toast.error(err.response?.data?.error || "Failed to add subcategory");
+    } catch (error: unknown) {
+      toast.error(getMutationError(error, "Failed to add subcategory"));
     }
   };
 
@@ -47,19 +52,17 @@ export default function AdminCategories() {
     try {
       await deleteCategory.mutateAsync(id);
       toast.success("Category deleted");
-    } catch (err: any) {
-      toast.error(err.response?.data?.error || "Failed to delete category");
+    } catch (error: unknown) {
+      toast.error(getMutationError(error, "Failed to delete category"));
     }
   };
 
   const parentCategories = categories.filter((c) => c.parentId === -1);
 
-  console.log(parentCategories);
   return (
-    <Layout>
+    <>
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4 rtl:space-x-reverse">
-          <BackButton to="/admin" />
           <div>
             <h1 className="text-3xl font-black tracking-tight uppercase flex items-center">
               <LayoutGrid className="w-8 h-8 mr-3 rtl:ml-3 rtl:mr-0 text-amber-500" />{" "}
@@ -199,6 +202,6 @@ export default function AdminCategories() {
           )}
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
