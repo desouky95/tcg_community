@@ -24,10 +24,13 @@ router
         router.post('signup', [() => import('#controllers/auth_controller'), 'signup'])
         router.post('verify-otp', [() => import('#controllers/auth_controller'), 'verifyOtp'])
         router.post('login', [() => import('#controllers/auth_controller'), 'login'])
-        //! otp-login not needed as login redirects to verify-otp 
+        //! otp-login not needed as login redirects to verify-otp
         router.post('otp-login', [() => import('#controllers/identity_controller'), 'otpLogin'])
         //? Not tested manually
-        router.post('password-recovery', [() => import('#controllers/identity_controller'), 'recoverPassword'])
+        router.post('password-recovery', [
+          () => import('#controllers/identity_controller'),
+          'recoverPassword',
+        ])
         router
           .post('logout', [() => import('#controllers/auth_controller'), 'logout'])
           .use(middleware.auth())
@@ -57,21 +60,51 @@ router
 
     router
       .group(() => {
-        router.post('/categories', [() => import('#controllers/catalogue_controller'), 'createCategory'])
-        router.put('/categories/:id', [() => import('#controllers/catalogue_controller'), 'updateCategory'])
-        router.delete('/categories/:id', [() => import('#controllers/catalogue_controller'), 'archiveCategory'])
-        router.post('/categories/:id/subcategories', [() => import('#controllers/catalogue_controller'), 'createSubcategory'])
-        router.post('/checklists', [() => import('#controllers/catalogue_controller'), 'createChecklist'])
-        router.put('/checklists/:id', [() => import('#controllers/catalogue_controller'), 'updateChecklist'])
-        router.delete('/checklists/:id', [() => import('#controllers/catalogue_controller'), 'archiveChecklist'])
+        router.post('/categories', [
+          () => import('#controllers/catalogue_controller'),
+          'createCategory',
+        ])
+        router.put('/categories/:id', [
+          () => import('#controllers/catalogue_controller'),
+          'updateCategory',
+        ])
+        router.delete('/categories/:id', [
+          () => import('#controllers/catalogue_controller'),
+          'archiveCategory',
+        ])
+        router.post('/categories/:id/subcategories', [
+          () => import('#controllers/catalogue_controller'),
+          'createSubcategory',
+        ])
+        router.post('/checklists', [
+          () => import('#controllers/catalogue_controller'),
+          'createChecklist',
+        ])
+        router.put('/checklists/:id', [
+          () => import('#controllers/catalogue_controller'),
+          'updateChecklist',
+        ])
+        router.delete('/checklists/:id', [
+          () => import('#controllers/catalogue_controller'),
+          'archiveChecklist',
+        ])
       })
       .use(middleware.admin())
 
     router
       .group(() => {
-        router.post('/catalogue-imports/validate', [() => import('#controllers/catalogue_controller'), 'validateImport'])
-        router.post('/catalogue-imports/:id/commit', [() => import('#controllers/catalogue_controller'), 'commitImport'])
-        router.post('/catalogue-imports/:id/rollback', [() => import('#controllers/catalogue_controller'), 'rollbackImport'])
+        router.post('/catalogue-imports/validate', [
+          () => import('#controllers/catalogue_controller'),
+          'validateImport',
+        ])
+        router.post('/catalogue-imports/:id/commit', [
+          () => import('#controllers/catalogue_controller'),
+          'commitImport',
+        ])
+        router.post('/catalogue-imports/:id/rollback', [
+          () => import('#controllers/catalogue_controller'),
+          'rollbackImport',
+        ])
       })
       .prefix('admin')
       .use(middleware.admin())
@@ -116,10 +149,19 @@ router
       .group(() => {
         router.get('/profile', [() => import('#controllers/profile_controller'), 'show'])
         router.put('/profile', [() => import('#controllers/profile_controller'), 'update'])
-        router.put('/preferences', [() => import('#controllers/identity_controller'), 'preferences'])
+        router.put('/preferences', [
+          () => import('#controllers/identity_controller'),
+          'preferences',
+        ])
         router.post('/deactivate', [() => import('#controllers/identity_controller'), 'deactivate'])
-        router.post('/privacy-exports', [() => import('#controllers/identity_controller'), 'exportPersonalData'])
-        router.post('/privacy-deletions', [() => import('#controllers/identity_controller'), 'deletePersonalData'])
+        router.post('/privacy-exports', [
+          () => import('#controllers/identity_controller'),
+          'exportPersonalData',
+        ])
+        router.post('/privacy-deletions', [
+          () => import('#controllers/identity_controller'),
+          'deletePersonalData',
+        ])
       })
       .prefix('account')
       .use(middleware.auth())
@@ -166,3 +208,12 @@ router
       .use(middleware.auth())
   })
   .prefix('/api/v1')
+
+router
+  .group(() => {
+    router.get('/collections', [() => import('#controllers/scrappers_controller'), 'collections'])
+    router.post('/jobs', [() => import('#controllers/scrappers_controller'), 'start'])
+    router.get('/jobs/:jobId', [() => import('#controllers/scrappers_controller'), 'show'])
+  })
+  .prefix('/scrapper')
+  .use(middleware.scraperTrigger())

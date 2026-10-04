@@ -3,10 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   MessageCircle,
-  Repeat,
-  ShieldCheck,
-  Store,
-  UserRound,
+  Repeat, Store,
+  UserRound
 } from "lucide-react";
 import { Button, PublicHeader, type LinkComponent } from "@tcg/ui-web";
 import { useStore } from "../store/useStore";
@@ -83,11 +81,11 @@ export default function Header({
                 <GlobalSearch />
               </div>
             )}
-            {user?.role !== "super_admin" && !hideNav && (
+            {/* {user?.role !== "super_admin" && !hideNav && (
               <Link to="/admin" className="hidden items-center gap-2 text-xs font-bold uppercase text-wax-red md:inline-flex [&_svg]:size-4 focus-ring">
                 <ShieldCheck aria-hidden="true" /> Admin
               </Link>
-            )}
+            )} */}
             <Button variant="outline" size="sm"
               ref={accountTrigger}
               type="button"

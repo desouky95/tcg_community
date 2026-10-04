@@ -4,9 +4,10 @@ import { useStore } from "../store/useStore";
 import { useConversations } from "../hooks/useConversations";
 import MobileNav from "./MobileNav";
 import Header from "./Header";
-import { PublicFooter } from "@tcg/ui-web";
+import { TextLink } from "@tcg/ui-web";
+import { Link } from "react-router-dom";
 
-export default function Layout({
+export default function AdminLayout({
   children,
   hideNav = false,
 }: {
@@ -31,12 +32,16 @@ export default function Layout({
   return (
     <div className="wax-workspace">
       <Header variant="workspace" hideNav={hideNav} unreadCount={unreadCount} />
-
+      <div className="grid">
+        <TextLink>Admin</TextLink>
+        <TextLink asChild>
+          <Link to={"/admin/collections"}>Collections</Link>
+        </TextLink>
+      </div>
       <main className="mx-auto w-full max-w-360 px-4 pt-6 pb-[calc(6.5rem+env(safe-area-inset-bottom))] md:px-gutter md:pt-12 md:pb-24">
         {children}
       </main>
       {user && !hideNav && <MobileNav />}
-
     </div>
   );
 }

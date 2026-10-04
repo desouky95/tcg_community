@@ -13,6 +13,7 @@ export const controllers = {
   Identity: () => import('#controllers/identity_controller'),
   Profile: () => import('#controllers/profile_controller'),
   Reviews: () => import('#controllers/reviews_controller'),
+  Scrappers: () => import('#controllers/scrappers_controller'),
   SwapDeals: () => import('#controllers/swap_deals_controller'),
   Swaps: () => import('#controllers/swaps_controller'),
   UserChecklists: () => import('#controllers/user_checklists_controller'),

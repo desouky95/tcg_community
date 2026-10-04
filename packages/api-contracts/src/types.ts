@@ -77,14 +77,24 @@ export type Review = {
 export type ReviewMutationResponse = { review: Review; newPoints: number };
 
 export type Card = {
+  id: number;
+  checklistId: number | null;
   number: string;
   name: string;
-  type: string;
-  section: string;
+  type: string | null;
+  section: string | null;
+  variant: string | null;
+  baseCardId: number | null;
   needCount?: number;
   holdCount?: number;
   offerCount?: number;
   ratio?: string;
+};
+
+export type CardDetail = {
+  card: Card;
+  baseCard: Card;
+  variants: Card[];
 };
 
 export type Checklist = {
@@ -183,12 +193,7 @@ export type ConversationMessagesApiResponse = APIResponse<
 };
 
 export type LastLogin =
-  | "online"
-  | "today"
-  | "week"
-  | "month"
-  | "6months"
-  | "all";
+  "online" | "today" | "week" | "month" | "6months" | "all";
 export type SearchFilters = {
   checklists?: number[];
   regions: string;

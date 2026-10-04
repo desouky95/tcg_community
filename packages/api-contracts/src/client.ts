@@ -3,6 +3,7 @@ import type {
   APIResponse,
   AuthResponse,
   Category,
+  CardDetail,
   Checklist,
   ChecklistWritePayload,
   ConversationListDto,
@@ -66,6 +67,8 @@ export function createApiClient(options: ApiClientOptions) {
       http.get<APIResponse<Checklist[]>>("/checklists", { params }),
     getChecklist: (id: string) =>
       http.get<APIResponse<Checklist>>(`/checklists/${id}`),
+    getCard: (id: string | number) =>
+      http.get<APIResponse<CardDetail>>(`/catalogue/cards/${id}`),
     addChecklist: (data: ChecklistWritePayload) =>
       http.post<APIResponse<Checklist>>("/checklists", data),
     updateChecklist: (id: string, data: ChecklistWritePayload) =>

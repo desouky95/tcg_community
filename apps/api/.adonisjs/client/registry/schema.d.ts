@@ -595,4 +595,40 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['scanQr']>>>
     }
   }
+  'scrappers.collections': {
+    methods: ["GET","HEAD"]
+    pattern: '/scrapper/collections'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['collections']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['collections']>>>
+    }
+  }
+  'scrappers.start': {
+    methods: ["POST"]
+    pattern: '/scrapper/jobs'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/scraper').startScrapeJobValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/scraper').startScrapeJobValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['start']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['start']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'scrappers.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/scrapper/jobs/:jobId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { jobId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['show']>>>
+    }
+  }
 }

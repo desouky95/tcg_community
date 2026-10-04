@@ -70,4 +70,9 @@ export interface ApiDefinition {
     markReceived: typeof routes['swap_deals.mark_received']
     scanQr: typeof routes['swap_deals.scan_qr']
   }
+  scrappers: {
+    collections: typeof routes['scrappers.collections']
+    start: typeof routes['scrappers.start']
+    show: typeof routes['scrappers.show']
+  }
 }

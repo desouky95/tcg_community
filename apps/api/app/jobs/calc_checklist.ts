@@ -1,4 +1,3 @@
-import Card from '#models/card'
 import Checklist from '#models/checklist'
 import UserChecklist from '#models/user_checklist'
 import { Job } from '@adonisjs/queue'
@@ -21,7 +20,7 @@ export default class CalcChecklist extends Job<CalcChecklistPayload> {
   private async calcCollection(checklistId: string) {
     console.log('CalcChecklist started')
     const checklist = await Checklist.findOrFail(checklistId)
-    await checklist.load('cards')
+    await checklist.load('cards', (cards) => cards.whereNull('variant'))
     const usersChecklists = await UserChecklist.query().where('checklist_id', checklistId)
 
     const missingLists = usersChecklists.map((_) => (_.missingList || '').split(','))

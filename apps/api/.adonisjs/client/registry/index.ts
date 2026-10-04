@@ -300,6 +300,24 @@ const routes = {
     tokens: [{"old":"/api/v1/swap-deals/:id/scan-qr","type":0,"val":"api","end":""},{"old":"/api/v1/swap-deals/:id/scan-qr","type":0,"val":"v1","end":""},{"old":"/api/v1/swap-deals/:id/scan-qr","type":0,"val":"swap-deals","end":""},{"old":"/api/v1/swap-deals/:id/scan-qr","type":1,"val":"id","end":""},{"old":"/api/v1/swap-deals/:id/scan-qr","type":0,"val":"scan-qr","end":""}],
     types: placeholder as Registry['swap_deals.scan_qr']['types'],
   },
+  'scrappers.collections': {
+    methods: ["GET","HEAD"],
+    pattern: '/scrapper/collections',
+    tokens: [{"old":"/scrapper/collections","type":0,"val":"scrapper","end":""},{"old":"/scrapper/collections","type":0,"val":"collections","end":""}],
+    types: placeholder as Registry['scrappers.collections']['types'],
+  },
+  'scrappers.start': {
+    methods: ["POST"],
+    pattern: '/scrapper/jobs',
+    tokens: [{"old":"/scrapper/jobs","type":0,"val":"scrapper","end":""},{"old":"/scrapper/jobs","type":0,"val":"jobs","end":""}],
+    types: placeholder as Registry['scrappers.start']['types'],
+  },
+  'scrappers.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/scrapper/jobs/:jobId',
+    tokens: [{"old":"/scrapper/jobs/:jobId","type":0,"val":"scrapper","end":""},{"old":"/scrapper/jobs/:jobId","type":0,"val":"jobs","end":""},{"old":"/scrapper/jobs/:jobId","type":1,"val":"jobId","end":""}],
+    types: placeholder as Registry['scrappers.show']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

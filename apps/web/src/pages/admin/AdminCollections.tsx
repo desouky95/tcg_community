@@ -21,6 +21,7 @@ import { BackButton } from "../../components/common/BackButton";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
+import AdminLayout from "../../components/AdminLayout";
 
 export default function AdminCollections() {
   const { t } = useTranslation();
@@ -130,7 +131,7 @@ export default function AdminCollections() {
   );
 
   return (
-    <Layout>
+    <AdminLayout>
       <div className="flex items-center justify-between mb-10">
         <div className="flex items-center space-x-4 rtl:space-x-reverse">
           <BackButton to="/admin" />
@@ -442,6 +443,6 @@ export default function AdminCollections() {
               ))}
         </div>
       </div>
-    </Layout>
+    </AdminLayout>
   );
 }

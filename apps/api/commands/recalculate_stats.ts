@@ -14,7 +14,9 @@ export default class RecalculateStats extends BaseCommand {
   async run() {
     this.logger.info('Starting statistics recalculation...')
 
-    const checklists = await Checklist.query().preload('cards')
+    const checklists = await Checklist.query().preload('cards', (cards) =>
+      cards.whereNull('variant')
+    )
 
     for (const checklist of checklists) {
       this.logger.info(`Processing checklist: ${checklist.name}`)

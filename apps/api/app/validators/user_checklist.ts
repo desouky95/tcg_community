@@ -5,7 +5,7 @@ const transform = (value: string, cards: string[]) => {
   const validCards = submittedCards.map((_) =>
     cards.find((c) => c.toLowerCase() === _.toLowerCase())
   )
-  return validCards.join(',') as string
+  return validCards.filter((card): card is string => Boolean(card)).join(',')
 }
 export const updateOrCreateUserChecklistValidator = vine.create({
   missingList: vine

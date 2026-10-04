@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "firecrawl": {
+      "source": "firecrawl/cli",
+      "sourceType": "github",
+      "skillPath": "skills/firecrawl/SKILL.md",
+      "computedHash": "1df20f02b0e1eab9cec4051b980ec41b9c0d977a9e3c136bfca99a7da0defa46"
+    },
     "monorepo-management": {
       "source": "wshobson/agents",
       "sourceType": "github",

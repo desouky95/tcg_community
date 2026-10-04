@@ -33,11 +33,11 @@ function RedirectToLogin() {
 
   return <p role="status">Redirecting to sign in…</p>;
 }
-const ProtectedRoute = ({requireAdmin}: { requireAdmin?: boolean }) => {
-  const { status ,user} = useTcgSession();
+const ProtectedRoute = ({ requireAdmin }: { requireAdmin?: boolean }) => {
+  const { status, user } = useTcgSession();
 
-  if(requireAdmin && user?.role === 'user') {
-    return <p>You are not authorized to view this page</p>
+  if (requireAdmin && user?.role === "user") {
+    return <p>You are not authorized to view this page</p>;
   }
   if (status === "loading") {
     return <p role="status">Restoring your session…</p>;
@@ -69,6 +69,7 @@ import CategoryDetail from "./pages/CategoryDetail";
 import Marketplace from "./pages/Marketplace";
 import Collection from "./pages/Collection";
 import { useTcgSession } from "@tcg/react-query";
+import AdminLayout from "./components/AdminLayout";
 
 const DebugLayout = () => {
   const location = useLocation();
@@ -153,16 +154,19 @@ function App() {
 
                     {/* Admin Routes */}
                     <Route
-                      path="/admin"
                       element={<ProtectedRoute requireAdmin />}
                     >
-                      <Route index element={<AdminDashboard />} />
-                      <Route path="users" element={<AdminUsers />} />
-                      <Route
-                        path="collections"
-                        element={<AdminCollections />}
-                      />
-                      <Route path="categories" element={<AdminCategories />} />
+                      <Route path="/admin" Component={AdminLayout}>
+                        <Route path="users" element={<AdminUsers />} />
+                        <Route
+                          path="collections"
+                          element={<AdminCollections />}
+                        />
+                        <Route
+                          path="categories"
+                          element={<AdminCategories />}
+                        />
+                      </Route>
                     </Route>
                   </Route>
                 </Routes>

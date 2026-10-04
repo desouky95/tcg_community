@@ -1,11 +1,11 @@
 import Checklist from '#models/checklist'
 import Card from '#models/card'
-import Category from '#models/category'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import XLSX from 'xlsx'
 import { createChecklistValidator } from '#validators/checklist'
 import ChecklistTransformer from '#transformers/checklist_transformer'
+import { parseCardImportRows } from '#services/card_import_service'
 
 export default class ChecklistsController {
   async index({ request }: HttpContext) {
@@ -43,7 +43,9 @@ export default class ChecklistsController {
       ChecklistTransformer.transform(
         await Checklist.query()
           .where('id', params.id)
-          .preload('cards', (q) => q.withCount('checklist').orderBy('order', 'asc'))
+          .preload('cards', (q) =>
+            q.whereNull('variant').withCount('checklist').orderBy('order', 'asc')
+          )
           .preload('category')
           .preload('subcategory')
           .if(isUserExist, (q) =>
@@ -57,37 +59,48 @@ export default class ChecklistsController {
   private async importCards(checklist: Checklist, file: any, trx: any) {
     if (!file || !file.isValid) return
 
-    const getVal = (obj: any, keys: string[]) => {
-      const foundKey = Object.keys(obj).find((k) => {
-        const normalizedK = k.toLowerCase().replace(/[\s_]/g, '')
-        return keys.some((target) => normalizedK === target.toLowerCase().replace(/[\s_]/g, ''))
-      })
-      return foundKey ? String(obj[foundKey]).trim() : null
-    }
-
     const workbook = XLSX.readFile(file.tmpPath!)
     const cardsSheet = workbook.Sheets[workbook.SheetNames[0]]
     if (!cardsSheet) return
 
-    const cardsData = XLSX.utils.sheet_to_json<any>(cardsSheet)
+    const cardsData = XLSX.utils.sheet_to_json<Record<string, unknown>>(cardsSheet)
     if (cardsData.length === 0) return
+    const cards = parseCardImportRows(cardsData)
+    const baseRows = cards.filter((card) => !card.variant)
+    const variantRows = cards.filter((card) => card.variant)
 
-    // Delete existing cards
     await Card.query({ client: trx }).where('checklistId', checklist.id).delete()
 
-    const cards = cardsData.map((c: any, index: number) => ({
-      checklistId: checklist.id,
-      number: String(getVal(c, ['number', 'card_number', '#']) || ''),
-      name: String(getVal(c, ['name', 'card_name', 'title', 'card_title']) || ''),
-      type: String(getVal(c, ['type', 'card_type', 'rarity']) || ''),
-      section: String(getVal(c, ['section', 'set_section', 'subset']) || ''),
-      order: index,
-    }))
+    const bases = await Card.createMany(
+      baseRows.map((card) => ({
+        checklistId: checklist.id,
+        number: card.number,
+        name: card.name,
+        type: card.type,
+        section: card.section,
+        variant: null,
+        baseCardId: null,
+        order: card.order,
+      })),
+      { client: trx }
+    )
+    const baseIds = new Map(bases.map((card) => [card.number, card.id]))
 
-    await Card.createMany(cards, { client: trx })
+    await Card.createMany(
+      variantRows.map((card) => ({
+        checklistId: checklist.id,
+        number: card.number,
+        name: card.name,
+        type: card.type,
+        section: card.section,
+        variant: card.variant,
+        baseCardId: baseIds.get(card.baseNumber!)!,
+        order: card.order,
+      })),
+      { client: trx }
+    )
 
-    // Update totalCards if it has changed
-    checklist.totalCards = cards.length
+    checklist.totalCards = baseRows.length
     await checklist.save()
   }
 

@@ -24,7 +24,7 @@ export default class UserChecklistsController {
     const user = auth.user!
     const checklistId = params.id
     const checklist = await Checklist.query().where('id', checklistId).firstOrFail()
-    await checklist.load('cards')
+    await checklist.load('cards', (cards) => cards.whereNull('variant'))
     const cards = checklist.cards.map((_) => _.number)
     const data = await request.validateUsing(updateOrCreateUserChecklistValidator, {
       meta: {
@@ -83,7 +83,7 @@ export default class UserChecklistsController {
       .map((_) => _.duplicates)
 
     const checklist = await Checklist.query().where('id', checklistId).firstOrFail()
-    await checklist.load('cards')
+    await checklist.load('cards', (cards) => cards.whereNull('variant'))
     const validCards = checklist.cards.map((c) => c.number)
 
     const filterValid = (list: string[]) => list.filter((num) => validCards.includes(num)).join(',')

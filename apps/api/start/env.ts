@@ -23,6 +23,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   APP_URL: Env.schema.string({ format: 'url', tld: false }),
   WEB_ORIGINS: Env.schema.string.optional(),
   SESSION_COOKIE_DOMAIN: Env.schema.string.optional(),
+  SCRAPER_TRIGGER_TOKEN: Env.schema.string.optional(),
+  FIRECRAWL_API_KEY: Env.schema.string.optional(),
 
   // Session
   SESSION_DRIVER: Env.schema.enum(['cookie', 'memory', 'database'] as const),
@@ -41,5 +43,5 @@ export default await Env.create(new URL('../', import.meta.url), {
   | Variables for configuring @adonisjs/queue
   |----------------------------------------------------------
   */
-  QUEUE_DRIVER: Env.schema.enum(['redis', 'database', 'sync'] as const)
+  QUEUE_DRIVER: Env.schema.enum(['redis', 'database', 'sync'] as const),
 })

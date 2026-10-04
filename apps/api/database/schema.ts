@@ -33,8 +33,10 @@ export class AuthAccessTokenSchema extends BaseModel {
 }
 
 export class CardSchema extends BaseModel {
-  static $columns = ['checklistId', 'createdAt', 'holdCount', 'id', 'name', 'needCount', 'number', 'offerCount', 'order', 'ratio', 'section', 'status', 'type', 'updatedAt', 'version'] as const
+  static $columns = ['baseCardId', 'checklistId', 'createdAt', 'holdCount', 'id', 'name', 'needCount', 'number', 'offerCount', 'order', 'ratio', 'section', 'status', 'type', 'updatedAt', 'variant', 'version'] as const
   $columns = CardSchema.$columns
+  @column()
+  declare baseCardId: number | null
   @column()
   declare checklistId: number | null
   @column.dateTime({ autoCreate: true })
@@ -63,6 +65,8 @@ export class CardSchema extends BaseModel {
   declare type: string | null
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+  @column()
+  declare variant: string | null
   @column()
   declare version: number
 }
@@ -108,7 +112,7 @@ export class CategorySchema extends BaseModel {
 }
 
 export class ChecklistSchema extends BaseModel {
-  static $columns = ['categoryId', 'createdAt', 'id', 'name', 'status', 'subcategoryId', 'totalCards', 'type', 'updatedAt', 'version', 'year'] as const
+  static $columns = ['categoryId', 'createdAt', 'id', 'name', 'slug', 'status', 'subcategoryId', 'totalCards', 'type', 'updatedAt', 'version', 'year'] as const
   $columns = ChecklistSchema.$columns
   @column()
   declare categoryId: number | null
@@ -118,6 +122,8 @@ export class ChecklistSchema extends BaseModel {
   declare id: number
   @column()
   declare name: string
+  @column()
+  declare slug: string | null
   @column()
   declare status: string
   @column()
