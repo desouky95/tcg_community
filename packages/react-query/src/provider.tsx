@@ -1,14 +1,16 @@
-import { createContext, useContext, useEffect, type ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import type {
   ApiClient,
+  APIResponse,
   AuthSession,
   Category,
   Checklist,
+  QueryInput,
   User,
 } from "@tcg/api-contracts";
 
 export type QueryFallbacks = {
-  categories?: () => Category[];
+  categories?: () => APIResponse<Category[]>;
   checklists?: () => Checklist[];
   checklist?: (id: string) => Checklist | undefined;
   category?: (idOrSlug: string) => Category | undefined;
@@ -16,6 +18,7 @@ export type QueryFallbacks = {
 
 export type ApiHooksContextValue = {
   client: ApiClient;
+  defaultQuery?: QueryInput;
   isAuthenticated: boolean;
   onAuthenticated?: (session: AuthSession) => void;
 

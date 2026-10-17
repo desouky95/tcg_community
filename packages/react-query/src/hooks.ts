@@ -1,11 +1,9 @@
-import {
-  skipToken,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
+  ApiRequestOptions,
   Category,
+  CategoryCreatePayload,
+  CategoryUpdatePayload,
   APIResponse,
   Checklist,
   ChecklistWritePayload,
@@ -20,9 +18,13 @@ import type {
   SwapResult,
   User,
   UserChecklist,
+  Card,
+  ImportChecklistPayload,
 } from "@tcg/api-contracts";
+import { getQueryKey } from "@tcg/api-contracts";
 import { useApiHooksContext } from "./provider";
-import { queryKeys } from "./query-keys";
+import { queryKeys, withQueryKey } from "./query-keys";
+import type { UseCategoryMutationsArgs } from "./models";
 
 export function useAuth() {
   const { client, onAuthenticated, onLoggedOut } = useApiHooksContext();
@@ -48,51 +50,59 @@ export function useAuth() {
     onSuccess: () => onLoggedOut?.(),
   });
 
-  return { requestOtp, verifyOtp, login, signup,logout };
+  return { requestOtp, verifyOtp, login, signup, logout };
 }
 
 export function useRequestOtp() {
-  const {client} = useApiHooksContext()
-
   // return useQuery({
-    
   // })
 }
-export function useSession(enabled = true) {
-  const { client } = useApiHooksContext();
+export function useSession(enabled = true, requestOptions?: ApiRequestOptions) {
+  const { client, defaultQuery } = useApiHooksContext();
 
   const session = useQuery({
     enabled,
-    queryFn: async () => (await client.me()).data,
-    queryKey: queryKeys.me,
+    queryFn: async () => (await client.me(requestOptions)).data,
+    queryKey: withQueryKey(
+      queryKeys.me,
+      getQueryKey(defaultQuery, requestOptions),
+    ),
   });
 
   return { session };
 }
 
-export function useCategories() {
-  const { client, fallbacks } = useApiHooksContext();
-  return useQuery<Category[]>({
-    queryKey: queryKeys.categories,
+export function useCategories(requestOptions?: ApiRequestOptions) {
+  const { client, defaultQuery } = useApiHooksContext();
+  return useQuery({
+    queryKey: withQueryKey(
+      queryKeys.categories,
+      getQueryKey(defaultQuery, requestOptions),
+    ),
     queryFn: async () => {
       try {
-        return (await client.getCategories()).data.data;
+        return (await client.getCategories(requestOptions)).data;
       } catch (error) {
-        if (fallbacks?.categories) return fallbacks.categories();
         throw error;
       }
     },
   });
 }
 
-export function useCategory(idOrSlug: string | undefined) {
-  const { client, fallbacks } = useApiHooksContext();
+export function useCategory(
+  idOrSlug: string | undefined,
+  requestOptions?: ApiRequestOptions,
+) {
+  const { client, defaultQuery, fallbacks } = useApiHooksContext();
   return useQuery<Category | null>({
-    queryKey: queryKeys.category(idOrSlug),
+    queryKey: withQueryKey(
+      queryKeys.category(idOrSlug),
+      getQueryKey(defaultQuery, requestOptions),
+    ),
     enabled: Boolean(idOrSlug),
     queryFn: async () => {
       try {
-        return (await client.getCategory(idOrSlug!)).data.data;
+        return (await client.getCategory(idOrSlug!, requestOptions)).data.data;
       } catch (error) {
         if (fallbacks?.category) return fallbacks.category(idOrSlug!) ?? null;
         throw error;
@@ -101,15 +111,32 @@ export function useCategory(idOrSlug: string | undefined) {
   });
 }
 
-export function useCategoryMutations() {
+export function useCategoryMutations(options?: UseCategoryMutationsArgs) {
   const { client } = useApiHooksContext();
   const queryClient = useQueryClient();
-  const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: queryKeys.categories });
+  const invalidate = () => {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.categories });
+    void queryClient.invalidateQueries({ queryKey: ["category"] });
+  };
   return {
-    addCategory: useMutation({
-      mutationFn: async (name: string) => (await client.addCategory(name)).data,
-      onSuccess: invalidate,
+    createCategory: useMutation({
+      mutationFn: async (data: CategoryCreatePayload) =>
+        (await client.createCategory(data)).data,
+      onSuccess: (data, variables, onMutateResult, context) => {
+        options?.update?.onSuccess?.(data, variables, onMutateResult, context);
+        invalidate();
+      },
+      ...options?.update,
+    }),
+    updateCategory: useMutation({
+      mutationFn: async ({
+        id,
+        data,
+      }: {
+        id: string;
+        data: CategoryUpdatePayload;
+      }) => (await client.updateCategory(id, data)).data,
+      onSuccess: () => invalidate(),
     }),
     addSubcategory: useMutation({
       mutationFn: async ({
@@ -119,41 +146,93 @@ export function useCategoryMutations() {
         categoryId: string;
         name: string;
       }) => (await client.addSubcategory(categoryId, name)).data,
-      onSuccess: invalidate,
+      onSuccess: () => invalidate(),
     }),
     deleteCategory: useMutation({
       mutationFn: async (id: string) => (await client.deleteCategory(id)).data,
-      onSuccess: invalidate,
+      onSuccess: () => invalidate(),
     }),
   };
 }
 
-export function useChecklists() {
-  const { client, fallbacks } = useApiHooksContext();
+export function useChecklists(requestOptions?: ApiRequestOptions) {
+  const { client, defaultQuery, fallbacks } = useApiHooksContext();
   return useQuery<Checklist[]>({
-    queryKey: queryKeys.checklists,
+    queryKey: withQueryKey(
+      queryKeys.checklists,
+      getQueryKey(defaultQuery, requestOptions),
+    ),
     queryFn: async () => {
       try {
-        return (await client.getChecklists()).data.data;
+        return (await client.getChecklists(undefined, requestOptions)).data
+          .data;
       } catch (error) {
-        if (fallbacks?.checklists) return fallbacks.checklists();
+        if (fallbacks?.checklists && requestOptions?.fallback)
+          return fallbacks.checklists();
         throw error;
       }
     },
   });
 }
 
-export function useChecklist(id: string | undefined) {
-  const { client, fallbacks } = useApiHooksContext();
+export function useChecklist(
+  id: string | undefined,
+  requestOptions?: ApiRequestOptions,
+) {
+  const { client, defaultQuery, fallbacks } = useApiHooksContext();
   return useQuery<Checklist>({
-    queryKey: queryKeys.checklist(id),
+    queryKey: withQueryKey(
+      queryKeys.checklist(id),
+      getQueryKey(defaultQuery, requestOptions),
+    ),
     enabled: Boolean(id),
     queryFn: async () => {
       try {
-        return (await client.getChecklist(id!)).data.data;
+        return (await client.getChecklist(id!, requestOptions)).data.data;
       } catch (error) {
         const fallback = fallbacks?.checklist?.(id!);
         if (fallback) return fallback;
+        throw error;
+      }
+    },
+  });
+}
+
+export function useChecklistCards(
+  id?: string,
+  requestOptions?: ApiRequestOptions,
+) {
+  const { client, defaultQuery } = useApiHooksContext();
+  return useQuery<APIResponse<Card[]>>({
+    queryKey: withQueryKey(
+      queryKeys.checklistCards(id),
+      getQueryKey(defaultQuery, requestOptions),
+    ),
+    enabled: Boolean(id),
+    queryFn: async () => {
+      try {
+        return (await client.getChecklistCards(id!, requestOptions)).data;
+      } catch (error) {
+        throw error;
+      }
+    },
+  });
+}
+
+export function useDownloadChecklist(
+  id: string | undefined,
+  requestOptions?: ApiRequestOptions,
+) {
+  const { client, defaultQuery, fallbacks } = useApiHooksContext();
+  return useMutation<Blob>({
+    mutationKey: withQueryKey(
+      queryKeys.checklist(id),
+      getQueryKey(defaultQuery, requestOptions),
+    ),
+    mutationFn: async () => {
+      try {
+        return (await client.downloadChecklist(id!, requestOptions)).data;
+      } catch (error) {
         throw error;
       }
     },
@@ -201,21 +280,34 @@ export function useDeleteChecklist() {
   });
 }
 
-export function useUserChecklist(id?: string) {
-  const { client } = useApiHooksContext();
-  return useQuery<UserChecklist | null>({
-    queryKey: queryKeys.userChecklist(id),
+export function useUserChecklist(
+  id: string,
+  requestOptions?: ApiRequestOptions,
+) {
+  const { client, defaultQuery } = useApiHooksContext();
+  return useQuery<APIResponse<UserChecklist>>({
+    queryKey: withQueryKey(
+      queryKeys.userChecklist(id),
+      getQueryKey(defaultQuery, requestOptions),
+    ),
     enabled: Boolean(id),
-    queryFn: async () => (id ? (await client.getUserChecklist(id)).data : null),
+    queryFn: async () =>
+      (await client.getUserChecklist(id!, requestOptions)).data,
   });
 }
 
-export function useUserChecklistMutation(id?: string) {
-  const { client } = useApiHooksContext();
+export function useUserChecklistMutation(
+  id?: string,
+  requestOptions?: ApiRequestOptions,
+) {
+  const { client, defaultQuery } = useApiHooksContext();
   return useMutation({
-    mutationKey: queryKeys.userChecklist(id),
+    mutationKey: withQueryKey(
+      queryKeys.userChecklist(id),
+      getQueryKey(defaultQuery, requestOptions),
+    ),
     mutationFn: async () =>
-      id ? (await client.getUserChecklist(id)).data : null,
+      id ? (await client.getUserChecklist(id, requestOptions)).data : null,
   });
 }
 
@@ -233,28 +325,56 @@ export function useUpdateUserChecklist() {
   });
 }
 
-export function useUsers() {
-  const { client } = useApiHooksContext();
+export function useImportUserChecklist() {
+  const { client, notify } = useApiHooksContext();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: FormData }) =>
+      (await client.importUserChecklist(id, data)).data,
+    onSuccess: (_, { id }) => {
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.userChecklist(id),
+      });
+      notify?.success("Progress saved successfully");
+    },
+    onError: () => notify?.error("Failed to save progress"),
+  });
+}
+
+export function useUsers(requestOptions?: ApiRequestOptions) {
+  const { client, defaultQuery } = useApiHooksContext();
   return useQuery<User[]>({
-    queryKey: queryKeys.users,
-    queryFn: async () => (await client.getUsers()).data.data,
+    queryKey: withQueryKey(
+      queryKeys.users,
+      getQueryKey(defaultQuery, requestOptions),
+    ),
+    queryFn: async () => (await client.getUsers(requestOptions)).data.data,
   });
 }
 
-export function useProfile() {
-  const { client } = useApiHooksContext();
+export function useProfile(requestOptions?: ApiRequestOptions) {
+  const { client, defaultQuery } = useApiHooksContext();
   return useQuery<APIResponse<ExtendedUser>>({
-    queryKey: queryKeys.profile,
-    queryFn: async () => (await client.getProfile()).data,
+    queryKey: withQueryKey(
+      queryKeys.profile,
+      getQueryKey(defaultQuery, requestOptions),
+    ),
+    queryFn: async () => (await client.getProfile(requestOptions)).data,
   });
 }
 
-export function useUserInfo(id: string | undefined) {
-  const { client } = useApiHooksContext();
+export function useUserInfo(
+  id: string | undefined,
+  requestOptions?: ApiRequestOptions,
+) {
+  const { client, defaultQuery } = useApiHooksContext();
   return useQuery<APIResponse<ExtendedUser>>({
-    queryKey: queryKeys.user(id),
+    queryKey: withQueryKey(
+      queryKeys.user(id),
+      getQueryKey(defaultQuery, requestOptions),
+    ),
     enabled: Boolean(id),
-    queryFn: async () => (await client.getUserInfo(id!)).data,
+    queryFn: async () => (await client.getUserInfo(id!, requestOptions)).data,
   });
 }
 
@@ -288,12 +408,19 @@ export function useUpdateProfile() {
   });
 }
 
-export function useReviews(userId: string | undefined) {
-  const { client } = useApiHooksContext();
+export function useReviews(
+  userId: string | undefined,
+  requestOptions?: ApiRequestOptions,
+) {
+  const { client, defaultQuery } = useApiHooksContext();
   return useQuery<Review[]>({
-    queryKey: queryKeys.reviews(userId),
+    queryKey: withQueryKey(
+      queryKeys.reviews(userId),
+      getQueryKey(defaultQuery, requestOptions),
+    ),
     enabled: Boolean(userId),
-    queryFn: async () => (await client.getUserReviews(userId!)).data,
+    queryFn: async () =>
+      (await client.getUserReviews(userId!, requestOptions)).data,
   });
 }
 
@@ -321,25 +448,35 @@ export function useAddReview() {
   });
 }
 
-export function useConversations() {
-  const { client, isAuthenticated } = useApiHooksContext();
+export function useConversations(requestOptions?: ApiRequestOptions) {
+  const { client, defaultQuery, isAuthenticated } = useApiHooksContext();
   return useQuery<ConversationListDto[]>({
-    queryKey: queryKeys.conversations,
+    queryKey: withQueryKey(
+      queryKeys.conversations,
+      getQueryKey(defaultQuery, requestOptions),
+    ),
     enabled: isAuthenticated,
     refetchInterval: 10_000,
-    queryFn: async () => (await client.getConversations()).data.data,
+    queryFn: async () =>
+      (await client.getConversations(requestOptions)).data.data,
   });
 }
 
 export function useConversationMessages(
   conversationId: string | number | undefined,
+  page = 1,
+  requestOptions?: ApiRequestOptions,
 ) {
-  const { client } = useApiHooksContext();
+  const { client, defaultQuery } = useApiHooksContext();
   return useQuery<ConversationMessagesResponse>({
-    queryKey: queryKeys.messages(conversationId),
+    queryKey: withQueryKey(
+      queryKeys.messages(conversationId),
+      getQueryKey(defaultQuery, requestOptions, { page }),
+    ),
     enabled: Boolean(conversationId),
     refetchInterval: 3_000,
-    queryFn: async () => (await client.getMessages(conversationId!)).data,
+    queryFn: async () =>
+      (await client.getMessages(conversationId!, page, requestOptions)).data,
   });
 }
 
@@ -383,12 +520,19 @@ export function useSwapSearch() {
   });
 }
 
-export function useSwapMatch(id: number | string, enabled = true) {
-  const { client } = useApiHooksContext();
+export function useSwapMatch(
+  id: number | string,
+  enabled = true,
+  requestOptions?: ApiRequestOptions,
+) {
+  const { client, defaultQuery } = useApiHooksContext();
   return useQuery<SwapResult | undefined>({
-    queryKey: queryKeys.swapMatch(id),
+    queryKey: withQueryKey(
+      queryKeys.swapMatch(id),
+      getQueryKey(defaultQuery, requestOptions),
+    ),
     enabled: Boolean(id) && enabled,
-    queryFn: async () => (await client.userSwapMatch(id)).data,
+    queryFn: async () => (await client.userSwapMatch(id, requestOptions)).data,
   });
 }
 
@@ -445,14 +589,25 @@ export function useUpdatePostalDeal(conversationId: number) {
   });
 }
 
-export function useDashboardStats() {
-  const users = useUsers();
-  const collections = useChecklists();
-  const categories = useCategories();
+export function useDashboardStats(requestOptions?: ApiRequestOptions) {
+  const users = useUsers(requestOptions);
+  const collections = useChecklists(requestOptions);
+  const categories = useCategories(requestOptions);
   return {
     users: users.data,
     collections: collections.data,
     categories: categories.data,
     isLoading: users.isLoading || collections.isLoading || categories.isLoading,
   };
+}
+
+export function useScrapperList(requestOptions?: ApiRequestOptions) {
+  const { client, defaultQuery } = useApiHooksContext();
+  return useQuery({
+    queryKey: withQueryKey(
+      queryKeys.scrapperList,
+      getQueryKey(defaultQuery, requestOptions),
+    ),
+    queryFn: async () => (await client.getScrapperList(requestOptions)).data,
+  });
 }

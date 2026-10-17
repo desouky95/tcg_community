@@ -1,21 +1,53 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import {
+  initServerI18next,
+  getT,
+  getResources,
+  generateI18nStaticParams,
+} from "next-i18next/server";
+import { I18nProvider } from "next-i18next/client";
+import i18nConfig from "../i18n.config";
 import Providers from "./providers";
+import { Metadata } from "next";
+import { Suspense } from "react";
+import { PageAnimatePresence } from "@tcg/ui-web/next";
+import "./globals.css";
+initServerI18next(i18nConfig);
 
 export const metadata: Metadata = {
   title: "TCG Nexus | Collect, trade, belong",
   description:
     "An Egypt-first home for collectors, checklists, and thoughtful trades.",
 };
+export async function generateStaticParams() {
+  return generateI18nStaticParams();
+}
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  
+export default async function RootLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ lng: string }>;
+}) {
+  const { lng } = await params;
+  const { i18n } = await getT();
+  const resources = getResources(i18n);
+
+  if (process.env.NODE_ENV === "development") {
+    await i18n.reloadResources();
+  }
+
   return (
-    <html lang="en">
+    <html lang={lng}>
       <body>
-        <Providers>{children}</Providers>
+        <I18nProvider language={lng} resources={resources}>
+          <Suspense fallback={null}>
+            <Providers>
+              <PageAnimatePresence>{children}</PageAnimatePresence>
+            </Providers>
+          </Suspense>
+        </I18nProvider>
       </body>
     </html>
   );
 }
-

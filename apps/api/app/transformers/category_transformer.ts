@@ -13,4 +13,15 @@ export default class CategoryTransformer extends BaseTransformer<Category> {
       userChecklists,
     }
   }
+
+  show() {
+    return {
+      ...this.pick(this.resource, ['id', 'name', 'parentId', 'children', 'slug', 'checklists']),
+      // checklists: [
+      //   ...this.resource.checklists,
+      //   ...((this.whenLoaded(this.resource.children.flatMap((child) => child.checklists))
+      //     .value as any) || []),
+      // ],
+    }
+  }
 }

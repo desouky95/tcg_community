@@ -2,10 +2,20 @@ import type { AxiosError } from "axios";
 
 export type Id = string | number;
 
+export type FilterItem = {
+  name: string;
+  display: string;
+  options: FilterOption[];
+};
+export type FilterOption = {
+  value: number | string;
+  display: string;
+};
 export type APIResponseMeta = {
   version?: number;
   serverTimestamp?: string;
   nextCursor?: string | null;
+  filters?: Array<FilterItem>;
 };
 
 export type APIResponse<T, M extends object = APIResponseMeta> = {
@@ -16,11 +26,22 @@ export type APIResponse<T, M extends object = APIResponseMeta> = {
 export type Category = {
   id: string;
   name: string;
-  slug?: string;
+  slug: string;
   parentId: number;
   children: Category[];
   parent?: Category;
   checklists?: Checklist[];
+};
+
+export type CategoryCreatePayload = {
+  name: string;
+  parentId?: string;
+  subcategories?: string[];
+};
+
+export type CategoryUpdatePayload = {
+  name: string;
+  parentId?: string;
 };
 
 export type ExtendedCategory = Omit<Category, "children"> & {
@@ -89,6 +110,7 @@ export type Card = {
   holdCount?: number;
   offerCount?: number;
   ratio?: string;
+  order: number;
 };
 
 export type CardDetail = {
@@ -109,6 +131,11 @@ export type Checklist = {
   subcategory?: Category;
   cards?: Card[];
   userChecklist?: UserChecklist;
+  coverImageUrl?: string | null;
+  slug: string;
+  needs: number;
+  holds: number;
+  offers: number;
 };
 
 export type UserSnippet = { id: number; username: string; fullName: string };
@@ -193,7 +220,12 @@ export type ConversationMessagesApiResponse = APIResponse<
 };
 
 export type LastLogin =
-  "online" | "today" | "week" | "month" | "6months" | "all";
+  | "online"
+  | "today"
+  | "week"
+  | "month"
+  | "6months"
+  | "all";
 export type SearchFilters = {
   checklists?: number[];
   regions: string;
@@ -249,12 +281,40 @@ export type ProposeSwapDealInput = {
   requested_cards: string;
 };
 
-export type ChecklistWriteInput = Partial<
-  Pick<
-    Checklist,
-    "name" | "year" | "type" | "totalCards" | "categoryId" | "subcategoryId"
-  >
->;
-export type ChecklistWritePayload = ChecklistWriteInput | FormData;
+export type ChecklistWriteFields = {
+  totalCards?: number | string;
+  type: "sticker" | "card";
+  name: string;
+  year: string;
+  categoryId: string;
+};
+
+export type ChecklistWritePayload = ChecklistWriteFields | FormData;
 
 export { AxiosError } from "axios";
+
+export type ScrapperCollection = {
+  job: {
+    name: string;
+    parentPath: string;
+  };
+  collections: {
+    name: string;
+    content: {
+      source: string;
+      key: string;
+      sourceUrl: string;
+      scrapedAt: Date;
+      title: string;
+      year: number;
+      advertisedCardCount: number | null;
+      checklistCardCount: number;
+      imageUrl: string;
+    };
+  }[];
+};
+
+export type ImportChecklistPayload = {
+  file: File;
+  treatEmptyAsMissing: boolean;
+};

@@ -1,9 +1,11 @@
-'use client';
+"use client";
 export const queryKeys = {
-  categories: ["categories"] ,
+  categories: ["categories"],
   category: (id: string | undefined) => ["category", id] as const,
   checklists: ["checklists"] as const,
   checklist: (id: string | undefined) => ["checklists", id] as const,
+  checklistCards: (id: string | undefined) =>
+    ["checklists", "cards", id] as const,
   userChecklist: (id: string | undefined) => ["user-checklist", id] as const,
   users: ["users"] as const,
   user: (id: string | undefined) => ["users", id] as const,
@@ -14,4 +16,12 @@ export const queryKeys = {
   swapMatch: (id: string | number) => ["user-match", id] as const,
   swaps: ["swaps"] as const,
   me: ["auth", "me"] as const,
+  scrapperList: ["scrapper-list"] as const,
 };
+
+export function withQueryKey<Key extends readonly unknown[]>(
+  key: Key,
+  queryKey: string,
+) {
+  return queryKey ? ([...key, { query: queryKey }] as const) : key;
+}

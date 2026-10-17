@@ -4,6 +4,10 @@ import { randomUUID } from 'node:crypto'
 import Category from '#models/category'
 import Checklist from '#models/checklist'
 import Card from '#models/card'
+import { createCategoryValidator, updateCategoryValidator } from '#validators/category'
+import { categoryService } from '#services/category_service'
+import paginationService from '#services/pagination_service'
+import filtering from '#services/filtering_service'
 
 export default class CatalogueController {
   private requestId(request: HttpContext['request']) {
@@ -22,6 +26,19 @@ export default class CatalogueController {
     return response.status(status).json({ error: { code, message } })
   }
 
+  private categoryNames(value: unknown) {
+    if (!Array.isArray(value)) return []
+    return value.map((name) => String(name).trim())
+  }
+
+  private async activeParent(id: number) {
+    return Category.query()
+      .where('id', id)
+      .where('parentId', -1)
+      .whereNot('status', 'archived')
+      .first()
+  }
+
   private page(request: HttpContext['request']) {
     const limit = Math.min(Math.max(Number(request.input('limit', 20)) || 20, 1), 100)
     const cursor = String(request.input('cursor', ''))
@@ -35,32 +52,29 @@ export default class CatalogueController {
     return count === limit ? Buffer.from(String(offset + limit)).toString('base64url') : null
   }
 
-  async categories({ request }: HttpContext) {
-    const { limit, offset } = this.page(request)
+  async categories({ response }: HttpContext) {
     const query = Category.query()
       .where('parentId', -1)
       .whereNot('status', 'archived')
       .preload('children', (children) => children.whereNot('status', 'archived'))
       .orderBy('id', 'asc')
-    const categories = await query.offset(offset).limit(limit)
-    return this.envelope(request, categories, {
-      nextCursor: this.nextCursor(offset, limit, categories.length),
-    })
+    // filtering.filter(query, { allowedFields: ['status'] })
+    const result = await paginationService.paginate<typeof Category>(query)
+    return response.api(result.data, result.meta)
   }
 
   async category({ request, params, response }: HttpContext) {
     const category = await Category.query()
-      .where((query) => query.where('id', params.id).orWhere('slug', params.id))
+      .where('slug', params.id)
       .whereNot('status', 'archived')
       .preload('children', (children) => children.whereNot('status', 'archived'))
       .preload('checklists', (checklists) => checklists.whereNot('status', 'archived'))
       .first()
     if (!category) return this.error(response, 'not_found', 'Category not found', 404)
-    return this.envelope(request, category)
+    return response.api(category)
   }
 
-  async checklists({ request }: HttpContext) {
-    const { limit, offset } = this.page(request)
+  async checklists({ request, response }: HttpContext) {
     const query = Checklist.query()
       .whereNot('status', 'archived')
       .preload('category')
@@ -72,10 +86,8 @@ export default class CatalogueController {
     if (q) query.whereILike('name', `%${q}%`)
     if (categoryId) query.where('categoryId', categoryId)
     if (subcategoryId) query.where('subcategoryId', subcategoryId)
-    const checklists = await query.offset(offset).limit(limit)
-    return this.envelope(request, checklists, {
-      nextCursor: this.nextCursor(offset, limit, checklists.length),
-    })
+    const checklists = await paginationService.paginate<typeof Checklist>(query)
+    return response.api(checklists.data, checklists.meta)
   }
 
   async checklist({ request, params, response }: HttpContext) {
@@ -139,35 +151,41 @@ export default class CatalogueController {
     return this.envelope(request, { card, baseCard, variants })
   }
 
-  async createCategory({ request, response }: HttpContext) {
-    const name = String(request.input('name', '')).trim()
-    if (!name) return this.error(response, 'validation_error', 'Name is required')
-    const parentId = Number(request.input('parentId', -1))
-    const category = await Category.create({
-      name,
-      parentId,
-      status: request.input('status', 'draft'),
-      version: 1,
-    })
-    return response.status(201).json(this.envelope(request, category))
-  }
+  async updateCategory(ctx: HttpContext) {
+    const { request, response, params } = ctx
+    const data = await request.validateUsing(updateCategoryValidator)
 
-  async updateCategory({ request, params, response }: HttpContext) {
-    const category = await Category.find(params.id)
-    if (!category || category.status === 'archived')
-      return this.error(response, 'not_found', 'Category not found', 404)
-    const conflict = this.checkVersion(request, category.version)
-    if (conflict) return this.error(response, 'conflict', conflict, 409)
-    const name = request.input('name')
-    if (name !== undefined && !String(name).trim())
-      return this.error(response, 'validation_error', 'Name is required')
-    category.merge({
-      name: name === undefined ? category.name : String(name).trim(),
-      status: request.input('status', category.status),
-    })
-    category.version += 1
-    await category.save()
-    return response.json(this.envelope(request, category))
+    const category = await categoryService.withContext(ctx).updateCategory(params.id, data)
+
+    return response.status(200).json(this.envelope(request, category))
+
+    // const parentId = request.input('parentId')
+    // if (parentId !== undefined) {
+    //   const nextParentId = Number(parentId)
+    //   if (
+    //     category.parentId === -1 ||
+    //     !Number.isInteger(nextParentId) ||
+    //     nextParentId < 1 ||
+    //     !(await this.activeParent(nextParentId))
+    //   ) {
+    //     return this.error(response, 'validation_error', 'Parent category is invalid')
+    //   }
+    // }
+    // const nextName = name === undefined ? category.name : String(name).trim()
+    // const nameConflict = await Category.query()
+    //   .where('name', nextName)
+    //   .whereNot('id', category.id)
+    //   .first()
+    // if (nameConflict)
+    //   return this.error(response, 'validation_error', 'A category with this name already exists')
+    // category.merge({
+    //   name: nextName,
+    //   ...(parentId === undefined ? {} : { parentId: Number(parentId) }),
+    //   status: request.input('status', category.status),
+    // })
+    // category.version += 1
+    // await category.save()
+    // return response.json(this.envelope(request, category))
   }
 
   async archiveCategory({ request, params, response }: HttpContext) {
@@ -183,11 +201,12 @@ export default class CatalogueController {
   }
 
   async createSubcategory({ request, params, response }: HttpContext) {
-    const parent = await Category.find(params.id)
-    if (!parent || parent.status === 'archived')
-      return this.error(response, 'not_found', 'Parent category not found', 404)
+    const parent = await this.activeParent(Number(params.id))
+    if (!parent) return this.error(response, 'not_found', 'Parent category not found', 404)
     const name = String(request.input('name', '')).trim()
     if (!name) return this.error(response, 'validation_error', 'Name is required')
+    if (await Category.query().where('name', name).first())
+      return this.error(response, 'validation_error', 'A category with this name already exists')
     const category = await Category.create({
       name,
       parentId: parent.id,

@@ -7,6 +7,150 @@ import type { InferInput, SimpleError } from '@vinejs/vine/types'
 export type ParamValue = string | number | bigint | boolean
 
 export interface Registry {
+  'drive.fs.serve': {
+    methods: ["GET","HEAD"]
+    pattern: '/uploads/*'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { '*': ParamValue[] }
+      query: {}
+      response: unknown
+      errorResponse: unknown
+    }
+  }
+  'catalogue.create_category': {
+    methods: ["POST"]
+    pattern: '/api/v1/categories'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createCategory']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createCategory']>>>
+    }
+  }
+  'catalogue.update_category': {
+    methods: ["PUT"]
+    pattern: '/api/v1/categories/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/category').updateCategoryValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/category').updateCategoryValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['updateCategory']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['updateCategory']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'catalogue.archive_category': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/categories/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveCategory']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveCategory']>>>
+    }
+  }
+  'catalogue.create_subcategory': {
+    methods: ["POST"]
+    pattern: '/api/v1/categories/:id/subcategories'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createSubcategory']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createSubcategory']>>>
+    }
+  }
+  'checklists.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/checklists'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/checklist').createChecklistValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/checklist').createChecklistValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'checklists.update': {
+    methods: ["PUT"]
+    pattern: '/api/v1/checklists/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/checklist').updateChecklistValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/checklist').updateChecklistValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'catalogue.archive_checklist': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/checklists/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveChecklist']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveChecklist']>>>
+    }
+  }
+  'catalogue.validate_import': {
+    methods: ["POST"]
+    pattern: '/api/v1/admin/catalogue-imports/validate'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['validateImport']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['validateImport']>>>
+    }
+  }
+  'catalogue.commit_import': {
+    methods: ["POST"]
+    pattern: '/api/v1/admin/catalogue-imports/:id/commit'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['commitImport']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['commitImport']>>>
+    }
+  }
+  'catalogue.rollback_import': {
+    methods: ["POST"]
+    pattern: '/api/v1/admin/catalogue-imports/:id/rollback'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['rollbackImport']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['rollbackImport']>>>
+    }
+  }
+  'admin.block_user': {
+    methods: ["POST"]
+    pattern: '/api/v1/admin/users/:id/block'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['blockUser']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['blockUser']>>>
+    }
+  }
   'auth.request_otp': {
     methods: ["POST"]
     pattern: '/api/v1/auth/request-otp'
@@ -103,7 +247,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['logout']>>>
     }
   }
-  'catalogue.categories': {
+  'categories.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/categories'
     types: {
@@ -111,11 +255,11 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['categories']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['categories']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['index']>>>
     }
   }
-  'catalogue.category': {
+  'categories.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/categories/:id'
     types: {
@@ -123,11 +267,11 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['category']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['category']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/categories_controller').default['show']>>>
     }
   }
-  'catalogue.checklists': {
+  'checklists.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/checklists'
     types: {
@@ -135,11 +279,23 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['checklists']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['checklists']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['index']>>>
     }
   }
-  'catalogue.checklist': {
+  'checklists.cover': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/checklists/:id/cover'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['cover']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['cover']>>>
+    }
+  }
+  'checklists.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/checklists/:id'
     types: {
@@ -147,152 +303,224 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['checklist']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['checklist']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['show']>>>
     }
   }
-  'catalogue.cards': {
+  'checklists.download': {
     methods: ["GET","HEAD"]
-    pattern: '/api/v1/catalogue/cards'
+    pattern: '/api/v1/checklists/:id/download'
     types: {
       body: {}
-      paramsTuple: []
-      params: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['cards']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['cards']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['download']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['download']>>>
     }
   }
-  'catalogue.card': {
+  'cards.index': {
     methods: ["GET","HEAD"]
-    pattern: '/api/v1/catalogue/cards/:id'
+    pattern: '/api/v1/checklists/:id/cards'
     types: {
       body: {}
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['card']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['card']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cards_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cards_controller').default['index']>>>
     }
   }
-  'catalogue.create_category': {
+  'checklists.import': {
     methods: ["POST"]
-    pattern: '/api/v1/categories'
+    pattern: '/api/v1/checklists/:id/import'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/checklist').importChecklistValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/checklist').importChecklistValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['import']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['import']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'conversations.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/conversations'
     types: {
       body: {}
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createCategory']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createCategory']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['index']>>>
     }
   }
-  'catalogue.update_category': {
-    methods: ["PUT"]
-    pattern: '/api/v1/categories/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['updateCategory']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['updateCategory']>>>
-    }
-  }
-  'catalogue.archive_category': {
-    methods: ["DELETE"]
-    pattern: '/api/v1/categories/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveCategory']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveCategory']>>>
-    }
-  }
-  'catalogue.create_subcategory': {
+  'conversations.find_or_create': {
     methods: ["POST"]
-    pattern: '/api/v1/categories/:id/subcategories'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createSubcategory']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createSubcategory']>>>
-    }
-  }
-  'catalogue.create_checklist': {
-    methods: ["POST"]
-    pattern: '/api/v1/checklists'
+    pattern: '/api/v1/conversations/find-or-create'
     types: {
       body: {}
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createChecklist']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['createChecklist']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['findOrCreate']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['findOrCreate']>>>
     }
   }
-  'catalogue.update_checklist': {
-    methods: ["PUT"]
-    pattern: '/api/v1/checklists/:id'
+  'conversations.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/conversations/:id'
     types: {
       body: {}
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['updateChecklist']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['updateChecklist']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['show']>>>
     }
   }
-  'catalogue.archive_checklist': {
-    methods: ["DELETE"]
-    pattern: '/api/v1/checklists/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveChecklist']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveChecklist']>>>
-    }
-  }
-  'catalogue.validate_import': {
+  'conversations.store_message': {
     methods: ["POST"]
-    pattern: '/api/v1/admin/catalogue-imports/validate'
+    pattern: '/api/v1/conversations/:id/messages'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['storeMessage']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['storeMessage']>>>
+    }
+  }
+  'scrappers.collections': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/scrapper/collections'
     types: {
       body: {}
       paramsTuple: []
       params: {}
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['validateImport']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['validateImport']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['collections']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['collections']>>>
     }
   }
-  'catalogue.commit_import': {
+  'scrappers.scrapped': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/scrapper/done'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['scrapped']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['scrapped']>>>
+    }
+  }
+  'scrappers.start': {
     methods: ["POST"]
-    pattern: '/api/v1/admin/catalogue-imports/:id/commit'
+    pattern: '/api/v1/scrapper/jobs'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/scraper').startScrapeJobValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/scraper').startScrapeJobValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['start']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['start']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'scrappers.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/scrapper/jobs/:jobId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { jobId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['show']>>>
+    }
+  }
+  'swaps.search': {
+    methods: ["POST"]
+    pattern: '/api/v1/swaps/search'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/swap').swapSearchValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/swap').swapSearchValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swaps_controller').default['search']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swaps_controller').default['search']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'swaps.match': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/swaps/:userId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { userId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swaps_controller').default['match']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swaps_controller').default['match']>>>
+    }
+  }
+  'swap_deals.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/swap-deals'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['store']>>>
+    }
+  }
+  'swap_deals.accept': {
+    methods: ["POST"]
+    pattern: '/api/v1/swap-deals/:id/accept'
     types: {
       body: {}
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['commitImport']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['commitImport']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['accept']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['accept']>>>
     }
   }
-  'catalogue.rollback_import': {
+  'swap_deals.update_postal': {
     methods: ["POST"]
-    pattern: '/api/v1/admin/catalogue-imports/:id/rollback'
+    pattern: '/api/v1/swap-deals/:id/postal'
     types: {
       body: {}
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['rollbackImport']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['rollbackImport']>>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['updatePostal']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['updatePostal']>>>
+    }
+  }
+  'swap_deals.mark_received': {
+    methods: ["POST"]
+    pattern: '/api/v1/swap-deals/:id/received'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['markReceived']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['markReceived']>>>
+    }
+  }
+  'swap_deals.scan_qr': {
+    methods: ["POST"]
+    pattern: '/api/v1/swap-deals/:id/scan-qr'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['scanQr']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['scanQr']>>>
     }
   }
   'reviews.index': {
@@ -343,18 +571,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['listUsers']>>>
     }
   }
-  'admin.block_user': {
-    methods: ["POST"]
-    pattern: '/api/v1/admin/users/:id/block'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['blockUser']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['blockUser']>>>
-    }
-  }
   'user_checklists.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/user-checklists/:id'
@@ -379,7 +595,7 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/user_checklists_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'user_checklists.import_excel': {
+  'user_checklists.import': {
     methods: ["POST"]
     pattern: '/api/v1/user-checklists/:id/import'
     types: {
@@ -387,8 +603,8 @@ export interface Registry {
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
       query: ExtractQuery<InferInput<(typeof import('#validators/user_checklist').importUpdateChecklist)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/user_checklists_controller').default['importExcel']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/user_checklists_controller').default['importExcel']>>> | { status: 422; response: { errors: SimpleError[] } }
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/user_checklists_controller').default['import']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/user_checklists_controller').default['import']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'profile.show': {
@@ -461,174 +677,6 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#validators/identity').accountActionValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deletePersonalData']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deletePersonalData']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
-  'swaps.search': {
-    methods: ["POST"]
-    pattern: '/api/v1/swaps/search'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/swap').swapSearchValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/swap').swapSearchValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swaps_controller').default['search']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swaps_controller').default['search']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
-  'swaps.match': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/swaps/:userId'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { userId: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swaps_controller').default['match']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swaps_controller').default['match']>>>
-    }
-  }
-  'conversations.index': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/conversations'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['index']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['index']>>>
-    }
-  }
-  'conversations.find_or_create': {
-    methods: ["POST"]
-    pattern: '/api/v1/conversations/find-or-create'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['findOrCreate']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['findOrCreate']>>>
-    }
-  }
-  'conversations.show': {
-    methods: ["GET","HEAD"]
-    pattern: '/api/v1/conversations/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['show']>>>
-    }
-  }
-  'conversations.store_message': {
-    methods: ["POST"]
-    pattern: '/api/v1/conversations/:id/messages'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['storeMessage']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/conversations_controller').default['storeMessage']>>>
-    }
-  }
-  'swap_deals.store': {
-    methods: ["POST"]
-    pattern: '/api/v1/swap-deals'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['store']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['store']>>>
-    }
-  }
-  'swap_deals.accept': {
-    methods: ["POST"]
-    pattern: '/api/v1/swap-deals/:id/accept'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['accept']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['accept']>>>
-    }
-  }
-  'swap_deals.update_postal': {
-    methods: ["POST"]
-    pattern: '/api/v1/swap-deals/:id/postal'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['updatePostal']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['updatePostal']>>>
-    }
-  }
-  'swap_deals.mark_received': {
-    methods: ["POST"]
-    pattern: '/api/v1/swap-deals/:id/received'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['markReceived']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['markReceived']>>>
-    }
-  }
-  'swap_deals.scan_qr': {
-    methods: ["POST"]
-    pattern: '/api/v1/swap-deals/:id/scan-qr'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['scanQr']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['scanQr']>>>
-    }
-  }
-  'scrappers.collections': {
-    methods: ["GET","HEAD"]
-    pattern: '/scrapper/collections'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['collections']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['collections']>>>
-    }
-  }
-  'scrappers.start': {
-    methods: ["POST"]
-    pattern: '/scrapper/jobs'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/scraper').startScrapeJobValidator)>>
-      paramsTuple: []
-      params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/scraper').startScrapeJobValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['start']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['start']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
-  'scrappers.show': {
-    methods: ["GET","HEAD"]
-    pattern: '/scrapper/jobs/:jobId'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { jobId: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/scrappers_controller').default['show']>>>
     }
   }
 }

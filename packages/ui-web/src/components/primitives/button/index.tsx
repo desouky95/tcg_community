@@ -1,8 +1,18 @@
 "use client";
 
 import { Slot } from "@radix-ui/react-slot";
-import { cloneElement, isValidElement, type ComponentPropsWithRef, type ReactElement } from "react";
-import { buttonStyles, type ButtonTone, type ButtonVariant, type ControlSize } from "../../../lib/component-styles";
+import {
+  cloneElement,
+  isValidElement,
+  type ComponentPropsWithRef,
+  type ReactElement,
+} from "react";
+import {
+  buttonStyles,
+  type ButtonTone,
+  type ButtonVariant,
+  type ControlSize,
+} from "../../../lib/component-styles";
 
 export type ButtonProps = ComponentPropsWithRef<"button"> & {
   asChild?: boolean;
@@ -33,25 +43,60 @@ export function Button({
     "data-state": loading ? "loading" : disabled ? "disabled" : "ready",
     "data-tone": tone,
     "data-variant": variant,
-    className: buttonStyles({ variant, size, tone, className: `ui-button ${className ?? ""}` }),
+    className: buttonStyles({
+      variant,
+      size,
+      tone,
+      className,
+    }),
   };
 
   if (asChild) {
     // Slot composes child handlers first; guard the child as well as the wrapper.
-    const child = isDisabled && isValidElement(children)
-      ? cloneElement(children as ReactElement<ComponentPropsWithRef<"button">>, {
-          onClick: (event) => { event.preventDefault(); event.stopPropagation(); },
-          onKeyDown: (event) => {
-            if (event.key === "Enter" || event.key === " ") { event.preventDefault(); event.stopPropagation(); }
-          },
-          tabIndex: -1,
-        })
-      : children;
-    return <Comp {...props} {...sharedProps}
-      onClick={isDisabled ? (event) => { event.preventDefault(); event.stopPropagation(); } : props.onClick}
-      onKeyDown={isDisabled ? (event) => { if (event.key === "Enter" || event.key === " ") event.preventDefault(); } : props.onKeyDown}
-      tabIndex={isDisabled ? -1 : props.tabIndex}
-    >{child}</Comp>;
+    const child =
+      isDisabled && isValidElement(children)
+        ? cloneElement(
+            children as ReactElement<ComponentPropsWithRef<"button">>,
+            {
+              onClick: (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+              },
+              onKeyDown: (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+              },
+              tabIndex: -1,
+            },
+          )
+        : children;
+    return (
+      <Comp
+        {...props}
+        {...sharedProps}
+        onClick={
+          isDisabled
+            ? (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+            : props.onClick
+        }
+        onKeyDown={
+          isDisabled
+            ? (event) => {
+                if (event.key === "Enter" || event.key === " ")
+                  event.preventDefault();
+              }
+            : props.onKeyDown
+        }
+        tabIndex={isDisabled ? -1 : props.tabIndex}
+      >
+        {child}
+      </Comp>
+    );
   }
 
   return (
@@ -62,7 +107,10 @@ export function Button({
       {...sharedProps}
     >
       {loading && (
-        <span aria-hidden="true" className="size-3.5 animate-spin rounded-full border-2 border-current border-e-transparent" />
+        <span
+          aria-hidden="true"
+          className="size-3.5 animate-spin rounded-full border-2 border-current border-e-transparent"
+        />
       )}
       {children}
     </Comp>

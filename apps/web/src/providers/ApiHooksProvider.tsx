@@ -7,6 +7,7 @@ import {
 import type { Category } from "@tcg/api-contracts";
 import toast from "react-hot-toast";
 import { api } from "../lib/api";
+import { useDefaultApiQuery } from "../lib/request-query";
 import {
   mockCategories,
   mockChecklistDetails,
@@ -27,12 +28,14 @@ function findCategory(
 
 export const SessionWrapper = ({ children }: { children: ReactNode }) => {
   const setUser = useStore((state) => state.setUser);
+  const defaultQuery = useDefaultApiQuery();
   return (
     <TcgSessionProvider
       onSessionChange={(session) => {
         setUser(session.data);
       }}
       client={api}
+      defaultQuery={defaultQuery}
     >
       {children}
     </TcgSessionProvider>
@@ -40,10 +43,12 @@ export const SessionWrapper = ({ children }: { children: ReactNode }) => {
 };
 export function ApiHooksProvider({ children }: { children: ReactNode }) {
   const { client, status } = useTcgSession();
+  const defaultQuery = useDefaultApiQuery();
 
   return (
     <TcgApiProvider
       client={client}
+      defaultQuery={defaultQuery}
       isAuthenticated={status === "authenticated"}
       notify={{ success: toast.success, error: toast.error }}
       fallbacks={{

@@ -5,7 +5,15 @@ import UserChecklistTransformer from './user_checklist_transformer.ts'
 export default class ChecklistTransformer extends BaseTransformer<Checklist> {
   toObject() {
     return {
-      ...this.pick(this.resource, ['id', 'name', 'year', 'type', 'totalCards', 'cards']),
+      ...this.pick(this.resource, [
+        'id',
+        'name',
+        'year',
+        'type',
+        'totalCards',
+        'cards',
+        'coverImageUrl',
+      ]),
       // userChecklist: UserChecklistTransformer.transform(
       //   this.whenLoaded(this.resource.userChecklist[0])
       // ),

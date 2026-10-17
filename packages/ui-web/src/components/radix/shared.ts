@@ -1,6 +1,6 @@
 export const overlayClass =
   "fixed inset-0 z-50 bg-wax-ink/40 backdrop-blur-md data-[state=closed]:animate-out data-[state=open]:animate-in";
-
+export const transparentOverlayClass = "fixed inset-0 z-50 data-[state=closed]:animate-out data-[state=open]:animate-in";
 export const floatingPanelClass =
   "z-60 rounded-md border border-wax-line bg-wax-card text-wax-ink shadow-pop";
 

@@ -1,13 +1,18 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
-import { useState, useTransition, type ComponentPropsWithoutRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useTransition,
+  type ComponentPropsWithoutRef,
+} from "react";
 import { cn } from "../../../lib/cn";
 import { Button } from "../../primitives/button";
 import { IconButton } from "../../primitives/icon-button";
 import { Dialog } from "../../radix/dialog";
-import { NativeLink } from "../native-link";
 import type { LinkComponent } from "../types";
+import { NativeLink } from "../native-link";
 
 export type PublicNavItem = { href: string; label: string };
 export const publicLinks: readonly PublicNavItem[] = [
@@ -21,21 +26,26 @@ export type PublicHeaderProps = ComponentPropsWithoutRef<"header"> & {
   currentPath?: string;
   authenticated?: boolean;
   links?: readonly PublicNavItem[];
+  applink?: string;
+  isNext?: boolean;
 };
 
 export function PublicHeader({
-  Link = NativeLink,
   currentPath = "",
   authenticated = false,
   links = publicLinks,
   className,
+  applink,
+  isNext = false,
   ...props
 }: PublicHeaderProps) {
+
+  const Link = NativeLink;
   const [menuOpen, setMenuOpen] = useState(false);
   const isActive = (path: string) =>
     currentPath === path ||
     (path !== "/" && currentPath.startsWith(`${path}/`));
-  const actionHref = authenticated ? "/dashboard" : "/signup";
+  const actionHref = authenticated ? applink || "" : "/signup";
   const actionLabel = authenticated ? "Collector desk" : "Join the club";
   return (
     <header
@@ -86,9 +96,19 @@ export function PublicHeader({
             Sign in
           </Link>
         )}
-        <Button asChild size="sm" className="hidden sm:inline-flex">
-          <Link href={actionHref}>{actionLabel}</Link>
-        </Button>
+        {!authenticated && (
+          <Button asChild size="sm" className="hidden sm:inline-flex">
+            <Link href={actionHref}>{actionLabel}</Link>
+          </Button>
+        )}
+
+        {authenticated && (
+          <Button>
+            <a href={actionHref} rel="noopener noreferrer">
+              {actionLabel}
+            </a>
+          </Button>
+        )}
         <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
           <Dialog.Trigger asChild>
             <IconButton

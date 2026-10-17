@@ -63,7 +63,7 @@ export const PackGallery: React.FC<PackGalleryProps> = ({ packs }) => {
       <motion.div className="wax-pack-track" style={{ x }}>
         {duplicatedPacks.map((pack, i) => (
           <div key={i} className="wax-pack-item">
-            <TiltCard pack={pack} className="wax-pack-card">
+            <TiltCard pack={pack} >
               {packs[random].name === pack.name &&
                 pack.canOpen &&
                 pack.cardImages?.length && (

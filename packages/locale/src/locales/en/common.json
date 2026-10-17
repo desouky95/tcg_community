@@ -57,12 +57,14 @@
   },
   "common": {
     "back": "Back",
+    "to": "to",
     "search": "Search",
     "loading": "Loading...",
     "no_data": "No data available.",
     "edit": "Edit",
     "update": "Update",
     "publish": "Publish",
+    "cancel": "Cancel",
     "region": "Region",
     "governorates": {
       "Cairo": "Cairo",
@@ -94,8 +96,38 @@
       "North Sinai": "North Sinai"
     }
   },
-  
+
   "admin": {
+    "navigation": {
+      "overview": "Overview",
+      "users": "Members",
+      "collections": "Checklists",
+      "categories": "Taxonomy",
+      "scrapper": "Scraper",
+      "marketplace": "Marketplace"
+    },
+    "shell": {
+      "control_center": "Admin control center",
+      "navigation_label": "Administration",
+      "operations": "Operations",
+      "back_to_workspace": "Collector workspace",
+      "administrator": "Administrator",
+      "open_menu": "Open admin navigation",
+      "close_menu": "Close admin navigation",
+      "change_language": "Change language",
+      "toggle_theme": "Toggle color theme"
+    },
+    "dashboard": {
+      "title": "Community operations",
+      "subtitle": "Keep member access, published checklists, and the catalogue structure accurate from one workspace.",
+      "management_areas": "Management areas",
+      "users_description": "Review member status, reputation, and access.",
+      "collections_description": "Create, edit, and publish community checklists.",
+      "categories_description": "Maintain parent categories and their subcategories.",
+      "restricted": "{{count}} restricted",
+      "published": "Published sets",
+      "parent_categories": "Parent categories"
+    },
     "users": {
       "title": "Member Directory",
       "subtitle": "Manage community permissions and reputation.",
@@ -107,17 +139,74 @@
       "active": "Active",
       "unblock": "Unblock Member",
       "restrict": "Restrict Access",
-      "admin_badge": "Admin"
+      "admin_badge": "Admin",
+      "empty_title": "No members found",
+      "empty_description": "Member accounts will appear here when they join the community.",
+      "error_title": "Members unavailable",
+      "error_description": "The member directory could not be loaded. Refresh the page to try again."
     },
     "categories": {
       "title": "Taxonomy Manager",
       "subtitle": "Define community categories and sub-types.",
       "new_cat": "New Category",
       "cat_name": "Category Name",
+      "sub_cat_name": "Sub Category Name",
       "add_parent": "Add Parent Category",
-      "new_sub": "New subcategory...",
-      "add": "Add",
-      "no_subs": "No subcategories defined"
+      "new_sub": "Subcategory name",
+      "add": "Add Subcategory",
+      "no_subs": "No subcategories defined",
+      "back": "Back to taxonomy",
+      "parent": "Parent category",
+      "child": "Subcategory",
+      "expand_label": "Expand category",
+      "expand": "Show subcategories for {{name}}",
+      "collapse": "Hide subcategories for {{name}}",
+      "empty_title": "No categories yet",
+      "empty_description": "Create the first parent category to structure the catalogue.",
+      "error_title": "Taxonomy unavailable",
+      "error_description": "The categories could not be loaded. Refresh the page to try again.",
+      "create_title": "Create Category",
+      "create_description": "Add a parent category to the catalogue taxonomy.",
+      "creation_type": "What would you like to create?",
+      "creation_parent": "Parent category",
+      "creation_subcategory": "Subcategory",
+      "create": "Create Category",
+      "parent_selector": "Parent category",
+      "select_parent": "Select a parent category",
+      "initial_subcategories": "Subcategories",
+      "initial_subcategories_hint": "Optional. These will be created with the parent category.",
+      "add_initial_subcategory": "Add subcategory",
+      "remove_subcategory": "Remove subcategory {{index}}",
+      "edit_title": "Edit Category",
+      "edit_parent_description": "Update this parent category and manage its subcategories.",
+      "edit_child_description": "Update this subcategory name.",
+      "name_placeholder": "e.g. Football",
+      "parent_name_hint": "Use a clear catalogue family that can contain related subcategories.",
+      "child_name_hint": "Use a specific name that is distinct within its parent category.",
+      "subcategory_placeholder": "e.g. Premier League",
+      "subcategories_title": "Subcategories",
+      "subcategories_description": "Add or open a child category for more precise catalogue organization.",
+      "created": "Category created",
+      "updated": "Category updated",
+      "subcategory_created": "Subcategory added",
+      "deleted": "Category archived",
+      "delete": "Archive Category",
+      "delete_title": "Archive this category?",
+      "delete_description": "{{name}} will be removed from active catalogue management.",
+      "confirm_delete": "Archive Category",
+      "table": {
+        "name": "Category",
+        "kind": "Type",
+        "subcategories": "Subcategories"
+      },
+      "errors": {
+        "parent_required": "Select a parent category before saving.",
+        "no_parents": "Create a parent category before adding a subcategory.",
+        "save": "The category could not be saved. Try again.",
+        "subcategory": "The subcategory could not be added. Try again.",
+        "delete": "The category could not be archived. Try again.",
+        "not_found": "This category could not be found."
+      }
     },
     "collections": {
       "title": "Checklist Vault",
@@ -134,7 +223,75 @@
       "csv": "CSV Data Source",
       "xlsx": "Checklist File (XLSX)",
       "upload_help": "Drop XLSX file here or click to browse",
-      "publish": "Publish Checklist"
+      "cover_image": "Collection Cover Image",
+      "cover_image_create_hint": "Optional. Upload a cover image for this collection.",
+      "cover_image_edit_hint": "Leave empty to keep the current cover image.",
+      "cover_image_upload_help": "Choose a cover image",
+      "cover_image_file_types": "PNG, JPG, or WebP up to 5 MB",
+      "publish": "Publish Checklist",
+      "back": "Back to checklists",
+      "create_title": "Create Checklist",
+      "create_description": "Publish a structured card or sticker checklist for the community.",
+      "edit_title": "Edit Checklist",
+      "edit_description": "Update checklist metadata or replace its imported card data.",
+      "name_placeholder": "e.g. World Cup 2022",
+      "type_placeholder": "Select collection type",
+      "year_placeholder": "e.g. 2022",
+      "total_placeholder": "e.g. 200",
+      "category_placeholder": "Select a category",
+      "select_category": "Select a category",
+      "select_subcategory": "No subcategory",
+      "uncategorized": "Uncategorized",
+      "no_subcategory": "No subcategory",
+      "file_create_hint": "Optional. Import an XLSX or XLS file when publishing the checklist.",
+      "file_edit_hint": "Leave empty to keep existing cards. Uploading a file replaces all cards.",
+      "file_types": "XLSX or XLS",
+      "empty_title": "No checklists yet",
+      "empty_description": "Publish the first checklist to make it available to collectors.",
+      "error_title": "Checklists unavailable",
+      "error_description": "The checklists could not be loaded. Refresh the page to try again.",
+      "created": "Checklist published",
+      "updated": "Checklist updated",
+      "deleted": "Checklist archived",
+      "delete": "Archive Checklist",
+      "delete_title": "Archive this checklist?",
+      "delete_description": "{{name}} and its associated cards will be removed from active catalogue management.",
+      "confirm_delete": "Archive Checklist",
+      "form": "Details",
+      "checklist": "Cards",
+      "table": {
+        "checklist": "Checklist"
+      },
+      "errors": {
+        "category_required": "Select a category before saving.",
+        "name_min": "Title must be at least 3 characters.",
+        "year_format": "Year must contain 4 digits.",
+        "year_range": "Year must be between 1800 and 2200.",
+        "total_number": "Total items must be a number.",
+        "cover_type": "Choose a PNG, JPG, or WebP image.",
+        "cover_size": "Cover image must be 5 MB or smaller.",
+        "save": "The checklist could not be saved. Try again.",
+        "delete": "The checklist could not be archived. Try again.",
+        "not_found": "This checklist could not be found."
+      }
+    }
+  },
+  "category_not_found": "Category not found",
+  "category": {
+    "parent_subtitle": "Explore the sets and series on this shelf.",
+    "sub_subtitle": "Browse every catalogue in this series.",
+    "search_in_category": "Search in {{name}}",
+    "featured_collections": "Featured collections",
+    "browse_subcategories": "Browse subcategories"
+  },
+  "seller": {
+    "navigation": {
+      "overview": "Overview",
+      "listings": "Listings",
+      "messages": "Messages"
+    },
+    "dashboard": {
+      "listings_description": "Manage your marketplace listings and inventory."
     }
   },
   "dashboard": {
@@ -201,7 +358,8 @@
     "view_collection": "View Collection",
     "phone": "Phone Number",
     "swap_status": "Not Ready for Swap",
-    "swap_hint": "Temporarily hide your swap lists"
+    "swap_hint": "Temporarily hide your swap lists",
+    "start_conversation_error": "Failed to start conversation"
   },
   "collection_edit": {
     "title": "Edit My Collection",

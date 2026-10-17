@@ -1,8 +1,11 @@
 import type { ComponentPropsWithoutRef, ComponentType } from "react";
 
-export type LinkComponent = ComponentType<ComponentPropsWithoutRef<"a"> & {
-  href: string;
-}>;
+export type LinkComponent = ComponentType<
+  ComponentPropsWithoutRef<"a"> & {
+    href: string;
+    to?: string;
+  }
+>;
 
 export type CatalogueChecklist = {
   id: string | number;
@@ -14,6 +17,7 @@ export type CatalogueChecklist = {
   categoryId?: string | number | null;
   category?: { name?: string | null } | null;
   subcategory?: { name?: string | null } | null;
+  coverImageUrl?: string | null;
 };
 
 export type MarketplaceListing = {

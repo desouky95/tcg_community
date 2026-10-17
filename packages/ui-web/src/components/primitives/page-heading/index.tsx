@@ -1,11 +1,15 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../../lib/cn";
-
+import { headingStyles, type HeadingSize } from "../../../lib";
+import { Button } from "../button";
+import { Filter, Plus } from "lucide-react";
 export type PageHeadingProps = HTMLAttributes<HTMLElement> & {
   eyebrow?: string;
   title: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
+  size?: HeadingSize;
+  leftActions?: ReactNode;
 };
 
 export function PageHeading({
@@ -14,6 +18,8 @@ export function PageHeading({
   description,
   actions,
   className,
+  size = "4xl",
+  leftActions,
   ...props
 }: PageHeadingProps) {
   return (
@@ -24,18 +30,33 @@ export function PageHeading({
         className,
       )}
     >
-      <div>
-        {eyebrow && (
-          <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.08em] text-wax-red">
-            {eyebrow}
-          </p>
-        )}
-        <h1 className="m-0 max-w-[18ch] font-display text-4xl leading-[0.95] sm:text-5xl lg:text-6xl">
-          {title}
-        </h1>
-        {description && (
-          <p className="mt-3 max-w-prose text-wax-muted">{description}</p>
-        )}
+      <div className="flex flex-col items-baseline gap-4">
+        <div>
+          {eyebrow && (
+            <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.08em] text-wax-red">
+              {eyebrow}
+            </p>
+          )}
+          <h1
+            className={cn(
+              "m-0 max-w-[18ch] font-display leading-[0.95] ",
+              headingStyles[size].heading,
+            )}
+          >
+            {title}
+          </h1>
+          {description && (
+            <p
+              className={cn(
+                "mt-3 max-w-prose text-wax-muted",
+                headingStyles[size].description,
+              )}
+            >
+              {description}
+            </p>
+          )}
+        </div>
+        {leftActions}
       </div>
       {actions && <div className="flex flex-wrap gap-3">{actions}</div>}
     </header>

@@ -119,7 +119,7 @@ export default function Profile() {
       const conv = await createConversation.mutateAsync(Number(profileUser.id));
       navigate(`/chat/${conv.id}`);
     } catch {
-      toast.error(t("Failed to start conversation"));
+      toast.error(t("profile.start_conversation_error"));
     }
   };
 

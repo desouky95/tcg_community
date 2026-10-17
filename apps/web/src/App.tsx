@@ -1,19 +1,13 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
-  useLocation,
-  useNavigationType,
-} from "react-router-dom";
+import { Routes, Route, Outlet, useLocation } from "react-router-dom";
 import { buildLoginUrl } from "@tcg/auth-client";
 import { ThemeProvider } from "./components/ThemeProvider";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
-import AdminCollections from "./pages/admin/AdminCollections";
-import AdminCategories from "./pages/admin/AdminCategories";
+import AdminCollections from "./pages/admin/AdminCollections/AdminCollections";
+import AdminCategories from "./pages/admin/AdminCategories/AdminCategories";
+import AdminCategoryFormPage from "./pages/admin/AdminCategories/AdminCategoryFormPage";
 import toast, { Toaster } from "react-hot-toast";
-import Dashboard from "./pages/Dashboard";
+import { Dashboard } from "./pages/Dashboard";
 import CollectionEdit from "./pages/CollectionEdit";
 import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
@@ -67,21 +61,17 @@ import { ApiHooksProvider, SessionWrapper } from "./providers/ApiHooksProvider";
 import Checklists from "./pages/Checklists";
 import CategoryDetail from "./pages/CategoryDetail";
 import Marketplace from "./pages/Marketplace";
-import Collection from "./pages/Collection";
+import { Collection } from "./pages/Collection";
 import { useTcgSession } from "@tcg/react-query";
 import AdminLayout from "./components/AdminLayout";
+import { AdminScrapper } from "./pages/admin/AdminScrapper/AdminScrapper";
+import { AdminMarketplace } from "./pages/admin/AdminMarketplace/AdminMarketplace";
+import SellerLayout from "./components/SellerLayout";
+import SellerDashboard from "./pages/seller/SellerDashboard";
+import { CollectionAddForm } from "./components/molecules/CollectionAddForm/CollectionAddForm";
+import { CollectionEditForm } from "./components/molecules/CollectionEditForm/CollectionEditForm";
+import Test from "./pages/Test";
 
-const DebugLayout = () => {
-  const location = useLocation();
-  const navigationType = useNavigationType(); // "POP" | "PUSH" | "REPLACE"
-
-  useEffect(() => {
-    console.log("The current URL is", { ...location });
-    console.log("The last navigation action was", navigationType);
-  }, [location, navigationType]);
-
-  return <Outlet />;
-};
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -108,7 +98,6 @@ const queryClient = new QueryClient({
         message = error.response?.data.errors?.[0]?.message;
       }
       if (!message) return;
-
       console.log({ message });
       toast.error(message);
     },
@@ -116,18 +105,21 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  const location = useLocation();
   return (
-    <Router>
+    <>
       <QueryClientProvider client={queryClient}>
         <SessionWrapper>
           <ApiHooksProvider>
             <ThemeProvider defaultTheme="system" storageKey="tcg-theme">
-              <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
+              <div className="min-h-screen bg-background text-foreground transition-colors duration-200 h-px">
                 <Toaster position="top-right" />
-                <Routes>
-                  <Route element={<DebugLayout />}>
+
+                <Routes location={location} key={location.key}>
+                  <Route element={<Outlet />}>
                     <Route element={<ProtectedRoute />}>
                       <Route path="/" element={<Dashboard />} />
+                      <Route path="/test" element={<Test />} />
                       <Route path="/checklists/*" element={<Checklists />} />
                       <Route
                         path="/s/:categoryId"
@@ -153,9 +145,7 @@ function App() {
                     </Route>
 
                     {/* Admin Routes */}
-                    <Route
-                      element={<ProtectedRoute requireAdmin />}
-                    >
+                    <Route element={<ProtectedRoute requireAdmin />}>
                       <Route path="/admin" element={<AdminLayout />}>
                         <Route index element={<AdminDashboard />} />
                         <Route path="users" element={<AdminUsers />} />
@@ -164,9 +154,35 @@ function App() {
                           element={<AdminCollections />}
                         />
                         <Route
+                          path="collections/new"
+                          element={<CollectionAddForm />}
+                        />
+                        <Route
+                          path="collections/:id/edit"
+                          element={<CollectionEditForm />}
+                        />
+                        <Route
                           path="categories"
                           element={<AdminCategories />}
                         />
+                        <Route
+                          path="categories/new"
+                          element={<AdminCategoryFormPage />}
+                        />
+                        <Route
+                          path="categories/:id/edit"
+                          element={<AdminCategoryFormPage />}
+                        />
+                        <Route path="scrapper" element={<AdminScrapper />} />
+                        <Route
+                          path="marketplace"
+                          element={<AdminMarketplace />}
+                        />
+                      </Route>
+                    </Route>
+                    <Route element={<ProtectedRoute />}>
+                      <Route path="/seller" element={<SellerLayout />}>
+                        <Route index element={<SellerDashboard />} />
                       </Route>
                     </Route>
                   </Route>
@@ -177,7 +193,7 @@ function App() {
           </ApiHooksProvider>
         </SessionWrapper>
       </QueryClientProvider>
-    </Router>
+    </>
   );
 }
 

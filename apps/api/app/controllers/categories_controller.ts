@@ -1,31 +1,63 @@
 import Category from '#models/category'
+import filtering from '#services/filtering_service'
+import pagination from '#services/pagination_service'
 import type { HttpContext } from '@adonisjs/core/http'
+import { ControllerWithPagination, type FilterItem } from '../interfaces/pagination.controller.ts'
+import string from '@adonisjs/core/helpers/string'
+import CategoryTransformer from '#transformers/category_transformer'
 
-export default class CategoriesController {
-  async index() {
-    return await Category.query().where('parentId', -1).preload('children')
+export default class CategoriesController extends ControllerWithPagination {
+  protected allowedColumns: string[] = ['status']
+  async getFiltersOptions(): Promise<Array<FilterItem>> {
+    const filters: Array<FilterItem> = []
+    for (const column of this.allowedColumns) {
+      const values = await Category.query().groupBy(column).select(column)
+      filters.push({
+        name: column,
+        display: string.capitalCase(column),
+        options: values.map((value) => ({
+          value: value[column as keyof Category] as string,
+          display: string.capitalCase(value[column as keyof Category] as string),
+        })),
+      })
+    }
+    return filters
+  }
+  async index({ response }: HttpContext) {
+    const filters = await this.getFiltersOptions()
+    const query = Category.query()
+      .where('parentId', -1)
+      .whereNot('status', 'archived')
+      .preload('children', (children) => children.whereNot('status', 'archived'))
+      .orderBy('id', 'asc')
+    // filtering.filter(query, { allowedFields: ['status'] })
+    const result = await pagination.paginate<typeof Category>(query)
+
+    return response.paginated(result.data, result.meta, filters)
   }
 
-  async show({ params, response }: HttpContext) {
+  async show({ params, response, request }: HttpContext) {
+    const expand = request.input('expand', '')
+    const expendedFields = expand?.split(',') as string[]
     const category = await Category.query()
       .where('slug', params.id)
-      .orWhere('id', params.id) // Fallback for transition
-      .preload('children')
-      .preload('checklists')
-      .preload('parent')
+      .preload('children', (children) => children.preload('checklists'))
+      .if(expendedFields.includes('checklists'), (q) => q.preload('checklists'))
+      .if(expendedFields.includes('parent'), (q) => q.preload('parent'))
+      .if(expendedFields.includes('checklists'), (q) => q.preload('checklists'))
       .first()
 
     if (!category) {
       return response.notFound({ error: 'Category not found' })
     }
 
-    return category
+    return response.api(category)
   }
 
   async store({ request, response }: HttpContext) {
     const name = request.input('name')
     const parentId = request.input('parentId', -1)
-    
+
     if (!name) {
       return response.badRequest({ error: 'Name is required' })
     }
@@ -41,10 +73,10 @@ export default class CategoriesController {
     }
 
     const category = await Category.findOrFail(params.id)
-    
-    const subcategory = await Category.create({ 
-      name, 
-      parentId: category.id 
+
+    const subcategory = await Category.create({
+      name,
+      parentId: category.id,
     })
     return response.status(201).json(subcategory)
   }

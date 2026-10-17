@@ -9,12 +9,8 @@ import type { HttpContext } from '@adonisjs/core/http'
 import UserTransformer from '#transformers/user_transformer'
 import hash from '@adonisjs/core/services/hash'
 import { DateTime } from 'luxon'
-import {
-  consumeOtp,
-  errorBody,
-  issueOtp,
-  requestMeta,
-} from '#services/identity_service'
+import { consumeOtp, errorBody, issueOtp, requestMeta } from '#services/identity_service'
+
 export default class AuthController {
   /**
    * Request OTP for Mobile Login
@@ -76,7 +72,7 @@ export default class AuthController {
   /**
    * Verify OTP (Dual Purpose: Mobile Login OR Signup Completion)
    */
-  async verifyOtp({ request, response, serialize,auth }: HttpContext) {
+  async verifyOtp({ request, response, serialize, auth }: HttpContext) {
     const { mobile, otp } = await request.validateUsing(verifyOtpValidator)
 
     const user = await User.query().where('mobile', mobile).first()
@@ -176,7 +172,7 @@ export default class AuthController {
   }
   async me({ auth, request, response }: HttpContext) {
     const user = await auth.authenticateUsing(['web'])
-    return  response.json({
+    return response.json({
       data: user,
       ...requestMeta(request),
       version: user.version,

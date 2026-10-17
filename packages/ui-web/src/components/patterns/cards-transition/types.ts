@@ -1,0 +1,1 @@
+export type PageTransitionVariant = "sticker-packs" | "tcg-games";

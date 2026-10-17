@@ -8,8 +8,11 @@ type PublicShellProps = {
   mainClassName?: string;
 };
 
-export default function PublicShell({ children, mainClassName }: PublicShellProps) {
-  const user = useStore(state => state.user);
+export default function PublicShell({
+  children,
+  mainClassName,
+}: PublicShellProps) {
+  const user = useStore((state) => state.user);
   return (
     <div className="wax-page">
       <Header variant={user ? "workspace" : "public"} />

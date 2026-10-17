@@ -1,6 +1,7 @@
 export * from "./avatar";
 export * from "./button";
 export * from "./count-pill";
+export * from "./data-table";
 export * from "./divider";
 export * from "./empty-state";
 export * from "./field";

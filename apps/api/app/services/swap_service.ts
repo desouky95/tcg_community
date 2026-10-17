@@ -6,6 +6,7 @@ import { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Checklist from '#models/checklist'
 import UserChecklist from '#models/user_checklist'
 import { SwapFilter } from '#validators/swap'
+import UserChecklistTransformer from '#transformers/user_checklist_transformer'
 
 export type SwapResult = {
   user: {
@@ -44,8 +45,8 @@ export class SwapService {
     const myOffers: Record<number, string[]> = {}
 
     for (const cl of myChecklists) {
-      myNeeds[cl.checklist.id!] = cl.missingListArray || []
-      myOffers[cl.checklist.id!] = cl.duplicatesListArray || []
+      myNeeds[cl.checklist.id!] = cl.missingList?.split(',') || []
+      myOffers[cl.checklist.id!] = cl.duplicatesList?.split(',') || []
     }
     return { myNeeds, myOffers }
   }
@@ -70,8 +71,8 @@ export class SwapService {
     let matchedChecklists = []
     for (const theirChecklist of user.checklists) {
       const clId = theirChecklist.checklistId!
-      const theirOffers = theirChecklist.duplicatesListArray || []
-      const theirNeeds = theirChecklist.missingListArray || []
+      const theirOffers = theirChecklist.duplicatesList?.split(',') || []
+      const theirNeeds = theirChecklist.missingList?.split(',') || []
 
       const myNeedsForCl = needs[clId] || []
       const myOffersForCl = offers[clId] || []

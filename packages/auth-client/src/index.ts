@@ -1,11 +1,12 @@
 export * from "./redirects";
-import type { ApiClient, ExtendedUser } from "@tcg/api-contracts";
+import type { ApiClient, ApiRequestOptions } from "@tcg/api-contracts";
 
 export async function bootstrapSession(
   client: ApiClient,
-){
+  requestOptions?: ApiRequestOptions,
+) {
   try {
-    return (await client.me());
+    return await client.me(requestOptions);
   } catch (error) {
     if (isUnauthorized(error)) return null;
     throw error;

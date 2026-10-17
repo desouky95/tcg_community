@@ -4,7 +4,9 @@ import type { Infer } from '@vinejs/vine/types'
 
 export const swapSearchValidator = vine.create(
   vine.object({
-    checklists: vine.array(vine.number().positive()).optional(),
+    checklists: vine
+      .array(vine.number().positive().exists({ table: 'checklists', column: 'id' }))
+      .optional(),
     regions: vine.array(vine.enum(EGYPT_GOVERNORATES)).optional(),
     lastLogin: vine.enum(['online', 'today', 'week', 'month', '6months', 'all']).optional(),
   })

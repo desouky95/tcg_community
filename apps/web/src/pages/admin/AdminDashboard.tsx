@@ -13,7 +13,7 @@ export default function AdminDashboard() {
       users: users?.length ?? 0,
       restricted: users?.filter((user) => user.blocked).length ?? 0,
       collections: collections?.length ?? 0,
-      categories: categories?.length ?? 0,
+      categories: categories?.data?.length ?? 0,
     }),
     [categories, collections, users],
   );
@@ -57,45 +57,54 @@ export default function AdminDashboard() {
       </div>
 
       <section className="mt-8" aria-labelledby="admin-areas-heading">
-        <h2 id="admin-areas-heading" className="mb-3 text-sm font-bold text-foreground">
+        <h2
+          id="admin-areas-heading"
+          className="mb-3 text-sm font-bold text-foreground"
+        >
           {t("admin.dashboard.management_areas")}
         </h2>
         <div className="divide-y divide-wax-line border-y border-wax-line bg-card">
           {destinations.map(
             ({ to, icon: Icon, title, description, value, detail }) => (
-            <Link
-              key={to}
-              to={to}
-              className="group grid gap-4 px-4 py-5 outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:items-center md:px-6"
-            >
-              <span className="grid size-11 place-items-center bg-primary-500 text-white">
-                <Icon className="size-5" aria-hidden="true" />
-              </span>
-              <span>
-                <strong className="block text-base font-bold text-foreground">{title}</strong>
-                <span className="mt-1 block text-sm text-muted-foreground">{description}</span>
-              </span>
-              <span className="sm:text-end">
-                {isLoading ? (
-                  <span role="status" className="block">
-                    <span
-                      className="block h-7 w-16 animate-pulse bg-muted"
-                      aria-hidden="true"
-                    />
-                    <span className="sr-only">{t("common.loading")}</span>
-                  </span>
-                ) : (
-                  <strong className="block font-display text-3xl font-extrabold tabular-nums text-foreground">
-                    {value}
+              <Link
+                key={to}
+                to={to}
+                className="group grid gap-4 px-4 py-5 outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:grid-cols-[auto_minmax(0,1fr)_auto_auto] sm:items-center md:px-6"
+              >
+                <span className="grid size-11 place-items-center bg-primary-500 text-white">
+                  {Icon && <Icon className="size-5" aria-hidden="true" />}
+                </span>
+                <span>
+                  <strong className="block text-base font-bold text-foreground">
+                    {title}
                   </strong>
-                )}
-                <small className="font-mono text-utility uppercase tracking-wider text-muted-foreground">{detail}</small>
-              </span>
-              <ArrowRight
-                className="hidden size-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-focus-visible:translate-x-1 sm:block rtl:rotate-180 rtl:group-hover:-translate-x-1 rtl:group-focus-visible:-translate-x-1"
-                aria-hidden="true"
-              />
-            </Link>
+                  <span className="mt-1 block text-sm text-muted-foreground">
+                    {description}
+                  </span>
+                </span>
+                <span className="sm:text-end">
+                  {isLoading ? (
+                    <span role="status" className="block">
+                      <span
+                        className="block h-7 w-16 animate-pulse bg-muted"
+                        aria-hidden="true"
+                      />
+                      <span className="sr-only">{t("common.loading")}</span>
+                    </span>
+                  ) : (
+                    <strong className="block font-display text-3xl font-extrabold tabular-nums text-foreground">
+                      {value}
+                    </strong>
+                  )}
+                  <small className="font-mono text-utility uppercase tracking-wider text-muted-foreground">
+                    {detail}
+                  </small>
+                </span>
+                <ArrowRight
+                  className="hidden size-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-focus-visible:translate-x-1 sm:block rtl:rotate-180 rtl:group-hover:-translate-x-1 rtl:group-focus-visible:-translate-x-1"
+                  aria-hidden="true"
+                />
+              </Link>
             ),
           )}
         </div>

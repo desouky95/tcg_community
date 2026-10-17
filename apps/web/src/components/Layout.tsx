@@ -4,7 +4,6 @@ import { useStore } from "../store/useStore";
 import { useConversations } from "../hooks/useConversations";
 import MobileNav from "./MobileNav";
 import Header from "./Header";
-import { PublicFooter } from "@tcg/ui-web";
 
 export default function Layout({
   children,
@@ -36,7 +35,6 @@ export default function Layout({
         {children}
       </main>
       {user && !hideNav && <MobileNav />}
-
     </div>
   );
 }

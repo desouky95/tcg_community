@@ -39,4 +39,7 @@ export default class Category extends CategorySchema {
     foreignKey: 'subcategoryId',
   })
   declare userChecklists: HasManyThrough<typeof UserChecklist>
+
+  @hasMany(() => Checklist, { foreignKey: 'id' })
+  declare subcategoryChecklists: HasMany<typeof Checklist>
 }

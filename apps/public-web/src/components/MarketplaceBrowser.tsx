@@ -12,6 +12,7 @@ import {
   TextLink,
 } from "@tcg/ui-web";
 import { mockMarketplaceListings } from "../lib/mockData";
+import Link from "next/link";
 
 export default function MarketplaceBrowser() {
   const [search, setSearch] = useState("");
@@ -106,7 +107,7 @@ export default function MarketplaceBrowser() {
           view={view}
           onViewChange={setView}
         />
-        <SectionHeading >
+        <SectionHeading>
           <div>
             <h2 id="market-listings-heading">Cards on the trade floor</h2>
             <p>
@@ -124,6 +125,7 @@ export default function MarketplaceBrowser() {
           >
             {listings.map((listing) => (
               <MarketplaceCard
+                Link={Link}
                 key={listing.id}
                 listing={listing}
                 href={`/marketplace/${listing.id}`}

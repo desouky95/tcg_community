@@ -12,11 +12,15 @@ import {
   Tags,
   Users,
   X,
+  Store,
   type LucideIcon,
 } from "lucide-react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useStore } from "../store/useStore";
 import { useTheme } from "./ThemeProvider";
+import { motion } from "motion/react";
+import { Button } from "@tcg/ui-web";
+import { useLocalStorage } from "@reactuses/core";
 
 type AdminNavigationItem = {
   to: string;
@@ -39,10 +43,17 @@ const navigation: readonly AdminNavigationItem[] = [
     icon: LibraryBig,
   },
   { to: "/admin/categories", label: "admin.navigation.categories", icon: Tags },
+  { to: "/admin/scrapper", label: "admin.navigation.scrapper", icon: Tags },
+  {
+    to: "/admin/marketplace",
+    label: "admin.navigation.marketplace",
+    icon: Store,
+  },
 ];
 
 export default function AdminLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // const [isMenuDesktopOpen, setIsMenuDesktopOpen] = useState(false);
   const menuTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileNavigationRef = useRef<HTMLElement>(null);
   const closeMenuButtonRef = useRef<HTMLButtonElement>(null);
@@ -50,6 +61,7 @@ export default function AdminLayout() {
   const { theme, setTheme } = useTheme();
   const user = useStore((state) => state.user);
   const location = useLocation();
+  const [isMenuDesktopOpen, setIsMenuDesktopOpen] = useLocalStorage("menu_open", false);
 
   const currentItem =
     [...navigation]
@@ -126,7 +138,8 @@ export default function AdminLayout() {
 
   const isDarkTheme =
     theme === "dark" ||
-    (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    (theme === "system" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
 
   const navigationContent = (
     <>
@@ -190,9 +203,13 @@ export default function AdminLayout() {
           />
           <span>{t("admin.shell.back_to_workspace")}</span>
         </Link>
+
         {user && (
           <div className="mt-2 flex items-center gap-3 border-t border-white/10 px-3 pt-4">
-            <span className="grid size-9 shrink-0 place-items-center bg-wax-gold font-display text-lg font-extrabold text-wax-navy" aria-hidden="true">
+            <span
+              className="grid size-9 shrink-0 place-items-center bg-wax-gold font-display text-lg font-extrabold text-wax-navy"
+              aria-hidden="true"
+            >
               {user.fullName.charAt(0).toUpperCase()}
             </span>
             <span className="min-w-0">
@@ -210,34 +227,52 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="wax-workspace min-h-dvh lg:grid lg:grid-cols-[17.5rem_minmax(0,1fr)]">
-      <aside className="sticky top-0 hidden h-dvh flex-col overflow-y-auto bg-wax-navy lg:flex">
-        {navigationContent}
-      </aside>
+    <motion.div className="wax-workspace min-h-dvh flex">
+      <motion.aside
+        className="sticky top-0 hidden  h-screen flex-col overflow-y-auto bg-wax-navy lg:flex"
+        animate={{
+          width: isMenuDesktopOpen ? "" : "0px",
+        }}
+      >
+        <div className="h-full min-w-72 flex flex-col">{navigationContent}</div>
+      </motion.aside>
 
       <div
-        className="min-w-0"
+        className="min-w-0 flex-1"
         inert={isMenuOpen ? true : undefined}
         aria-hidden={isMenuOpen || undefined}
       >
         <header className="sticky top-0 z-30 flex min-h-18 items-center justify-between gap-4 border-t-4 border-t-accent-500 border-b border-wax-line bg-card px-4 md:px-8">
           <div className="flex min-w-0 items-center gap-3">
-            <button
-              type="button"
+            <Button
               onClick={() => setIsMenuOpen(true)}
               ref={menuTriggerRef}
-              className="grid size-11 shrink-0 place-items-center border border-wax-line bg-background text-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 lg:hidden"
+              size="sm"
+              className="grid shrink-0 place-items-center lg:hidden"
               aria-label={t("admin.shell.open_menu")}
               aria-expanded={isMenuOpen}
               aria-controls="admin-mobile-navigation"
             >
               <Menu className="size-5" aria-hidden="true" />
-            </button>
+            </Button>
+
+            <Button
+              onClick={() => setIsMenuDesktopOpen((prev) => !prev)}
+              ref={menuTriggerRef}
+              size="sm"
+              className="place-items-center hidden lg:block"
+              aria-label={t("admin.shell.open_menu")}
+              aria-expanded={Boolean(isMenuDesktopOpen)}
+              aria-controls="admin-mobile-navigation"
+            >
+              <Menu className="size-5" aria-hidden="true" />
+            </Button>
+
             <div className="min-w-0">
               <p className="truncate font-display text-xl font-extrabold text-foreground md:text-2xl">
                 {t(currentItem.label)}
               </p>
-              <p className="hidden font-mono text-utility font-semibold uppercase tracking-[0.14em] text-muted-foreground sm:block">
+              <p className="hidden font-mono text-utility font-semibold uppercase tracking-[0.14em]  sm:block">
                 {t("admin.shell.control_center")}
               </p>
             </div>
@@ -253,7 +288,9 @@ export default function AdminLayout() {
               aria-label={t("admin.shell.change_language")}
             >
               <Languages className="size-4" aria-hidden="true" />
-              <span className="hidden sm:inline">{i18n.language === "ar" ? "EN" : "AR"}</span>
+              <span className="hidden sm:inline">
+                {i18n.language === "ar" ? "EN" : "AR"}
+              </span>
             </button>
             <button
               type="button"
@@ -292,8 +329,10 @@ export default function AdminLayout() {
           role="dialog"
           aria-modal="true"
           aria-label={t("admin.shell.navigation_label")}
-          className={`absolute inset-y-0 left-0 flex w-[min(19rem,88vw)] flex-col overflow-y-auto bg-wax-navy shadow-pop transition-transform rtl:right-0 rtl:left-auto ${
-            isMenuOpen ? "translate-x-0" : "-translate-x-full rtl:translate-x-full"
+          className={`absolute inset-y-0 left-0 flex  flex-col overflow-y-auto bg-wax-navy shadow-pop transition-transform rtl:right-0 rtl:left-auto ${
+            isMenuOpen
+              ? "translate-x-0"
+              : "-translate-x-full rtl:translate-x-full"
           }`}
         >
           <button
@@ -308,6 +347,6 @@ export default function AdminLayout() {
           {navigationContent}
         </aside>
       </div>
-    </div>
+    </motion.div>
   );
 }

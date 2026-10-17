@@ -13,7 +13,7 @@ import LastStickerScraper from '#services/scrapers/laststicker_scraper'
 import app from '@adonisjs/core/services/app'
 import logger from '@adonisjs/core/services/logger'
 import { randomUUID } from 'node:crypto'
-import { readdir, readdirSync } from 'node:fs'
+import { globSync, readdir, readdirSync, readFile, readFileSync } from 'node:fs'
 import { mkdir, writeFile, glob } from 'node:fs/promises'
 import { join } from 'node:path'
 
@@ -35,6 +35,32 @@ class ScrapeJobRunner {
 
   listCollections(): readonly ScraperCollectionConfig[] {
     return scrapersConfig.collections
+  }
+
+  listScrappedJobs() {
+    const relativeDirectory = join(scrapersConfig.outputDirectory)
+    const directory = app.tmpPath(relativeDirectory)
+
+    const jobs = readdirSync(directory, { withFileTypes: true })
+    const jobsWithCollections = jobs.map((job) => {
+      const collections = globSync(join(directory, job.name, '*.json'), {
+        withFileTypes: true,
+      }).map((collection) => {
+        const content = JSON.parse(
+          readFileSync(join(directory, job.name, collection.name), 'utf-8')
+        )
+        delete content.cards
+        return {
+          name: collection.name,
+          content,
+        }
+      })
+      return {
+        job,
+        collections,
+      }
+    })
+    return jobsWithCollections
   }
 
   listJobs() {

@@ -34,7 +34,7 @@ export function LoginForm() {
       window.location.assign(
         buildAppUrl(
           process.env.NEXT_PUBLIC_APP_URL!,
-          searchParams.get("returnTo"),
+          searchParams.get("returnTo") || '/',
         ),
       );
     } catch (err: unknown) {
@@ -58,36 +58,48 @@ export function LoginForm() {
   const loading = login.isPending;
   return (
     <form onSubmit={handleSubmit(onLoginSubmit)} className="grid gap-5">
-      <AuthField id="login-uid" label="Email, username, or mobile" icon={<Mail aria-hidden="true" />} error={errors.uid?.message}>
-          <AuthInput
-            id="login-uid"
-            {...register("uid")}
-            type="text"
-            autoComplete="username"
-            placeholder="hello@nexus.com"
-            invalid={Boolean(errors.uid)}
-            aria-invalid={Boolean(errors.uid)}
-            aria-describedby={errors.uid ? "login-uid-error" : undefined}
-            disabled={loading}
-          />
+      <AuthField
+        id="login-uid"
+        label="Email, username, or mobile"
+        icon={<Mail aria-hidden="true" />}
+        error={errors.uid?.message}
+      >
+        <AuthInput
+          id="login-uid"
+          {...register("uid")}
+          type="text"
+          autoComplete="username"
+          placeholder="hello@nexus.com"
+          invalid={Boolean(errors.uid)}
+          aria-invalid={Boolean(errors.uid)}
+          aria-describedby={errors.uid ? "login-uid-error" : undefined}
+          disabled={loading}
+        />
       </AuthField>
-      <AuthField id="login-password" label="Password" icon={<LockKeyhole aria-hidden="true" />} error={errors.password?.message}>
-          <AuthInput
-            id="login-password"
-            {...register("password")}
-            type="password"
-            autoComplete="current-password"
-            placeholder="••••••••"
-            invalid={Boolean(errors.password)}
-            aria-invalid={Boolean(errors.password)}
-            aria-describedby={
-              errors.password ? "login-password-error" : undefined
-            }
-            disabled={loading}
-          />
+      <AuthField
+        id="login-password"
+        label="Password"
+        icon={<LockKeyhole aria-hidden="true" />}
+        error={errors.password?.message}
+      >
+        <AuthInput
+          id="login-password"
+          {...register("password")}
+          type="password"
+          autoComplete="current-password"
+          placeholder="••••••••"
+          invalid={Boolean(errors.password)}
+          aria-invalid={Boolean(errors.password)}
+          aria-describedby={
+            errors.password ? "login-password-error" : undefined
+          }
+          disabled={loading}
+        />
       </AuthField>
 
-      <Button type="submit" loading={loading} className="w-full">Sign in</Button>
+      <Button type="submit" loading={loading} className="w-full">
+        Sign in
+      </Button>
     </form>
   );
 }

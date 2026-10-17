@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { TcgApiProvider } from "../../../packages/react-query/src";
 import { api } from "../src/lib/api";
+import { useDefaultApiQuery } from "../src/lib/request-query";
 import { Toaster } from "react-hot-toast";
 
 function makeQueryClient() {
@@ -41,10 +42,15 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   //       suspend because React will throw away the client on the initial
   //       render if it suspends and there is no boundary
   const queryClient = getQueryClient();
+  const defaultQuery = useDefaultApiQuery();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TcgApiProvider client={api} isAuthenticated={false}>
+      <TcgApiProvider
+        client={api}
+        defaultQuery={defaultQuery}
+        isAuthenticated={false}
+      >
         <Toaster position="top-right" />
         {children}
       </TcgApiProvider>

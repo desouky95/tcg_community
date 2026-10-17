@@ -3,16 +3,23 @@
 import type { ComponentPropsWithRef } from "react";
 import { useFieldControl } from "../../../lib/field-context";
 import { cn } from "../../../lib/cn";
-import { controlStyles } from "../../../lib/component-styles";
+import {
+  controlSizeVariants,
+  controlStyles,
+  type ControlSize,
+} from "../../../lib/component-styles";
 
-export function Input({ className, ...props }: ComponentPropsWithRef<"input">) {
+type InputProps = Omit<ComponentPropsWithRef<"input">, "size"> & {
+  size?: ControlSize;
+};
+export function Input({ className, size = "md", ...props }: InputProps) {
   const control = useFieldControl(props);
   return (
     <input
       {...control}
       className={cn(
-        "ui-control ui-input",
         controlStyles,
+        controlSizeVariants[size],
         "w-full px-3.5",
         className,
       )}

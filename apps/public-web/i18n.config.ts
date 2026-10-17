@@ -3,7 +3,8 @@ import { localeLoader } from "@tcg/locale";
 const i18nConfig: I18nConfig = {
   supportedLngs: ["en", "ar"],
   fallbackLng: "en",
-  ns: ["common", "checklists","collection"],
+  ns: ["common", "checklists", "collection"],
+  localeInPath: false,
   resourceLoader: async (lng, ns) => {
     const resource = await localeLoader(lng, ns);
     return resource;

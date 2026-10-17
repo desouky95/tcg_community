@@ -6,17 +6,34 @@ export const createChecklistValidator = vine.create({
     table: 'checklists',
     column: 'name',
   }),
-  year: vine.number(),
+  year: vine.string().minLength(4).maxLength(4),
   totalCards: vine.number().optional(),
-  categoryId: vine.number().exists({
+  categoryId: vine.string().exists({
     table: 'categories',
-    column: 'id',
+    column: 'slug',
   }),
-  subcategoryId: vine.number().exists({
+})
+
+export const updateChecklistValidator = vine.withMetaData<{ id: number }>().create({
+  type: vine.enum(['sticker', 'card']),
+  name: vine
+    .string()
+    .trim()
+    .unique({
+      table: 'checklists',
+      column: 'name',
+      filter(db, value, field) {
+        db.where('id', '!=', field.meta.id)
+      },
+    }),
+  year: vine.string().minLength(4).maxLength(4),
+  totalCards: vine.number().optional(),
+  categoryId: vine.string().exists({
     table: 'categories',
-    column: 'id',
-    filter(db, value, field) {
-      db.where('parent_id', field.data.categoryId)
-    },
+    column: 'slug',
   }),
+})
+
+export const importChecklistValidator = vine.create({
+  file: vine.file({ extnames: ['xlsx', 'xls'] }),
 })

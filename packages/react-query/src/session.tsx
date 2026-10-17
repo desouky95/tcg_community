@@ -3,14 +3,15 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
   ApiClient,
+  ApiRequestOptions,
   APIResponse,
-  AuthResponse,
   AuthSession,
   ExtendedUser,
-  User,
+  QueryInput,
 } from "@tcg/api-contracts";
+import { getQueryKey } from "@tcg/api-contracts";
 import { createContext, useContext, useEffect } from "react";
-import { queryKeys } from "./query-keys";
+import { queryKeys, withQueryKey } from "./query-keys";
 import { bootstrapSession } from "@tcg/auth-client";
 
 type SessionStatus = "loading" | "authenticated" | "anonymous" | "error";
@@ -31,16 +32,24 @@ type TcgSessionProviderProps = {
   onSessionChange?: (session: APIResponse<ExtendedUser>) => void;
   children: React.ReactNode;
   client: ApiClient;
+  defaultQuery?: QueryInput;
+  requestOptions?: ApiRequestOptions;
 };
 export const TcgSessionProvider = ({
   children,
   client,
+  defaultQuery,
+  requestOptions,
   onSessionChange,
 }: TcgSessionProviderProps) => {
   const queryClient = useQueryClient();
+  const sessionQueryKey = withQueryKey(
+    queryKeys.me,
+    getQueryKey(defaultQuery, requestOptions),
+  );
   const session = useQuery({
-    queryKey: queryKeys.me,
-    queryFn: () => bootstrapSession(client),
+    queryKey: sessionQueryKey,
+    queryFn: () => bootstrapSession(client, requestOptions),
     retry: false,
     staleTime: 60_000,
     refetchOnWindowFocus: true,
@@ -63,11 +72,11 @@ export const TcgSessionProvider = ({
         : "anonymous";
 
   function establish(authSession: AuthSession) {
-    queryClient.setQueryData(queryKeys.me, authSession.user);
+    queryClient.setQueryData(sessionQueryKey, authSession.user);
   }
   function clearSession() {
     queryClient.clear();
-    queryClient.setQueryData(queryKeys.me, null);
+    queryClient.setQueryData(sessionQueryKey, null);
   }
 
   return (

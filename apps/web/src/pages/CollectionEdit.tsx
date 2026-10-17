@@ -10,39 +10,55 @@ import Layout from "../components/Layout";
 import { Save, FileSpreadsheet } from "lucide-react";
 import { BackButton } from "../components/common/BackButton";
 import { useTranslation } from "react-i18next";
-import { api } from "../lib/api";
 import { toast } from "react-hot-toast";
+import { useImportUserChecklist } from "@tcg/react-query";
+import { Controller, useForm } from "react-hook-form";
+import { DevTool } from "@hookform/devtools";
 
 export default function CollectionEdit() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const { data: checklist, isLoading: checklistLoading } = useChecklist(id);
-  const { data: userProgress, isLoading: progressLoading } =
-    useUserChecklist(id);
+  const { data: userProgress, isLoading: progressLoading } = useUserChecklist(
+    id!,
+  );
 
   const { mutateAsync: getUserChecklist } = useUserChecklistMutation(id);
   const updateMutation = useUpdateUserChecklist();
 
-  const [missingList, setMissingList] = useState(userProgress?.missingList);
+  console.log(userProgress);
+  const { control } = useForm({
+    values: {
+      missingList: userProgress?.data?.missingList,
+      duplicatesList: userProgress?.data?.duplicatesList,
+      collectedList: userProgress?.data?.collectedList,
+    },
+  });
+
+  const [missingList, setMissingList] = useState(
+    userProgress?.data.missingList,
+  );
   const [duplicatesList, setDuplicatesList] = useState(
-    userProgress?.duplicatesList,
+    userProgress?.data.duplicatesList,
   );
   const [collectedList, setCollectedList] = useState(
-    userProgress?.collectedList,
+    userProgress?.data.collectedList,
   );
   const [treatEmptyAsMissing, setTreatEmptyAsMissing] = useState(true);
 
   useEffect(() => {
     const init = async () => {
       const data = await getUserChecklist();
-      setMissingList(data?.missingList);
-      setDuplicatesList(data?.duplicatesList);
-      setCollectedList(data?.collectedList);
+      setMissingList(data?.data.missingList);
+      setDuplicatesList(data?.data.duplicatesList);
+      setCollectedList(data?.data.collectedList);
     };
     init();
   }, [getUserChecklist]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { mutate } = useImportUserChecklist();
 
   const handleExcelImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,12 +68,8 @@ export default function CollectionEdit() {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("treatEmptyAsMissing", String(treatEmptyAsMissing));
-      const response = await api.importUserChecklist(id, formData);
-      const updatedProgress = response.data;
 
-      setMissingList(updatedProgress.missingList || "");
-      setDuplicatesList(updatedProgress.duplicatesList || "");
-      setCollectedList(updatedProgress.collectedList || "");
+      mutate({ id, data: formData });
 
       toast.success(t("collection_edit.import_success"));
     } catch (error) {
@@ -107,106 +119,113 @@ export default function CollectionEdit() {
 
   return (
     <Layout>
+      <DevTool control={control} />
       <div className="wax-workspace-view wax-collection-edit-view">
-      <div className="mb-8 flex items-center justify-between">
-        <div className="flex items-center space-x-4 rtl:space-x-reverse">
-          <BackButton />
-          <div>
-            <h1 className="text-2xl font-black tracking-tight uppercase">
-              {t("collection_edit.title")}
-            </h1>
-            <p className="text-muted-foreground text-xs font-bold opacity-70">
-              {checklist.name}
-            </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div className="flex items-center space-x-4 rtl:space-x-reverse">
+            <BackButton />
+            <div>
+              <h1 className="text-2xl font-black tracking-tight uppercase">
+                {t("collection_edit.title")}
+              </h1>
+              <p className="text-muted-foreground text-xs font-bold opacity-70">
+                {checklist.name}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center space-x-3 rtl:space-x-reverse">
-          <div className="flex items-center gap-2 mr-4 bg-muted/30 px-3 py-2 rounded-lg border border-border/50">
+          <div className="flex lg:items-center space-x-3 rtl:space-x-reverse items-stretch gap-3">
+            <div className="flex items-center gap-2 mr-4 bg-muted/30 px-3 py-2 rounded-lg border border-border/50">
+              <input
+                type="checkbox"
+                id="treatEmptyAsMissing"
+                checked={treatEmptyAsMissing}
+                onChange={(e) => setTreatEmptyAsMissing(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              />
+              <label
+                htmlFor="treatEmptyAsMissing"
+                className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground cursor-pointer select-none"
+              >
+                {t("collection_edit.treat_empty_as_missing")}
+              </label>
+            </div>
             <input
-              type="checkbox"
-              id="treatEmptyAsMissing"
-              checked={treatEmptyAsMissing}
-              onChange={(e) => setTreatEmptyAsMissing(e.target.checked)}
-              className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              type="file"
+              ref={fileInputRef}
+              onChange={handleExcelImport}
+              accept=".xlsx, .xls"
+              className="hidden"
             />
-            <label
-              htmlFor="treatEmptyAsMissing"
-              className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground cursor-pointer select-none"
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center gap-2 px-6 py-2.5 bg-card hover:bg-border/40 text-foreground border border-border rounded-xl text-sm font-black uppercase tracking-widest transition-all shadow-sm"
             >
-              {t("collection_edit.treat_empty_as_missing")}
-            </label>
+              <FileSpreadsheet className="w-4 h-4 text-green-500" />
+              <span>{t("collection_edit.import_excel")}</span>
+            </button>
+
+            <button
+              onClick={handleSave}
+              disabled={updateMutation.isPending}
+              className="flex items-center gap-2 px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl text-sm font-black uppercase tracking-widest transition-all shadow-xl shadow-primary-500/20 disabled:opacity-50"
+            >
+              <Save className="w-4 h-4" />
+              <span>
+                {updateMutation.isPending
+                  ? t("common.loading")
+                  : t("collection_edit.save")}
+              </span>
+            </button>
           </div>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleExcelImport}
-            accept=".xlsx, .xls"
-            className="hidden"
-          />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 px-6 py-2.5 bg-card hover:bg-border/40 text-foreground border border-border rounded-xl text-sm font-black uppercase tracking-widest transition-all shadow-sm"
-          >
-            <FileSpreadsheet className="w-4 h-4 text-green-500" />
-            <span>{t("collection_edit.import_excel")}</span>
-          </button>
-
-          <button
-            onClick={handleSave}
-            disabled={updateMutation.isPending}
-            className="flex items-center gap-2 px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl text-sm font-black uppercase tracking-widest transition-all shadow-xl shadow-primary-500/20 disabled:opacity-50"
-          >
-            <Save className="w-4 h-4" />
-            <span>
-              {updateMutation.isPending
-                ? t("common.loading")
-                : t("collection_edit.save")}
-            </span>
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6">
-        {/* Missing List */}
-        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-          <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 ml-1">
-            {t("collection_edit.missing_list")}
-          </label>
-          <textarea
-            value={missingList ?? ""}
-            onChange={(e) => setMissingList(e.target.value)}
-            placeholder="1, 2, 3, 45, 102..."
-            className="w-full bg-input/20 border-2 border-border/50 rounded-xl p-4 min-h-[150px] focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 transition-all text-sm font-medium font-mono placeholder:text-muted-foreground/30"
-          />
         </div>
 
-        {/* Duplicates */}
-        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-          <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 ml-1">
-            {t("collection_edit.duplicates")}
-          </label>
-          <textarea
-            value={duplicatesList ?? ""}
-            onChange={(e) => setDuplicatesList(e.target.value)}
-            placeholder="10, 15, 22, 22, 104..."
-            className="w-full bg-input/20 border-2 border-border/50 rounded-xl p-4 min-h-[150px] focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 transition-all text-sm font-medium font-mono placeholder:text-muted-foreground/30"
-          />
-        </div>
+        <div className="grid grid-cols-1 gap-6">
+          {/* Missing List */}
+          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+            <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 ml-1">
+              {t("collection_edit.missing_list")}
+            </label>
+            <Controller
+              control={control}
+              name="missingList"
+              render={({ field }) => (
+                <textarea
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  placeholder="1, 2, 3, 45, 102..."
+                  className="w-full bg-input/20 border-2 border-border/50 rounded-xl p-4 min-h-37.5 focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 transition-all text-sm font-medium font-mono placeholder:text-muted-foreground/30"
+                />
+              )}
+            />
+          </div>
 
-        {/* My Collection */}
-        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-          <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 ml-1">
-            {t("collection_edit.my_collection")}
-          </label>
-          <textarea
-            value={collectedList ?? ""}
-            onChange={(e) => setCollectedList(e.target.value)}
-            placeholder="1, 2, 3, 5, 6, 7, 8..."
-            className="w-full bg-input/20 border-2 border-border/50 rounded-xl p-4 min-h-[150px] focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 transition-all text-sm font-medium font-mono placeholder:text-muted-foreground/30"
-          />
+          {/* Duplicates */}
+          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+            <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 ml-1">
+              {t("collection_edit.duplicates")}
+            </label>
+            <textarea
+              value={duplicatesList ?? ""}
+              onChange={(e) => setDuplicatesList(e.target.value)}
+              placeholder="10, 15, 22, 22, 104..."
+              className="w-full bg-input/20 border-2 border-border/50 rounded-xl p-4 min-h-37.5 focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 transition-all text-sm font-medium font-mono placeholder:text-muted-foreground/30"
+            />
+          </div>
+
+          {/* My Collection */}
+          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+            <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 ml-1">
+              {t("collection_edit.my_collection")}
+            </label>
+            <textarea
+              value={collectedList ?? ""}
+              onChange={(e) => setCollectedList(e.target.value)}
+              placeholder="1, 2, 3, 5, 6, 7, 8..."
+              className="w-full bg-input/20 border-2 border-border/50 rounded-xl p-4 min-h-[150px] focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 transition-all text-sm font-medium font-mono placeholder:text-muted-foreground/30"
+            />
+          </div>
         </div>
-      </div>
       </div>
     </Layout>
   );

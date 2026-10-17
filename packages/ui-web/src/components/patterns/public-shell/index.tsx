@@ -6,7 +6,7 @@ import { PublicFooter } from "../public-footer";
 export type PublicShellProps = ComponentPropsWithoutRef<"div"> &
   Pick<
     PublicHeaderProps,
-    "currentPath" | "Link" | "links" | "authenticated"
+    "currentPath" | "Link" | "links" | "authenticated" | "applink" | "isNext"
   > & { mainClassName?: string };
 
 export function PublicShell({
@@ -17,6 +17,7 @@ export function PublicShell({
   authenticated,
   className,
   mainClassName,
+  isNext = false,
   ...props
 }: PublicShellProps) {
   return (
@@ -32,6 +33,8 @@ export function PublicShell({
         currentPath={currentPath}
         links={links}
         authenticated={authenticated}
+        applink={props.applink}
+        isNext={isNext}
       />
       <main className={mainClassName}>{children}</main>
       <PublicFooter />

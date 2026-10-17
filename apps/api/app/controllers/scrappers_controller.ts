@@ -8,12 +8,19 @@ import type { HttpContext } from '@adonisjs/core/http'
 export default class ScrappersController {
   collections({ response }: HttpContext) {
     return response.json({
-      data: scrapeJobRunner.listCollections().map(({ key, source, url, enabled }) => ({
+      data: scrapeJobRunner.listCollections().map(({ key, source, url, enabled, type }) => ({
         key,
         source,
         url,
         enabled,
+        type,
       })),
+    })
+  }
+
+  async scrapped({ response }: HttpContext) {
+    return response.json({
+      data: scrapeJobRunner.listScrappedJobs(),
     })
   }
 

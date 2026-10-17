@@ -57,12 +57,14 @@
   },
   "common": {
     "back": "رجوع",
+    "to": "إلى",
     "search": "بحث",
     "loading": "جاري التحميل...",
     "no_data": "لا توجد بيانات متاحة.",
     "edit": "تعديل",
     "update": "تحديث",
     "publish": "نشر",
+    "cancel": "إلغاء",
     "region": "المنطقة",
     "governorates": {
       "Cairo": "القاهرة",
@@ -112,6 +114,36 @@
     }
   },
   "admin": {
+    "navigation": {
+      "overview": "نظرة عامة",
+      "users": "الأعضاء",
+      "collections": "القوائم",
+      "categories": "التصنيف",
+      "scrapper": "أداة الاستخراج",
+      "marketplace": "السوق"
+    },
+    "shell": {
+      "control_center": "مركز تحكم الإدارة",
+      "navigation_label": "الإدارة",
+      "operations": "العمليات",
+      "back_to_workspace": "مساحة الجامع",
+      "administrator": "مسؤول النظام",
+      "open_menu": "فتح قائمة الإدارة",
+      "close_menu": "إغلاق قائمة الإدارة",
+      "change_language": "تغيير اللغة",
+      "toggle_theme": "تبديل المظهر اللوني"
+    },
+    "dashboard": {
+      "title": "عمليات المجتمع",
+      "subtitle": "حافظ على دقة صلاحيات الأعضاء والقوائم المنشورة وهيكل الكتالوج من مساحة عمل واحدة.",
+      "management_areas": "مجالات الإدارة",
+      "users_description": "راجع حالة الأعضاء وسمعتهم وصلاحياتهم.",
+      "collections_description": "أنشئ قوائم المجتمع وعدّلها وانشرها.",
+      "categories_description": "أدر الفئات الرئيسية والفئات الفرعية التابعة لها.",
+      "restricted": "{{count}} مقيّد",
+      "published": "مجموعات منشورة",
+      "parent_categories": "فئات رئيسية"
+    },
     "users": {
       "title": "دليل الأعضاء",
       "subtitle": "إدارة أذونات المجتمع والسمعة.",
@@ -123,17 +155,74 @@
       "active": "نشط",
       "unblock": "فك حظر العضو",
       "restrict": "تقييد الوصول",
-      "admin_badge": "مدير"
+      "admin_badge": "مدير",
+      "empty_title": "لا يوجد أعضاء",
+      "empty_description": "ستظهر حسابات الأعضاء هنا عند انضمامهم إلى المجتمع.",
+      "error_title": "الأعضاء غير متاحين",
+      "error_description": "تعذر تحميل دليل الأعضاء. حدّث الصفحة للمحاولة مرة أخرى."
     },
     "categories": {
       "title": "مدير التصنيف",
       "subtitle": "تحديد فئات المجتمع والأنواع الفرعية.",
       "new_cat": "فئة جديدة",
       "cat_name": "اسم الفئة",
+      "sub_cat_name": "اسم الفئة الفرعية",
       "add_parent": "إضافة فئة رئيسية",
-      "new_sub": "فئة فرعية جديدة...",
-      "add": "إضافة",
-      "no_subs": "لا توجد فئات فرعية معرفة"
+      "new_sub": "اسم الفئة الفرعية",
+      "add": "إضافة فئة فرعية",
+      "no_subs": "لا توجد فئات فرعية معرفة",
+      "back": "العودة إلى التصنيف",
+      "parent": "فئة رئيسية",
+      "child": "فئة فرعية",
+      "expand_label": "توسيع الفئة",
+      "expand": "عرض الفئات الفرعية لـ {{name}}",
+      "collapse": "إخفاء الفئات الفرعية لـ {{name}}",
+      "empty_title": "لا توجد فئات بعد",
+      "empty_description": "أنشئ أول فئة رئيسية لتنظيم الكتالوج.",
+      "error_title": "التصنيف غير متاح",
+      "error_description": "تعذر تحميل الفئات. حدّث الصفحة للمحاولة مرة أخرى.",
+      "create_title": "إنشاء فئة",
+      "create_description": "أضف فئة رئيسية إلى تصنيف الكتالوج.",
+      "creation_type": "ماذا تريد أن تنشئ؟",
+      "creation_parent": "فئة رئيسية",
+      "creation_subcategory": "فئة فرعية",
+      "create": "إنشاء فئة",
+      "parent_selector": "الفئة الرئيسية",
+      "select_parent": "اختر فئة رئيسية",
+      "initial_subcategories": "الفئات الفرعية",
+      "initial_subcategories_hint": "اختياري. ستُنشأ هذه الفئات مع الفئة الرئيسية.",
+      "add_initial_subcategory": "إضافة فئة فرعية",
+      "remove_subcategory": "إزالة الفئة الفرعية {{index}}",
+      "edit_title": "تعديل الفئة",
+      "edit_parent_description": "حدّث هذه الفئة الرئيسية وأدر فئاتها الفرعية.",
+      "edit_child_description": "حدّث اسم هذه الفئة الفرعية.",
+      "name_placeholder": "مثال: كرة القدم",
+      "parent_name_hint": "استخدم اسماً واضحاً لمجموعة كتالوج يمكنها احتواء فئات مرتبطة.",
+      "child_name_hint": "استخدم اسماً محدداً ومميزاً داخل الفئة الرئيسية.",
+      "subcategory_placeholder": "مثال: الدوري الإنجليزي",
+      "subcategories_title": "الفئات الفرعية",
+      "subcategories_description": "أضف فئة فرعية أو افتحها لتنظيم الكتالوج بدقة أكبر.",
+      "created": "تم إنشاء الفئة",
+      "updated": "تم تحديث الفئة",
+      "subcategory_created": "تمت إضافة الفئة الفرعية",
+      "deleted": "تمت أرشفة الفئة",
+      "delete": "أرشفة الفئة",
+      "delete_title": "هل تريد أرشفة هذه الفئة؟",
+      "delete_description": "ستتم إزالة {{name}} من إدارة الكتالوج النشطة.",
+      "confirm_delete": "أرشفة الفئة",
+      "table": {
+        "name": "الفئة",
+        "kind": "النوع",
+        "subcategories": "الفئات الفرعية"
+      },
+      "errors": {
+        "parent_required": "اختر فئة رئيسية قبل الحفظ.",
+        "no_parents": "أنشئ فئة رئيسية قبل إضافة فئة فرعية.",
+        "save": "تعذر حفظ الفئة. حاول مرة أخرى.",
+        "subcategory": "تعذرت إضافة الفئة الفرعية. حاول مرة أخرى.",
+        "delete": "تعذرت أرشفة الفئة. حاول مرة أخرى.",
+        "not_found": "تعذر العثور على هذه الفئة."
+      }
     },
     "collections": {
       "title": "خزنة القوائم",
@@ -150,7 +239,75 @@
       "csv": "مصدر بيانات CSV",
       "xlsx": "ملف قائمة المراجعة (XLSX)",
       "upload_help": "اسحب ملف XLSX هنا أو انقر للتصفح",
-      "publish": "نشر القائمة"
+      "cover_image": "صورة غلاف المجموعة",
+      "cover_image_create_hint": "اختياري. ارفع صورة غلاف لهذه المجموعة.",
+      "cover_image_edit_hint": "اتركه فارغاً للاحتفاظ بصورة الغلاف الحالية.",
+      "cover_image_upload_help": "اختر صورة غلاف",
+      "cover_image_file_types": "PNG أو JPG أو WebP بحد أقصى 5 ميجابايت",
+      "publish": "نشر القائمة",
+      "back": "العودة إلى القوائم",
+      "create_title": "إنشاء قائمة",
+      "create_description": "انشر قائمة منظمة للبطاقات أو الملصقات للمجتمع.",
+      "edit_title": "تعديل القائمة",
+      "edit_description": "حدّث بيانات القائمة أو استبدل بيانات البطاقات المستوردة.",
+      "name_placeholder": "مثال: كأس العالم 2022",
+      "type_placeholder": "اختر نوع المجموعة",
+      "year_placeholder": "مثال: 2022",
+      "total_placeholder": "مثال: 200",
+      "category_placeholder": "اختر فئة",
+      "select_category": "اختر فئة",
+      "select_subcategory": "بدون فئة فرعية",
+      "uncategorized": "غير مصنف",
+      "no_subcategory": "بدون فئة فرعية",
+      "file_create_hint": "اختياري. استورد ملف XLSX أو XLS عند نشر القائمة.",
+      "file_edit_hint": "اتركه فارغاً للاحتفاظ بالبطاقات الحالية. رفع ملف يستبدل جميع البطاقات.",
+      "file_types": "XLSX أو XLS",
+      "empty_title": "لا توجد قوائم بعد",
+      "empty_description": "انشر أول قائمة لتصبح متاحة لهواة الجمع.",
+      "error_title": "القوائم غير متاحة",
+      "error_description": "تعذر تحميل القوائم. حدّث الصفحة للمحاولة مرة أخرى.",
+      "created": "تم نشر القائمة",
+      "updated": "تم تحديث القائمة",
+      "deleted": "تمت أرشفة القائمة",
+      "delete": "أرشفة القائمة",
+      "delete_title": "هل تريد أرشفة هذه القائمة؟",
+      "delete_description": "ستتم إزالة {{name}} والبطاقات المرتبطة بها من إدارة الكتالوج النشطة.",
+      "confirm_delete": "أرشفة القائمة",
+      "form": "التفاصيل",
+      "checklist": "البطاقات",
+      "table": {
+        "checklist": "القائمة"
+      },
+      "errors": {
+        "category_required": "اختر فئة قبل الحفظ.",
+        "name_min": "يجب ألا يقل العنوان عن 3 أحرف.",
+        "year_format": "يجب أن تتكون السنة من 4 أرقام.",
+        "year_range": "يجب أن تكون السنة بين 1800 و2200.",
+        "total_number": "يجب أن يكون إجمالي العناصر رقماً.",
+        "cover_type": "اختر صورة بصيغة PNG أو JPG أو WebP.",
+        "cover_size": "يجب ألا يتجاوز حجم صورة الغلاف 5 ميجابايت.",
+        "save": "تعذر حفظ القائمة. حاول مرة أخرى.",
+        "delete": "تعذرت أرشفة القائمة. حاول مرة أخرى.",
+        "not_found": "تعذر العثور على هذه القائمة."
+      }
+    }
+  },
+  "category_not_found": "الفئة غير موجودة",
+  "category": {
+    "parent_subtitle": "استكشف المجموعات والسلاسل الموجودة على هذا الرف.",
+    "sub_subtitle": "تصفّح جميع القوائم في هذه السلسلة.",
+    "search_in_category": "ابحث في {{name}}",
+    "featured_collections": "مجموعات مختارة",
+    "browse_subcategories": "تصفّح الفئات الفرعية"
+  },
+  "seller": {
+    "navigation": {
+      "overview": "نظرة عامة",
+      "listings": "العروض",
+      "messages": "الرسائل"
+    },
+    "dashboard": {
+      "listings_description": "أدر عروضك ومخزونك في السوق."
     }
   },
   "dashboard": {
@@ -210,10 +367,15 @@
     "collected": "المؤمنة",
     "total": "الإجمالي",
     "progress": "التقدم",
+    "show_more": "عرض المزيد",
+    "show_less": "عرض أقل",
+    "uncategorized": "غير مصنف",
+    "sub_category": "الفئة الفرعية",
     "view_collection": "عرض المجموعة",
     "phone": "رقم الهاتف",
     "swap_status": "غير مستعد للمبادلة",
-    "swap_hint": "إخفاء قوائم المبادلة مؤقتاً"
+    "swap_hint": "إخفاء قوائم المبادلة مؤقتاً",
+    "start_conversation_error": "تعذر بدء المحادثة"
   },
   "collection_edit": {
     "title": "تعديل مجموعتي",

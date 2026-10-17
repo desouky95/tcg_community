@@ -55,6 +55,8 @@ export default defineConfig({
     () => import('@adonisjs/auth/auth_provider'),
     () => import('#providers/api_provider'),
     () => import('@adonisjs/queue/queue_provider'),
+    () => import('#providers/app_provider'),
+    () => import('@adonisjs/drive/drive_provider')
   ],
 
   /*

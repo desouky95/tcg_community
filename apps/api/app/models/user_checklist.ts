@@ -16,4 +16,25 @@ export default class UserChecklist extends UserChecklistSchema {
     throughForeignKey: 'id',
   })
   declare subCategory: HasManyThrough<typeof Category>
+
+  @computed()
+  get collectedListArray() {
+    return (this.collectedList || '').split(',').filter(Boolean)
+  }
+
+  @computed()
+  get missingListArray() {
+    return (this.missingList || '').split(',').filter(Boolean)
+  }
+
+  @computed()
+  get duplicateListArray() {
+    return (this.duplicatesList || '')
+      .split(',')
+      .filter(Boolean)
+      .map((i) => ({
+        id: i.match(/^[^,\(]+/g)?.[0] ?? i,
+        count: i.match(/(?<=\()\d+(?=\))/g)?.[0],
+      }))
+  }
 }

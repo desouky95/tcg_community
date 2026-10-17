@@ -5,6 +5,7 @@ import {
   Moon,
   Settings,
   ShieldCheck,
+  Store,
   Sun,
   UserPlus,
   UserRound,
@@ -99,6 +100,11 @@ export default function UserDrawer({
               {tcgUser?.role !== "user" && (
                 <Link to="/admin" onClick={onClose}>
                   <ShieldCheck aria-hidden="true" /> Admin
+                </Link>
+              )}
+              {tcgUser?.role !== "user" && (
+                <Link to="/seller" onClick={onClose}>
+                  <Store aria-hidden="true" /> Seller
                 </Link>
               )}
             </>

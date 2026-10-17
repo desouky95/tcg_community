@@ -3,57 +3,79 @@ import Card from '#models/card'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import XLSX from 'xlsx'
-import { createChecklistValidator } from '#validators/checklist'
-import ChecklistTransformer from '#transformers/checklist_transformer'
+import {
+  createChecklistValidator,
+  importChecklistValidator,
+  updateChecklistValidator,
+} from '#validators/checklist'
 import { parseCardImportRows } from '#services/card_import_service'
+import { categoryService } from '#services/category_service'
+import stringHelpers from '@adonisjs/core/helpers/string'
+import { slugService } from '#services/slug_service'
+import { inject } from '@adonisjs/core'
+import { ChecklistService } from '#services/checklist_service'
+import { checklistCoverStorage } from '#services/checklist_cover_storage'
+import { createReadStream } from 'node:fs'
+import { access } from 'node:fs/promises'
 
+@inject()
 export default class ChecklistsController {
-  async index({ request }: HttpContext) {
+  constructor(private service: ChecklistService) {}
+  async index({ response, request, auth }: HttpContext) {
+    const category = request.input('category')
     const q = request.input('q')
-    const categoryId = request.input('categoryId')
-    const subcategoryId = request.input('subcategoryId')
-    const limit = request.input('limit')
-
-    const query = Checklist.query().preload('category').preload('subcategory')
-
-    if (q) {
-      query.where('name', 'like', `%${q}%`)
+    const params = {
+      category,
+      q,
     }
 
-    if (categoryId) {
-      query.where('categoryId', categoryId)
+    const query = Checklist.query().preload('category')
+    if (params.category) {
+      query.if(params.category, (c) =>
+        c.whereHas('category', (cat) =>
+          cat.where('slug', category).orWhereHas('parent', (p) => p.where('slug', category))
+        )
+      )
     }
 
-    if (subcategoryId) {
-      query.where('subcategoryId', subcategoryId)
+    if (params.q) {
+      query.andWhere((_qs) => {
+        _qs.if(params.q, (search) =>
+          search.andWhereILike('name', `%${q}%`).orWhereILike('slug', `%${q}%`)
+        )
+      })
     }
 
-    query.orderBy('createdAt', 'desc')
+    const result = await query
 
-    if (limit) {
-      query.limit(Number(limit))
-    }
-
-    return await query
+    return response.api(result)
   }
 
-  async show({ params, auth, serialize }: HttpContext) {
-    const isUserExist = !!auth.user
-    return serialize(
-      ChecklistTransformer.transform(
-        await Checklist.query()
-          .where('id', params.id)
-          .preload('cards', (q) =>
-            q.whereNull('variant').withCount('checklist').orderBy('order', 'asc')
-          )
-          .preload('category')
-          .preload('subcategory')
-          .if(isUserExist, (q) =>
-            q.preload('userChecklist', (qq) => qq.where('userId', auth.user!.id))
-          )
-          .firstOrFail()
-      )
-    )
+  async show({ params, auth, response, request }: HttpContext) {
+    const id = params.id
+    const qs = request.qs()
+    const user = auth.user
+    const checklist = await this.service.get(id, qs, user)
+
+    return response.api(checklist)
+  }
+
+  async cover({ params, response }: HttpContext) {
+    const checklist = await Checklist.find(params.id)
+    if (!checklist?.coverImagePath) {
+      return response.notFound({ error: 'Checklist cover image not found.' })
+    }
+
+    const coverPath = checklistCoverStorage.path(checklist.coverImagePath)
+    try {
+      await access(coverPath)
+    } catch {
+      return response.notFound({ error: 'Checklist cover image not found.' })
+    }
+
+    response.header('Content-Type', checklistCoverStorage.contentType(checklist.coverImagePath))
+    response.header('Cache-Control', 'public, max-age=31536000, immutable')
+    return response.stream(createReadStream(coverPath))
   }
 
   private async importCards(checklist: Checklist, file: any, trx: any) {
@@ -104,22 +126,45 @@ export default class ChecklistsController {
     await checklist.save()
   }
 
-  async store({ request, response }: HttpContext) {
+  async store(ctx: HttpContext) {
+    const { request, response } = ctx
     const data = await request.validateUsing(createChecklistValidator)
     const file = request.file('file', {
       size: '10mb',
       extnames: ['xlsx', 'xls', 'zip'],
     })
+    const coverImage = request.file('coverImage', {
+      size: '5mb',
+      extnames: ['jpg', 'jpeg', 'png', 'webp'],
+    })
 
+    if (coverImage && !coverImage.isValid) {
+      return response.unprocessableEntity({ errors: coverImage.errors })
+    }
+
+    let storedCoverImage: string | null = null
     try {
+      const category = await categoryService.findBySlug(data.categoryId)
+      const slug = stringHelpers.slug(data.name)
       const checklist = await db.transaction(async (trx) => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         const _checklist = await Checklist.create(
           {
-            ...data,
+            name: data.name,
+            year: data.year as unknown as number,
+            type: data.type,
+            totalCards: data.totalCards,
+            categoryId: category.id,
+            slug,
           },
           { client: trx }
         )
+
+        if (coverImage) {
+          storedCoverImage = await checklistCoverStorage.store(_checklist.id, coverImage)
+          _checklist.coverImagePath = storedCoverImage
+          await _checklist.save()
+        }
 
         if (file) {
           await this.importCards(_checklist, file, trx)
@@ -130,6 +175,7 @@ export default class ChecklistsController {
 
       return response.status(201).json(checklist)
     } catch (err) {
+      await checklistCoverStorage.remove(storedCoverImage).catch(console.error)
       console.error('Submission error:', err)
       return response.internalServerError({
         error: 'Failed to publish checklist. Check file format.',
@@ -138,34 +184,52 @@ export default class ChecklistsController {
   }
 
   async update({ params, request, response }: HttpContext) {
+    const coverImage = request.file('coverImage', {
+      size: '5mb',
+      extnames: ['jpg', 'jpeg', 'png', 'webp'],
+    })
+
+    if (coverImage && !coverImage.isValid) {
+      return response.unprocessableEntity({ errors: coverImage.errors })
+    }
+
+    let storedCoverImage: string | null = null
+    let previousCoverImage: string | null = null
     try {
+      const data = await request.validateUsing(updateChecklistValidator, {
+        meta: { id: params.id },
+      })
+      const category = await categoryService.findBySlug(data.categoryId)
       const result = await db.transaction(async (trx) => {
         const checklist = await Checklist.findOrFail(params.id, { client: trx })
-        const data = request.only([
-          'name',
-          'year',
-          'type',
-          'totalCards',
-          'categoryId',
-          'subcategoryId',
-        ])
+        const slug = stringHelpers.slug(data.name)
 
-        const file = request.file('file', {
-          size: '10mb',
-          extnames: ['xlsx', 'xls', 'zip'],
+        await slugService.checkSlug(checklist.id, slug, Checklist)
+        checklist.merge({
+          name: data.name,
+          year: data.year as unknown as number,
+          type: data.type,
+          totalCards: data.totalCards,
+          categoryId: category.id,
+          slug,
         })
 
-        checklist.merge(data)
-        await checklist.save()
-
-        if (file) {
-          await this.importCards(checklist, file, trx)
+        if (coverImage) {
+          previousCoverImage = checklist.coverImagePath
+          storedCoverImage = await checklistCoverStorage.store(checklist.id, coverImage)
+          checklist.coverImagePath = storedCoverImage
         }
+        await checklist.save()
 
         return checklist
       })
-      return response.ok(result)
+
+      if (storedCoverImage && previousCoverImage) {
+        await checklistCoverStorage.remove(previousCoverImage).catch(console.error)
+      }
+      return response.api(result)
     } catch (err) {
+      await checklistCoverStorage.remove(storedCoverImage).catch(console.error)
       console.error('Update error:', err)
       return response.internalServerError({ error: 'Failed to update checklist.' })
     }
@@ -176,5 +240,28 @@ export default class ChecklistsController {
     await Card.query().where('checklistId', checklist.id).delete()
     await checklist.delete()
     return response.ok({ message: 'Checklist deleted successfully' })
+  }
+
+  async download({ request, response }: HttpContext) {
+    const id = request.param('id')
+    const checklist = await this.service.get(id, {})
+    const file = await this.service.download(checklist)
+
+    response.header(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response.header('Content-Disposition', 'attachment; filename="report.xlsx"')
+    return response.stream(file)
+  }
+
+  async import({ request, response, params, auth }: HttpContext) {
+    const data = await request.validateUsing(importChecklistValidator)
+    const slug = params.di
+    const checklist = await this.service.get(slug, {})
+    const user = auth.user
+    this.service.import(user!, checklist, data.file)
+
+    return response.ok('')
   }
 }

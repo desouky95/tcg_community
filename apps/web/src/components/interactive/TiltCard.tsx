@@ -60,7 +60,7 @@ export const TiltCard: React.FC<TiltCardProps> = ({
         rotateX,
         transformStyle: "preserve-3d",
       }}
-      className={`relative  w-[300px] aspect-[1/1.2] rounded-none bg-zinc-900 border border-white/10 overflow-hidden cursor-pointer group/pack shadow-2xl ${className}`}
+      className={`relative  w-75 aspect-[1/1.2] rounded-none bg-zinc-900 border border-white/10 overflow-hidden cursor-pointer group/pack shadow-2xl ${className}`}
     >
       <div
         style={{
@@ -79,7 +79,7 @@ export const TiltCard: React.FC<TiltCardProps> = ({
         )}
         <div
           style={{ transform: "translateZ(150px)" }}
-          className="absolute test w-[110%] h-[110%] top-1/2 left-1/2 -translate-1/2 inset-x-0 bottom-0  p-8 bg-linear-to-t from-black via-black/40 to-transparent flex flex-col justify-end h-1/2 opacity-0 group-hover/pack:opacity-100 transition-opacity duration-300 pointer-events-none"
+          className="absolute test w-[110%] top-1/2 left-1/2 -translate-1/2 inset-x-0 bottom-0  p-8 bg-linear-to-t from-black via-black/40 to-transparent flex flex-col justify-end h-1/2 opacity-0 group-hover/pack:opacity-100 transition-opacity duration-300 pointer-events-none"
         >
           <p className="text-[10px] font-black text-primary-400 uppercase tracking-[0.2em] mb-2">
             {pack.series}

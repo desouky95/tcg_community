@@ -1,12 +1,25 @@
-import { Card3D } from "../components/interactive/Card3D";
+import { Button } from "@tcg/ui-web";
+import { motion } from "motion/react";
+import { useState } from "react";
 
 export default function Test() {
+  const [open, setOpen] = useState(true);
+
   return (
-    <>
-      <div className="absolute w-64 h-96 bg-zinc-900 rounded-3xl border-0 border-primary-500 shadow-[0_0_50px_-12px_rgba(16,185,129,0.3)] z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-primary-500/5 mix-blend-overlay" />
-        <Card3D />
-      </div>
-    </>
+    <div className="min-h-screen w-full flex bg-red-400 h-px">
+      <motion.aside
+        className="h-full bg-amber-100"
+        animate={{
+          width: open ? '' : "0px",
+        }}
+      >
+        <div className="h-full min-w-72 "></div>
+      </motion.aside>
+      <main className="flex-1 h-full bg-green-200">
+        <Button onClick={() => setOpen(!open)}>
+          {open ? "Close" : "Open"}
+        </Button>
+      </main>
+    </div>
   );
 }
