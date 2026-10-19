@@ -1,5 +1,6 @@
 import { PageAnimatePresence, PublicShell } from "@tcg/ui-web/next";
 import { cookies } from "next/headers";
+import { SharedPageTransition } from "./shared-page-transition";
 
 export default async function Layout({
   children,
@@ -14,7 +15,7 @@ export default async function Layout({
       applink={applink}
       isNext
     >
-      {children}
+      <SharedPageTransition>{children}</SharedPageTransition>
     </PublicShell>
   );
 }

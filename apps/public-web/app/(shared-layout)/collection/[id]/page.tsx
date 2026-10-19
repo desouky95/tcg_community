@@ -15,6 +15,7 @@ import { useParams } from "next/navigation";
 import { useChecklist } from "@tcg/react-query";
 import { Card } from "@tcg/api-contracts";
 import {
+  DataTable,
   EmptyStatePanel,
   PublicShell,
   Skeleton,
@@ -116,7 +117,7 @@ export default function Collection() {
           aria-label="Loading collection"
         >
           <Skeleton className="mb-12 h-24 max-w-xl" />
-          <Skeleton className="wax-collection-table-skeleton" />
+          <Skeleton className="h-105" />
         </main>
       </>
     );
@@ -316,18 +317,14 @@ export default function Collection() {
             </div>
           </details>
 
-          <div
-            className="wax-collection-table-wrap"
-            tabIndex={0}
-            aria-label="Scrollable card index"
-          >
-            <table className="wax-collection-table">
-              <thead>
-                <tr>
-                  {columns.map((column) => (
-                    <th
+          <DataTable.Root scrollLabel="Scrollable card index">
+            <DataTable.Table className="min-w-245">
+              <DataTable.Header sticky className="[&_th]:top-20">
+                <DataTable.Row>
+                  {columns.map((column, index) => (
+                    <DataTable.Head
                       key={column.key}
-                      scope="col"
+                      align={index >= 4 ? "center" : "start"}
                       aria-sort={
                         sortColumn === column.key
                           ? sortDirection === "asc"
@@ -339,49 +336,52 @@ export default function Collection() {
                       <button
                         type="button"
                         onClick={() => handleSort(column.key)}
-                        className="focus-ring"
+                        className="flex min-h-8 w-full items-center justify-between gap-2 rounded-sm text-start outline-none focus-visible:ring-3 focus-visible:ring-wax-gold"
                       >
                         {column.label}
                         <ArrowUpDown aria-hidden="true" />
                       </button>
-                    </th>
+                    </DataTable.Head>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
+                </DataTable.Row>
+              </DataTable.Header>
+              <DataTable.Body>
                 {filteredAndSortedCards.map((card) => (
-                  <tr key={card.number}>
-                    <td>
+                  <DataTable.Row
+                    key={card.number}
+                    className="hover:bg-primary-500/6"
+                  >
+                    <DataTable.Cell>
                       <span className="wax-card-number">{card.number}</span>
-                    </td>
-                    <td>
+                    </DataTable.Cell>
+                    <DataTable.Cell>
                       <strong>{card.name}</strong>
-                    </td>
-                    <td>{card.type}</td>
-                    <td>{card.section}</td>
-                    <td>
+                    </DataTable.Cell>
+                    <DataTable.Cell>{card.type}</DataTable.Cell>
+                    <DataTable.Cell>{card.section}</DataTable.Cell>
+                    <DataTable.Cell align="center">
                       <span className="wax-count wax-count-wanted">
                         {card.needCount ?? 0}
                       </span>
-                    </td>
-                    <td>
+                    </DataTable.Cell>
+                    <DataTable.Cell align="center">
                       <span className="wax-count wax-count-held">
                         {card.holdCount ?? 0}
                       </span>
-                    </td>
-                    <td>
+                    </DataTable.Cell>
+                    <DataTable.Cell align="center">
                       <span className="wax-count wax-count-offered">
                         {card.offerCount ?? 0}
                       </span>
-                    </td>
-                    <td>
+                    </DataTable.Cell>
+                    <DataTable.Cell align="center">
                       <span className="wax-ratio">{card.ratio ?? "0.00"}</span>
-                    </td>
-                  </tr>
+                    </DataTable.Cell>
+                  </DataTable.Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </DataTable.Body>
+            </DataTable.Table>
+          </DataTable.Root>
 
           {filteredAndSortedCards.length === 0 && (
             <EmptyStatePanel

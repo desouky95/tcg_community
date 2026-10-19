@@ -37,15 +37,14 @@ export default class CategoriesController extends ControllerWithPagination {
   }
 
   async show({ params, response, request }: HttpContext) {
-    const expand = request.input('expand', '')
-    const expendedFields = expand?.split(',') as string[]
-    const category = await Category.query()
-      .where('slug', params.id)
-      .preload('children', (children) => children.preload('checklists'))
-      .if(expendedFields.includes('checklists'), (q) => q.preload('checklists'))
-      .if(expendedFields.includes('parent'), (q) => q.preload('parent'))
-      .if(expendedFields.includes('checklists'), (q) => q.preload('checklists'))
-      .first()
+    const qs = request.qs()
+    const query = Category.query().where('slug', params.id)
+    const filtered = filtering.filter(query, {
+      qs,
+      expandableFields: ['checklists', 'parent', 'children'],
+      defaultSortField: 'id',
+    })
+    const category = await filtered.first()
 
     if (!category) {
       return response.notFound({ error: 'Category not found' })

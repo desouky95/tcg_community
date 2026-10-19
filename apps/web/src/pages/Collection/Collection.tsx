@@ -9,6 +9,7 @@ import {
 
 import {
   Button,
+  DataTable,
   EmptyStatePanel,
   Field,
   Input,
@@ -58,7 +59,7 @@ export function Collection() {
           aria-label="Loading collection"
         >
           <Skeleton className="mb-12 h-24 max-w-xl" />
-          <Skeleton className="wax-collection-table-skeleton" />
+          <Skeleton className="h-105" />
         </main>
       </PublicShell>
     );
@@ -88,7 +89,7 @@ export function Collection() {
   return (
     <Layout>
       <motion.main
-        className={`wax-collection-page bg-[url(${collection.coverImageUrl})] relative`}
+        className={`wax-collection-page bg-[url(${collection.coverImageUrl})] relative pb-0`}
         animate={
           {
             // padding: animate
@@ -100,7 +101,7 @@ export function Collection() {
         }
       >
         <nav
-          className="flex flex-wrap items-center gap-2 font-mono text-utility uppercase text-wax-muted [&_a:hover]:text-wax-red [&_svg]:size-3.5 rtl:[&_svg]:rotate-180 [&_span]:font-bold [&_span]:text-wax-ink"
+          className="flex lg:flex-wrap max-sm:whitespace-nowrap max-sm:overflow-auto max-sm:py-2 items-center gap-2 font-mono text-utility uppercase text-wax-muted [&_a:hover]:text-wax-red [&_svg]:size-3.5 rtl:[&_svg]:rotate-180 [&_span]:font-bold [&_span]:text-wax-ink"
           aria-label="Breadcrumb"
         >
           <Link to="/checklists" className="focus-ring">
@@ -119,19 +120,19 @@ export function Collection() {
           <span>{collection.name}</span>
         </nav>
 
-        <header className="wax-collection-header block bg-wax-paper py-6 z-10">
+        <header className="wax-collection-header block bg-wax-paper max-sm:py-0 z-10">
           <div>
             <p>
               {collection.category?.name} - {collection.year}
             </p>
-            <h1 className="text-4xl">{collection.name}</h1>
+            <h1 className="text-lg lg:text-4xl">{collection.name}</h1>
           </div>
-          <div className="grid gap-4 lg:grid-cols-2">
-            <div className="w-44 place-self-center lg:col-start-3 lg:place-self-end">
+          <div className="grid gap-4 lg:grid-cols-2 relative">
+            <div className="w-20 lg:w-44 max-sm:absolute inset-e-0 bottom-0 lg:visible place-self-center col-start-2 lg:col-start-3 lg:place-self-end">
               <img src={collection.coverImageUrl ?? ""} alt={collection.name} />
             </div>
             <section
-              className="wax-collection-stats lg:col-start-1 lg:col-end-3 lg:row-start-1 lg:row-end-2 lg:self-center"
+              className="wax-collection-stats max-sm:hidden row-start-1 lg:col-start-1 lg:col-end-3 lg:row-start-1 lg:row-end-2 lg:self-center"
               aria-label="Collection summary"
             >
               <div>
@@ -151,7 +152,7 @@ export function Collection() {
                 <strong>{stats.offered}</strong>
               </div>
             </section>
-            <div className="wax-collection-actions lg:col-start-3 lg:row-start-2 lg:place-self-end">
+            <div className="wax-collection-actions col-start-1 col-end-2 row-start-1 flex flex-row items-center lg:grid  lg:col-start-3 lg:row-start-2 lg:place-self-end">
               <Button
                 size="sm"
                 variant="outline"
@@ -160,7 +161,8 @@ export function Collection() {
                 onClick={handleDownloadExcel}
               >
                 <FileSpreadsheet />
-                Download Checklist
+                <span className="hidden lg:visible">Download Checklist</span>
+                <span className="visible lg:hidden">Download</span>
               </Button>
               {currentUser && (
                 <Button asChild size="sm">
@@ -168,7 +170,9 @@ export function Collection() {
                     to={`/collection/${id}/edit`}
                     className={buttonStyles()}
                   >
-                    <Edit3 aria-hidden="true" /> Edit my list
+                    <Edit3 aria-hidden="true" />
+                    <span className="hidden lg:visible">Edit my list</span>
+                    <span className="visible lg:hidden">Edit</span>
                   </Link>
                 </Button>
               )}
@@ -180,7 +184,7 @@ export function Collection() {
           className="wax-collection-index"
           aria-labelledby="collection-index-title"
         >
-          <details className="wax-collection-advanced">
+          <details className="wax-collection-advanced max-sm:m-2 max-sm:hidden max-sm:p-0 max-sm:border-0">
             <summary className="focus-ring">
               <Filter aria-hidden="true" /> Filters
             </summary>
@@ -207,17 +211,18 @@ export function Collection() {
             </div>
           </details>
 
-          <div className="sticky top-34 z-50 mb-2">
+          <div className="z-50 max-sm:my-2 mb-2">
             <Input
               placeholder="Search number, card, type, or section"
               value={table.state.globalFilter}
               onChange={(e) => table.setGlobalFilter(e.target.value)}
             />
           </div>
-          <div
-            className="wax-collection-table-wrap h-[60vh] overflow-y-auto"
-            tabIndex={0}
-            aria-label="Scrollable card index"
+          <DataTable.Root
+            // className="h-40vh lg:h-[60vh] "
+            className="lg:h-[60vh] "
+            scrollLabel="Scrollable card index"
+            viewportClassName="max-sm:overscroll-auto"
           >
             {isLoadingCards && (
               <main
@@ -231,15 +236,16 @@ export function Collection() {
               </main>
             )}
             {!isLoadingCards && (
-              <table className="wax-collection-table">
-                <thead>
+              <DataTable.Table className="min-w-245">
+                <DataTable.Header sticky>
                   {table.getHeaderGroups().map((headerGroup) => (
-                    <tr key={headerGroup.id}>
+                    <DataTable.Row key={headerGroup.id}>
                       {headerGroup.headers.map((header) => (
-                        <th
+                        <DataTable.Head
                           key={header.id}
-                          scope="col"
                           className="align-baseline"
+                          // style={{ width: table.options.meta?.maxWidth }}
+                          align={header.index >= 4 ? "center" : "start"}
                           aria-sort={
                             !header.column.getIsSorted()
                               ? "none"
@@ -251,33 +257,39 @@ export function Collection() {
                           <button
                             type="button"
                             onClick={header.column.getToggleSortingHandler()}
-                            // className="focus-ring"
+                            className="flex min-h-8 w-full items-center justify-between gap-2 rounded-sm text-start outline-none focus-visible:ring-3 focus-visible:ring-wax-gold"
                           >
                             <table.FlexRender header={header} />
                             {header.column.getCanSort() && (
                               <ArrowUpDown aria-hidden="true" />
                             )}
                           </button>
-                        </th>
+                        </DataTable.Head>
                       ))}
-                    </tr>
+                    </DataTable.Row>
                   ))}
-                </thead>
+                </DataTable.Header>
 
-                <tbody>
+                <DataTable.Body>
                   {table.getRowModel().rows.map((row) => (
-                    <tr key={row.id}>
-                      {row.getAllCells().map((cell) => (
-                        <td key={cell.id}>
+                    <DataTable.Row
+                      key={row.id}
+                      className="hover:bg-primary-500/6"
+                    >
+                      {row.getVisibleCells().map((cell, index) => (
+                        <DataTable.Cell
+                          key={cell.id}
+                          align={index >= 4 ? "center" : "start"}
+                        >
                           <table.FlexRender cell={cell} />
-                        </td>
+                        </DataTable.Cell>
                       ))}
-                    </tr>
+                    </DataTable.Row>
                   ))}
-                </tbody>
-              </table>
+                </DataTable.Body>
+              </DataTable.Table>
             )}
-          </div>
+          </DataTable.Root>
 
           {table.getRowModel().rows.length === 0 && (
             <EmptyStatePanel
@@ -294,7 +306,7 @@ export function Collection() {
             />
           )}
 
-          <footer className="wax-collection-index-footer">
+          <footer className="wax-collection-index-footer p-2 min-h-fit border-0">
             <span>{table.getRowModel().rows.length} cards displayed</span>
             {hasActiveFilters && (
               <button

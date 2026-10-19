@@ -1,3 +1,4 @@
+import type User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import type {
@@ -5,19 +6,20 @@ import type {
   ModelQueryBuilderContract,
   ExtractModelColumns,
 } from '@adonisjs/lucid/types/model'
+import type { ExtractModelRelations } from '@adonisjs/lucid/types/relations'
 
 type FilterFnConfig<T extends LucidModel> = {
-  defaultSearch: keyof ExtractModelColumns<InstanceType<T>>
-  defaultSortField: keyof ExtractModelColumns<InstanceType<T>>
-  defaultSortDirection: 'asc' | 'desc'
-
+  defaultSearch?: keyof ExtractModelColumns<InstanceType<T>>
+  defaultSortField?: keyof ExtractModelColumns<InstanceType<T>>
+  defaultSortDirection?: 'asc' | 'desc'
+  user?: User
   filterFields?: (keyof ExtractModelColumns<InstanceType<T>>)[]
   qs: Record<string, string>
   sortFields?: (keyof ExtractModelColumns<InstanceType<T>>)[]
   searchFields?: (keyof ExtractModelColumns<InstanceType<T>>)[]
   defaultLimit?: number
   defaultPage?: number
-  expandableFields?: (keyof ExtractModelColumns<InstanceType<T>>)[]
+  expandableFields?: ExtractModelRelations<InstanceType<T>>[]
 }
 type IndexParams = {
   q?: string

@@ -30,7 +30,12 @@ export default function CategoryPage({
     isLoading,
     isError,
     refetch,
-  } = useCategory(categoryId);
+  } = useCategory(categoryId,{
+    withParams:true,
+    query: {
+      expand : 'checklists,children'
+    }
+  });
 
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"grid" | "list">("grid");

@@ -1,9 +1,12 @@
 import Card from '#models/card'
 import Checklist from '#models/checklist'
+import type { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 import filtering from './filtering_service.ts'
+import type User from '#models/user'
 
 type FilterItem = {
   name: string
+  type: 'select' | 'checkbox'
   display: string
   options: FilterOption[]
 }
@@ -12,22 +15,31 @@ type FilterOption = {
   display: string
 }
 export class CardService {
-  async filterCards(slug: string, qs: Record<string, string>) {
+  async filterCards(
+    slug: string,
+    qs: Record<string, string>,
+    user?: User
+  ): Promise<ModelQueryBuilderContract<typeof Card, Card>> {
     const checklist = await Checklist.findByOrFail('slug', slug)
-    const query = Card.query().where('checklistId', checklist.id)
-    const filtered = filtering
-      .filter<typeof Card>(query, {
-        defaultSearch: 'name',
-        defaultSortDirection: 'asc',
-        defaultSortField: 'order',
-        qs,
-        searchFields: ['name'],
-        filterFields: ['type', 'section', 'name'],
-        sortFields: ['number', 'order', 'needCount', 'holdCount', 'offerCount'],
-      })
-      .debug(true)
+    const query = Card.query()
+      .where('checklistId', checklist.id)
+      .whereHas('checklist', (c) =>
+        c.whereHas('userChecklist', (uc) =>
+          uc.where('user_id', user?.id!).andWhere('checklist_id', checklist.id)
+        )
+      )
+    const filtered = filtering.filter<typeof Card>(query, {
+      defaultSearch: 'name',
+      defaultSortDirection: 'asc',
+      defaultSortField: 'order',
+      qs,
+      searchFields: ['name'],
+      filterFields: ['type', 'section', 'name'],
+      sortFields: ['number', 'order', 'needCount', 'holdCount', 'offerCount'],
+      user,
+    })
 
-    return await filtered
+    return filtered.clone() as ModelQueryBuilderContract<typeof Card, Card>
   }
 
   async getFiltersOptions(slug: string) {
@@ -50,12 +62,13 @@ export class CardService {
       {
         name: 'type',
         display: 'Type',
+        type: 'select',
         options: types.map(map),
       },
       {
         name: 'section',
         display: 'Section',
-
+        type: 'select',
         options: sections.map(map),
       },
     ] as FilterItem[]

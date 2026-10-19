@@ -1,94 +1,159 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, type Variants } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useAnimationControls,
+  useIsomorphicLayoutEffect,
+  usePresence,
+  type Variants,
+} from "motion/react";
 import { FrozenRoute } from "../frozen-route";
 import { Cards } from "../../../components/patterns/cards-transition";
-import {
-  useEffect,
-  useState,
-  type ComponentProps,
-  type PropsWithChildren,
-} from "react";
+import { useCallback, useEffect, useRef, type PropsWithChildren } from "react";
+import { TCG } from "../../patterns/tcg-transition";
 
-type TransitionPhase = "revealing" | "ready";
-
-const routeVariants: Variants = {
-  idle: {},
-  routeExit: {},
-};
-const routeNewVariants: Variants = {
-  above: {
-    transition: { when: "afterChildren" },
-  },
-  below: {
-    transition: { when: "afterChildren" },
-  },
-  covered: {
-    transition: { when: "afterChildren" },
-  },
+type PageTransitionData = {
+  type: PageTransitionVariant;
+  tcgImages?: string[];
 };
 
 type RouteTransitionFrameProps = {
   children: React.ReactNode;
-  skipInitialReveal: boolean;
+  onCover: () => Promise<void>;
+  onMounted: () => void;
 };
-const RouteTransitionFrame = ({
-  children,
-  skipInitialReveal,
-}: RouteTransitionFrameProps) => {
-  // Freeze this value for the lifetime of this pathname.
-  const [startsReady] = useState(skipInitialReveal);
-  const [phase, setPhase] = useState<TransitionPhase>(
-    startsReady ? "ready" : "revealing",
-  );
 
-  const activeVariant = phase === "ready" ? "above" : "below";
+type ArtworkControls = ReturnType<typeof useAnimationControls>;
 
+const artworkHostVariants: Variants = {
+  above: {
+    transition: {
+      when: "afterChildren",
+    },
+  },
+  covered: {
+    transition: {
+      when: "afterChildren",
+    },
+  },
+  below: {
+    transition: {
+      when: "afterChildren",
+    },
+  },
+};
+
+function DestinationArtwork({
+  type,
+  tcgImages,
+  controls,
+}: {
+  type: PageTransitionVariant;
+  tcgImages?: string[];
+  controls: ArtworkControls;
+}) {
   return (
     <motion.div
-      variants={routeVariants}
-      initial={startsReady ? false : "covered"}
-      animate={activeVariant}
-      exit="covered"
-      onAnimationComplete={(definition) => {
-        // The destination has now been revealed below the exiting rows.
-        // Reset the rows above instantly so the next navigation enters
-        // from the top.
-        if (definition === "below") {
-          setPhase("ready");
-        }
-      }}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-999"
+      variants={artworkHostVariants}
+      initial="above"
+      animate={controls}
     >
-      <FrozenRoute>{children}</FrozenRoute>
-      <Cards />
+      {type === "sticker-packs" && <Cards />}
+
+      {type === "tcg-games" && tcgImages && tcgImages.length > 0 && (
+        <TCG images={tcgImages} />
+      )}
     </motion.div>
   );
+}
+
+const RouteTransitionFrame = ({
+  children,
+  onCover,
+  onMounted,
+}: RouteTransitionFrameProps) => {
+  const [isPresent, safeToRemove] = usePresence();
+  const coverStarted = useRef(false);
+
+  useEffect(() => {
+    onMounted();
+  }, [onMounted]);
+
+  useEffect(() => {
+    if (isPresent || coverStarted.current || !safeToRemove) {
+      return;
+    }
+
+    coverStarted.current = true;
+
+    void onCover().then(() => {
+      safeToRemove();
+    });
+  }, [isPresent, onCover, safeToRemove]);
+
+  return <FrozenRoute>{children}</FrozenRoute>;
 };
 
-type PageAnimatePresenceProps = Pick<ComponentProps<typeof Cards>, "type"> & {};
+export type PageTransitionVariant = "sticker-packs" | "tcg-games";
+
+type PageAnimatePresenceProps = PropsWithChildren<PageTransitionData>;
+
 const PageAnimatePresence = ({
   children,
   type = "sticker-packs",
+  tcgImages,
 }: PropsWithChildren<PageAnimatePresenceProps>) => {
   const pathname = usePathname();
 
-  const [hasMounted, setHasMounted] = useState(false);
+  const controls = useAnimationControls();
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+  const sequence = useRef(0);
+  const pendingSequence = useRef<number | null>(null);
+
+  const coverDestination = useCallback(async () => {
+    const currentSequence = ++sequence.current;
+
+    pendingSequence.current = currentSequence;
+
+    controls.set("above");
+
+    await controls.start("covered");
+  }, [controls]);
+
+  const revealDestination = useCallback(() => {
+    const currentSequence = pendingSequence.current;
+    if (currentSequence === null) {
+      return;
+    }
+    pendingSequence.current = null;
+    void controls.start("below").then(() => {
+      if (sequence.current === currentSequence) {
+        controls.set("above");
+      }
+    });
+  }, [controls]);
+
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      {/**
-       * We use `motion.div` as the first child of `<AnimatePresence />` Component so we can specify page animations at the page level.
-       * The `motion.div` Component gets re-evaluated when the `key` prop updates, triggering the animation's lifecycles.
-       * During this re-evaluation, the `<FrozenRoute />` Component also gets updated with the new route components.
-       */}
-      <RouteTransitionFrame key={pathname} skipInitialReveal={!hasMounted}>
-        {children}
-      </RouteTransitionFrame>
-    </AnimatePresence>
+    <>
+      <DestinationArtwork
+        type={type}
+        tcgImages={tcgImages}
+        controls={controls}
+      />
+      <AnimatePresence mode="wait" initial={false}>
+        <RouteTransitionFrame
+          key={pathname}
+          onCover={coverDestination}
+          onMounted={revealDestination}
+        >
+          {children}
+        </RouteTransitionFrame>
+      </AnimatePresence>
+    </>
   );
 };
 

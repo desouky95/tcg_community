@@ -43,7 +43,7 @@ export default async function RootLayout({
         <I18nProvider language={lng} resources={resources}>
           <Suspense fallback={null}>
             <Providers>
-              <PageAnimatePresence>{children}</PageAnimatePresence>
+              {children}
             </Providers>
           </Suspense>
         </I18nProvider>

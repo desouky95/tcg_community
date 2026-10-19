@@ -9,7 +9,7 @@ import {
   PageHeading,
 } from "@tcg/ui-web";
 import { ChevronDown, Link, Plus, X } from "lucide-react";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import z from "zod";
@@ -17,7 +17,8 @@ import { DevTool } from "@hookform/devtools";
 
 const scehma = z.object({
   sources: z.array(z.httpUrl()),
-  source: z.string()
+  source: z
+    .string()
     // .httpUrl({ normalize: true, pattern: /^laststicker\.com$/ })
     // .optional()
     .nullable(),
@@ -140,58 +141,63 @@ export const AdminScrapper = () => {
         }
       />
 
-      <DataTable.Root>
-        <DataTable.Header>
-          <DataTable.Row>
-            <DataTable.Head></DataTable.Head>
-            <DataTable.Head>Key</DataTable.Head>
-          </DataTable.Row>
-        </DataTable.Header>
-        <DataTable.Body>
-          {data?.data.map((scrapper) => {
-            const isExpanded = expandedIds.has(scrapper.job.name);
-            const children = scrapper.collections ?? [];
+      <DataTable.Root scrollLabel="Scrapper jobs">
+        <DataTable.Table className="min-w-190">
+          <DataTable.Header>
+            <DataTable.Row>
+              <DataTable.Head className="w-14">
+                <span className="sr-only">Expand job</span>
+              </DataTable.Head>
+              <DataTable.Head>Job / collection</DataTable.Head>
+              <DataTable.Head>Source</DataTable.Head>
+              <DataTable.Head>Year</DataTable.Head>
+              <DataTable.Head>Scrapped at</DataTable.Head>
+            </DataTable.Row>
+          </DataTable.Header>
+          <DataTable.Body>
+            {data?.data.map((scrapper) => {
+              const isExpanded = expandedIds.has(scrapper.job.name);
+              const children = scrapper.collections ?? [];
 
-            return (
-              <>
-                <DataTable.Row key={scrapper.job.name}>
-                  <DataTable.Cell className="py-3">
-                    <IconButton
-                      variant="ghost"
-                      aria-label={t(
-                        isExpanded
-                          ? "admin.categories.collapse"
-                          : "admin.categories.expand",
-                        { name: scrapper.job.name },
-                      )}
-                      aria-expanded={isExpanded}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        toggleExpanded(scrapper.job.name);
-                      }}
-                      disabled={children.length === 0}
+              return (
+                <Fragment key={scrapper.job.name}>
+                  <DataTable.Row tone="muted">
+                    <DataTable.Cell className="py-3">
+                      <IconButton
+                        variant="ghost"
+                        aria-label={t(
+                          isExpanded
+                            ? "admin.categories.collapse"
+                            : "admin.categories.expand",
+                          { name: scrapper.job.name },
+                        )}
+                        aria-expanded={isExpanded}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          toggleExpanded(scrapper.job.name);
+                        }}
+                        disabled={children.length === 0}
+                      >
+                        <ChevronDown
+                          aria-hidden="true"
+                          className={`size-4 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                        />
+                      </IconButton>
+                    </DataTable.Cell>
+                    <DataTable.Cell
+                      colSpan={4}
+                      className="font-bold text-wax-ink"
                     >
-                      <ChevronDown
-                        aria-hidden="true"
-                        className={`size-4 transition-transform ${isExpanded ? "rotate-180" : ""}`}
-                      />
-                    </IconButton>
-                  </DataTable.Cell>
-                  <DataTable.Cell>{scrapper.job.name}</DataTable.Cell>
-                </DataTable.Row>
+                      {scrapper.job.name}
+                    </DataTable.Cell>
+                  </DataTable.Row>
 
-                {isExpanded && children.length > 0 && (
-                  <>
-                    <DataTable.Row>
-                      <DataTable.Head></DataTable.Head>
-                      <DataTable.Head>Title</DataTable.Head>
-                      <DataTable.Head>Source</DataTable.Head>
-                      <DataTable.Head>Year</DataTable.Head>
-                      <DataTable.Head>Scrapped At</DataTable.Head>
-                    </DataTable.Row>
-                    {children.map((collection) => (
-                      <DataTable.Row>
-                        <DataTable.Cell></DataTable.Cell>
+                  {isExpanded &&
+                    children.map((collection) => (
+                      <DataTable.Row
+                        key={`${scrapper.job.name}-${collection.content.sourceUrl}`}
+                      >
+                        <DataTable.Cell />
                         <DataTable.Cell>
                           {collection.content.title}
                         </DataTable.Cell>
@@ -199,6 +205,7 @@ export const AdminScrapper = () => {
                           <Button variant="ghost" asChild>
                             <a
                               target="_blank"
+                              rel="noreferrer"
                               href={collection.content.sourceUrl}
                             >
                               Open Source
@@ -214,12 +221,11 @@ export const AdminScrapper = () => {
                         </DataTable.Cell>
                       </DataTable.Row>
                     ))}
-                  </>
-                )}
-              </>
-            );
-          })}
-        </DataTable.Body>
+                </Fragment>
+              );
+            })}
+          </DataTable.Body>
+        </DataTable.Table>
       </DataTable.Root>
     </div>
   );

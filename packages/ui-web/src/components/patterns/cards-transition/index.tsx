@@ -124,31 +124,6 @@ const Cards = ({ type = "sticker-packs" }: CardsProps) => {
       aria-hidden="true"
       className="pointer-events-none h-screen w-screen fixed inset-0 z-60 "
     >
-      {/* <motion.div
-        className="bg-white absolute top-1/2 left-1/2 -translate-1/2 z-60 p-4"
-        initial={{
-          opacity: 0,
-          translateY: "-40%",
-        }}
-        animate={{
-          opacity: 0,
-          translateY: "-40%",
-        }}
-        exit={{
-          opacity: 1,
-          translateY: '10%',
-
-        }}
-        transition={{
-          delay: 0.3,
-          duration: 0.5,
-          ease: "easeInOut",
-        }}
-      >
-        <motion.h1 className="text-6xl font-bold font-roboto">
-          TCG NEXUS
-        </motion.h1>
-      </motion.div> */}
       {ROWS.map(({ packs, zIndexClassName }, rowIndex) => {
         return (
           <motion.div

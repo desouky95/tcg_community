@@ -8,15 +8,21 @@ export const CollectionCardsTable = ({
   checklist: Checklist;
 }) => {
   return (
-    <DataTable.Root>
-      <DataTable.Table sticky>
-        <DataTable.Header className="sticky top-0">
-          <DataTable.HeadRow sticky>
+    <DataTable.Root
+      scrollLabel="Checklist cards"
+      viewportClassName="max-h-[calc(100vh-18rem)]"
+    >
+      <DataTable.Table className="min-w-160">
+        <DataTable.Header sticky>
+          <DataTable.Row>
             <DataTable.Head>Number</DataTable.Head>
             <DataTable.Head>Name</DataTable.Head>
             <DataTable.Head>Section</DataTable.Head>
             <DataTable.Head>Type</DataTable.Head>
-          </DataTable.HeadRow>
+            <DataTable.Head className="w-12">
+              <span className="sr-only">Details</span>
+            </DataTable.Head>
+          </DataTable.Row>
         </DataTable.Header>
         <DataTable.Body>
           {checklist.cards?.map((card) => (

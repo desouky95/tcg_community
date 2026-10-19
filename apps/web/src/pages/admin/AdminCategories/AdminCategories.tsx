@@ -95,7 +95,7 @@ export default function AdminCategories() {
         onApply={handleFiltersChange}
         onReset={handleResetFilters}
       />
-      <DataTable.Root>
+      <DataTable.Root scrollLabel={t("admin.categories.title")}>
         <DataTable.Table className="min-w-160">
           <DataTable.Header>
             <DataTable.Row>

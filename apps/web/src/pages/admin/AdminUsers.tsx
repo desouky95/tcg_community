@@ -26,7 +26,10 @@ export default function AdminUsers() {
         <div className="flex items-center gap-4">
           <div>
             <h1 className="flex items-center text-xl font-black uppercase tracking-tight">
-              <Users aria-hidden="true" className="me-3 size-6 text-primary-500" />
+              <Users
+                aria-hidden="true"
+                className="me-3 size-6 text-primary-500"
+              />
               {t("admin.users.title")}
             </h1>
             <p className="text-sm font-medium text-muted-foreground">
@@ -36,29 +39,31 @@ export default function AdminUsers() {
         </div>
       </div>
 
-      <DataTable.Root>
+      <DataTable.Root scrollLabel={t("admin.users.title")}>
         <DataTable.Table className="min-w-180">
           <DataTable.Header>
             <DataTable.Row>
               <DataTable.Head>{t("admin.users.info")}</DataTable.Head>
               <DataTable.Head>{t("admin.users.status")}</DataTable.Head>
               <DataTable.Head>{t("admin.users.reputation")}</DataTable.Head>
-              <DataTable.Head align="end">{t("admin.users.actions")}</DataTable.Head>
+              <DataTable.Head align="end">
+                {t("admin.users.actions")}
+              </DataTable.Head>
             </DataTable.Row>
           </DataTable.Header>
           <DataTable.Body aria-busy={isLoading}>
             {isLoading && (
-              <DataTable.LoadingRows
-                columns={4}
-                label={t("common.loading")}
-              />
+              <DataTable.LoadingRows columns={4} label={t("common.loading")} />
             )}
 
             {!isLoading && isError && (
               <DataTable.StateRow colSpan={4}>
                 <EmptyState role="alert">
                   <div className="grid justify-items-center gap-3">
-                    <Users aria-hidden="true" className="size-8 text-danger-600" />
+                    <Users
+                      aria-hidden="true"
+                      className="size-8 text-danger-600"
+                    />
                     <div>
                       <p className="font-display text-xl font-bold">
                         {t("admin.users.error_title")}
@@ -76,7 +81,10 @@ export default function AdminUsers() {
               <DataTable.StateRow colSpan={4}>
                 <EmptyState>
                   <div className="grid justify-items-center gap-3">
-                    <Users aria-hidden="true" className="size-8 text-wax-muted" />
+                    <Users
+                      aria-hidden="true"
+                      className="size-8 text-wax-muted"
+                    />
                     <div>
                       <p className="font-display text-xl font-bold">
                         {t("admin.users.empty_title")}
@@ -126,7 +134,10 @@ export default function AdminUsers() {
                               @{user.username}
                             </span>
                             <span className="flex items-center text-[11px] text-muted-foreground">
-                              <Phone aria-hidden="true" className="me-1 size-3 opacity-50" />
+                              <Phone
+                                aria-hidden="true"
+                                className="me-1 size-3 opacity-50"
+                              />
                               {user.mobile}
                             </span>
                           </span>
@@ -140,14 +151,25 @@ export default function AdminUsers() {
                         ) : (
                           <CheckCircle aria-hidden="true" className="size-3" />
                         )}
-                        {t(user.blocked ? "admin.users.blocked" : "admin.users.active")}
+                        {t(
+                          user.blocked
+                            ? "admin.users.blocked"
+                            : "admin.users.active",
+                        )}
                       </StatusBadge>
                     </DataTable.Cell>
                     <DataTable.Cell>
                       <div className="flex items-center gap-2">
-                        <Award aria-hidden="true" className="size-4 text-amber-500" />
-                        <span className="text-sm font-black tabular-nums">{user.points}</span>
-                        <span className="text-xs font-bold uppercase text-muted-foreground">PT</span>
+                        <Award
+                          aria-hidden="true"
+                          className="size-4 text-amber-500"
+                        />
+                        <span className="text-sm font-black tabular-nums">
+                          {user.points}
+                        </span>
+                        <span className="text-xs font-bold uppercase text-muted-foreground">
+                          PT
+                        </span>
                       </div>
                     </DataTable.Cell>
                     <DataTable.Cell align="end">
@@ -156,7 +178,10 @@ export default function AdminUsers() {
                           type="button"
                           onClick={(event) => {
                             event.stopPropagation();
-                            void handleBlockUser(String(user.id), Boolean(user.blocked));
+                            void handleBlockUser(
+                              String(user.id),
+                              Boolean(user.blocked),
+                            );
                           }}
                           className={`rounded-xl px-4 py-2 text-xs font-black uppercase tracking-tight text-white shadow-sm transition-all active:scale-95 disabled:opacity-50 ${
                             user.blocked
@@ -165,7 +190,11 @@ export default function AdminUsers() {
                           }`}
                           disabled={blockMutation.isPending}
                         >
-                          {t(user.blocked ? "admin.users.unblock" : "admin.users.restrict")}
+                          {t(
+                            user.blocked
+                              ? "admin.users.unblock"
+                              : "admin.users.restrict",
+                          )}
                         </button>
                       )}
                     </DataTable.Cell>

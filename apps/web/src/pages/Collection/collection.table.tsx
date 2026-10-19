@@ -1,5 +1,7 @@
 import {
+  cellSpanningFeature,
   columnFilteringFeature,
+  columnVisibilityFeature,
   createColumnHelper,
   filterFn_includesString,
   globalFilteringFeature,
@@ -7,6 +9,7 @@ import {
   tableFeatures,
   useTable,
   type ColumnFiltersState,
+  type ColumnVisibilityState,
   type SortingState,
   type Updater,
 } from "@tanstack/react-table";
@@ -16,6 +19,8 @@ const features = tableFeatures({
   rowSortingFeature,
   columnFilteringFeature,
   globalFilteringFeature,
+  cellSpanningFeature,
+  columnVisibilityFeature,
   filterFns: {
     includesString: filterFn_includesString,
   },
@@ -37,8 +42,13 @@ const columns = columnHelper.columns([
         {row.original.name}
       </span>
     ),
+    meta: {
+      width: 8,
+    },
+    spanRows: true,
     enableSorting: false,
     enableColumnFilter: true,
+    enableHiding: true,
   }),
   columnHelper.accessor("type", {
     header: "Type",
@@ -79,6 +89,7 @@ type UseCollectionTableArgs = {
   sorting: SortingState;
   filters: ColumnFiltersState;
   query: string;
+  visibleColumns?: ColumnVisibilityState;
   onSortingChange: (updater: Updater<SortingState>) => void;
   onColumnFiltersChange: (updater: Updater<ColumnFiltersState>) => void;
   onGlobalFilterChange?: (updater: Updater<string>) => void;
@@ -91,6 +102,7 @@ export const useCollectionTable = ({
   onSortingChange,
   onGlobalFilterChange,
   query,
+  visibleColumns,
 }: UseCollectionTableArgs) => {
   const table = useTable({
     key: "cards",
@@ -105,10 +117,21 @@ export const useCollectionTable = ({
     defaultColumn: {
       enableColumnFilter: false,
     },
-    state: { sorting, columnFilters: filters, globalFilter: query },
+    state: {
+      sorting,
+      columnFilters: filters,
+      globalFilter: query,
+      columnVisibility: visibleColumns,
+    },
     onSortingChange,
     onColumnFiltersChange,
     onGlobalFilterChange,
+    meta: {
+      maxWidth: 10,
+    },
+    // debugTable: true,
+    // debugColumns: true,
+    // debugColumnVisibilityFeature: true,
   });
   return table;
 };

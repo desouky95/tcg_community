@@ -15,6 +15,7 @@ import {
 } from "@tcg/ui-web";
 import Link from "next/link";
 import { CardsSlider } from "../../src/components/CardsSlider";
+import { mockMarketplaceListings } from "../../src/lib/mockData";
 
 
 const featuredCards = [
@@ -92,12 +93,12 @@ export default function HomePage() {
             <Kicker>THE LATEST PULLS</Kicker>
             <h2>Cards worth a closer look.</h2>
           </div>
-          <a href="/marketplace" className={textLinkStyles()}>
+          <Link href="/marketplace" className={textLinkStyles()}>
             View all cards <ArrowRight aria-hidden="true" />
-          </a>
+          </Link>
         </div>
         <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
-          {cards.map(([name, set, condition, image]) => <ListingPreview key={name} href="/marketplace" name={name} set={set} condition={condition} image={image} />)}
+          {mockMarketplaceListings.map(({title:name,id, set, condition, image}) => <ListingPreview Link={Link} key={name} href={`/marketplace/${id}`} name={name} set={set} condition={condition} image={image} />)}
         </div>
       </section>
       <section className="mx-auto grid max-w-360 gap-8 bg-wax-red px-gutter py-section text-wax-paper lg:grid-cols-2 [&_h2]:font-display [&_h2]:text-4xl [&_h2]:font-extrabold [&_h2]:uppercase [&_h2]:leading-none md:[&_h2]:text-display">

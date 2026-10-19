@@ -25,7 +25,7 @@ export default function AdminCollections() {
         }
       />
 
-      <DataTable.Root>
+      <DataTable.Root scrollLabel={t("admin.collections.title")}>
         <DataTable.Table className="min-w-190">
           <DataTable.Header>
             <DataTable.Row>

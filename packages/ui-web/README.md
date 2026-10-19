@@ -26,7 +26,7 @@ Atoms centralized here:
   `Checkbox`, `Switch`, `Slider`, `ToggleGroup`.
 - Form structure: `Label`, `Field`, `Select`, `RadioGroup`.
 - Feedback and display: `Badge`, `StatusBadge`, `Skeleton`, `Surface`,
-  `Divider`, `Avatar`, `CountPill`, `Kicker`.
+  `Divider`, `Avatar`, `CountPill`, `Kicker`, `DataTable`.
 - Overlays and disclosure: `Dialog`, `AlertDialog`, `DropdownMenu`, `Popover`,
   `Tooltip`, `Tabs`, `Accordion`.
 
@@ -63,9 +63,8 @@ Molecules centralized here:
   paper/navy/red/gold/success roles, dark aliases, radii, and type scale.
 - Prefer `ps`/`pe`, `ms`/`me`, `start`/`end`, and `rtl:` variants for
   directional layout. Respect `motion-safe:` for decorative motion.
-- As of this migration, `wax.css` is 1,680 lines against the 4,205-line
-  baseline. Its remaining rules cover specimen/pack effects and detailed
-  collection/marketplace page composition; new ordinary UI belongs in
+- The remaining `wax.css` rules cover specimen/pack effects and detailed
+  collection/marketplace page composition; new ordinary UI belongs in shared
   components and Tailwind.
 
 ## Radix
@@ -76,3 +75,17 @@ import Radix-backed wrappers from `@tcg/ui-web` or
 
 Use `asChild` on `Button` and `TextLink` when adapting React Router, Next, or
 plain anchors so routing stays at the app boundary while styles stay shared.
+
+## Data tables
+
+Use the framework-neutral `DataTable` compound component for every semantic
+table in Vite and Next surfaces. It keeps native table markup for accessibility,
+uses Radix Scroll Area for overflow, and owns the shared header, row, cell,
+loading, empty-state, sticky-header, focus, dark-mode, RTL, and scrollbar
+treatment through Tailwind utilities and design tokens.
+
+Give scrollable instances a `scrollLabel`; use `viewportClassName` to constrain
+height and `DataTable.Header sticky` for a sticky header. Sorting and routing
+remain app-owned behavior composed inside `DataTable.Head` and
+`DataTable.Cell`. Do not add a Next wrapper unless the table itself acquires a
+real Next-only concern such as a `next/link` adapter.

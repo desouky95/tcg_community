@@ -5,7 +5,7 @@ import {
   buttonStyles,
   textLinkStyles,
 } from "@tcg/ui-web";
-import { mockMarketplaceListings } from "../../../../../src/lib/mockData";
+import { mockMarketplaceListings } from "../../../../src/lib/mockData";
 
 export default async function ListingPage({
   params,

@@ -47,6 +47,7 @@ export const useCollectionPage = () => {
     onSortingChange: (updater) => {
       setSorting(updater);
     },
+
     onColumnFiltersChange: (updater) => {
       setColumnFilters(updater);
     },
