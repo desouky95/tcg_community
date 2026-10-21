@@ -16,6 +16,7 @@ export default class UserChecklistsController {
     const checklist = await this.checklistService.get(params.id, {})
     const user = auth.user!
     const userChecklist = await UserChecklist.query()
+      .preload('cards')
       .where('userId', user.id)
       .where('checklistId', checklist.id)
       .first()
@@ -56,7 +57,7 @@ export default class UserChecklistsController {
       const { file, treatEmptyAsMissing } = await request.validateUsing(importUpdateChecklist)
 
       const checklist = await this.checklistService.get(checklistId, {})
-      const cards = await this.checklistService.import(user, checklist, file)
+      const cards = await this.checklistService.import(user, checklist, file, treatEmptyAsMissing)
 
       return response.api(cards)
     } catch (error) {

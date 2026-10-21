@@ -13,6 +13,7 @@ import * as xlsx from 'xlsx'
 import User from '#models/user'
 import Card from '#models/card'
 import stringHelpers from '@adonisjs/core/helpers/string'
+import UserChecklistCard from '#models/user_checklist_card'
 xlsx.set_fs(fs)
 @inject()
 export class ChecklistService {
@@ -67,8 +68,9 @@ export class ChecklistService {
   async get(slug: string, qs: Record<string, any>, user?: User) {
     const expand = qs.expand ?? ''
     const expendedFields = expand.split(',') as string[]
-    return await Checklist.query()
+    const query = Checklist.query()
       .where('slug', slug)
+
       .if(expendedFields.includes('cards'), (q) => q.preload('cards'))
       .if(expendedFields.includes('category'), (q) =>
         q.preload('category', (c) =>
@@ -76,15 +78,15 @@ export class ChecklistService {
         )
       )
       .if(expendedFields.includes('userChecklist'), (q) => q.preload('userChecklist'))
-      .if(user, (q) => q.preload('userChecklist', (uc) => uc.where('user_id', user!.id)))
-      .firstOrFail()
+
+    const result = await query.firstOrFail()
+    return result
   }
 
   async download(checklist: Checklist) {
     try {
       const directory = app.makePath('storage', 'checklists')
       const filename = `${checklist.slug}.xlsx`
-      // const filePath = join(directory, filename)
       const filePath = `checklists/${filename}`
       if (!fs.existsSync(directory)) {
         fs.mkdirSync(directory)
@@ -97,7 +99,12 @@ export class ChecklistService {
       }
 
       await checklist.load('cards', (cards) => cards.whereNull('variant').orderBy('order'))
-      const cards = checklist.cards
+      const cards = checklist.cards.map((card) => ({
+        number: card.number,
+        name: card.name,
+        type: card.type,
+        section: card.section,
+      }))
 
       const workbook = new ExcelJS.Workbook()
       const worksheet = workbook.addWorksheet(checklist.name)
@@ -106,10 +113,7 @@ export class ChecklistService {
         { header: 'Name', key: 'name', width: 34 },
         { header: 'Type', key: 'type', width: 18 },
         { header: 'Section', key: 'section', width: 22 },
-        // { header: 'Need', key: 'needCount', width: 12 },
         { header: 'Hold', key: 'holdCount', width: 12 },
-        // { header: 'Offer', key: 'offerCount', width: 12 },
-        // { header: 'Ratio', key: 'ratio', width: 12 },
       ]
       cards.forEach((card) => worksheet.addRow(card))
       const header = worksheet.getRow(1)
@@ -130,7 +134,7 @@ export class ChecklistService {
     }
   }
 
-  async import(user: User, checklist: Checklist, file: MultipartFile) {
+  async import(user: User, checklist: Checklist, file: MultipartFile, treatEmptyAsMissing = false) {
     const fileName = `${Date.now()}.${file.extname}`
     await file.move(app.tmpPath('uploads'), { name: fileName })
 
@@ -142,23 +146,22 @@ export class ChecklistService {
       const sheetName = workbook.SheetNames[0]
       const worksheet = workbook.Sheets[sheetName]
       const data = xlsx.utils.sheet_to_json<string[]>(worksheet, { header: 1, range: 1 })
-      const cards = data.map((row, index) => {
-        const id = row[0]
-        const hold = row[4]
-        return {
-          id,
-          hold: Number(hold),
-        }
-      })
-      const missingCards = cards.filter((_) => _.hold < 1)
+      const cards = await Promise.all(
+        data.map(async (row) => {
+          const id = row[0]
+          const cardDb = await Card.findByOrFail('number', id)
+          const hold = row[4]
+          return {
+            id,
+            cardDb,
+            hold: Number(hold),
+          }
+        })
+      )
+
+      const missingCards = cards.filter((_) => !_.hold)
       const collectedCards = cards.filter((_) => _.hold > 0)
       const duplicatesCards = cards.filter((_) => _.hold > 1)
-
-      const missingCardsString = missingCards.map((_) => _.id).join(',')
-      const collectedCardsString = collectedCards.map((_) => _.id).join(',')
-      const duplicatesCardsString = duplicatesCards
-        .map((_) => (_.hold === 1 ? _.id : `${_.id}(${_.hold - 1})`))
-        .join(',')
 
       const userChecklist = await UserChecklist.updateOrCreate(
         {
@@ -166,11 +169,26 @@ export class ChecklistService {
           userId: user.id,
         },
         {
-          collectedList: collectedCardsString,
-          duplicatesList: duplicatesCardsString,
-          missingList: missingCardsString,
+          userId: user.id,
+          checklistId: checklist.id,
+          missingList: treatEmptyAsMissing ? missingCards.map((_) => _.id).join(',') : '',
+          collectedList: collectedCards.map((_) => _.id).join(','),
+          duplicatesList: duplicatesCards.map((_) => _.id).join(','),
         }
       )
+
+      await UserChecklistCard.query().where('userChecklistId', userChecklist!.id).delete()
+
+      await UserChecklistCard.createMany(
+        collectedCards.map((card) => ({
+          checklistId: checklist.id,
+          quantity: card.hold,
+          userChecklistId: userChecklist!.id,
+          cardId: card.cardDb?.id!,
+        }))
+      )
+
+      userChecklist.load('cards')
       return userChecklist
     } catch (error) {
       throw new Exception('Failed to parse file', { status: 400 })

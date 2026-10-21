@@ -1,8 +1,10 @@
 import { UserChecklistSchema } from '#database/schema'
-import { belongsTo, computed, hasManyThrough } from '@adonisjs/lucid/orm'
+import { belongsTo, computed, hasMany, hasManyThrough, scope } from '@adonisjs/lucid/orm'
 import Checklist from './checklist.ts'
-import type { BelongsTo, HasManyThrough } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasMany, HasManyThrough } from '@adonisjs/lucid/types/relations'
 import Category from './category.ts'
+import UserChecklistCard from './user_checklist_card.ts'
+import Card from './card.ts'
 
 export default class UserChecklist extends UserChecklistSchema {
   @belongsTo(() => Checklist, {
@@ -37,4 +39,13 @@ export default class UserChecklist extends UserChecklistSchema {
         count: i.match(/(?<=\()\d+(?=\))/g)?.[0],
       }))
   }
+
+  @hasManyThrough([() => Card, () => UserChecklistCard], {
+    throughForeignKey: 'id',
+    // foreignKey: 'id',
+  })
+  declare cards: HasManyThrough<typeof Card>
+
+  @hasMany(() => UserChecklistCard)
+  declare userCards: HasMany<typeof UserChecklistCard>
 }

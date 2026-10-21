@@ -22,10 +22,10 @@ import {
 } from "@tcg/ui-web";
 import Layout from "../../components/Layout";
 
-import React, { useState } from "react";
+import React from "react";
 import { useCollectionPage } from "./collection.hook";
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
-import { useMediaQuery } from "@reactuses/core";
+import { useMotionValueEvent, useScroll } from "motion/react";
+import useStore from "../../store/useStore";
 
 export function Collection() {
   const {
@@ -44,11 +44,13 @@ export function Collection() {
     meta,
     isLoadingCards,
   } = useCollectionPage();
+
   const { scrollY } = useScroll();
-  const [, setAnimate] = useState(false);
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
-  useMotionValueEvent(scrollY, "change", (v) => {
-    setAnimate(v > 400 && isDesktop);
+  const setShow = useStore((s) => s.setHideHeader);
+
+  useMotionValueEvent(scrollY, "change", (current) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    setShow(current > previous && current > 150);
   });
 
   if (isLoading) {
@@ -88,20 +90,9 @@ export function Collection() {
 
   return (
     <Layout>
-      <motion.main
-        className={`wax-collection-page bg-[url(${collection.coverImageUrl})] relative pb-0`}
-        animate={
-          {
-            // padding: animate
-            //   ? "0"
-            //   : "clamp(0.25rem,1vw,2rem) clamp(6px,2vw, 4rem) clamp(5rem, 8vw, 8rem)",
-            // // : "clamp(0.25rem,1vw,2rem) clamp(6px,2vw, 4rem) clamp(5rem, 8vw, 8rem)",
-            // transition: { ease: "easeInOut" },
-          }
-        }
-      >
+      <div className="wax-collection-page pb-0">
         <nav
-          className="flex lg:flex-wrap max-sm:whitespace-nowrap max-sm:overflow-auto max-sm:py-2 items-center gap-2 font-mono text-utility uppercase text-wax-muted [&_a:hover]:text-wax-red [&_svg]:size-3.5 rtl:[&_svg]:rotate-180 [&_span]:font-bold [&_span]:text-wax-ink"
+          className="flex items-center gap-1.5 overflow-x-auto py-1.5 font-mono text-utility uppercase whitespace-nowrap text-wax-muted [&_a]:shrink-0 [&_a:hover]:text-wax-red [&_svg]:size-3 [&_svg]:shrink-0 md:gap-2 md:[&_svg]:size-3.5 rtl:[&_svg]:rotate-180"
           aria-label="Breadcrumb"
         >
           <Link to="/checklists" className="focus-ring">
@@ -117,73 +108,87 @@ export function Collection() {
             </React.Fragment>
           ))}
 
-          <span>{collection.name}</span>
+          <span className="max-w-48 truncate font-bold text-wax-ink sm:max-w-80 lg:max-w-none">
+            {collection.name}
+          </span>
         </nav>
 
-        <header className="wax-collection-header block bg-wax-paper max-sm:py-0 z-10">
-          <div>
-            <p>
+        <header className="wax-collection-header grid items-stretch gap-2.5 bg-wax-paper py-2 md:grid-cols-[minmax(0,1fr)_auto] md:items-start md:gap-x-4 md:gap-y-2 lg:py-3">
+          <div className="min-w-0 self-center">
+            <p className="mb-0.5 font-mono text-[0.6875rem] font-bold tracking-[0.08em] text-wax-red uppercase">
               {collection.category?.name} - {collection.year}
             </p>
-            <h1 className="text-lg lg:text-4xl">{collection.name}</h1>
+            <h1 className="max-w-3xl text-xl leading-tight tracking-[-0.025em] break-words text-wax-ink sm:text-2xl lg:text-3xl">
+              {collection.name}
+            </h1>
           </div>
-          <div className="grid gap-4 lg:grid-cols-2 relative">
-            <div className="w-20 lg:w-44 max-sm:absolute inset-e-0 bottom-0 lg:visible place-self-center col-start-2 lg:col-start-3 lg:place-self-end">
-              <img src={collection.coverImageUrl ?? ""} alt={collection.name} />
-            </div>
-            <section
-              className="wax-collection-stats max-sm:hidden row-start-1 lg:col-start-1 lg:col-end-3 lg:row-start-1 lg:row-end-2 lg:self-center"
-              aria-label="Collection summary"
+
+          <div className="flex min-w-0 items-start gap-3 md:justify-end">
+            {collection.coverImageUrl && (
+              <div className="hidden aspect-2/3 w-14 shrink-0 overflow-hidden border border-wax-line bg-wax-input md:block lg:w-16">
+                <img
+                  src={collection.coverImageUrl}
+                  alt=""
+                  className="size-full object-cover"
+                />
+              </div>
+            )}
+
+            <div
+              className={`wax-collection-actions grid min-w-0 flex-1 gap-2 md:flex-none ${currentUser ? "grid-cols-2" : "grid-cols-1"}`}
             >
-              <div>
-                <span>Indexed cards</span>
-                <strong>{stats.cards}</strong>
-              </div>
-              <div>
-                <span>Collector demand</span>
-                <strong>{stats.wanted}</strong>
-              </div>
-              <div>
-                <span>Known holds</span>
-                <strong>{stats.held}</strong>
-              </div>
-              <div>
-                <span>Trade offers</span>
-                <strong>{stats.offered}</strong>
-              </div>
-            </section>
-            <div className="wax-collection-actions col-start-1 col-end-2 row-start-1 flex flex-row items-center lg:grid  lg:col-start-3 lg:row-start-2 lg:place-self-end">
               <Button
+                className="w-full whitespace-nowrap md:w-auto"
                 size="sm"
                 variant="outline"
                 tone="success"
                 type="button"
                 onClick={handleDownloadExcel}
               >
-                <FileSpreadsheet />
-                <span className="hidden lg:visible">Download Checklist</span>
-                <span className="visible lg:hidden">Download</span>
+                <FileSpreadsheet aria-hidden="true" />
+                <span className="lg:hidden">Download</span>
+                <span className="hidden lg:inline">Download checklist</span>
               </Button>
               {currentUser && (
-                <Button asChild size="sm">
-                  <Link
-                    to={`/collection/${id}/edit`}
-                    className={buttonStyles()}
-                  >
+                <Button
+                  asChild
+                  className="w-full whitespace-nowrap md:w-auto"
+                  size="sm"
+                >
+                  <Link to={`/collection/${id}/edit`}>
                     <Edit3 aria-hidden="true" />
-                    <span className="hidden lg:visible">Edit my list</span>
-                    <span className="visible lg:hidden">Edit</span>
+                    <span className="lg:hidden">Edit</span>
+                    <span className="hidden lg:inline">Edit my list</span>
                   </Link>
                 </Button>
               )}
             </div>
           </div>
+
+          <section
+            className="wax-collection-stats hidden md:col-span-2 md:grid md:grid-cols-4 md:border-t md:border-wax-line [&>div]:gap-1 [&>div]:px-2 [&>div]:py-1.5 [&_strong]:text-base lg:[&_strong]:text-lg"
+            aria-label="Collection summary"
+          >
+            <div>
+              <span>Indexed cards</span>
+              <strong>{stats.cards}</strong>
+            </div>
+            <div>
+              <span>Collector demand</span>
+              <strong>{stats.wanted}</strong>
+            </div>
+            <div>
+              <span>Known holds</span>
+              <strong>{stats.held}</strong>
+            </div>
+            <div>
+              <span>Trade offers</span>
+              <strong>{stats.offered}</strong>
+            </div>
+          </section>
         </header>
 
-        <section
-          className="wax-collection-index"
-          aria-labelledby="collection-index-title"
-        >
+        <section className="wax-collection-index" aria-label="Card index">
           <details className="wax-collection-advanced max-sm:m-2 max-sm:hidden max-sm:p-0 max-sm:border-0">
             <summary className="focus-ring">
               <Filter aria-hidden="true" /> Filters
@@ -211,61 +216,76 @@ export function Collection() {
             </div>
           </details>
 
-          <div className="z-50 max-sm:my-2 mb-2">
+          <div className="z-50 my-2 md:mt-0">
+            <label htmlFor="collection-search" className="sr-only">
+              Search card index
+            </label>
             <Input
+              id="collection-search"
               placeholder="Search number, card, type, or section"
               value={table.state.globalFilter}
               onChange={(e) => table.setGlobalFilter(e.target.value)}
             />
           </div>
           <DataTable.Root
-            // className="h-40vh lg:h-[60vh] "
-            className="lg:h-[60vh] "
+            className="lg:h-[60vh]"
             scrollLabel="Scrollable card index"
-            viewportClassName="max-sm:overscroll-auto"
+            viewportClassName="overscroll-auto lg:overscroll-contain"
           >
             {isLoadingCards && (
-              <main
-                className="wax-collection-page wax-collection-loading"
-                aria-label="Loading collection"
+              <div
+                className="grid min-h-64 gap-3 p-4"
+                role="status"
+                aria-label="Loading card index"
               >
-                <Skeleton className="mb-12 h-12" />
-                <Skeleton className="mb-12 h-12" />
-                <Skeleton className="mb-12 h-12" />
-                <Skeleton className="mb-12 h-12" />
-              </main>
+                <span className="sr-only">Loading card index</span>
+                <Skeleton className="h-12" aria-hidden="true" />
+                <Skeleton className="h-12" aria-hidden="true" />
+                <Skeleton className="h-12" aria-hidden="true" />
+                <Skeleton className="h-12" aria-hidden="true" />
+              </div>
             )}
             {!isLoadingCards && (
               <DataTable.Table className="min-w-245">
                 <DataTable.Header sticky>
                   {table.getHeaderGroups().map((headerGroup) => (
                     <DataTable.Row key={headerGroup.id}>
-                      {headerGroup.headers.map((header) => (
-                        <DataTable.Head
-                          key={header.id}
-                          className="align-baseline"
-                          // style={{ width: table.options.meta?.maxWidth }}
-                          align={header.index >= 4 ? "center" : "start"}
-                          aria-sort={
-                            !header.column.getIsSorted()
-                              ? "none"
-                              : header.column.getIsSorted() === "asc"
-                                ? "ascending"
-                                : "descending"
-                          }
-                        >
-                          <button
-                            type="button"
-                            onClick={header.column.getToggleSortingHandler()}
-                            className="flex min-h-8 w-full items-center justify-between gap-2 rounded-sm text-start outline-none focus-visible:ring-3 focus-visible:ring-wax-gold"
+                      {headerGroup.headers.map((header) => {
+                        const canSort = header.column.getCanSort();
+                        const sortDirection = header.column.getIsSorted();
+
+                        return (
+                          <DataTable.Head
+                            key={header.id}
+                            className="align-baseline"
+                            align={header.index >= 4 ? "center" : "start"}
+                            aria-sort={
+                              !canSort || !sortDirection
+                                ? canSort
+                                  ? "none"
+                                  : undefined
+                                : sortDirection === "asc"
+                                  ? "ascending"
+                                  : "descending"
+                            }
                           >
-                            <table.FlexRender header={header} />
-                            {header.column.getCanSort() && (
-                              <ArrowUpDown aria-hidden="true" />
+                            {canSort ? (
+                              <button
+                                type="button"
+                                onClick={header.column.getToggleSortingHandler()}
+                                className="flex min-h-8 w-full items-center justify-between gap-2 rounded-sm text-start outline-none focus-visible:ring-3 focus-visible:ring-wax-gold"
+                              >
+                                <table.FlexRender header={header} />
+                                <ArrowUpDown aria-hidden="true" />
+                              </button>
+                            ) : (
+                              <span className="flex min-h-8 items-center">
+                                <table.FlexRender header={header} />
+                              </span>
                             )}
-                          </button>
-                        </DataTable.Head>
-                      ))}
+                          </DataTable.Head>
+                        );
+                      })}
                     </DataTable.Row>
                   ))}
                 </DataTable.Header>
@@ -276,14 +296,16 @@ export function Collection() {
                       key={row.id}
                       className="hover:bg-primary-500/6"
                     >
-                      {row.getVisibleCells().map((cell, index) => (
-                        <DataTable.Cell
-                          key={cell.id}
-                          align={index >= 4 ? "center" : "start"}
-                        >
-                          <table.FlexRender cell={cell} />
-                        </DataTable.Cell>
-                      ))}
+                      {row.getVisibleCells().map((cell, index) => {
+                        return (
+                          <DataTable.Cell
+                            key={cell.id}
+                            align={index >= 4 ? "center" : "start"}
+                          >
+                            <table.FlexRender cell={cell} />
+                          </DataTable.Cell>
+                        );
+                      })}
                     </DataTable.Row>
                   ))}
                 </DataTable.Body>
@@ -319,7 +341,7 @@ export function Collection() {
             )}
           </footer>
         </section>
-      </motion.main>
+      </div>
     </Layout>
   );
 }

@@ -31,7 +31,7 @@ export default function Layout({
     <div className="wax-workspace">
       <Header variant="workspace" hideNav={hideNav} unreadCount={unreadCount} />
 
-      <main className="mx-auto w-full max-w-360 lg:px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-[calc(6.5rem+env(safe-area-inset-bottom))] md:px-gutter md:pt-12 md:pb-24">
+      <main className="mx-auto w-full max-w-360 px-2 lg:px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-[calc(6.5rem+env(safe-area-inset-bottom))] md:px-gutter md:pt-12 md:pb-24">
         {children}
       </main>
       {user && !hideNav && <MobileNav />}

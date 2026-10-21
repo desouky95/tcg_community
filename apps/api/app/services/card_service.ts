@@ -28,6 +28,7 @@ export class CardService {
           uc.where('user_id', user?.id!).andWhere('checklist_id', checklist.id)
         )
       )
+      .apply((s) => s.withUserCards(user!, checklist))
     const filtered = filtering.filter<typeof Card>(query, {
       defaultSearch: 'name',
       defaultSortDirection: 'asc',

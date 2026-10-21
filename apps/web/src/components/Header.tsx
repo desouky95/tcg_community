@@ -11,6 +11,7 @@ import { Button, PublicHeader, type LinkComponent } from "@tcg/ui-web";
 import { useStore } from "../store/useStore";
 import GlobalSearch from "./GlobalSearch";
 import UserDrawer from "./UserDrawer";
+import { motion } from "motion/react";
 
 type HeaderProps = {
   variant: "public" | "workspace";
@@ -40,14 +41,25 @@ export default function Header({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const accountTrigger = useRef<HTMLButtonElement>(null);
 
+  const hideHeader = useStore(s => s.hideHeader)
   const isActive = (path: string) =>
     location.pathname === path || location.pathname.startsWith(`${path}/`);
 
   if (variant === "workspace") {
     return (
       <>
-        <header
-          className="sticky top-0 z-40 grid min-h-20 grid-cols-[auto_1fr] items-center gap-6 border-t-4 border-b border-t-accent-500 border-b-wax-line bg-card px-4 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:px-10"
+        <motion.header
+          layoutId="workspace-header"
+          animate={{
+            opacity: hideHeader ? 0 : 1,
+            y: hideHeader ? -140 : 0,
+            transition : {
+              ease : 'anticipate',
+              duration : 0.2
+            }
+          }}
+          id="workspace-header"
+          className="sticky workspace-header top-0 z-40 grid min-h-20 grid-cols-[auto_1fr] items-center gap-6 border-t-4 border-b border-t-accent-500 border-b-wax-line bg-card px-4 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:px-10"
           data-header-variant="workspace"
         >
           <Link
@@ -106,7 +118,7 @@ export default function Header({
               <UserRound aria-hidden="true" />
             </Button>
           </div>
-        </header>
+        </motion.header>
         <UserDrawer
           isOpen={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}

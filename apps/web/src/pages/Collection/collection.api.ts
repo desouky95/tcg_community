@@ -7,7 +7,7 @@ export const useCollectionPageApis = (id: string) => {
   const { data: collection, isLoading } = useChecklist(id, {
     withParams: true,
     query: {
-      expand: "category,cards",
+      expand: "category",
     },
   });
 

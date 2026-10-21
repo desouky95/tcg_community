@@ -26,7 +26,6 @@ export default function CollectionEdit() {
   const { mutateAsync: getUserChecklist } = useUserChecklistMutation(id);
   const updateMutation = useUpdateUserChecklist();
 
-  console.log(userProgress);
   const { control } = useForm({
     values: {
       missingList: userProgress?.data?.missingList,
@@ -69,7 +68,17 @@ export default function CollectionEdit() {
       formData.append("file", file);
       formData.append("treatEmptyAsMissing", String(treatEmptyAsMissing));
 
-      mutate({ id, data: formData });
+      mutate(
+        { id, data: formData },
+        {
+          onSuccess(data) {
+            console.log(data);
+            setCollectedList(data.data.collectedList);
+            setMissingList(data.data.missingList);
+            setDuplicatesList(data.data.duplicatesList);
+          },
+        },
+      );
 
       toast.success(t("collection_edit.import_success"));
     } catch (error) {

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { AuthResponse, ExtendedUser, User } from "@tcg/api-contracts";
+import type { ExtendedUser, User } from "@tcg/api-contracts";
 import { persist } from "zustand/middleware";
 export type {
   Card,
@@ -15,6 +15,8 @@ export type {
 interface AppState {
   user: User | null;
   setUser: (user: User | ExtendedUser | null) => void;
+  hideHeader: boolean;
+  setHideHeader: (hideHeader: boolean) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -22,6 +24,8 @@ export const useStore = create<AppState>()(
     (set) => ({
       user: null,
       setUser: (user) => set({ user }),
+      hideHeader: false,
+      setHideHeader: (hideHeader) => set({ hideHeader }),
     }),
     {
       name: "user",

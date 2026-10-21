@@ -30,7 +30,10 @@ const columns = columnHelper.columns([
   columnHelper.accessor("number", {
     header: "Number",
     cell: ({ cell, row }) => (
-      <span key={cell.id} className="wax-card-number">
+      <span
+        key={cell.id}
+        className={`wax-card-number ${row.original.userCard ? `` : "bg-red-400"}`}
+      >
         {row.original.number}
       </span>
     ),

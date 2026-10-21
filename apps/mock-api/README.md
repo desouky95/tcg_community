@@ -1,6 +1,6 @@
 # TCG mock API
 
-This app provides the identity REST contract before the real API or a full test environment is available.
+This app mirrors the routes exposed by `apps/api` before the real API or a full test environment is available. It includes identity, catalogue, user collections, reviews, conversations, swaps, admin operations, and scraper jobs.
 
 The package declares Node `20.20.2` through pnpm's `devEngines.runtime`; pnpm downloads and uses that runtime for this app. Other workspace packages continue to use the root Node 24 requirement and the machine's global Node runtime.
 
@@ -28,16 +28,18 @@ pnpm --filter @tcg/mock-api list
 
 Fixtures use Restapify's file-based route conventions. State files such as `*.401.{INVALID_CREDENTIALS}.json` can be selected from the dashboard.
 
+The checklist cover and workbook download fixtures return JSON metadata in Restapify so they remain inspectable in its dashboard. Their MSW equivalents return image and spreadsheet content types for clients that exercise binary response handling.
+
 ## MSW handlers
 
-The same happy-path identity contract is available through MSW v2's Node entrypoint:
+The same happy-path route contract is available through MSW v2's Node entrypoint:
 
 ```ts
-import { server } from './src/mocks/node.js'
+import { server } from "./src/mocks/node.js";
 
-server.listen({ onUnhandledRequest: 'error' })
+server.listen({ onUnhandledRequest: "error" });
 // run the consumer or test here
-server.close()
+server.close();
 ```
 
 Handlers use absolute wildcard URLs (`*/api/v1/...`) so they match both the Restapify port and application test ports.

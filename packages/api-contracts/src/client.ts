@@ -222,7 +222,7 @@ export function createApiClient(options: ApiClientOptions) {
       data: FormData,
       requestOptions?: ApiRequestOptions,
     ) =>
-      http.post<UserChecklist>(
+      http.post<APIResponse<UserChecklist>>(
         `/user-checklists/${id}/import`,
         data,
         requestConfig(false, requestOptions),

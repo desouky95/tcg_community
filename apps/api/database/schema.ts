@@ -8,18 +8,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AuthAccessTokenSchema extends BaseModel {
-  static $columns = [
-    'abilities',
-    'createdAt',
-    'expiresAt',
-    'hash',
-    'id',
-    'lastUsedAt',
-    'name',
-    'tokenableId',
-    'type',
-    'updatedAt',
-  ] as const
+  static $columns = ['abilities', 'createdAt', 'expiresAt', 'hash', 'id', 'lastUsedAt', 'name', 'tokenableId', 'type', 'updatedAt'] as const
   $columns = AuthAccessTokenSchema.$columns
   @column()
   declare abilities: string
@@ -44,25 +33,7 @@ export class AuthAccessTokenSchema extends BaseModel {
 }
 
 export class CardSchema extends BaseModel {
-  static $columns = [
-    'baseCardId',
-    'checklistId',
-    'createdAt',
-    'holdCount',
-    'id',
-    'name',
-    'needCount',
-    'number',
-    'offerCount',
-    'order',
-    'ratio',
-    'section',
-    'status',
-    'type',
-    'updatedAt',
-    'variant',
-    'version',
-  ] as const
+  static $columns = ['baseCardId', 'checklistId', 'createdAt', 'holdCount', 'id', 'name', 'needCount', 'number', 'offerCount', 'order', 'ratio', 'section', 'status', 'type', 'updatedAt', 'variant', 'version'] as const
   $columns = CardSchema.$columns
   @column()
   declare baseCardId: number | null
@@ -71,17 +42,17 @@ export class CardSchema extends BaseModel {
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
   @column()
-  declare holdCount: number
+  declare holdCount: number | null
   @column({ isPrimary: true })
   declare id: number
   @column()
   declare name: string
   @column()
-  declare needCount: number
+  declare needCount: number | null
   @column()
   declare number: string
   @column()
-  declare offerCount: number
+  declare offerCount: number | null
   @column()
   declare order: number
   @column()
@@ -101,15 +72,7 @@ export class CardSchema extends BaseModel {
 }
 
 export class CatalogueImportSchema extends BaseModel {
-  static $columns = [
-    'actorId',
-    'checksum',
-    'createdAt',
-    'id',
-    'status',
-    'summary',
-    'updatedAt',
-  ] as const
+  static $columns = ['actorId', 'checksum', 'createdAt', 'id', 'status', 'summary', 'updatedAt'] as const
   $columns = CatalogueImportSchema.$columns
   @column()
   declare actorId: number | null
@@ -128,16 +91,7 @@ export class CatalogueImportSchema extends BaseModel {
 }
 
 export class CategorySchema extends BaseModel {
-  static $columns = [
-    'createdAt',
-    'id',
-    'name',
-    'parentId',
-    'slug',
-    'status',
-    'updatedAt',
-    'version',
-  ] as const
+  static $columns = ['createdAt', 'id', 'name', 'parentId', 'slug', 'status', 'updatedAt', 'version'] as const
   $columns = CategorySchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime | null
@@ -158,21 +112,7 @@ export class CategorySchema extends BaseModel {
 }
 
 export class ChecklistSchema extends BaseModel {
-  static $columns = [
-    'categoryId',
-    'coverImagePath',
-    'createdAt',
-    'id',
-    'name',
-    'slug',
-    'status',
-    'subcategoryId',
-    'totalCards',
-    'type',
-    'updatedAt',
-    'version',
-    'year',
-  ] as const
+  static $columns = ['categoryId', 'coverImagePath', 'createdAt', 'id', 'name', 'slug', 'status', 'subcategoryId', 'totalCards', 'type', 'updatedAt', 'version', 'year'] as const
   $columns = ChecklistSchema.$columns
   @column()
   declare categoryId: number | null
@@ -218,16 +158,7 @@ export class ConversationSchema extends BaseModel {
 }
 
 export class IdentityIdempotencyKeySchema extends BaseModel {
-  static $columns = [
-    'createdAt',
-    'expiresAt',
-    'fingerprint',
-    'id',
-    'key',
-    'responseJson',
-    'scope',
-    'status',
-  ] as const
+  static $columns = ['createdAt', 'expiresAt', 'fingerprint', 'id', 'key', 'responseJson', 'scope', 'status'] as const
   $columns = IdentityIdempotencyKeySchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -248,17 +179,7 @@ export class IdentityIdempotencyKeySchema extends BaseModel {
 }
 
 export class MessageSchema extends BaseModel {
-  static $columns = [
-    'content',
-    'conversationId',
-    'createdAt',
-    'dealId',
-    'id',
-    'isRead',
-    'senderId',
-    'type',
-    'updatedAt',
-  ] as const
+  static $columns = ['content', 'conversationId', 'createdAt', 'dealId', 'id', 'isRead', 'senderId', 'type', 'updatedAt'] as const
   $columns = MessageSchema.$columns
   @column()
   declare content: string
@@ -281,19 +202,7 @@ export class MessageSchema extends BaseModel {
 }
 
 export class OtpChallengeSchema extends BaseModel {
-  static $columns = [
-    'attempts',
-    'codeHash',
-    'consumedAt',
-    'createdAt',
-    'expiresAt',
-    'id',
-    'maxAttempts',
-    'mobile',
-    'purpose',
-    'updatedAt',
-    'userId',
-  ] as const
+  static $columns = ['attempts', 'codeHash', 'consumedAt', 'createdAt', 'expiresAt', 'id', 'maxAttempts', 'mobile', 'purpose', 'updatedAt', 'userId'] as const
   $columns = OtpChallengeSchema.$columns
   @column()
   declare attempts: number
@@ -320,15 +229,7 @@ export class OtpChallengeSchema extends BaseModel {
 }
 
 export class PrivacyExportSchema extends BaseModel {
-  static $columns = [
-    'createdAt',
-    'downloadToken',
-    'expiresAt',
-    'id',
-    'status',
-    'updatedAt',
-    'userId',
-  ] as const
+  static $columns = ['createdAt', 'downloadToken', 'expiresAt', 'id', 'status', 'updatedAt', 'userId'] as const
   $columns = PrivacyExportSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -347,18 +248,7 @@ export class PrivacyExportSchema extends BaseModel {
 }
 
 export class QueueJobSchema extends BaseModel {
-  static $columns = [
-    'acquiredAt',
-    'data',
-    'error',
-    'executeAt',
-    'finishedAt',
-    'id',
-    'queue',
-    'score',
-    'status',
-    'workerId',
-  ] as const
+  static $columns = ['acquiredAt', 'data', 'error', 'executeAt', 'finishedAt', 'id', 'queue', 'score', 'status', 'workerId'] as const
   $columns = QueueJobSchema.$columns
   @column()
   declare acquiredAt: bigint | number | null
@@ -383,22 +273,7 @@ export class QueueJobSchema extends BaseModel {
 }
 
 export class QueueScheduleSchema extends BaseModel {
-  static $columns = [
-    'createdAt',
-    'cronExpression',
-    'everyMs',
-    'fromDate',
-    'id',
-    'lastRunAt',
-    'name',
-    'nextRunAt',
-    'payload',
-    'runCount',
-    'runLimit',
-    'status',
-    'timezone',
-    'toDate',
-  ] as const
+  static $columns = ['createdAt', 'cronExpression', 'everyMs', 'fromDate', 'id', 'lastRunAt', 'name', 'nextRunAt', 'payload', 'runCount', 'runLimit', 'status', 'timezone', 'toDate'] as const
   $columns = QueueScheduleSchema.$columns
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -431,15 +306,7 @@ export class QueueScheduleSchema extends BaseModel {
 }
 
 export class ReviewSchema extends BaseModel {
-  static $columns = [
-    'comment',
-    'createdAt',
-    'id',
-    'reviewerId',
-    'targetUserId',
-    'type',
-    'updatedAt',
-  ] as const
+  static $columns = ['comment', 'createdAt', 'id', 'reviewerId', 'targetUserId', 'type', 'updatedAt'] as const
   $columns = ReviewSchema.$columns
   @column()
   declare comment: string | null
@@ -458,25 +325,7 @@ export class ReviewSchema extends BaseModel {
 }
 
 export class SwapDealSchema extends BaseModel {
-  static $columns = [
-    'conversationId',
-    'createdAt',
-    'createdByUserId',
-    'id',
-    'offeredCards',
-    'requestedCards',
-    'status',
-    'swapType',
-    'updatedAt',
-    'user1PhotoUrl',
-    'user1QrScanned',
-    'user1Received',
-    'user1Tracking',
-    'user2PhotoUrl',
-    'user2QrScanned',
-    'user2Received',
-    'user2Tracking',
-  ] as const
+  static $columns = ['conversationId', 'createdAt', 'createdByUserId', 'id', 'offeredCards', 'requestedCards', 'status', 'swapType', 'updatedAt', 'user1PhotoUrl', 'user1QrScanned', 'user1Received', 'user1Tracking', 'user2PhotoUrl', 'user2QrScanned', 'user2Received', 'user2Tracking'] as const
   $columns = SwapDealSchema.$columns
   @column()
   declare conversationId: number | null
@@ -514,17 +363,27 @@ export class SwapDealSchema extends BaseModel {
   declare user2Tracking: string | null
 }
 
+export class UserChecklistCardSchema extends BaseModel {
+  static $columns = ['cardId', 'checklistId', 'createdAt', 'id', 'quantity', 'updatedAt', 'userChecklistId'] as const
+  $columns = UserChecklistCardSchema.$columns
+  @column()
+  declare cardId: number | null
+  @column()
+  declare checklistId: number | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare quantity: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userChecklistId: number | null
+}
+
 export class UserChecklistSchema extends BaseModel {
-  static $columns = [
-    'checklistId',
-    'collectedList',
-    'createdAt',
-    'duplicatesList',
-    'id',
-    'missingList',
-    'updatedAt',
-    'userId',
-  ] as const
+  static $columns = ['checklistId', 'collectedList', 'createdAt', 'duplicatesList', 'id', 'missingList', 'updatedAt', 'userId'] as const
   $columns = UserChecklistSchema.$columns
   @column()
   declare checklistId: number | null
@@ -545,31 +404,7 @@ export class UserChecklistSchema extends BaseModel {
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = [
-    'anonymizedAt',
-    'blocked',
-    'communicationPreferences',
-    'createdAt',
-    'deactivatedAt',
-    'email',
-    'fullName',
-    'governorate',
-    'id',
-    'isVerified',
-    'lastLoginAt',
-    'locale',
-    'mobile',
-    'notReadyForSwap',
-    'otpCode',
-    'password',
-    'privacyPreferences',
-    'role',
-    'status',
-    'theme',
-    'updatedAt',
-    'username',
-    'version',
-  ] as const
+  static $columns = ['anonymizedAt', 'blocked', 'communicationPreferences', 'createdAt', 'deactivatedAt', 'email', 'fullName', 'governorate', 'id', 'isVerified', 'lastLoginAt', 'locale', 'mobile', 'notReadyForSwap', 'otpCode', 'password', 'privacyPreferences', 'role', 'status', 'theme', 'updatedAt', 'username', 'version'] as const
   $columns = UserSchema.$columns
   @column.dateTime()
   declare anonymizedAt: DateTime | null
