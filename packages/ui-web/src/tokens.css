@@ -1,11 +1,119 @@
 @theme {
-  --color-primary-50: #eef4f8;
-  --color-primary-100: #d8e5ee;
-  --color-primary-500: #17385e;
-  --color-primary-600: #102d4d;
-  --color-accent-500: #c83430;
-  --color-accent-600: #a92a27;
-  --color-discovery-500: #3c8bbd;
+  /* Signal Navy - primary identity, navigation, and high-confidence actions. */
+  --color-primary-50: #f8fafd;
+  --color-primary-100: #e3eaf3;
+  --color-primary-200: #aabed5;
+  --color-primary-300: #5c83af;
+  --color-primary-400: #264a78;
+  --color-primary-500: #101b2d;
+  --color-primary-600: #0d1726;
+  --color-primary-700: #0a121e;
+  --color-primary-800: #080d17;
+  --color-primary-900: #060b12;
+  --color-primary-950: #050910;
+
+  /* Electric Blue - discovery, active utility controls, and link emphasis. */
+  --color-secondary-50: #f4f8ff;
+  --color-secondary-100: #d6e6ff;
+  --color-secondary-200: #a7c9ff;
+  --color-secondary-300: #6aa4ff;
+  --color-secondary-400: #438aff;
+  --color-secondary-500: #2979ff;
+  --color-secondary-600: #1559cf;
+  --color-secondary-700: #0d347a;
+  --color-secondary-800: #09265d;
+  --color-secondary-900: #061a44;
+  --color-secondary-950: #030f29;
+
+  /* Existing accent aliases stay blue to avoid breaking current UI semantics. */
+  --color-accent-50: #f4f8ff;
+  --color-accent-100: #d6e6ff;
+  --color-accent-200: #a7c9ff;
+  --color-accent-300: #6aa4ff;
+  --color-accent-400: #438aff;
+  --color-accent-500: #2979ff;
+  --color-accent-600: #1559cf;
+  --color-accent-700: #0d347a;
+  --color-accent-800: #09265d;
+  --color-accent-900: #061a44;
+  --color-accent-950: #030f29;
+
+  --color-discovery-50: #f4f8ff;
+  --color-discovery-100: #d6e6ff;
+  --color-discovery-200: #a7c9ff;
+  --color-discovery-300: #6aa4ff;
+  --color-discovery-400: #438aff;
+  --color-discovery-500: #2979ff;
+  --color-discovery-600: #1559cf;
+  --color-discovery-700: #0d347a;
+  --color-discovery-800: #09265d;
+  --color-discovery-900: #061a44;
+  --color-discovery-950: #030f29;
+
+  /* Signature Lime - rare, deliberate emphasis; never the dominant page field. */
+  --color-signature-lime-50: #f9ffe9;
+  --color-signature-lime-100: #e9fba6;
+  --color-signature-lime-200: #d8f86f;
+  --color-signature-lime-300: #d1f55c;
+  --color-signature-lime-400: #cbed45;
+  --color-signature-lime-500: #c7f33b;
+  --color-signature-lime-600: #759f1b;
+  --color-signature-lime-700: #577b14;
+  --color-signature-lime-800: #415b0d;
+  --color-signature-lime-900: #2d3e08;
+  --color-signature-lime-950: #1d2804;
+
+  /* Quiet Divider - restrained boundaries and secondary structure. */
+  --color-divider-50: #f7f5f8;
+  --color-divider-100: #e1dfe2;
+  --color-divider-200: #cbc9cc;
+  --color-divider-300: #b0adb2;
+  --color-divider-400: #929095;
+  --color-divider-500: #716e73;
+  --color-divider-600: #4c4a4e;
+  --color-divider-700: #3a383b;
+  --color-divider-800: #29282a;
+  --color-divider-900: #1d1c1e;
+  --color-divider-950: #121113;
+
+  /* Collector Paper - the default light field and reversed-logo surface. */
+  --color-paper-50: #fcfbf9;
+  --color-paper-100: #f6f4ef;
+  --color-paper-200: #e8e6e0;
+  --color-paper-300: #cfcdc7;
+  --color-paper-400: #aaa8a3;
+  --color-paper-500: #817f7b;
+  --color-paper-600: #595754;
+  --color-paper-700: #454340;
+  --color-paper-800: #312f2d;
+  --color-paper-900: #22211f;
+  --color-paper-950: #151412;
+
+  /* Reading Ink - high-contrast logo and text on light surfaces. */
+  --color-ink-50: #f7f7f7;
+  --color-ink-100: #d5d5d5;
+  --color-ink-200: #aaaaaa;
+  --color-ink-300: #808080;
+  --color-ink-400: #565656;
+  --color-ink-500: #303030;
+  --color-ink-600: #242424;
+  --color-ink-700: #1b1b1b;
+  --color-ink-800: #151515;
+  --color-ink-900: #111111;
+  --color-ink-950: #050505;
+
+  /* Deep Ink - the terminal dark stop for approved navy gradients. */
+  --color-deep-ink-50: #f7f7f7;
+  --color-deep-ink-100: #d3d3d3;
+  --color-deep-ink-200: #a7a7a7;
+  --color-deep-ink-300: #777777;
+  --color-deep-ink-400: #4b4b4b;
+  --color-deep-ink-500: #2b2b2b;
+  --color-deep-ink-600: #1d1d1d;
+  --color-deep-ink-700: #141414;
+  --color-deep-ink-800: #0e0e0e;
+  --color-deep-ink-900: #0a0a0a;
+  --color-deep-ink-950: #080808;
   --color-success-500: #278b55;
   --color-success-600: #196c3e;
   --color-danger-500: #c83430;
@@ -31,19 +139,19 @@
   --color-wax-muted: var(--muted-foreground);
   --color-wax-red: var(--wax-red);
   --color-wax-gold: var(--wax-gold);
-  --font-brand: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Roboto Condensed", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-brand: "Manrope", "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Sora", "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Manrope", "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-brand);
   --spacing-control-sm: 2.75rem;
   --spacing-control: 3.125rem;
   --spacing-control-lg: 3.5rem;
   --spacing-gutter: clamp(20px, 4vw, 64px);
   --spacing-section: clamp(64px, 8vw, 128px);
-  --radius-sm: 0.125rem;
-  --radius-md: 0.25rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.5rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
   --text-utility: 0.6875rem;
   --text-utility--line-height: 1.4;
   --text-control: 0.875rem;
@@ -62,22 +170,22 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f6f0e6;
-  --foreground: #102d4d;
-  --card: #fffaf1;
-  --card-foreground: #102d4d;
-  --border: #b9b7b0;
-  --input: #fffaf1;
-  --muted: #eef4f8;
-  --muted-foreground: #5c6872;
-  --ring: #c83430;
-  --radius: 0.25rem;
-  --wax-paper: #f6f0e6;
-  --wax-surface: #fffaf1;
-  --wax-ink: #102d4d;
-  --wax-navy: #17385e;
-  --wax-red: #c83430;
-  --wax-gold: #efbd35;
+  --background: #fcfbf9;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --border: #b0adb2;
+  --input: #ffffff;
+  --muted: #f2f3f5;
+  --muted-foreground: #55515a;
+  --ring: #2979ff;
+  --radius: 0.5rem;
+  --wax-paper: #fcfbf9;
+  --wax-surface: #ffffff;
+  --wax-ink: #111111;
+  --wax-navy: #101b2d;
+  --wax-red: #2979ff;
+  --wax-gold: #c7f33b;
   --wax-line: var(--border);
   --wax-muted: var(--muted-foreground);
   --wax-blue: var(--color-discovery-500);
@@ -93,15 +201,15 @@
 }
 
 .dark {
-  --background: #102d4d;
-  --foreground: #f6f0e6;
-  --card: #17385e;
-  --card-foreground: #f6f0e6;
-  --border: #355776;
-  --input: #17385e;
-  --muted: #17385e;
-  --muted-foreground: #d8e5ee;
-  --ring: #efbd35;
+  --background: #101b2d;
+  --foreground: #fcfbf9;
+  --card: #17263d;
+  --card-foreground: #fcfbf9;
+  --border: #667085;
+  --input: #17263d;
+  --muted: #17263d;
+  --muted-foreground: #dce8ff;
+  --ring: #c7f33b;
   --wax-ink: var(--foreground);
-  --wax-red: #ff8f88;
+  --wax-red: #8db6ff;
 }

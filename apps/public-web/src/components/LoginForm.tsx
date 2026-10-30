@@ -30,7 +30,7 @@ export function LoginForm() {
   const onLoginSubmit = async (data: LoginFormData) => {
     try {
       await login.mutateAsync(data);
-      toast.success("Welcome back to TCG Nexus!");
+      toast.success("Welcome back to Next Pull!");
       window.location.assign(
         buildAppUrl(
           process.env.NEXT_PUBLIC_APP_URL!,
@@ -69,7 +69,7 @@ export function LoginForm() {
           {...register("uid")}
           type="text"
           autoComplete="username"
-          placeholder="hello@nexus.com"
+          placeholder="hello@nextpull.co"
           invalid={Boolean(errors.uid)}
           aria-invalid={Boolean(errors.uid)}
           aria-describedby={errors.uid ? "login-uid-error" : undefined}

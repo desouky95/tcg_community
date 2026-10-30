@@ -21,7 +21,7 @@ function RedirectToLogin() {
     const returnTo = `${location.pathname}${location.search}${location.hash}`;
 
     window.location.assign(
-      buildLoginUrl(import.meta.env.VITE_PUBLIC_WEB_URL, returnTo),
+      buildLoginUrl(import.meta.env.VITE_PUBLIC_WEB_URL, returnTo)
     );
   }, [location.hash, location.pathname, location.search]);
 
@@ -60,14 +60,10 @@ import { useEffect } from "react";
 import { ApiHooksProvider, SessionWrapper } from "./providers/ApiHooksProvider";
 import Checklists from "./pages/Checklists";
 import CategoryDetail from "./pages/CategoryDetail";
-import Marketplace from "./pages/Marketplace";
 import { Collection } from "./pages/Collection";
 import { useTcgSession } from "@tcg/react-query";
 import AdminLayout from "./components/AdminLayout";
 import { AdminScrapper } from "./pages/admin/AdminScrapper/AdminScrapper";
-import { AdminMarketplace } from "./pages/admin/AdminMarketplace/AdminMarketplace";
-import SellerLayout from "./components/SellerLayout";
-import SellerDashboard from "./pages/seller/SellerDashboard";
 import { CollectionAddForm } from "./components/molecules/CollectionAddForm/CollectionAddForm";
 import { CollectionEditForm } from "./components/molecules/CollectionEditForm/CollectionEditForm";
 import Test from "./pages/Test";
@@ -104,6 +100,21 @@ const queryClient = new QueryClient({
   }),
 });
 
+function RetiredMarketplace() {
+  return (
+    <section className="mx-auto max-w-2xl py-24 text-center">
+      <p className="ui-kicker">RETIRED</p>
+      <h1 className="mt-3 text-4xl font-display">
+        Marketplace listings are no longer available.
+      </h1>
+      <p className="mt-4 text-muted-foreground">
+        Next Pull is focused on checklists now. Official products live in the
+        public store.
+      </p>
+    </section>
+  );
+}
+
 function App() {
   const location = useLocation();
   return (
@@ -125,10 +136,9 @@ function App() {
                         path="/s/:categoryId"
                         element={<CategoryDetail />}
                       />
-                      <Route path="/marketplace" element={<Marketplace />} />
                       <Route
-                        path="/marketplace/:id"
-                        element={<Marketplace />}
+                        path="/marketplace/*"
+                        element={<RetiredMarketplace />}
                       />
                       <Route path="/collection/:id" element={<Collection />} />
 
@@ -174,15 +184,6 @@ function App() {
                           element={<AdminCategoryFormPage />}
                         />
                         <Route path="scrapper" element={<AdminScrapper />} />
-                        <Route
-                          path="marketplace"
-                          element={<AdminMarketplace />}
-                        />
-                      </Route>
-                    </Route>
-                    <Route element={<ProtectedRoute />}>
-                      <Route path="/seller" element={<SellerLayout />}>
-                        <Route index element={<SellerDashboard />} />
                       </Route>
                     </Route>
                   </Route>

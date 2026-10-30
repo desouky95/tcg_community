@@ -7,12 +7,10 @@ import {
   LibraryBig,
   Menu,
   Moon,
-  ShieldCheck,
   Sun,
   Tags,
   Users,
   X,
-  Store,
   type LucideIcon,
 } from "lucide-react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
@@ -44,11 +42,6 @@ const navigation: readonly AdminNavigationItem[] = [
   },
   { to: "/admin/categories", label: "admin.navigation.categories", icon: Tags },
   { to: "/admin/scrapper", label: "admin.navigation.scrapper", icon: Tags },
-  {
-    to: "/admin/marketplace",
-    label: "admin.navigation.marketplace",
-    icon: Store,
-  },
 ];
 
 export default function AdminLayout() {
@@ -147,19 +140,9 @@ export default function AdminLayout() {
         <Link
           to="/admin"
           onClick={closeMobileMenu}
-          className="flex items-center gap-3 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-wax-gold focus-visible:ring-offset-2 focus-visible:ring-offset-wax-navy"
+          className="flex items-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-wax-gold focus-visible:ring-offset-2 focus-visible:ring-offset-wax-navy"
         >
-          <span className="grid size-11 shrink-0 -rotate-3 place-items-center bg-accent-500 text-white">
-            <ShieldCheck className="size-5" aria-hidden="true" />
-          </span>
-          <span className="min-w-0">
-            <strong className="block font-display text-xl font-extrabold leading-none text-white">
-              TCG NEXUS
-            </strong>
-            <small className="mt-1 block font-mono text-utility font-semibold tracking-[0.16em] text-primary-100">
-              {t("admin.shell.control_center")}
-            </small>
-          </span>
+          <img src="/brand/next-pull-logo-white.svg" alt="Next Pull" className="h-auto w-40" />
         </Link>
       </div>
 

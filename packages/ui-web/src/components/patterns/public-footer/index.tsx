@@ -9,14 +9,12 @@ export function PublicFooter({
     <footer
       {...props}
       className={cn(
-        "flex flex-col gap-4 bg-wax-navy px-gutter py-6 font-mono text-utility text-wax-paper sm:flex-row sm:items-center sm:justify-between",
+        "flex flex-col gap-4 bg-wax-navy px-gutter py-6 text-sm text-wax-paper sm:flex-row sm:items-center sm:justify-between",
         className,
       )}
     >
-      <span className="font-display text-xl font-extrabold text-wax-gold">
-        TCG NEXUS
-      </span>
-      <span>Cards bring people closer.</span>
+      <img src="/brand/next-pull-logo-white.svg" alt="Next Pull" className="h-auto w-32" />
+      <span>Every card has a next move.</span>
       <span>© 2026 · Egypt first, collectors everywhere.</span>
     </footer>
   );

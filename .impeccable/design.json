@@ -1,57 +1,88 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-24T00:00:00.000Z",
-  "title": "Design System: Wax Pack Club",
+  "generatedAt": "2026-10-30T00:00:00+02:00",
+  "title": "Design System: Next Pull",
   "extensions": {
     "colorMeta": {
-      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "#F6F0E6" },
-      "surface": { "role": "neutral", "displayName": "Surface", "canonical": "#FFFAF1" },
-      "navy": { "role": "primary", "displayName": "Navy", "canonical": "#17385E" },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#102D4D" },
-      "action-red": { "role": "primary", "displayName": "Action Red", "canonical": "#C83430" },
-      "highlight-gold": { "role": "secondary", "displayName": "Highlight Gold", "canonical": "#EFBD35" },
-      "discovery-blue": { "role": "secondary", "displayName": "Discovery Blue", "canonical": "#3C8BBD" },
-      "success-green": { "role": "tertiary", "displayName": "Success Green", "canonical": "#278B55" },
-      "line": { "role": "neutral", "displayName": "Line", "canonical": "#B9B7B0" },
-      "muted": { "role": "neutral", "displayName": "Muted", "canonical": "#5C6872" }
+      "primary-navy": { "role": "primary", "displayName": "Signal Navy", "canonical": "#101B2D", "tonalRamp": ["#050910", "#101B2D", "#17385E", "#264A78", "#5C83AF", "#AABED5", "#E3EAF3", "#F8FAFD"] },
+      "secondary-blue": { "role": "secondary", "displayName": "Electric Blue", "canonical": "#2979FF", "tonalRamp": ["#061A44", "#0D347A", "#1559CF", "#2979FF", "#6AA4FF", "#A7C9FF", "#D6E6FF", "#F4F8FF"] },
+      "signature-lime": { "role": "tertiary", "displayName": "Signature Lime", "canonical": "#C7F33B", "tonalRamp": ["#1D2804", "#415B0D", "#759F1B", "#A6D62A", "#C7F33B", "#D8F86F", "#E9FBA6", "#F9FFE9"] },
+      "divider": { "role": "neutral", "displayName": "Quiet Divider", "canonical": "#B0ADB2", "tonalRamp": ["#29282A", "#4C4A4E", "#716E73", "#929095", "#B0ADB2", "#CBC9CC", "#E1DFE2", "#F7F5F8"] },
+      "paper": { "role": "neutral", "displayName": "Collector Paper", "canonical": "#FCFBF9", "tonalRamp": ["#312F2D", "#595754", "#817F7B", "#AAA8A3", "#CFCDC7", "#E8E6E0", "#F6F4EF", "#FCFBF9"] },
+      "ink": { "role": "neutral", "displayName": "Reading Ink", "canonical": "#111111", "tonalRamp": ["#050505", "#111111", "#303030", "#565656", "#808080", "#AAAAAA", "#D5D5D5", "#F7F7F7"] }
     },
     "typographyMeta": {
-      "display": { "displayName": "Roboto Condensed Display", "purpose": "Printed card headlines and major landing statements." },
-      "body": { "displayName": "DM Sans Body", "purpose": "Readable product and explanatory copy." },
-      "utility": { "displayName": "IBM Plex Mono Utility", "purpose": "Card numbers, conditions, timestamps, and catalogue metadata." }
+      "display": { "displayName": "Sora Display", "purpose": "Large brand statements and page-level moments." },
+      "headline": { "displayName": "Sora Headline", "purpose": "Short headings and section labels." },
+      "body": { "displayName": "Manrope Body", "purpose": "Supporting copy and dense interface information." },
+      "label": { "displayName": "Sora Label", "purpose": "Compact set labels, metadata, and counts." }
     },
     "shadows": [
-      { "name": "specimen-offset", "value": "7px 7px 0 #C83430", "purpose": "Hover emphasis for card specimens without blur." },
-      { "name": "card-stack", "value": "10px 14px 0 rgba(0,0,0,.17)", "purpose": "Printed stack separation in the hero specimen." }
+      { "name": "soft", "value": "0 2px 4px color-mix(in srgb, var(--foreground) 12%, transparent)", "purpose": "Low interactive lift." },
+      { "name": "lifted", "value": "0 4px 12px color-mix(in srgb, var(--foreground) 16%, transparent)", "purpose": "Hover or overlay lift." },
+      { "name": "pop", "value": "0 8px 24px color-mix(in srgb, var(--foreground) 20%, transparent)", "purpose": "Highest intentional elevation." }
     ],
     "motion": [
-      { "name": "specimen-lift", "value": "translateY(-4px), 160ms", "purpose": "Make an inspectable card feel physical on hover." },
-      { "name": "reduced-motion", "value": "disable transforms and transitions", "purpose": "Keep the page usable for motion-sensitive visitors." }
+      { "name": "standard", "value": "cubic-bezier(0.2, 0, 0, 1)", "purpose": "Default state transition easing." }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "560px" },
-      { "name": "md", "value": "900px" }
-    ],
-    "reference": "rolls/pop-culture-shelf-wax-pack-card-hero.webp"
+      { "name": "mobile", "value": "560px" },
+      { "name": "compact", "value": "640px" },
+      { "name": "tablet", "value": "900px" }
+    ]
   },
   "components": [
-    { "name": "Wax Header", "kind": "navigation", "refersTo": "wax-header", "description": "Public route navigation with one red join action and a compact mobile menu." },
-    { "name": "Card Specimen", "kind": "card", "refersTo": "wax-listing-card", "description": "Image-led card entry with name, set context, condition, and availability." },
-    { "name": "Search Rail", "kind": "form", "refersTo": "wax-search", "description": "Primary discovery input for cards, sets, and characters." },
-    { "name": "Trust Strip", "kind": "content", "refersTo": "wax-trust-strip", "description": "Four icon-plus-copy proof points for catalogue, collection, trade, and community." },
-    { "name": "Activity Panel", "kind": "content", "refersTo": "wax-activity-panel", "description": "Explicitly synthetic live activity showing people, action, location context, and time." }
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The primary, navy-led action control.",
+      "html": "<button class=\"ds-btn-primary\">ADD TO COLLECTION</button>",
+      "css": ".ds-btn-primary { min-height: 50px; padding: 0 16px; border: 1px solid #101B2D; border-radius: 8px; background: #101B2D; color: #FCFBF9; font-family: Sora, sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .02em; cursor: pointer; transition: background-color 150ms cubic-bezier(.2,0,0,1), filter 150ms cubic-bezier(.2,0,0,1), transform 150ms cubic-bezier(.2,0,0,1); } .ds-btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 3px solid #2979FF; outline-offset: 3px; } .ds-btn-primary:active { transform: translateY(0); }"
+    },
+    {
+      "name": "Discovery Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A bright blue action for discovery and utility direction.",
+      "html": "<button class=\"ds-btn-discovery\">EXPLORE CARDS</button>",
+      "css": ".ds-btn-discovery { min-height: 50px; padding: 0 16px; border: 1px solid #2979FF; border-radius: 8px; background: #2979FF; color: #FFFFFF; font-family: Sora, sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .02em; cursor: pointer; transition: filter 150ms cubic-bezier(.2,0,0,1), transform 150ms cubic-bezier(.2,0,0,1); } .ds-btn-discovery:hover { filter: brightness(1.1); transform: translateY(-1px); } .ds-btn-discovery:focus-visible { outline: 3px solid #C7F33B; outline-offset: 3px; } .ds-btn-discovery:active { transform: translateY(0); }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "A quiet paper-white input with an unmistakable discovery focus state.",
+      "html": "<label class=\"ds-search-label\">CARD SEARCH<input class=\"ds-input\" placeholder=\"Search cards, sets, or collectors\" /></label>",
+      "css": ".ds-search-label { display: grid; gap: 7px; color: #101B2D; font-family: Sora, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .08em; } .ds-input { min-height: 50px; padding: 0 14px; border: 1px solid #B0ADB2; border-radius: 8px; background: #FFFFFF; color: #111111; font: 400 14px/1.5 Manrope, sans-serif; transition: border-color 150ms cubic-bezier(.2,0,0,1), box-shadow 150ms cubic-bezier(.2,0,0,1); } .ds-input::placeholder { color: #626067; } .ds-input:hover { border-color: #2979FF; } .ds-input:focus-visible { border-color: #2979FF; outline: 3px solid #2979FF; outline-offset: 3px; }"
+    },
+    {
+      "name": "Collection Card",
+      "kind": "card",
+      "refersTo": "card-default",
+      "description": "A flat default container that lifts only when interactive.",
+      "html": "<article class=\"ds-card\"><span>SET 042</span><h3>THE NEXT FIND</h3><p>Verified collector listing</p></article>",
+      "css": ".ds-card { padding: 20px; border: 1px solid #B0ADB2; border-radius: 12px; background: #FCFBF9; color: #111111; transition: border-color 150ms cubic-bezier(.2,0,0,1), box-shadow 150ms cubic-bezier(.2,0,0,1), transform 150ms cubic-bezier(.2,0,0,1); } .ds-card:hover { border-color: #2979FF; box-shadow: 0 4px 12px rgba(17,17,17,.16); transform: translateY(-1px); } .ds-card span { color: #2979FF; font: 600 11px/1 Sora, sans-serif; letter-spacing: .08em; } .ds-card h3 { margin: 12px 0 6px; color: #101B2D; font: 700 22px/1 Sora, sans-serif; } .ds-card p { margin: 0; color: #55515A; font: 400 14px/1.5 Manrope, sans-serif; }"
+    },
+    {
+      "name": "Brand Navigation",
+      "kind": "nav",
+      "refersTo": "nav-primary",
+      "description": "A navy identity bar with white reversed branding and blue active direction.",
+      "html": "<nav class=\"ds-nav\"><strong>NEXT PULL</strong><a href=\"#\">COLLECTION</a><a class=\"is-active\" href=\"#\">MARKETPLACE</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 20px; min-height: 64px; padding: 0 20px; background: #101B2D; color: #FCFBF9; } .ds-nav strong { margin-right: auto; font: 700 18px/1 Sora, sans-serif; } .ds-nav a { color: #FCFBF9; font: 600 11px/1 Sora, sans-serif; letter-spacing: .08em; text-decoration: none; } .ds-nav a:hover, .ds-nav a.is-active { color: #2979FF; } .ds-nav a:focus-visible { outline: 3px solid #C7F33B; outline-offset: 3px; }"
+    }
   ],
   "narrative": {
-    "northStar": "The good pull becomes a shared story",
-    "overview": "TCG Nexus is a collectible-card community presented like a well-made wax pack: clear set information, tactile specimens, and a direct path from discovery to exchange.",
-    "keyCharacteristics": ["Warm paper ground", "Navy structure", "Red action ink", "Gold featured pull", "Printed metadata"],
+    "northStar": "The Collector's Signal",
+    "overview": "Next Pull is precise, recognisable, and alive with the anticipation of finding the next card. The system leads with deep navy and quiet paper surfaces, using a bright blue for small moments of direction and a sharp lime for rare, deliberate emphasis. It should feel more like a clear trading signal than a decorative game interface.\n\nThe visual voice is bold but not loud: large Sora statements establish confidence, while Manrope keeps product information calm and highly legible. The supplied card-and-spark signature is the brand's most distinctive asset; UI should create the quiet, solid fields that allow it to read cleanly.",
+    "keyCharacteristics": ["Navy-led, paper-grounded, and high-contrast.", "Direct, compact, and collector-first rather than ornamental.", "Bright blue for wayfinding; lime for sparing signature emphasis.", "Crisp geometry, solid surfaces, and controlled state motion."],
     "rules": [
-      { "name": "The Specimen Rule", "body": "Every card image carries a name, set context, state, and next action.", "section": "content" },
-      { "name": "The Action Ink Rule", "body": "Action red is reserved for the primary CTA, active trade moments, and availability labels.", "section": "colors" },
-      { "name": "The Data Label Rule", "body": "IBM Plex Mono is reserved for card numbers, conditions, timestamps, and catalogue metadata.", "section": "typography" },
-      { "name": "The Paper Rule", "body": "Use borders, rules, and offset print shadows for structure before adding effects.", "section": "elevation" }
+      { "name": "The Navy Leads Rule", "body": "Start with navy, paper, and ink. Add blue for direction and lime only for emphasis; the logo itself is always one solid color.", "section": "colors" },
+      { "name": "The Two Families Rule", "body": "Do not recreate the supplied Next Pull wordmark with Sora or Manrope. Use the supplied outlined logo paths; these families support the signature, not substitute for it.", "section": "typography" },
+      { "name": "The Quiet Surface Rule", "body": "Do not add gradients, shadows, or busy texture to a logo field. Surface gradients are allowed only as documented brand fields: deep navy to deep ink, navy to electric blue, or electric blue back to navy.", "section": "elevation" }
     ],
-    "dos": ["Do let card content carry the visual interest.", "Do keep discovery as the first action.", "Do pair functional color with text or iconography."],
-    "donts": ["Don't copy the reference's baseball content or subscription model.", "Don't turn the page into a screenshot or poster.", "Don't use generic gradients or over-rounded dashboard cards."]
+    "dos": ["Do lead a screen with Signal Navy, Collector Paper, and Reading Ink before introducing accents.", "Do use Sora Bold/Semibold for statements and headings, and Manrope Regular for supporting UI copy.", "Do keep the supplied signature's clear space, proportions, and single-solid-color treatment intact.", "Do export supplied artwork as SVG for scalable uses and transparent PNG for quick placement.", "Do respect reduced-motion preferences and pair status colors with text, icons, or other non-color cues."],
+    "donts": ["Don't retype, stretch, rotate, shadow, gradient-fill, or otherwise alter the Next Pull wordmark.", "Don't let blue or lime dominate a page that should be navy-led.", "Don't use a busy, textured, or gradient field behind the signature.", "Don't turn every compact control into a pill or use visual decoration in place of product hierarchy."]
   }
 }

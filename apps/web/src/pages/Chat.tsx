@@ -15,12 +15,9 @@ import {
   MoreVertical,
   Search,
   CheckCheck,
-  PlusCircle,
 } from "lucide-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import CreateDealModal from "../components/CreateDealModal";
-import PinnedDeal from "../components/PinnedDeal";
 
 dayjs.extend(relativeTime);
 
@@ -29,7 +26,6 @@ export default function Chat() {
   const navigate = useNavigate();
   const currentUser = useStore((state) => state.user);
   const [messageText, setMessageText] = useState("");
-  const [isCreateDealModalOpen, setIsCreateDealModalOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Queries
@@ -40,7 +36,6 @@ export default function Chat() {
 
   const messages = messagesData?.data || [];
   const otherUser = messagesData?.meta?.otherUser;
-  const activeDeal = messagesData?.meta?.activeDeal;
 
   // Scroll to bottom when messages load or new message sent
   useEffect(() => {
@@ -214,8 +209,6 @@ export default function Chat() {
 
               {/* Chat Messages */}
               <div className="flex-1 overflow-y-auto custom-scrollbar relative flex flex-col">
-                {activeDeal && <PinnedDeal deal={activeDeal} />}
-                
                 <div className="flex-1 p-4 md:p-6 space-y-6">
                   {msgsLoading ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm z-10">
@@ -284,14 +277,6 @@ export default function Chat() {
               {/* Chat Input */}
               <div className="p-4 bg-card/80 backdrop-blur-md border-t border-border shrink-0 z-10">
                 <form onSubmit={handleSend} className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsCreateDealModalOpen(true)}
-                    className="p-3 bg-input/50 border border-border rounded-2xl hover:bg-input transition-colors group flex items-center justify-center"
-                    title="Create Swap Deal"
-                  >
-                    <PlusCircle className="w-5 h-5 text-primary-500 group-hover:scale-110 transition-transform" />
-                  </button>
                   <input
                     type="text"
                     value={messageText}
@@ -309,13 +294,6 @@ export default function Chat() {
                   </button>
                 </form>
               </div>
-
-              {isCreateDealModalOpen && id && (
-                <CreateDealModal
-                  conversationId={Number(id)}
-                  onClose={() => setIsCreateDealModalOpen(false)}
-                />
-              )}
             </>
           )}
         </div>

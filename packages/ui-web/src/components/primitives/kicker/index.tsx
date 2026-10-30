@@ -9,7 +9,7 @@ export function Kicker({
     <p
       {...props}
       className={cn(
-        "ui-kicker m-0 text-xs font-extrabold uppercase tracking-[0.08em] text-wax-red",
+        "ui-kicker m-0 text-xs font-semibold uppercase tracking-[0.08em] text-accent-500",
         className,
       )}
     />

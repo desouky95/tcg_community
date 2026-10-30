@@ -6,9 +6,11 @@
 export const controllers = {
   Admin: () => import('#controllers/admin_controller'),
   Auth: () => import('#controllers/auth_controller'),
+  Cards: () => import('#controllers/cards_controller'),
   Catalogue: () => import('#controllers/catalogue_controller'),
   Categories: () => import('#controllers/categories_controller'),
   Checklists: () => import('#controllers/checklists_controller'),
+  Commerce: () => import('#controllers/commerce_controller'),
   Conversations: () => import('#controllers/conversations_controller'),
   Identity: () => import('#controllers/identity_controller'),
   Profile: () => import('#controllers/profile_controller'),
@@ -17,5 +19,4 @@ export const controllers = {
   SwapDeals: () => import('#controllers/swap_deals_controller'),
   Swaps: () => import('#controllers/swaps_controller'),
   UserChecklists: () => import('#controllers/user_checklists_controller'),
-  Cards: () => import('#controllers/cards_controller'),
 }

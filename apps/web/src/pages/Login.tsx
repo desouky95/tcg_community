@@ -26,7 +26,7 @@ export default function Login() {
   const onLoginSubmit = async (data: LoginFormData) => {
     try {
       await login.mutateAsync(data);
-      toast.success("Welcome back to TCG Nexus!");
+      toast.success("Welcome back to Next Pull!");
       navigate("/dashboard");
     } catch (err: unknown) {
       if (
@@ -78,7 +78,7 @@ export default function Login() {
               {...register("uid")}
               type="text"
               autoComplete="username"
-              placeholder="hello@nexus.com"
+              placeholder="hello@nextpull.co"
               invalid={Boolean(errors.uid)}
               aria-invalid={Boolean(errors.uid)}
               aria-describedby={errors.uid ? "login-uid-error" : undefined}

@@ -23,6 +23,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   APP_URL: Env.schema.string({ format: 'url', tld: false }),
   WEB_ORIGINS: Env.schema.string.optional(),
   SESSION_COOKIE_DOMAIN: Env.schema.string.optional(),
+  MEDUSA_INTERNAL_URL: Env.schema.string.optional(),
+  MEDUSA_SERVICE_KEY: Env.schema.secret.optional(),
   SCRAPER_TRIGGER_TOKEN: Env.schema.string.optional(),
   FIRECRAWL_API_KEY: Env.schema.string.optional(),
 
@@ -37,6 +39,8 @@ export default await Env.create(new URL('../', import.meta.url), {
   DB_DATABASE: Env.schema.string(),
   TEXT_BEE_API_KEY: Env.schema.string(),
   TEXT_BEE_DEVICE_ID: Env.schema.string(),
+  COLLECTOR_DISK_ENABLED : Env.schema.boolean(),
+  SWAPS_ENABLED: Env.schema.boolean.optional(),
 
   /*
   |----------------------------------------------------------

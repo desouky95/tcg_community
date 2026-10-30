@@ -15,3 +15,4 @@ export * from "./status-badge";
 export * from "./surface";
 export * from "./text-link";
 export * from "./textarea";
+export * from './brand-logo'

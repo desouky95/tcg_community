@@ -8,7 +8,7 @@ export default () => {
       router.get('/:userId', [() => import('#controllers/swaps_controller'), 'match'])
     })
     .prefix('swaps')
-    .use(middleware.auth())
+    .use([middleware.auth(), middleware.swapsAvailable()])
 
   router
     .group(() => {
@@ -25,5 +25,5 @@ export default () => {
       router.post('/:id/scan-qr', [() => import('#controllers/swap_deals_controller'), 'scanQr'])
     })
     .prefix('swap-deals')
-    .use(middleware.auth())
+    .use([middleware.auth(), middleware.swapsAvailable()])
 }

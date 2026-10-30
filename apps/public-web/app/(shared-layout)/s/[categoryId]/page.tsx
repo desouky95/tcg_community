@@ -90,7 +90,7 @@ export default function CategoryPage({
     );
   return (
     <>
-      <div className="mx-auto max-w-[1440px] px-gutter pt-8 pb-section">
+      <div className="mx-auto   px-gutter pt-8 pb-section">
         <nav
           className="flex flex-wrap items-center gap-2 font-mono text-utility uppercase text-wax-muted [&_a:hover]:text-wax-red [&_svg]:size-3.5 rtl:[&_svg]:rotate-180 [&_span]:font-bold [&_span]:text-wax-ink"
           aria-label="Breadcrumb"

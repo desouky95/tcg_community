@@ -1,0 +1,18 @@
+FROM node:24-bookworm-slim AS build
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
+RUN corepack enable && corepack prepare pnpm@11.24.0 --activate
+COPY apps/cms/package.json ./
+RUN pnpm install --frozen-lockfile 
+COPY apps/cms/ ./
+ENV NODE_ENV=production
+RUN pnpm --filter @tcg/cms build && pnpm --filer @tcg/cms prune --omit=dev
+
+FROM node:24-bookworm-slim AS runtime
+WORKDIR /app
+ENV NODE_ENV=production HOST=0.0.0.0 PORT=1337
+COPY --from=build --chown=node:node /app/ ./
+RUN mkdir -p /app/public/uploads && chown -R node:node /app/public/uploads
+USER node
+EXPOSE 1337
+CMD ["npm", "run", "start"]

@@ -32,7 +32,7 @@ export const CardsSlider = ({
               key={card.name}
               {...card}
               position={(position + 1) as 1 | 2 | 3}
-              href="/marketplace"
+              href="/shop"
             />
           );
         })}

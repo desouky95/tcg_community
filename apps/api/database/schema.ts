@@ -142,6 +142,29 @@ export class ChecklistSchema extends BaseModel {
   declare year: number
 }
 
+export class CommerceCustomerLinkSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'lastSyncError', 'lastSyncedAt', 'medusaCustomerId', 'status', 'syncAttempts', 'updatedAt', 'userId'] as const
+  $columns = CommerceCustomerLinkSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare lastSyncError: string | null
+  @column.dateTime()
+  declare lastSyncedAt: DateTime | null
+  @column()
+  declare medusaCustomerId: string | null
+  @column()
+  declare status: string
+  @column()
+  declare syncAttempts: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
+}
+
 export class ConversationSchema extends BaseModel {
   static $columns = ['createdAt', 'id', 'updatedAt', 'user1Id', 'user2Id'] as const
   $columns = ConversationSchema.$columns
@@ -248,12 +271,18 @@ export class PrivacyExportSchema extends BaseModel {
 }
 
 export class QueueJobSchema extends BaseModel {
-  static $columns = ['acquiredAt', 'data', 'error', 'executeAt', 'finishedAt', 'id', 'queue', 'score', 'status', 'workerId'] as const
+  static $columns = ['acquiredAt', 'data', 'dedupAt', 'dedupId', 'dedupTtl', 'error', 'executeAt', 'finishedAt', 'id', 'queue', 'score', 'status', 'workerId'] as const
   $columns = QueueJobSchema.$columns
   @column()
   declare acquiredAt: bigint | number | null
   @column()
   declare data: string
+  @column()
+  declare dedupAt: bigint | number | null
+  @column()
+  declare dedupId: string | null
+  @column()
+  declare dedupTtl: bigint | number | null
   @column()
   declare error: string | null
   @column()

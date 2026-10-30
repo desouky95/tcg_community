@@ -36,7 +36,7 @@ export default function CategoryDetail() {
     return (
       <PublicShell>
         <div
-          className="mx-auto max-w-[1440px] px-gutter py-section min-h-[70dvh]"
+          className="mx-auto   px-gutter py-section min-h-[70dvh]"
           aria-label="Loading category"
         >
           <Skeleton className="mb-12 h-24 max-w-xl" />
@@ -58,7 +58,7 @@ export default function CategoryDetail() {
 
   return (
     <PublicShell>
-      <div className="mx-auto max-w-[1440px] px-gutter pt-8 pb-section">
+      <div className="mx-auto   px-gutter pt-8 pb-section">
         <nav className="flex flex-wrap items-center gap-2 font-mono text-utility uppercase text-wax-muted [&_a:hover]:text-wax-red [&_svg]:size-3.5 rtl:[&_svg]:rotate-180 [&_span]:font-bold [&_span]:text-wax-ink" aria-label="Breadcrumb">
           <Link to="/checklists" className="focus-ring">
             Catalogues

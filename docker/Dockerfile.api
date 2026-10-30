@@ -1,0 +1,15 @@
+FROM node:24-bookworm-slim AS build
+WORKDIR /src
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
+RUN corepack enable && corepack prepare pnpm@11.24.0 --activate
+COPY . .
+RUN pnpm install --frozen-lockfile && pnpm --filter @tcg/api build
+
+FROM node:24-bookworm-slim AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=build --chown=node:node /src/apps/api/build/ ./
+RUN npm install --omit=dev && mkdir -p /app/storage && chown -R node:node /app
+USER node
+EXPOSE 3333
+CMD ["node", "bin/server.js"]

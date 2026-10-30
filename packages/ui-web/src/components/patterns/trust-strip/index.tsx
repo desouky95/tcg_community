@@ -36,10 +36,10 @@ export function TrustStrip({
 }: ComponentPropsWithoutRef<"section"> & { points?: readonly TrustPoint[] }) {
   return (
     <section
-      aria-label="Why collectors use TCG Nexus"
+      aria-label="Why collectors use Next Pull"
       {...props}
       className={cn(
-        "mx-auto grid max-w-[1440px] border-y border-wax-line md:grid-cols-2 lg:grid-cols-4",
+        "mx-auto grid   border-y border-wax-line md:grid-cols-2 lg:grid-cols-4",
         className,
       )}
     >

@@ -16,9 +16,9 @@ import NextLink from "next/link";
 export type PublicNavItem = { href: string; label: string };
 export const publicLinks: readonly PublicNavItem[] = [
   { href: "/", label: "Home" },
+  { href: "/shop", label: "Shop" },
   { href: "/checklists", label: "Catalogue" },
-  { href: "/marketplace", label: "Marketplace" },
-  { href: "/swapping", label: "Swaps" },
+  { href: "/swapping", label: "Swaps (soon)" },
 ];
 export type PublicHeaderProps = ComponentPropsWithoutRef<"header"> & {
   Link?: LinkComponent;
@@ -44,31 +44,21 @@ export function PublicHeader({
     currentPath === path ||
     (path !== "/" && currentPath.startsWith(`${path}/`));
   const actionHref = authenticated ? applink || "" : "/signup";
-  const actionLabel = authenticated ? "Collector desk" : "Join the club";
+  const actionLabel = authenticated ? "Collector desk" : "Get started";
   return (
     <header
       {...props}
       className={cn(
-        "sticky top-0 z-40 mx-auto flex min-h-20 max-w-[1440px] items-center justify-between gap-4 border-b-2 border-wax-ink bg-background px-4 text-foreground sm:px-8",
+        "sticky top-0 z-40 mx-auto flex min-h-20   items-center justify-between gap-4 border-b border-wax-line bg-background px-4 text-foreground sm:px-8",
         className,
       )}
     >
       <Link
         href="/"
-        className="focus-ring flex shrink-0 items-center gap-2.5"
-        aria-label="TCG Nexus home"
+        className="focus-ring flex shrink-0 items-center"
+        aria-label="Next Pull home"
       >
-        <span className="grid size-10 -rotate-3 place-items-center bg-accent-500 font-display font-extrabold text-white">
-          TN
-        </span>
-        <span>
-          <strong className="block font-display text-xl font-extrabold">
-            TCG NEXUS
-          </strong>
-          <small className="hidden font-mono text-utility sm:block">
-            COLLECT · TRADE · BELONG
-          </small>
-        </span>
+        <img src="/brand/next-pull-logo-navy.svg" alt="Next Pull" className="h-auto w-[5rem]" />
       </Link>
       <nav
         className="ms-auto hidden items-center gap-6 lg:flex"
@@ -78,7 +68,7 @@ export function PublicHeader({
           <Link
             key={href}
             href={href}
-            className="focus-ring py-3 font-display font-bold hover:text-wax-red aria-[current=page]:text-wax-red aria-[current=page]:underline"
+            className="focus-ring py-3 font-display font-semibold hover:text-accent-500 aria-[current=page]:text-accent-500 aria-[current=page]:underline"
             aria-current={isActive(href) ? "page" : undefined}
           >
             {label}
@@ -89,13 +79,13 @@ export function PublicHeader({
         {!authenticated && (
           <Link
             href="/login"
-            className="focus-ring hidden px-2 py-3 font-bold hover:text-wax-red lg:block"
+            className="focus-ring hidden px-2 py-3 font-semibold hover:text-accent-500 lg:block"
           >
             Sign in
           </Link>
         )}
         {!authenticated && (
-          <Button asChild size="sm" className="hidden sm:inline-flex">
+          <Button asChild size="sm" tone="accent" className="hidden sm:inline-flex">
             <Link href={actionHref}>{actionLabel}</Link>
           </Button>
         )}
@@ -139,7 +129,7 @@ export function PublicHeader({
                 <Link
                   key={href}
                   href={href}
-                  className="focus-ring border-b border-wax-line py-4 font-display text-xl aria-[current=page]:text-wax-red"
+                  className="focus-ring border-b border-wax-line py-4 font-display text-xl font-semibold aria-[current=page]:text-accent-500"
                   aria-current={isActive(href) ? "page" : undefined}
                   onClick={() => setMenuOpen(false)}
                 >

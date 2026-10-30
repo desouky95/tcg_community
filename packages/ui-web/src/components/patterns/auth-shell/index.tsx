@@ -41,31 +41,21 @@ export function AuthShell({
       {...props}
       className={cn("min-h-dvh bg-background text-foreground", className)}
     >
-      <div className="mx-auto grid min-h-dvh max-w-[1480px] lg:grid-cols-[minmax(20rem,0.8fr)_minmax(0,1.2fr)]">
-        <aside className="relative hidden flex-col justify-between gap-16 overflow-hidden bg-wax-navy p-8 text-wax-paper lg:flex xl:p-16">
+      <div className="mx-auto grid overflow-auto min-h-dvh max-h-dvh lg:grid-cols-[minmax(20rem,0.8fr)_minmax(0,1.2fr)]">
+        <aside className="relative hidden max-h-dvh flex-col justify-between overflow-hidden bg-wax-navy p-8 text-wax-paper lg:flex xl:p-16">
           <div
             className="pointer-events-none absolute inset-4 border border-wax-paper/10"
             aria-hidden="true"
           />
           <div className="relative">
-            <Link href="/" className="focus-ring flex items-center gap-3">
-              <span className="grid size-10 -rotate-3 place-items-center bg-accent-500 font-display font-extrabold text-white">
-                T
-              </span>
-              <span>
-                <strong className="block font-display text-xl">
-                  TCG Nexus
-                </strong>
-                <small className="font-mono text-utility">
-                  THE COLLECTOR'S CLUB
-                </small>
-              </span>
+            <Link href="/" className="focus-ring inline-flex">
+              <img src="/brand/next-pull-logo-white.svg" alt="Next Pull" className="h-auto w-40" />
             </Link>
-            <div className="mt-20 max-w-sm xl:mt-32">
-              <h2 className="my-6 font-display text-display font-extrabold uppercase xl:text-7xl">
-                Your binder,
+            <div className="mt-10 max-w-sm xl:mt-10">
+              <h2 className="my-6 font-display text-display font-bold leading-[1.05] xl:text-7xl">
+                Find your
                 <br />
-                <em className="text-wax-gold not-italic">in motion.</em>
+                <em className="text-wax-gold not-italic">next pull.</em>
               </h2>
               <p className="max-w-72 leading-relaxed text-wax-paper/85">
                 {asideDescription}
@@ -87,7 +77,7 @@ export function AuthShell({
                   key={item}
                   className="flex items-center gap-3 text-sm text-wax-paper/85"
                 >
-                  <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-wax-gold/20 text-wax-gold">
+                  <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-wax-gold/20 text-wax-ink">
                     <Check className="size-3" aria-hidden="true" />
                   </span>
                   {item}
@@ -118,25 +108,19 @@ export function AuthShell({
                 />
               )}
             </IconButton>
-            <Link
-              href="/"
-              className="focus-ring flex items-center gap-2 font-display font-bold lg:hidden"
-            >
-              <span className="grid size-9 -rotate-3 place-items-center bg-accent-500 text-white">
-                T
-              </span>
-              TCG Nexus
+            <Link href="/" className="focus-ring inline-flex lg:hidden">
+              <img src="/brand/next-pull-logo-navy.svg" alt="Next Pull" className="h-auto w-28" />
             </Link>
-            <span className="font-mono text-utility text-wax-muted">
-              TCG / 2026
+            <span className="text-xs font-semibold text-wax-muted">
+              NEXT PULL / 2026
             </span>
           </div>
           <div className="m-auto w-full max-w-xl py-12 sm:py-16">
             <header className="mb-8 sm:mb-10">
-              <p className="mb-3 text-xs font-extrabold uppercase text-wax-red">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.08em] text-accent-500">
                 {eyebrow}
               </p>
-              <h1 className="my-4 font-display text-5xl font-extrabold uppercase leading-none sm:text-display [&_em]:text-wax-red [&_em]:not-italic">
+              <h1 className="my-4 font-display text-5xl font-bold leading-[1.05] sm:text-display [&_em]:text-accent-500 [&_em]:not-italic">
                 {title}
               </h1>
               <p className="max-w-md leading-relaxed text-wax-muted">
@@ -148,7 +132,7 @@ export function AuthShell({
               {footer}
             </div>
           </div>
-          <p className="mt-auto text-center font-mono text-utility uppercase text-wax-muted">
+          <p className="mt-auto text-center text-xs font-semibold uppercase tracking-[0.08em] text-wax-muted">
             Private collection space · Secure session
           </p>
         </section>

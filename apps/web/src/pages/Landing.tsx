@@ -83,14 +83,14 @@ export default function Landing() {
 
         <TrustStrip />
 
-        <section className="mx-auto max-w-[1440px] px-gutter py-section [&_h2]:font-display [&_h2]:text-4xl [&_h2]:font-extrabold [&_h2]:uppercase [&_h2]:leading-none md:[&_h2]:text-display">
+        <section className="mx-auto   px-gutter py-section [&_h2]:font-display [&_h2]:text-4xl [&_h2]:font-extrabold [&_h2]:uppercase [&_h2]:leading-none md:[&_h2]:text-display">
           <div className="mb-8 flex flex-col items-start justify-between gap-8 md:flex-row md:items-end"><div><Kicker>THE LATEST PULLS</Kicker><h2>Cards worth a closer look.</h2></div><Link to="/marketplace" className={textLinkStyles()}>View all cards <ArrowRight aria-hidden="true" /></Link></div>
           <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
             {featuredCards.map(card => <ListingPreview key={card.name} {...card} href="/marketplace" Link={RouterLink} />)}
           </div>
         </section>
 
-        <section className="mx-auto max-w-[1440px] px-gutter py-section grid gap-8 bg-wax-navy text-wax-paper lg:grid-cols-2 [&_h2]:font-display [&_h2]:text-4xl [&_h2]:font-extrabold [&_h2]:uppercase [&_h2]:leading-none md:[&_h2]:text-display">
+        <section className="mx-auto   px-gutter py-section grid gap-8 bg-wax-navy text-wax-paper lg:grid-cols-2 [&_h2]:font-display [&_h2]:text-4xl [&_h2]:font-extrabold [&_h2]:uppercase [&_h2]:leading-none md:[&_h2]:text-display">
           <div className="max-w-2xl lg:pe-12 [&>p:not(.ui-kicker)]:my-6 [&>p:not(.ui-kicker)]:max-w-lg [&>p:not(.ui-kicker)]:leading-relaxed [&>p:not(.ui-kicker)]:text-wax-paper/85"><Kicker className="text-wax-gold">A COMMUNITY THAT MOVES</Kicker><h2>Every collection has a missing piece.</h2><p>Keep your checklist close, find the right collector, and make the exchange feel as good as the pull.</p><Link to="/signup" className={buttonStyles({ className: "border-wax-paper bg-wax-paper text-primary-600 hover:border-wax-gold hover:bg-wax-gold" })}>Start your collection <ArrowRight aria-hidden="true" /></Link></div>
           <ActivityPanel items={activity} action={<Link to="/swapping" className={textLinkStyles()}>See the exchange <ArrowRight aria-hidden="true" /></Link>} />
         </section>

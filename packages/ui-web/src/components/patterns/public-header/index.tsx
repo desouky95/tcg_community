@@ -1,12 +1,7 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
-import React, {
-  useEffect,
-  useState,
-  useTransition,
-  type ComponentPropsWithoutRef,
-} from "react";
+import { useState, type ComponentPropsWithoutRef } from "react";
 import { cn } from "../../../lib/cn";
 import { Button } from "../../primitives/button";
 import { IconButton } from "../../primitives/icon-button";
@@ -17,9 +12,9 @@ import { NativeLink } from "../native-link";
 export type PublicNavItem = { href: string; label: string };
 export const publicLinks: readonly PublicNavItem[] = [
   { href: "/", label: "Home" },
+  { href: "/shop", label: "Shop" },
   { href: "/checklists", label: "Catalogue" },
-  { href: "/marketplace", label: "Marketplace" },
-  { href: "/swapping", label: "Swaps" },
+  { href: "/swapping", label: "Swaps (soon)" },
 ];
 export type PublicHeaderProps = ComponentPropsWithoutRef<"header"> & {
   Link?: LinkComponent;
@@ -31,6 +26,7 @@ export type PublicHeaderProps = ComponentPropsWithoutRef<"header"> & {
 };
 
 export function PublicHeader({
+  Link: LinkComponent,
   currentPath = "",
   authenticated = false,
   links = publicLinks,
@@ -40,65 +36,55 @@ export function PublicHeader({
   ...props
 }: PublicHeaderProps) {
 
-  const Link = NativeLink;
+  const ResolvedLink = LinkComponent ?? NativeLink;
   const [menuOpen, setMenuOpen] = useState(false);
   const isActive = (path: string) =>
     currentPath === path ||
     (path !== "/" && currentPath.startsWith(`${path}/`));
   const actionHref = authenticated ? applink || "" : "/signup";
-  const actionLabel = authenticated ? "Collector desk" : "Join the club";
+  const actionLabel = authenticated ? "Collector desk" : "Get started";
   return (
     <header
       {...props}
       className={cn(
-        "sticky top-0 z-40 mx-auto flex min-h-20 max-w-[1440px] items-center justify-between gap-4 border-b-2 border-wax-ink bg-background px-4 text-foreground sm:px-8",
+        "sticky top-0 z-40 mx-auto flex min-h-20   items-center justify-between gap-4 border-b border-wax-line bg-background px-4 text-foreground sm:px-8",
         className,
       )}
     >
-      <Link
+      <ResolvedLink
         href="/"
-        className="focus-ring flex shrink-0 items-center gap-2.5"
-        aria-label="TCG Nexus home"
+        className="focus-ring flex shrink-0 items-center"
+        aria-label="Next Pull home"
       >
-        <span className="grid size-10 -rotate-3 place-items-center bg-accent-500 font-display font-extrabold text-white">
-          TN
-        </span>
-        <span>
-          <strong className="block font-display text-xl font-extrabold">
-            TCG NEXUS
-          </strong>
-          <small className="hidden font-mono text-utility sm:block">
-            COLLECT · TRADE · BELONG
-          </small>
-        </span>
-      </Link>
+        <img src="/brand/next-pull-logo-navy.svg" alt="Next Pull" className="h-auto w-[9rem] sm:w-[10.5rem]" />
+      </ResolvedLink>
       <nav
         className="ms-auto hidden items-center gap-6 lg:flex"
         aria-label="Primary navigation"
       >
         {links.map(({ href, label }) => (
-          <Link
+          <ResolvedLink
             key={href}
             href={href}
-            className="focus-ring py-3 font-display font-bold hover:text-wax-red aria-[current=page]:text-wax-red aria-[current=page]:underline"
+            className="focus-ring py-3 font-display font-semibold hover:text-accent-500 aria-[current=page]:text-accent-500 aria-[current=page]:underline"
             aria-current={isActive(href) ? "page" : undefined}
           >
             {label}
-          </Link>
+          </ResolvedLink>
         ))}
       </nav>
       <div className="flex items-center gap-3">
         {!authenticated && (
-          <Link
+          <ResolvedLink
             href="/login"
-            className="focus-ring hidden px-2 py-3 font-bold hover:text-wax-red lg:block"
+            className="focus-ring hidden px-2 py-3 font-semibold hover:text-accent-500 lg:block"
           >
             Sign in
-          </Link>
+          </ResolvedLink>
         )}
         {!authenticated && (
-          <Button asChild size="sm" className="hidden sm:inline-flex">
-            <Link href={actionHref}>{actionLabel}</Link>
+          <Button asChild size="sm" tone="accent" className="hidden sm:inline-flex">
+            <ResolvedLink href={actionHref}>{actionLabel}</ResolvedLink>
           </Button>
         )}
 
@@ -138,29 +124,29 @@ export function PublicHeader({
             </Dialog.Close>
             <nav className="mt-8 grid gap-2" aria-label="Mobile navigation">
               {links.map(({ href, label }) => (
-                <Link
+                <ResolvedLink
                   key={href}
                   href={href}
-                  className="focus-ring border-b border-wax-line py-4 font-display text-xl aria-[current=page]:text-wax-red"
+                  className="focus-ring border-b border-wax-line py-4 font-display text-xl font-semibold aria-[current=page]:text-accent-500"
                   aria-current={isActive(href) ? "page" : undefined}
                   onClick={() => setMenuOpen(false)}
                 >
                   {label}
-                </Link>
+                </ResolvedLink>
               ))}
               {!authenticated && (
-                <Link
+                <ResolvedLink
                   href="/login"
                   className="focus-ring py-4 font-bold"
                   onClick={() => setMenuOpen(false)}
                 >
                   Sign in
-                </Link>
+                </ResolvedLink>
               )}
               <Button asChild>
-                <Link href={actionHref} onClick={() => setMenuOpen(false)}>
+                <ResolvedLink href={actionHref} onClick={() => setMenuOpen(false)}>
                   {actionLabel}
-                </Link>
+                </ResolvedLink>
               </Button>
             </nav>
           </Dialog.Content>

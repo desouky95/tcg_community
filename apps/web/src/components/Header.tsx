@@ -4,12 +4,16 @@ import {
   LayoutDashboard,
   MessageCircle,
   Repeat,
-  Store,
   UserRound,
 } from "lucide-react";
-import { Button, PublicHeader, type LinkComponent } from "@tcg/ui-web";
+import {
+  Button,
+  PublicHeader,
+  type LinkComponent,
+  BrandLogo,
+  AnimatedBrandLogo,
+} from "@tcg/ui-web";
 import { useStore } from "../store/useStore";
-import GlobalSearch from "./GlobalSearch";
 import UserDrawer from "./UserDrawer";
 import { motion } from "motion/react";
 
@@ -25,8 +29,7 @@ const RouterLink: LinkComponent = ({ href, ...props }) => (
 
 const workspaceLinks = [
   { to: "/", label: "Desk", icon: LayoutDashboard },
-  { to: "/marketplace", label: "Market", icon: Store },
-  { to: "/swapping", label: "Swaps", icon: Repeat },
+  { to: "/swapping", label: "Swaps (soon)", icon: Repeat },
   { to: "/chat", label: "Messages", icon: MessageCircle },
   { to: "/profile", label: "Profile", icon: UserRound },
 ];
@@ -41,7 +44,7 @@ export default function Header({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const accountTrigger = useRef<HTMLButtonElement>(null);
 
-  const hideHeader = useStore(s => s.hideHeader)
+  const hideHeader = useStore((s) => s.hideHeader);
   const isActive = (path: string) =>
     location.pathname === path || location.pathname.startsWith(`${path}/`);
 
@@ -53,10 +56,10 @@ export default function Header({
           animate={{
             opacity: hideHeader ? 0 : 1,
             y: hideHeader ? -140 : 0,
-            transition : {
-              ease : 'anticipate',
-              duration : 0.2
-            }
+            transition: {
+              ease: "anticipate",
+              duration: 0.2,
+            },
           }}
           id="workspace-header"
           className="sticky workspace-header top-0 z-40 grid min-h-20 grid-cols-[auto_1fr] items-center gap-6 border-t-4 border-b border-t-accent-500 border-b-wax-line bg-card px-4 xl:grid-cols-[auto_minmax(0,1fr)_auto] xl:px-10"
@@ -64,16 +67,12 @@ export default function Header({
         >
           <Link
             to={"/"}
-            className="flex shrink-0 items-center gap-2.5 [&_strong]:block [&_strong]:font-display [&_strong]:text-xl [&_strong]:font-extrabold [&_small]:block [&_small]:font-mono [&_small]:text-utility [&_small]:hidden [&_small]:text-wax-muted md:[&_small]:block focus-ring"
-            aria-label="TCG Nexus collector desk"
+            className="flex shrink-0 items-center focus-ring"
+            aria-label="Next Pull collector desk"
           >
-            <span className="grid size-10 shrink-0 -rotate-3 place-items-center bg-accent-500 font-display font-extrabold text-white">
-              TN
-            </span>
-            <span>
-              <strong>TCG NEXUS</strong>
-              <small>COLLECTOR DESK</small>
-            </span>
+            <div className="w-20 text-accent-500">
+              <AnimatedBrandLogo/>
+            </div>
           </Link>
 
           {user && !hideNav && (
@@ -99,12 +98,6 @@ export default function Header({
           )}
 
           <div className="flex items-center justify-self-end gap-3">
-            {user && !hideNav && (
-              <div className="hidden w-64 md:block">
-                {/* <GlobalSearch /> */}
-              </div>
-            )}
-
             <Button
               variant="outline"
               size="sm"

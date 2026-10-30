@@ -14,7 +14,7 @@ import "./globals.css";
 initServerI18next(i18nConfig);
 
 export const metadata: Metadata = {
-  title: "TCG Nexus | Collect, trade, belong",
+  title: "Next Pull | Collect, trade, belong",
   description:
     "An Egypt-first home for collectors, checklists, and thoughtful trades.",
 };

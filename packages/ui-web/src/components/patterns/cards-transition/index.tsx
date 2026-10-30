@@ -140,7 +140,7 @@ const Cards = ({ type = "sticker-packs" }: CardsProps) => {
                 alt=""
                 variants={imageVariants}
                 draggable={false}
-                className="h-full w-55 shrink-0 object-cover"
+                className="h-full w-60 shrink-0 object-cover"
               />
             ))}
           </motion.div>

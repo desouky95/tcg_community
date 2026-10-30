@@ -152,7 +152,7 @@ describe("UI primitives", () => {
     expect(search).toHaveBeenCalledWith("Football");
     await user.clear(screen.getByRole("searchbox"));
     await user.type(screen.getByRole("searchbox"), "2025");
-    await user.click(screen.getByRole("button", { name: "Search", exact: true }));
+    await user.click(screen.getByRole("button", { name: "Search" }));
     expect(search).toHaveBeenLastCalledWith("2025");
   });
 

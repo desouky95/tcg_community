@@ -38,6 +38,9 @@ export interface ApiDefinition {
     login: typeof routes['auth.login']
     logout: typeof routes['auth.logout']
   }
+  commerce: {
+    customer: typeof routes['commerce.customer']
+  }
   identity: {
     otpLogin: typeof routes['identity.otp_login']
     recoverPassword: typeof routes['identity.recover_password']

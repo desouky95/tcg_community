@@ -6,6 +6,9 @@ export default () => {
     .group(() => {
       router.post('request-otp', [() => import('#controllers/auth_controller'), 'requestOtp'])
       router.get('me', [() => import('#controllers/auth_controller'), 'me'])
+      router
+        .post('commerce/customer', [() => import('#controllers/commerce_controller'), 'customer'])
+        .use(middleware.auth())
       router.post('signup', [() => import('#controllers/auth_controller'), 'signup'])
       router.post('verify-otp', [() => import('#controllers/auth_controller'), 'verifyOtp'])
       router.post('login', [() => import('#controllers/auth_controller'), 'login'])

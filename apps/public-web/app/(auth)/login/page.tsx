@@ -11,8 +11,8 @@ export default function LoginPage() {
         </>
       }
       description="Pick up where you left off. Your saved cards, swaps, and collector circles are waiting."
-      asideTitle="A calmer way to collect."
-      asideDescription="The place for serious collectors who still enjoy the thrill of the pull."
+      asideTitle="Built for the next pull."
+      asideDescription="The place for serious collectors who still enjoy the thrill of finding one more card."
       asideItems={[
         "Track every card in one place",
         "Trade with collectors you can trust",
@@ -20,7 +20,7 @@ export default function LoginPage() {
       ]}
       footer={
         <>
-          New to the club?{" "}
+          New to Next Pull?{" "}
           <a
             href="/signup"
             className="font-mono text-utility uppercase text-wax-red hover:underline focus-ring"

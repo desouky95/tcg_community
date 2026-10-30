@@ -1,0 +1,37 @@
+services:
+    api:
+      image: REGISTRY/tcg-api:RELEASE
+      restart: unless-stopped
+      env_file: ./secrets/api.env
+      volumes: ["api_uploads:/app/storage", "./certs/rds-ca.pem:/run/certs/rds-ca.pem:ro"]
+    worker:
+      image: REGISTRY/tcg-api:RELEASE
+      restart: unless-stopped
+      env_file: ./secrets/api.env
+      command: ["node", "ace.js", "queue:work"]
+      volumes: ["api_uploads:/app/storage", "./certs/rds-ca.pem:/run/certs/rds-ca.pem:ro"]
+    medusa:
+      image: REGISTRY/tcg-medusa:RELEASE
+      restart: unless-stopped
+      env_file: ./secrets/medusa.env
+      volumes: ["medusa_uploads:/app/static", "./certs/rds-ca.pem:/run/certs/rds-ca.pem:ro"]
+    cms:
+      image: REGISTRY/tcg-cms:RELEASE
+      restart: unless-stopped
+      env_file: ./secrets/cms.env
+      volumes: ["cms_uploads:/app/public/uploads", "./certs/rds-ca.pem:/run/certs/rds-ca.pem:ro"]
+    public-web:
+      image: REGISTRY/tcg-public-web:RELEASE
+      restart: unless-stopped
+      env_file: ./secrets/public-web.env
+    proxy:
+      image: caddy:2
+      restart: unless-stopped
+      ports: ["80:80", "443:443"]
+      volumes: ["./Caddyfile:/etc/caddy/Caddyfile:ro", "caddy_data:/data", "caddy_config:/config"]
+volumes:
+    api_uploads:
+    medusa_uploads:
+    cms_uploads:
+    caddy_data:
+    caddy_config:
