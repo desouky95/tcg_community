@@ -133,7 +133,7 @@ catalog:
   yalc: ^1.0.0-pre.53
   youch: ^4.1.1
   zustand: ^5.0.12
-  react-hook-form: ^7.89.0
+  react-hook-form: ^7.91.0
 
 catalogs:
   typescript6:
