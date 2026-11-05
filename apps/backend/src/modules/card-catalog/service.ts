@@ -82,8 +82,6 @@ export default class CardCatalogService {
   }
 
   private async request<T>(path: string, init?: RequestInit): Promise<T> {
-    console.log("Base URL:: " + this.options.baseUrl);
-    console.log("API KEY:: " + this.options.apiKey);
     const response = await fetch(
       `${this.options.baseUrl.replace(/\/$/, "")}${path}`,
       {

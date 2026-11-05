@@ -30,6 +30,7 @@
     "@medusajs/draft-order": "catalog:",
     "@medusajs/framework": "catalog:",
     "@medusajs/icons": "^2.22.2",
+    "@medusajs/js-sdk": "2.22.1",
     "@medusajs/medusa": "catalog:",
     "@medusajs/ui": "catalog:",
     "@radix-ui/react-collapsible": "^1.2.1",
