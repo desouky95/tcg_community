@@ -48,5 +48,6 @@ export const middleware = router.named({
   auth: () => import('#middleware/auth_middleware'),
   admin: () => import('#middleware/admin_middleware'),
   scraperTrigger: () => import('#middleware/scraper_trigger_middleware'),
+  cardCatalog: () => import('#middleware/card_catalog_middleware'),
   swapsAvailable: () => import('#middleware/swap_unavailable_middleware'),
 })

@@ -1,30 +1,13 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useScrapperList } from "@tcg/react-query";
-import {
-  Button,
-  DataTable,
-  Dialog,
-  IconButton,
-  Input,
-  PageHeading,
-} from "@tcg/ui-web";
+import { Button, DataTable, IconButton, PageHeading } from "@tcg/ui-web";
 import { ChevronDown, Link, Plus, X } from "lucide-react";
 import { Fragment, useState } from "react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import z from "zod";
-import { DevTool } from "@hookform/devtools";
+import { ScrapperModal } from "../../../components/patterns/ScrapperModal";
 
-const scehma = z.object({
-  sources: z.array(z.httpUrl()),
-  source: z
-    .string()
-    // .httpUrl({ normalize: true, pattern: /^laststicker\.com$/ })
-    // .optional()
-    .nullable(),
-});
 export const AdminScrapper = () => {
   const { data } = useScrapperList();
+
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set());
   const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -37,107 +20,27 @@ export const AdminScrapper = () => {
     });
   };
 
-  const {
-    control,
-    register,
-    formState: { errors, isDirty },
-    resetField,
-    handleSubmit,
-  } = useForm({
-    mode: "onChange",
-    resolver: zodResolver(scehma),
-    defaultValues: {
-      source: "",
-      sources: [""],
-    },
-  });
-  const { append, fields } = useFieldArray({
-    control,
-    name: "sources",
-    keyName: "id",
-  });
   const handleOnClose = (open: boolean) => {
-    if (open) return setIsDialogOpen(open);
-    if (isDirty) alert("Changes not saved");
-    else setIsDialogOpen(open);
+    setIsDialogOpen(open);
   };
-
-  const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
-  }, console.error);
 
   return (
     <div className="grid gap-8">
-      <Dialog.Root open={isDialogOpen} onOpenChange={handleOnClose}>
-        <DevTool control={control} placement="bottom-left" />
-        <Dialog.Content>
-          <Dialog.Header>
-            <div className="flex justify-between">
-              <div>
-                <Dialog.Title>Scrapper Job</Dialog.Title>
-                <Dialog.Description>
-                  List down the source urls
-                </Dialog.Description>
-              </div>
-              <Dialog.Close>
-                <IconButton aria-label="close" variant="ghost">
-                  <X />
-                </IconButton>
-              </Dialog.Close>
-            </div>
-          </Dialog.Header>
-          <Dialog.Body className="grid gap-3">
-            <Controller
-              control={control}
-              name="source"
-              render={({ field }) => (
-                <div className="flex gap-2 items-baseline">
-                  <div className="grid flex-1">
-                    <Input {...field} placeholder="Add source url" />
-                    {errors.source && (
-                      <span className="text-red-500">
-                        {errors.source.message}
-                      </span>
-                    )}
-                  </div>
-                  <Button
-                    disabled={!!errors?.source}
-                    onClick={() => {
-                      append(field.value);
-                      resetField("source", { defaultValue: "" });
-                    }}
-                  >
-                    Add
-                  </Button>
-                </div>
-              )}
-            />
-            {fields.map((field, index) => (
-              <Input
-                {...register(`sources.${index}`)}
-                key={field.id}
-                placeholder="Add source url"
-                color="red"
-              />
-            ))}
-
-            <Button className="w-full" type="submit" onClick={onSubmit}>
-              Submit
-            </Button>
-          </Dialog.Body>
-        </Dialog.Content>
-      </Dialog.Root>
+      <ScrapperModal open={isDialogOpen} onOpenChange={handleOnClose} />
       <PageHeading
         size="xl"
         title={"Scrapper Jobs"}
         // description={t("admin.categories.subtitle")}
         actions={
-          <Button onClick={() => setIsDialogOpen(true)}>
-            {/* <Link to="/admin/categories/new"> */}
-            <Plus aria-hidden="true" className="size-4" />
-            Add Scrapper Job
-            {/* </Link> */}
-          </Button>
+          <div className="flex gap-4">
+            <Button onClick={() => setIsDialogOpen(true)}>
+              View Collections
+            </Button>
+            <Button onClick={() => setIsDialogOpen(true)}>
+              <Plus aria-hidden="true" className="size-4" />
+              Add Scrapper Job
+            </Button>
+          </div>
         }
       />
 
@@ -169,7 +72,7 @@ export const AdminScrapper = () => {
                           isExpanded
                             ? "admin.categories.collapse"
                             : "admin.categories.expand",
-                          { name: scrapper.job.name },
+                          { name: scrapper.job.name }
                         )}
                         aria-expanded={isExpanded}
                         onClick={(event) => {

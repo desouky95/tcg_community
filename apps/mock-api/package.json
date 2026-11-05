@@ -7,15 +7,15 @@
     "node": "20.x"
   },
   "scripts": {
-    "dev": "restapify serve ./mockFiles --no-open --port 6768",
+    "dev": "restapify serve ./mockFiles --no-open",
     "dev:legacy": "restapify serve ./mockFiles --no-open --port 4000",
     "list": "restapify list ./mockFiles",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
-    "msw": "^2.11.2",
-    "restapify": "^2.3.4",
+    "msw": "catalog:",
+    "restapify": "catalog:",
     "typescript": "~6.0.2"
   },
   "devEngines": {

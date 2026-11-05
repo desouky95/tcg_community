@@ -1,6 +1,6 @@
-import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { loadEnv, defineConfig } from "@medusajs/framework/utils";
 
-loadEnv(process.env.NODE_ENV || 'development', process.cwd())
+loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
 module.exports = defineConfig({
   projectConfig: {
@@ -12,5 +12,21 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
     }
-  }
-})
+  },
+  modules: [
+    {
+      resolve: "./src/modules/card-catalog",
+      options: {
+        baseUrl: process.env.VITE_CARD_CATALOG_URL,
+        apiKey: process.env.VITE_CARD_CATALOG_API_KEY,
+      },
+    },
+    {
+      resolve: "./src/modules/collection-sale",
+      options: {
+        baseUrl: process.env.VITE_CARD_CATALOG_URL,
+        apiKey: process.env.VITE_CARD_CATALOG_API_KEY,
+      },
+    },
+  ],
+});

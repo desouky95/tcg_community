@@ -13,11 +13,11 @@ import LastStickerScraper from '#services/scrapers/laststicker_scraper'
 import app from '@adonisjs/core/services/app'
 import logger from '@adonisjs/core/services/logger'
 import { randomUUID } from 'node:crypto'
-import { globSync, readdir, readdirSync, readFile, readFileSync } from 'node:fs'
+import { globSync, open, openSync, readdir, readdirSync, readFile, readFileSync } from 'node:fs'
 import { mkdir, writeFile, glob } from 'node:fs/promises'
 import { join } from 'node:path'
 
-export class UnknownScraperCollectionError extends Error {}
+export class UnknownScraperCollectionError extends Error { }
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'Unknown scraper failure'
@@ -180,6 +180,7 @@ class ScrapeJobRunner {
     config: ScraperCollectionConfig
   ): Promise<ScrapeJobResult> {
     const relativeDirectory = join(scrapersConfig.outputDirectory, id)
+
     const directory = app.tmpPath(relativeDirectory)
     const filename = `${collection.key}.json`
     await mkdir(directory, { recursive: true })
@@ -191,6 +192,10 @@ class ScrapeJobRunner {
         .replace(/[^a-zA-Z0-9 -]/g, '')
         .replace(/\s+/g, '-')
       let checklist = await Checklist.findBy('slug', slug)
+
+      if (checklist && process.env.CARD_CATALOG_API_KEY && await Card.query().where('checklist_id', checklist.id).first()) {
+        throw new Error('Cannot replace cards while the commerce catalog is enabled')
+      }
 
       if (!checklist) {
         checklist = await Checklist.create({

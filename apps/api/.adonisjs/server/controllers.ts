@@ -19,4 +19,5 @@ export const controllers = {
   SwapDeals: () => import('#controllers/swap_deals_controller'),
   Swaps: () => import('#controllers/swaps_controller'),
   UserChecklists: () => import('#controllers/user_checklists_controller'),
+  CommerceCatalog: () => import('#controllers/commerce_catalog_controller'),
 }

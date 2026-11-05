@@ -1,1 +1,14 @@
-[{"id":601,"reviewerId":101,"targetUserId":202,"type":"positive","comment":"Great trader","reviewer":{"id":101,"username":"collector_egypt","fullName":"Mina Collector"}}]
+[
+  {
+    "id": 601,
+    "reviewerId": 101,
+    "targetUserId": 202,
+    "type": "positive",
+    "comment": "Great trader",
+    "reviewer": {
+      "id": 101,
+      "username": "collector_egypt",
+      "fullName": "Mina Collector"
+    }
+  }
+]

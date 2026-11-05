@@ -611,3 +611,12 @@ export function useScrapperList(requestOptions?: ApiRequestOptions) {
     queryFn: async () => (await client.getScrapperList(requestOptions)).data,
   });
 }
+
+export function useStartScrapperJob(requestOptions?: ApiRequestOptions) {
+  const { client, defaultQuery } = useApiHooksContext();
+  return useMutation({
+    mutationKey: [],
+    mutationFn: async (collections : string[]) => (await client.startScrapperJob(collections,requestOptions)).data,
+  });
+}
+
