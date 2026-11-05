@@ -1,16 +1,11 @@
-# Product terminology
+# Terminology
 
-- **Catalogue card:** Administrator-owned canonical card metadata.
-- **Checklist:** A versioned set of catalogue cards collectors can track.
-- **Collection entry:** A user's owned, wanted, or offered state for one catalogue card.
-- **Swap deal:** A non-cash exchange proposal between collectors.
-- **Listing:** A seller-owned offer to sell a catalogue card.
-- **Reservation:** A short-lived hold preventing checkout oversell.
-- **Order:** Immutable commercial snapshot linking buyer, seller, items, amounts, and state.
-- **Payment intent:** Internal projection of one provider payment attempt.
-- **Settlement:** Provider-managed direct split or connected-account transfer record. TCG Community does not hold seller funds.
-- **Fulfillment:** Participant-arranged meetup or shipment after payment; the platform does not guarantee delivery.
-- **Dispute:** Limited support case for payment, refund, abuse, or recorded fulfillment failure; it is not escrow adjudication.
-- **Market:** Country-level currency, locale, provider, tax, and legal configuration. Egypt/EGP is the default.
-
-Amounts are integers in ISO currency minor units. Dates are UTC instants rendered in the user's locale. IDs are opaque strings. “Delete” means soft-delete or anonymize whenever financial, moderation, or audit retention applies.
+- **NextPull storefront:** Next.js app for NextPull-owned inventory and Collector Disk feature information.
+- **Collector Disk:** Vite app for collections, matching, swaps and conversations.
+- **Catalogue/checklist:** existing collection data owned by AdonisJS; distinct from Medusa's purchasable products.
+- **Swap deal:** agreement between two collectors over specified cards and a fulfillment mode; managed on its own page.
+- **Direct postage:** participants arrange shipments to each other; NextPull does not hold or verify items.
+- **On-ground:** participants arrange their own in-person handoff.
+- **Middleman:** participants send items to NextPull for inspection and forwarding after required fees are paid.
+- **Custody:** NextPull has received an item and is responsible for recording its handling and disposition. The inspection's exact scope and loss policy need business approval.
+- **Verified account:** an account meeting AdonisJS's existing verification requirement; no additional identity verification is assumed.

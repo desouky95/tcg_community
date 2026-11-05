@@ -1,7 +1,3 @@
-# Shared UX, localization, and accessibility
+# Experience, localization and accessibility
 
-English source content and natural Arabic translations are required. Layout, icon direction, data tables, form alignment, navigation, and motion work in RTL. Currency uses market rules and integer minor units; phone input defaults to Egypt without hard-coding it into stored identity.
-
-All interactive controls are keyboard reachable with visible focus. Forms use persistent labels, field-linked errors, summary focus after failure, and disabled/pending semantics. Dialogs manage focus and expose accessible names. Status is never conveyed by color alone. Touch targets are at least 44 by 44 CSS pixels. Reduced-motion preferences disable nonessential movement.
-
-Every data surface defines loading, empty, partial, stale, offline, forbidden, missing, and retryable-error states. Optimistic updates are allowed only for reversible nonfinancial actions. Transactional actions display canonical server state and prevent duplicate submission. Deep links require authorization after resolution and never reveal private resource existence.
+Make primary actions, fees, responsibilities, safety guidance and failure recovery clear. Support accessible keyboard interaction, labels, focus and readable status messages. Preserve the existing English and Arabic/RTL experience where supported. Dedicated swap pages show the current deal and next eligible action; chat can link to them without hosting the deal workflow.

@@ -1,18 +1,19 @@
 # Shared state machines
 
-## Listing
-`draft -> pending_review -> published <-> paused -> sold_out|archived`; moderation may move `pending_review|published -> rejected|hidden`. Active reservations prevent destructive archive.
+## Swap proposal and agreement
 
-## Order
-`pending_payment -> paid -> contact_released -> fulfilling -> completed`; alternate terminal paths are `cancelled`, `payment_failed`, and `refunded`. Provider truth controls payment transitions.
+`proposed -> accepted | rejected | expired | cancelled`; a counter creates a new proposal version requiring the other participant's consent. A stale response cannot accept a changed proposal. The accepted version snapshots items, quantities, mode and, for middleman, each participant's displayed fee. Cancellation after acceptance depends on custody, payment and resolution rules; never erase a custody obligation.
 
-## Payment intent
-`created -> requires_action -> processing -> authorized|captured|failed|cancelled`; refund states are separate records. Duplicate and out-of-order events cannot regress terminal state.
+## Fulfillment
 
-## Swap deal
-`pending -> accepted -> in_progress|shipping -> completed`; `pending|accepted -> cancelled`; expired proposals use `expired`. Completion requires both participant confirmations or an explicit operator resolution.
+- **Direct postage:** accepted → each participant records shipment → each confirms receipt → completed. A reported issue may pause completion and enter review.
+- **On-ground:** accepted → participants arrange handoff → each confirms → completed. An issue may enter review.
+- **Middleman:** accepted → all required fees confirmed → each sends items → NextPull records receipt and inspection of both sides → NextPull forwards both sides → both recipients confirm → completed. A discrepancy pauses forwarding and enters review. Record each incoming and outgoing leg separately.
 
-## Dispute
-`open -> awaiting_response -> under_review -> resolved -> closed`; one timely `appealed` transition returns the case to review.
+## Issue and dispute
 
-All transitions record actor, timestamp, prior/new version, reason, correlation ID, and event. Illegal transitions return 409 without side effects.
+`reported -> under review -> resolved`, with participant evidence and an auditable operator decision. The resolution records any required return, refund or other action and tracks it to an outcome. Details of eligibility windows, returns, liability and refunds require business approval before launch.
+
+## Commerce order and fee payment
+
+Medusa and the relevant payment provider own their respective payment and order state. A customer-facing success page is not proof of payment. Deal progression requires verified confirmation of every required fee payment; failure and reconciliation must remain visible and recoverable.

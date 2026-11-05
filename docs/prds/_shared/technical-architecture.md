@@ -1,21 +1,13 @@
 # Technical architecture
 
-## Runtime topology
+| Component | Responsibility | Repository |
+| --- | --- | --- |
+| Storefront | Next.js ecommerce and Collector Disk feature pages | `apps/public-web` |
+| Collector Disk | Vite collections, matching, deals and chat | `apps/web` |
+| AdonisJS | Identity, collector catalogue, collections, chat, swaps and safety records | `apps/api` |
+| Medusa | NextPull products, carts, checkout, orders and ecommerce fulfillment | `apps/backend` |
+| Strapi | Editorial content and publication | `apps/cms` |
 
-React/Vite web and future React Native clients consume a shared typed contract. AdonisJS remains a modular monolith behind an L7 load balancer. Existing `/api/v1` REST operations remain compatible while GraphQL is introduced for shared web/mobile reads and commands. PostgreSQL is authoritative, Redis supports bounded cache and ephemeral presence, object storage holds media/exports, and durable queues run imports, notifications, media processing, projections, and reconciliation.
+AdonisJS is the identity authority. Storefront customer identity must be linked securely to the corresponding Medusa customer without sharing passwords. The exact token exchange, provisioning, account recovery and session protocol require design and security review; the PRDs do not assert they already exist. Medusa owns ecommerce orders and payments; swap deals and custody remain in AdonisJS. The middleman fee payment integration and reconciliation require an explicit design before implementation, with payment status reflected in the deal only after verified provider confirmation.
 
-Production uses at least two stateless application instances across availability zones, multi-AZ PostgreSQL with point-in-time recovery, replicated Redis with failover, durable queue storage with dead letters, and region-redundant object storage. Provider calls use timeouts, bounded retries, circuit breakers, signed callbacks, and request correlation.
-
-## Data and scaling
-
-Scale PostgreSQL vertically first. Add read replicas for catalogue and reporting when primary read saturation exceeds 60% over a sustained window. Partition messages, notification deliveries, payment events, audit logs, and request logs by month before individual tables exceed 100 million rows. Shard only after vertical, replica, partition, and cache measures are exhausted; candidate keys are user_id for collector data and market_id for regional catalogue/listing reads.
-
-Transactional inventory, swaps, orders, payments, refunds, settlements, and disputes are read from PostgreSQL and use row locks or optimistic versions. Public catalogue, profiles, listing detail, and search facets use cache-aside Redis with domain TTLs and event-driven invalidation. CDN serves versioned static assets and public media.
-
-## Async rules
-
-Jobs carry event_id, correlation_id, causation_id, schema_version, attempt, and occurred_at. Consumers record deduplication before side effects. Transient failures retry exponentially with jitter; permanent or exhausted failures enter a dead-letter queue and alert operators. Ordering is guaranteed only per aggregate key. Payment webhook acknowledgement is decoupled from noncritical notification and analytics work.
-
-## Deliberate boundaries
-
-The platform is not an escrow or shipping guarantor. Payment settlement is provider-managed direct split. Contact data is released only after confirmed payment and consent. Administration and bulk catalogue work remain web-only.
+Each service owns its data and applies its own supported migration mechanisms. Integrations use authenticated service interfaces; no cross-service direct writes. A failure in CMS or another dependency must produce a safe error or defined fallback, never an invented order, payment or completed swap. Existing code and old route names are evidence to audit, not guarantees of target behavior.

@@ -1,16 +1,10 @@
 # Actors and permissions
 
-## Roles
+- **Guest:** browse published storefront and public content.
+- **Collector:** authenticated AdonisJS user; manage their own collection, messages and swaps. A verified account is required to propose or accept swaps.
+- **Customer:** buy NextPull products and access only their own Medusa orders; identity is linked to the AdonisJS account through a verified integration.
+- **Operator:** manage assigned middleman custody, inspections and forwarding; access only information needed for the task.
+- **Moderator:** handle reports, blocks and disputes with restricted evidence access.
+- **Store operator and CMS editor:** administer Medusa commerce and Strapi editorial content according to their respective roles.
 
-| Actor | Allowed scope | Explicit restrictions |
-| --- | --- | --- |
-| Guest | Published catalogue, public collections, profiles, reviews, and listings | Cannot mutate private or transactional state. |
-| Collector | Own account, collections, swaps, conversations, reviews, notifications | Cannot access another user's private collection, contact data, or moderation state. |
-| Buyer | Collector rights plus checkout, orders, payments, fulfillment, and disputes for owned orders | Cannot mutate seller listing or settlement data. |
-| Seller | Collector rights plus owned listings, order participation, connected-account settlement visibility | Cannot view buyer contact until confirmed payment and consent. |
-| Moderator | Assigned content queues, reports, reviews, listings, and limited user actions | Cannot change infrastructure, payment credentials, or grant equal/higher roles. |
-| Administrator | Full operational policy and catalogue access with step-up authentication | Cannot bypass immutable audit logging or provider authorization. |
-| Worker | Narrow service identity for named queue consumers and scheduled jobs | No interactive login and no authority outside the job contract. |
-| External provider | Signed webhook or adapter capability only | Never receives a general API token or unrelated personal data. |
-
-Authorization is deny-by-default. Every query scopes records before loading them, every command checks role plus resource ownership, and sensitive operator actions require reason codes and audit records. Admin web is the only administrative client; React Native covers collector, buyer, and seller roles.
+Enforce authorization in the owning backend, not only in the interface. Participants see only their own private data and information explicitly shared for an active deal. Operator actions require an auditable identity and reason. Blocking prevents new contact, matches and proposals but must not erase or strand an active deal or its evidence.
