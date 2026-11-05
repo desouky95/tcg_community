@@ -55,6 +55,7 @@ export interface ApiDefinition {
   }
   cards: {
     index: typeof routes['cards.index']
+    batch: typeof routes['cards.batch']
   }
   conversations: {
     index: typeof routes['conversations.index']
@@ -91,5 +92,11 @@ export interface ApiDefinition {
     show: typeof routes['user_checklists.show']
     update: typeof routes['user_checklists.update']
     import: typeof routes['user_checklists.import']
+  }
+  commerceCatalog: {
+    collections: typeof routes['commerce_catalog.collections']
+    collection: typeof routes['commerce_catalog.collection']
+    cards: typeof routes['commerce_catalog.cards']
+    batch: typeof routes['commerce_catalog.batch']
   }
 }

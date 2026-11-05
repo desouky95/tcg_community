@@ -8,17 +8,17 @@
     "pnpm": ">=11.24.0"
   },
   "devDependencies": {
-    "@medusajs/eslint-plugin": "2.22.1",
+    "@medusajs/eslint-plugin": "catalog:",
     "eslint": "^9.39.4",
-    "jiti": "^2.7.0",
+    "jiti": "catalog:",
     "prettier": "^3.2.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "turbo": "^2.0.14",
-    "typescript": "^7.0.2"
+    "turbo": "catalog:",
+    "typescript": "catalog:typescript6"
   },
   "scripts": {
-    "dev": "pnpm --filter=./apps/* dev",
+    "dev": "pnpm --filter=./apps/*  dev",
     "dev:public": "pnpm --filter @tcg/public-web dev",
     "dev:web": "pnpm --filter @tcg/web dev",
     "dev:api": "pnpm --filter @tcg/api dev",

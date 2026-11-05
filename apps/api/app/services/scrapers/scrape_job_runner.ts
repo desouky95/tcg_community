@@ -192,6 +192,10 @@ class ScrapeJobRunner {
         .replace(/\s+/g, '-')
       let checklist = await Checklist.findBy('slug', slug)
 
+      if (checklist && process.env.CARD_CATALOG_API_KEY && await Card.query().where('checklist_id', checklist.id).first()) {
+        throw new Error('Cannot replace cards while the commerce catalog is enabled')
+      }
+
       if (!checklist) {
         checklist = await Checklist.create({
           slug,

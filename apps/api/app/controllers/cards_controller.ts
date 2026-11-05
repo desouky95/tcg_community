@@ -13,4 +13,8 @@ export default class CardsController {
     const filters = await this.service.getFiltersOptions(slug)
     return response.api(cards, { filters })
   }
+
+  async batch({}:HttpContext){
+
+  }
 }

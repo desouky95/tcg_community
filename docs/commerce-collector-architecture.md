@@ -20,6 +20,19 @@ Medusa `STORE_CORS` with the public store origin only; configure
 only Medusa credential it may use. Keep Medusa admin keys and the service key
 server-only.
 
+## Card catalog connection
+
+Set `CARD_CATALOG_API_KEY` to the same secret in the Adonis API and Medusa
+environments. Set `CARD_CATALOG_URL` in Medusa to the API's internal catalog
+endpoint. When both services run directly on this machine, use
+`http://localhost:3333/api/v1/internal/card-catalog`; when both run in the
+Docker Compose network, use `http://api:3333/api/v1/internal/card-catalog`.
+For the local Compose setup, add the shared key to both `docker/env/api.env`
+and `docker/env/medusa.env`, and add the Docker URL to `docker/env/medusa.env`.
+Use a different secret for each environment, keep it out of source control and
+logs, and restart both services after changing their environments. A 401 from
+the catalog usually means their keys do not match.
+
 ## Data ownership
 
 Adonis owns collector identity, checklists, and future swaps. Medusa owns

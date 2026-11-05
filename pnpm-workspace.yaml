@@ -1,9 +1,9 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - apps/*
+  - packages/*
   - "!apps/backend/.medusa/**"
 allowBuilds:
-  '@swc/core': true
+  "@swc/core": true
   better-sqlite3: true
   msw: false
   "@medusajs/telemetry": true
@@ -11,8 +11,132 @@ allowBuilds:
   msgpackr-extract: true
   protobufjs: true
   core-js-pure: true
-
 overrides:
   "@types/react": 19.0.5
   "@types/react-dom": 19.0.5
-  "tsconfig-paths": "^4.2.0"
+  tsconfig-paths: ^4.2.0
+
+catalog:
+  "@adonisjs/assembler": ^8.3.0
+  "@adonisjs/auth": ^10.0.0
+  "@adonisjs/core": ^7.3.0
+  "@adonisjs/cors": ^3.0.0
+  "@adonisjs/drive": ^4.0.0
+  "@adonisjs/eslint-config": ^3.0.0
+  "@adonisjs/lucid": ^22.4.0
+  "@adonisjs/prettier-config": ^1.4.5
+  "@adonisjs/queue": ^0.6.0
+  "@adonisjs/session": ^8.1.0
+  "@adonisjs/shield": ^9.0.0
+  "@adonisjs/tsconfig": ^2.0.0
+  "@eslint/js": ^9.39.4
+  "@hookform/devtools": ^4.4.0
+  "@japa/api-client": ^3.2.1
+  "@japa/assert": ^4.2.0
+  "@japa/plugin-adonisjs": ^5.2.0
+  "@japa/runner": ^5.3.0
+  "@medusajs/admin-sdk": 2.22.1
+  "@medusajs/admin-shared": 2.22.1
+  "@medusajs/caching": 2.22.1
+  "@medusajs/cli": 2.22.1
+  "@medusajs/dashboard": 2.22.1
+  "@medusajs/draft-order": 2.22.1
+  "@medusajs/eslint-plugin": 2.22.1
+  "@medusajs/framework": 2.22.1
+  "@medusajs/medusa": 2.22.1
+  "@medusajs/test-utils": 2.22.1
+  "@medusajs/ui": 4.2.6
+  "@next/env": ^16.3.6
+  "@poppinss/ts-exec": ^1.4.4
+  "@radix-ui/react-accordion": ^1.2.12
+  "@radix-ui/react-alert-dialog": ^1.1.15
+  "@radix-ui/react-checkbox": ^1.3.3
+  "@radix-ui/react-dialog": ^1.1.15
+  "@radix-ui/react-dropdown-menu": ^2.1.16
+  "@radix-ui/react-popover": ^1.1.15
+  "@radix-ui/react-radio-group": ^1.3.8
+  "@radix-ui/react-scroll-area": ^1.4.0
+  "@radix-ui/react-select": ^2.2.6
+  "@radix-ui/react-slider": ^1.3.6
+  "@radix-ui/react-slot": ^1.3.3
+  "@radix-ui/react-switch": ^1.2.6
+  "@radix-ui/react-tabs": ^1.1.13
+  "@radix-ui/react-toggle-group": ^1.1.11
+  "@radix-ui/react-tooltip": ^1.2.8
+  "@react-spring/three": ^10.0.3
+  "@react-three/drei": ^10.7.7
+  "@react-three/fiber": ^9.5.0
+  "@react-three/postprocessing": ^3.0.4
+  "@reactuses/core": ^6.3.1
+  "@swc/core": ^1.7.28
+  "@swc/jest": ^0.2.36
+  "@tailwindcss/postcss": ^4.3.3
+  "@tailwindcss/vite": ^4.2.2
+  "@tanstack/react-devtools": ^0.10.13
+  "@tanstack/react-table": ^9.2.8
+  "@tanstack/react-table-devtools": ^9.2.8
+  "@testing-library/jest-dom": ^7.0.1
+  "@testing-library/react": ^16.3.3
+  "@testing-library/user-event": ^14.6.7
+  "@tuyau/core": ^1.2.2
+  "@types/file-saver": ^2.0.7
+  "@types/jest": ^29.5.13
+  "@types/luxon": ^3.7.1
+  "@types/three": ^0.183.1
+  "@uidotdev/usehooks": ^2.4.1
+  "@use-gesture/react": ^10.3.1
+  "@vinejs/vine": ^4.3.0
+  "@vitejs/plugin-react": ^6.0.1
+  "@yudiel/react-qr-scanner": ^2.5.1
+  add: ^2.0.9
+  autoprefixer: ^10.4.27
+  axios: ^1.14.0
+  better-sqlite3: ^12.8.0
+  cheerio: ^1.2.0
+  clsx: ^2.1.1
+  date-fns: ^4.1.0
+  dayjs: ^1.11.20
+  eslint-plugin-react-hooks: ^7.0.1
+  eslint-plugin-react-refresh: ^0.5.2
+  exceljs: ^4.4.0
+  file-saver: ^2.0.5
+  flag-icons: ^7.5.0
+  fuse.js: ^7.1.0
+  globals: ^17.4.0
+  hot-hook: ^1.0.0
+  i18next-browser-languagedetector: ^8.2.1
+  i18next-resources-to-backend: ^1.2.3
+  jest: ^29.7.0
+  jiti: ^2.7.0
+  jsdom: ^30.1.1
+  libphonenumber-js: ^1.12.41
+  lucide-react: ^1.7.0
+  luxon: ^3.7.2
+  motion: ^13.4.4
+  msw: ^2.11.2
+  next: ^16.3.6
+  next-i18next: ^16.3.1
+  pino-pretty: ^13.1.3
+  prop-types: ^15.8.1
+  qrcode.react: ^4.2.0
+  react-international-phone: ^4.8.0
+  react-use: ^17.6.1
+  reflect-metadata: ^0.2.2
+  restapify: ^2.3.4
+  tailwind-merge: ^3.5.0
+  three: ^0.183.2
+  ts-node: ^10.9.2
+  turbo: ^2.0.14
+  typescript-eslint: ^8.57.0
+  use-debounce: ^10.1.1
+  vitest: ^5.0.2
+  yalc: ^1.0.0-pre.53
+  youch: ^4.1.1
+  zustand: ^5.0.12
+  react-hook-form: ^7.89.0
+
+catalogs:
+  typescript6:
+    typescript: ~6.0.2
+  typescript5:
+    typescript: ^5.6.2

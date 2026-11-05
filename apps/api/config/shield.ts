@@ -37,7 +37,7 @@ const shieldConfig = defineConfig({
      * Useful for external webhooks or API endpoints.
      */
     // Machine-to-machine endpoint protected by SCRAPER_TRIGGER_TOKEN.
-    exceptRoutes: ['/scrapper/jobs'],
+    exceptRoutes: ['/scrapper/jobs', '/api/v1/internal/card-catalog/cards/batch'],
 
     /**
      * Expose an encrypted XSRF-TOKEN cookie for frontend HTTP clients.

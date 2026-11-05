@@ -10,6 +10,7 @@ export const controllers = {
   Catalogue: () => import('#controllers/catalogue_controller'),
   Categories: () => import('#controllers/categories_controller'),
   Checklists: () => import('#controllers/checklists_controller'),
+  CommerceCatalog: () => import('#controllers/commerce_catalog_controller'),
   Commerce: () => import('#controllers/commerce_controller'),
   Conversations: () => import('#controllers/conversations_controller'),
   Identity: () => import('#controllers/identity_controller'),

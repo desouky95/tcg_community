@@ -1,0 +1,70 @@
+services:
+  db:
+    image: postgres:16
+    environment: {POSTGRES_USER: postgres, POSTGRES_PASSWORD: local-only-password}
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["local_pg:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  redis:
+    image: redis:7.4
+    ports: ["127.0.0.1:6379:6379"]
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    volumes: ["local_redis:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  api:
+    build: {context: .., dockerfile: docker/Dockerfile.api}
+    image: tcg-api:local
+    env_file: ./env/api.env
+    ports: ["127.0.0.1:3333:3333"]
+    volumes: ["api_uploads:/app/storage"]
+    depends_on: {db: {condition: service_healthy}}
+  worker:
+    image: tcg-api:local
+    env_file: ./env/api.env
+    command: ["node", "ace.js", "queue:work"]
+    volumes: ["api_uploads:/app/storage"]
+    depends_on: {db: {condition: service_healthy}}
+  medusa:
+    build: {context: .., dockerfile: docker/Dockerfile.medusa}
+    image: tcg-medusa:local
+    env_file: ./env/medusa.env
+    ports: ["127.0.0.1:9000:9000"]
+    volumes: ["medusa_uploads:/app/static"]
+    depends_on: {db: {condition: service_healthy}, redis: {condition: service_healthy}}
+  cms:
+    build: {context: .., dockerfile: docker/Dockerfile.cms}
+    image: tcg-cms:local
+    env_file: ./env/cms.env
+    ports: ["127.0.0.1:1337:1337"]
+    volumes: ["cms_uploads:/app/public/uploads"]
+    depends_on: {db: {condition: service_healthy}}
+  public-web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.public-web
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?missing API URL}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:?missing app URL}
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:?missing Medusa URL}
+        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:?missing publishable key}
+    image: tcg-public-web:local
+    env_file: ./env/public-web.env
+    ports: ["127.0.0.1:3000:3000"]
+  proxy:
+    image: caddy:2
+    ports: ["127.0.0.1:8080:80"]
+    volumes: ["./Caddyfile.local:/etc/caddy/Caddyfile:ro"]
+volumes:
+  local_pg:
+  local_redis:
+  api_uploads:
+  medusa_uploads:
+  cms_uploads:

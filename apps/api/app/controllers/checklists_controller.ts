@@ -17,6 +17,7 @@ import { ChecklistService } from '#services/checklist_service'
 import { checklistCoverStorage } from '#services/checklist_cover_storage'
 import { createReadStream } from 'node:fs'
 import { access } from 'node:fs/promises'
+import env from '#start/env'
 
 @inject()
 export default class ChecklistsController {
@@ -91,6 +92,11 @@ export default class ChecklistsController {
     const baseRows = cards.filter((card) => !card.variant)
     const variantRows = cards.filter((card) => card.variant)
 
+    // External commerce listings refer to these IDs. Until an explicit
+    // reconciliation flow exists, never replace an existing catalog in place.
+    if (env.get('CARD_CATALOG_API_KEY') && await Card.query({ client: trx }).where('checklistId', checklist.id).first()) {
+      throw new Error('Cannot replace cards while the commerce catalog is enabled')
+    }
     await Card.query({ client: trx }).where('checklistId', checklist.id).delete()
 
     const bases = await Card.createMany(
@@ -237,6 +243,9 @@ export default class ChecklistsController {
 
   async destroy({ params, response }: HttpContext) {
     const checklist = await Checklist.findOrFail(params.id)
+    if (env.get('CARD_CATALOG_API_KEY') && await Card.query().where('checklistId', checklist.id).first()) {
+      return response.conflict({ error: 'Cannot delete a checklist with cards while the commerce catalog is enabled' })
+    }
     await Card.query().where('checklistId', checklist.id).delete()
     await checklist.delete()
     return response.ok({ message: 'Checklist deleted successfully' })

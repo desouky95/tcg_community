@@ -385,6 +385,32 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['import']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'cards.index': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/medusa/checklists/:id/card'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cards_controller').default['index']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cards_controller').default['index']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/cards_controller').default['index']>>>
+    }
+  }
+  'cards.batch': {
+    methods: ["POST"]
+    pattern: '/api/v1/cards/cards/batch'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/cards_controller').default['batch']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/cards_controller').default['batch']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/cards_controller').default['batch']>>>
+    }
+  }
   'conversations.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/conversations'
@@ -747,6 +773,58 @@ export interface Registry {
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deletePersonalData']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deletePersonalData']>>> | { status: 422; response: { errors: SimpleError[] } }
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deletePersonalData']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'commerce_catalog.collections': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/internal/card-catalog/collections'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['collections']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['collections']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['collections']>>>
+    }
+  }
+  'commerce_catalog.collection': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/internal/card-catalog/collections/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['collection']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['collection']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['collection']>>>
+    }
+  }
+  'commerce_catalog.cards': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/internal/card-catalog/collections/:id/cards'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['cards']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['cards']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['cards']>>>
+    }
+  }
+  'commerce_catalog.batch': {
+    methods: ["POST"]
+    pattern: '/api/v1/internal/card-catalog/cards/batch'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['batch']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['batch']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['batch']>>>
     }
   }
 }

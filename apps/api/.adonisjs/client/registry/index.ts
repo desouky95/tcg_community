@@ -182,6 +182,18 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"checklists"],[1,"id"],[0,"import"]],
     types: placeholder as Registry['checklists.import']['types'],
   },
+  'cards.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/medusa/checklists/:id/card',
+    tokens: [[0,"api"],[0,"v1"],[0,"medusa"],[0,"checklists"],[1,"id"],[0,"card"]],
+    types: placeholder as Registry['cards.index']['types'],
+  },
+  'cards.batch': {
+    methods: ["POST"],
+    pattern: '/api/v1/cards/cards/batch',
+    tokens: [[0,"api"],[0,"v1"],[0,"cards"],[0,"cards"],[0,"batch"]],
+    types: placeholder as Registry['cards.batch']['types'],
+  },
   'conversations.index': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/conversations',
@@ -349,6 +361,30 @@ const routes = {
     pattern: '/api/v1/account/privacy-deletions',
     tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"privacy-deletions"]],
     types: placeholder as Registry['identity.delete_personal_data']['types'],
+  },
+  'commerce_catalog.collections': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/internal/card-catalog/collections',
+    tokens: [[0,"api"],[0,"v1"],[0,"internal"],[0,"card-catalog"],[0,"collections"]],
+    types: placeholder as Registry['commerce_catalog.collections']['types'],
+  },
+  'commerce_catalog.collection': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/internal/card-catalog/collections/:id',
+    tokens: [[0,"api"],[0,"v1"],[0,"internal"],[0,"card-catalog"],[0,"collections"],[1,"id"]],
+    types: placeholder as Registry['commerce_catalog.collection']['types'],
+  },
+  'commerce_catalog.cards': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/internal/card-catalog/collections/:id/cards',
+    tokens: [[0,"api"],[0,"v1"],[0,"internal"],[0,"card-catalog"],[0,"collections"],[1,"id"],[0,"cards"]],
+    types: placeholder as Registry['commerce_catalog.cards']['types'],
+  },
+  'commerce_catalog.batch': {
+    methods: ["POST"],
+    pattern: '/api/v1/internal/card-catalog/cards/batch',
+    tokens: [[0,"api"],[0,"v1"],[0,"internal"],[0,"card-catalog"],[0,"cards"],[0,"batch"]],
+    types: placeholder as Registry['commerce_catalog.batch']['types'],
   },
 } as const satisfies Record<string, AdonisEndpoint>
 

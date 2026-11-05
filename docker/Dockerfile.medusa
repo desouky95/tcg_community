@@ -3,13 +3,15 @@ WORKDIR /src
 RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
 RUN corepack enable && corepack prepare pnpm@11.24.0 --activate
 COPY . .
-RUN pnpm install --frozen-lockfile && pnpm --filter @tcg/backend build
-
+RUN pnpm install --frozen-lockfile
+RUN pnpm --filter @tcg/backend build
+RUN pnpm --filter @tcg/backend --prod deploy --legacy /out
+RUN cp -a /src/apps/backend/.medusa/server/. /out/
 FROM node:24-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=build --chown=node:node /src/apps/backend/.medusa/server/ ./
-RUN npm install --omit=dev && mkdir -p /app/static && chown -R node:node /app
+COPY --from=build --chown=node:node /out/ ./
+RUN mkdir -p /app/static && chown node:node /app/static
 USER node
 EXPOSE 9000
-CMD ["npm", "run", "start"]
+CMD ["node", "node_modules/@medusajs/medusa/cli.js", "start"]
