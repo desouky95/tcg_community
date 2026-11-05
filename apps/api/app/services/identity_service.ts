@@ -3,6 +3,8 @@ import hash from '@adonisjs/core/services/hash'
 import { DateTime } from 'luxon'
 import { randomInt } from 'node:crypto'
 import User from '#models/user'
+import app from '@adonisjs/core/services/app'
+import type { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export type OtpPurpose = 'signup' | 'login' | 'password_recovery' | 'mobile_change'
 
@@ -31,43 +33,46 @@ export function errorBody(code: string, message: string, details?: unknown[]) {
   return { error: { code, message, ...(details ? { details } : {}) } }
 }
 
-export async function issueOtp(
+export function ensureOtpDeliveryAvailable() {
+  if (app.inProduction) {
+    throw Object.assign(new Error('Verification delivery is unavailable'), { status: 503 })
+  }
+}
+
+export async function createOtpChallenge(
+  trx: TransactionClientContract,
   mobile: string,
   purpose: OtpPurpose,
   userId?: number,
   ttlMinutes = 10
 ) {
   const code = randomInt(100000, 1000000).toString()
-  console.log({code})
-  await db.transaction(async (trx) => {
-    await trx
-      .from('otp_challenges')
-      .where({ mobile, purpose })
-      .whereNull('consumed_at')
-      .update({ consumed_at: DateTime.utc().toSQL() })
-
-    await trx.table('otp_challenges').insert({
-      user_id: userId ?? null,
-      mobile,
-      purpose,
-      code_hash: await hash.make(code),
-      attempts: 0,
-      max_attempts: 5,
-      expires_at: DateTime.utc().plus({ minutes: ttlMinutes }).toSQL(),
-      created_at: DateTime.utc().toSQL(),
-      updated_at: DateTime.utc().toSQL(),
-    })
+  await trx.from('otp_challenges').where({ mobile, purpose }).whereNull('consumed_at')
+    .update({ consumed_at: DateTime.utc().toSQL() })
+  await trx.table('otp_challenges').insert({
+    user_id: userId ?? null, mobile, purpose, code_hash: await hash.make(code),
+    attempts: 0, max_attempts: 5, expires_at: DateTime.utc().plus({ minutes: ttlMinutes }).toSQL(),
+    created_at: DateTime.utc().toSQL(), updated_at: DateTime.utc().toSQL(),
   })
+  return { code, expiresInSeconds: ttlMinutes * 60 }
+}
 
-  // The provider integration is intentionally asynchronous. The challenge is already durable.
-  console.log(`[WHATSAPP MOCK] Sent ${purpose} OTP ${code} to ${mobile}`)
-  return { expiresInSeconds: ttlMinutes * 60 }
+export function deliverMockOtp(mobile: string, purpose: OtpPurpose, code: string) {
+  ensureOtpDeliveryAvailable()
+  if (app.inDev) console.info(`[DEV OTP] ${purpose} code for ${mobile}: ${code}`)
+}
+
+export async function issueOtp(mobile: string, purpose: OtpPurpose, userId?: number, ttlMinutes = 10) {
+  ensureOtpDeliveryAvailable()
+  const challenge = await db.transaction((trx) => createOtpChallenge(trx, mobile, purpose, userId, ttlMinutes))
+  deliverMockOtp(mobile, purpose, challenge.code)
+  return { expiresInSeconds: challenge.expiresInSeconds }
 }
 
 export async function consumeOtp(mobile: string, purpose: OtpPurpose, code: string) {
   const challenge = await db
     .from('otp_challenges')
-    .where({ mobile })
+    .where({ mobile, purpose })
     .whereNull('consumed_at')
     .orderBy('created_at', 'desc')
     .first()

@@ -8,6 +8,7 @@ export default async function Layout({
 }) {
   const _cookies = await cookies();
   const authenticated =_cookies.has(process.env.AUTH_COOKIE_NAME as string)
+  console.log({authenticated})
   const applink = process.env.NEXT_PUBLIC_APP_URL;
   console.log({authenticated})
   return (

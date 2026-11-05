@@ -7,7 +7,6 @@ import { ArrowRight, MessageCircle, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import AuthShell from "../components/AuthShell";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
 import { Button, OtpField } from "@tcg/ui-web";
 
 const otpSchema = z.object({
@@ -35,10 +34,6 @@ export default function VerifyOTP() {
     defaultValues: { otp: "" },
   });
 
-  useEffect(() => {
-    requestOtp.mutate(mobileNumber);
-  }, []);
-
   const onOtpSubmit = async (data: OtpFormData) => {
     try {
       await verifyOtp.mutateAsync({ mobile: mobileNumber, otp: data.otp });
@@ -54,7 +49,7 @@ export default function VerifyOTP() {
   const onResend = async () => {
     try {
       await requestOtp.mutateAsync(mobileNumber);
-      toast.success("New code sent to WhatsApp");
+      toast.success("A new verification code was requested.");
     } catch {
       toast.error("Failed to resend code");
     }
@@ -75,7 +70,7 @@ export default function VerifyOTP() {
       asideDescription="A verified number helps the club stay useful, local, and made for real collectors."
       asideItems={[
         "One code for a secure session",
-        "WhatsApp-first verification",
+        "Mobile verification",
         "Your cards stay yours",
       ]}
       footer={
@@ -96,7 +91,7 @@ export default function VerifyOTP() {
             <h2>We need your mobile number.</h2>
             <p>
               Start from sign in or account creation so we can send the
-              verification code to the right WhatsApp number.
+              verification code to the right mobile number.
             </p>
           </div>
           <Button asChild><Link to="/login">Return to sign in <ArrowRight aria-hidden="true" /></Link></Button>
@@ -126,7 +121,7 @@ export default function VerifyOTP() {
                     disabled={loading}
                     help={
                       <>
-                        <MessageCircle aria-hidden="true" /> Code sent to{" "}
+                        <MessageCircle aria-hidden="true" /> Verification requested for{" "}
                         <strong>{mobileNumber}</strong>
                       </>
                     }
@@ -148,14 +143,14 @@ export default function VerifyOTP() {
           </form>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-1.5 text-sm text-wax-muted [&_button]:min-h-control-sm [&_button]:p-1.5 [&_button:disabled]:cursor-not-allowed [&_button:disabled]:opacity-50">
-            <span>Didn't receive a code?</span>
+            <span>{import.meta.env.DEV ? "Development codes appear in the API server logs." : "Didn't receive a code?"}</span>
             <button
               type="button"
               onClick={onResend}
               disabled={loading}
               className="font-mono text-utility uppercase text-wax-red hover:underline focus-ring"
             >
-              Resend via WhatsApp
+              Request another code
             </button>
           </div>
         </>

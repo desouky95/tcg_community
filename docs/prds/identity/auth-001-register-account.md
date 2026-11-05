@@ -3,27 +3,25 @@
 | Field | Value |
 | --- | --- |
 | Horizon | current |
-| Implementation | unverified (previously implemented) |
+| Implementation | partial: registration and development-only OTP delivery |
 | Actor | guest |
-| Surface / owner | AdonisJS identity and applicable client |
+| Surface / owner | Collector Disk `/signup`; AdonisJS `POST /api/v1/auth/signup` |
 | Dependencies | None |
-
-Previous documented surface (unverified): `/signup`.
 
 ## Outcome and scope
 
-A pending account is created and verification is requested. 
+A guest creates an unverified account and a signup verification challenge, then continues to the separate verification page. No authenticated session is created by signup. Existing collection and checklist behavior is unchanged.
 
 ## Requirements
 
-- Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
-- Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
-- Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.
-- Preserve existing behavior and contracts where this capability is already implemented; reconcile any discrepancy with repository evidence before changing it.
+- Collect full name, username, email, Egyptian mobile number, password and confirmation, and governorate. Enforce the server's validation and uniqueness constraints, including an 8–32 character password.
+- Create the user and challenge atomically. Reject invalid and duplicate submissions without creating partial accounts. Never expose a password or verification code in the response.
+- Create a signup-purpose challenge, stored as a hash with an expiry and attempt limit. A resend invalidates the previous signup challenge. Challenges for other purposes cannot satisfy signup verification.
+- On success, navigate to verification without automatically requesting a second code. Show validation and request errors while retaining the form; prevent duplicate submissions while pending.
+- OTP delivery is a development-only mock: in development the code is printed in API server logs; test mode suppresses output. Production signup and resend return an unavailable response until a real delivery provider is integrated.
 
 ## Acceptance and verification
 
-- The stated outcome succeeds for an eligible actor and is denied for unauthorized access.
-- Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
-
-Existing evidence pointer: apps/web/src/pages/Signup.tsx; apps/api AuthController.signup. This pointer is not a fresh implementation audit.
+- A valid submission creates one unverified user and one signup challenge and returns 202. Only subsequent successful verification establishes an authenticated session.
+- Invalid, duplicate and failed requests do not create a partial registration. A verified user's login challenge remains separate from signup challenges.
+- Verify the registration API, transaction rollback, purpose-specific resend and verification, form validation, errors and navigation. Production OTP delivery requires separate implementation and verification.

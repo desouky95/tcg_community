@@ -9,7 +9,9 @@ import type { HttpContext } from '@adonisjs/core/http'
 import UserTransformer from '#transformers/user_transformer'
 import hash from '@adonisjs/core/services/hash'
 import { DateTime } from 'luxon'
-import { consumeOtp, errorBody, issueOtp, requestMeta } from '#services/identity_service'
+import { consumeOtp, errorBody, issueOtp, requestMeta, createOtpChallenge, deliverMockOtp, ensureOtpDeliveryAvailable } from '#services/identity_service'
+import db from '@adonisjs/lucid/services/db'
+import app from '@adonisjs/core/services/app'
 
 export default class AuthController {
   /**
@@ -31,7 +33,8 @@ export default class AuthController {
         .status(403)
         .json(errorBody('account_unavailable', 'This account is not available'))
     }
-    const challenge = await issueOtp(mobile, 'login', user.id)
+    if (app.inProduction) return response.status(503).json(errorBody('delivery_unavailable', 'Verification delivery is unavailable'))
+    const challenge = await issueOtp(mobile, user.isVerified ? 'login' : 'signup', user.id)
     return response.json({ data: { challenge: 'issued', ...challenge }, ...requestMeta(request) })
   }
 
@@ -41,32 +44,34 @@ export default class AuthController {
   async signup({ request, response, serialize }: HttpContext) {
     const data = await request.validateUsing(signupValidator)
 
-    // Create user record immediately (unverified)
-    const user = await User.create({
-      fullName: data.fullName!,
-      username: data.username,
-      email: data.email,
-      mobile: data.mobile,
-      password: data.password,
-      governorate: data.governorate,
-      role: 'user',
-      blocked: false,
-      isVerified: false,
-      otpCode: null,
-      status: 'active',
-      locale: 'en',
-      theme: 'system',
-      version: 1,
-    })
-    const challenge = await issueOtp(data.mobile, 'signup', user.id)
-    return response.status(202).send(
-      await serialize({
-        challenge: 'issued',
-        ...challenge,
-        user: UserTransformer.transform(user),
-        ...requestMeta(request),
+    if (app.inProduction) return response.status(503).json(errorBody('delivery_unavailable', 'Verification delivery is unavailable'))
+    ensureOtpDeliveryAvailable()
+    try {
+      const { user, challenge } = await db.transaction(async (trx) => {
+        const user = await User.create({
+          fullName: data.fullName, username: data.username, email: data.email,
+          mobile: data.mobile, password: data.password, governorate: data.governorate,
+          role: 'user', blocked: false, isVerified: false, otpCode: null,
+          status: 'active', locale: 'en', theme: 'system', version: 1,
+        }, { client: trx })
+        const challenge = await createOtpChallenge(trx, data.mobile, 'signup', user.id)
+        return { user, challenge }
       })
-    )
+      deliverMockOtp(data.mobile, 'signup', challenge.code)
+      return response.status(202).send(await serialize({
+        challenge: 'issued', expiresInSeconds: challenge.expiresInSeconds,
+        user: UserTransformer.transform(user), ...requestMeta(request),
+      }))
+    } catch (error) {
+      const candidate = error as { code?: string; constraint?: string }
+      if (candidate.code === '23505' && /^users_(username|email|mobile)_unique$/.test(candidate.constraint ?? '')) {
+        const field = candidate.constraint!.split('_')[1]
+        return response.status(422).json(errorBody('validation_error', 'Request validation failed', [
+          { field, message: 'This value is already in use', code: 'unique' },
+        ]))
+      }
+      throw error
+    }
   }
 
   /**

@@ -254,7 +254,9 @@ export type SignupInput = {
   fullName: string;
   username: string;
   email: string;
-  password?: string;
+  password: string;
+  passwordConfirmation: string;
+  governorate: string;
 };
 export type LoginInput = { uid: string; password: string };
 /** Browser authentication is established by the HttpOnly session cookie. */
@@ -263,7 +265,9 @@ export type AuthResponse = APIResponse<AuthSession>;
 export type SignupResponse = APIResponse<{
   challenge: "issued";
   expiresInSeconds: number;
-  user: User;
+  user: Pick<User, "id" | "fullName" | "username" | "email" | "mobile" | "role" | "blocked" | "governorate" | "lastLoginAt">;
+  requestId: string;
+  serverTimestamp: string;
 }>;
 export type ProfileUpdateResponse = APIResponse<{
   message: string;

@@ -40,12 +40,13 @@ export const EGYPT_GOVERNORATES = [
  * Validator to use when performing self-signup (Metadata stage)
  */
 export const signupValidator = vine.create({
-  fullName: vine.string().minLength(3),
-  username: vine.string().minLength(3).unique({ table: 'users', column: 'username' }),
+  fullName: vine.string().minLength(3).maxLength(255),
+  username: vine.string().minLength(3).maxLength(50).regex(/^[a-zA-Z0-9_]+$/).unique({ table: 'users', column: 'username' }),
   email: email().unique({ table: 'users', column: 'email' }),
   mobile: vine
     .string()
     .mobile({ locale: ['ar-EG'] })
+    .maxLength(20)
     .unique({ table: 'users', column: 'mobile' }),
   password: password(),
   passwordConfirmation: password().sameAs('password'),
