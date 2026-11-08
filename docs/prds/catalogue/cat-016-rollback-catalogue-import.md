@@ -1,14 +1,5 @@
 # CAT-016: Roll back catalogue import
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously planned) |
-| Actor | administrator |
-| Surface / owner | Collector Disk and AdonisJS catalogue |
-| Dependencies | [CAT-015](../catalogue/cat-015-commit-catalogue-import.md) |
-
-Previous documented surface (unverified): `/admin/catalogue/import`.
 
 ## Outcome and scope
 
@@ -27,3 +18,18 @@ An eligible import restores the prior catalogue version through an auditable com
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: Planned background import workflow. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/checklists.routes.ts
+- apps/api/app/controllers/checklists_controller.ts
+- apps/web/src/pages/Checklists.tsx
+- apps/public-web/app/(shared-layout)/checklists/page.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

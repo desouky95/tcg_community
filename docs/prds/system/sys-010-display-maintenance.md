@@ -1,18 +1,9 @@
 # SYS-010: Display maintenance state
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously planned) |
-| Actor | guest, collector, administrator, worker |
-| Surface / owner | Relevant application and owning backend |
-| Dependencies | None |
-
-Previous documented surface (unverified): `all clients`.
 
 ## Outcome and scope
 
-Clients display localized timing and preserve safe read-only behavior. 
+Clients display localized timing and preserve safe read-only behavior.
 
 ## Requirements
 
@@ -27,3 +18,17 @@ Clients display localized timing and preserve safe read-only behavior.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No current implementation. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/app/exceptions/handler.ts
+- apps/web/src/main.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

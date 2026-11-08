@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "interactive_banners",
+  "info": {
+    "singularName": "interactive-banner",
+    "pluralName": "interactive-banners",
+    "displayName": "Interactive Banner"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "url": {
+      "type": "string",
+      "default": "url",
+      "required": true,
+      "unique": false
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "open_pack",
+        "card_3d"
+      ]
+    }
+  }
+}

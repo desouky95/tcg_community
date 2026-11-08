@@ -1,14 +1,5 @@
 # COL-006: Track duplicate or offered cards
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | collector |
-| Surface / owner | Existing Collector Disk collections and AdonisJS; preserve established behavior |
-| Dependencies | [COL-005](../collections/col-005-update-card-ownership.md) |
-
-Previous documented surface (unverified): `/collection/:id/edit`.
 
 ## Outcome and scope
 
@@ -27,3 +18,18 @@ Offered quantities remain nonnegative and do not exceed owned quantity. This is 
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: Existing user checklist update. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/collection_progress_controller.ts
+- apps/api/app/services/collection_progress_service.ts
+- apps/web/src/pages/CollectionEdit.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

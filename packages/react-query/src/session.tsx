@@ -29,7 +29,7 @@ const SessionContext = createContext<SessionContextValue | null>(null);
 
 type TcgSessionProviderProps = {
   onLogout?: () => void;
-  onSessionChange?: (session: APIResponse<ExtendedUser>) => void;
+  onSessionChange?: (session: APIResponse<ExtendedUser | null>) => void;
   children: React.ReactNode;
   client: ApiClient;
   defaultQuery?: QueryInput;
@@ -58,6 +58,9 @@ export const TcgSessionProvider = ({
   useEffect(() => {
     if (session.isSuccess && session.data) {
       onSessionChange?.(session.data.data);
+    } else if (session.isSuccess && !session.data) {
+      queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== queryKeys.me[0] });
+      onSessionChange?.({ data: null });
     }
   }, [session.isFetching]);
 

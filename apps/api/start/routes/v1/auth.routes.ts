@@ -15,6 +15,7 @@ export default () => {
       //! otp-login not needed as login redirects to verify-otp
       router.post('otp-login', [() => import('#controllers/identity_controller'), 'otpLogin'])
       //? Not tested manually
+      router.post('deactivated-privacy-deletion', [() => import('#controllers/identity_controller'), 'deleteDeactivatedAccount'])
       router.post('password-recovery', [
         () => import('#controllers/identity_controller'),
         'recoverPassword',

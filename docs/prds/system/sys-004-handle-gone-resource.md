@@ -1,18 +1,9 @@
 # SYS-004: Handle deleted or archived resource
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously planned) |
-| Actor | guest, collector, administrator, worker |
-| Surface / owner | Relevant application and owning backend |
-| Dependencies | [SYS-003](../system/sys-003-handle-404.md) |
-
-Previous documented surface (unverified): `resource detail surfaces`.
 
 ## Outcome and scope
 
-Known removed resources preserve context while blocking actions. 
+Known removed resources preserve context while blocking actions.
 
 ## Requirements
 
@@ -27,3 +18,17 @@ Known removed resources preserve context while blocking actions.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No shared 410 contract. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/app/exceptions/handler.ts
+- apps/web/src/main.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

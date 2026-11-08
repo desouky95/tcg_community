@@ -1,18 +1,9 @@
 # NTF-006: Manage notification preferences
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously planned) |
-| Actor | collector |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [AUTH-014](../identity/auth-014-manage-account-preferences.md) |
-
-Previous documented surface (unverified): `/settings`.
 
 ## Outcome and scope
 
-Per-event channel preferences are persisted with mandatory exceptions. 
+Per-event channel preferences are persisted with mandatory exceptions.
 
 ## Requirements
 
@@ -27,3 +18,16 @@ Per-event channel preferences are persisted with mandatory exceptions.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No current implementation. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/app/models/user.ts
+- apps/api/start/routes/v1/users.routes.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

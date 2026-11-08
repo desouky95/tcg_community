@@ -1,6 +1,7 @@
 import Category from '#models/category'
 import Checklist from '#models/checklist'
 import User from '#models/user'
+import { sessionFingerprint } from '#services/identity_service'
 import { checklistCoverStorage } from '#services/checklist_cover_storage'
 import app from '@adonisjs/core/services/app'
 import testUtils from '@adonisjs/core/services/test_utils'
@@ -64,6 +65,7 @@ test.group('Checklist cover images', (group) => {
       .withCsrfToken()
       .withGuard('web')
       .loginAs(admin)
+      .withSession({ auth_password_fingerprint: sessionFingerprint(admin.password) })
       .fields(checklistFields(category.slug, `Cover upload ${suffix}`))
       .file('coverImage', pngCover, {
         filename: 'cover.png',
@@ -112,6 +114,7 @@ test.group('Checklist cover images', (group) => {
       .withCsrfToken()
       .withGuard('web')
       .loginAs(admin)
+      .withSession({ auth_password_fingerprint: sessionFingerprint(admin.password) })
       .fields(checklistFields(category.slug, `Invalid cover ${suffix}`))
       .file('coverImage', Buffer.from('not-an-image'), {
         filename: 'cover.gif',
@@ -140,6 +143,7 @@ test.group('Checklist cover images', (group) => {
       .withCsrfToken()
       .withGuard('web')
       .loginAs(admin)
+      .withSession({ auth_password_fingerprint: sessionFingerprint(admin.password) })
       .fields(checklistFields(category.slug, checklist.name))
       .file('coverImage', pngCover, {
         filename: 'replacement.png',
@@ -164,6 +168,7 @@ test.group('Checklist cover images', (group) => {
       .withCsrfToken()
       .withGuard('web')
       .loginAs(admin)
+      .withSession({ auth_password_fingerprint: sessionFingerprint(admin.password) })
       .fields(checklistFields(category.slug, `Rollback cover ${suffix}`))
       .file('coverImage', pngCover, {
         filename: 'cover.png',

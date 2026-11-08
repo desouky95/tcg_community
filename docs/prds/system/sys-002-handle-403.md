@@ -1,18 +1,9 @@
 # SYS-002: Handle forbidden action
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously partial) |
-| Actor | guest, collector, administrator, worker |
-| Surface / owner | Relevant application and owning backend |
-| Dependencies | None |
-
-Previous documented surface (unverified): `all surfaces`.
 
 ## Outcome and scope
 
-The user sees a localized explanation without leaking resource existence. 
+The user sees a localized explanation without leaking resource existence.
 
 ## Requirements
 
@@ -27,3 +18,17 @@ The user sees a localized explanation without leaking resource existence.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: Admin route guard exists. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/app/exceptions/handler.ts
+- apps/web/src/main.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

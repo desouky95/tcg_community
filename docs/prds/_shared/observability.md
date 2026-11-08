@@ -1,3 +1,14 @@
 # Observability
 
-Record safe identifiers, action, outcome and timestamps for authentication, deal transitions, fee confirmation, custody movements and operator decisions. Never log credentials, raw payment details, private messages or dispute evidence. Alert operators to unresolved payment, shipment and custody failures; define thresholds and retention in operational design.
+## UI Page Used
+- N/A — shared guidance
+
+## Backend API Route Used
+- N/A — shared guidance
+
+## Related Files
+- docs/prds/README.md
+- AGENTS.md
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

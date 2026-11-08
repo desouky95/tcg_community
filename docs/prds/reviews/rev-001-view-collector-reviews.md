@@ -1,18 +1,9 @@
 # REV-001: View collector reviews
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | guest, collector |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [AUTH-013](../identity/auth-013-view-public-profile.md) |
-
-Previous documented surface (unverified): `/profile/:id`.
 
 ## Outcome and scope
 
-Published reviews are paginated without private moderation data. 
+Published reviews are paginated without private moderation data.
 
 ## Requirements
 
@@ -27,3 +18,18 @@ Published reviews are paginated without private moderation data.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: apps/api ReviewsController.index. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/reviews_controller.ts
+- apps/api/app/models/review.ts
+- apps/api/app/validators/review.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

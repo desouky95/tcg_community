@@ -2,31 +2,39 @@ import User from '#models/user'
 import UserTransformer from '#transformers/user_transformer'
 import type { HttpContext } from '@adonisjs/core/http'
 import { updateProfileValidator } from '#validators/user'
-import { issueOtp } from '#services/identity_service'
+import { createOtpChallenge, deliverMockOtp, ensureOtpDeliveryAvailable } from '#services/identity_service'
+import db from '@adonisjs/lucid/services/db'
 
 export default class ProfileController {
   async update({ auth, request, response, serialize }: HttpContext) {
-    const user = await auth.authenticate()
+    const user = await auth.authenticateUsing(['web'])
     const data = await request.validateUsing(updateProfileValidator, {
       meta: { userId: user.id },
     })
 
-    // If mobile changed, unverify user and send a bounded challenge.
-    if (data.mobile && data.mobile !== user.mobile) {
-      user.isVerified = false
-      await issueOtp(data.mobile, 'mobile_change', user.id)
-    }
-
-    user.merge(data)
-    await user.save()
+    const changedMobile = Boolean(data.mobile && data.mobile !== user.mobile)
+    if (changedMobile) ensureOtpDeliveryAvailable()
+    const challenge = await db.transaction(async (trx) => {
+      user.useTransaction(trx)
+      let otp: Awaited<ReturnType<typeof createOtpChallenge>> | undefined
+      if (changedMobile && data.mobile) {
+        user.isVerified = false
+        otp = await createOtpChallenge(trx, data.mobile, 'mobile_change', user.id)
+      }
+      user.merge(data)
+      await user.save()
+      return otp
+    })
+    if (challenge && data.mobile) deliverMockOtp(data.mobile, 'mobile_change', challenge.code)
+    const updated = (await serialize(UserTransformer.transform(user))).data
 
     return response.json({
       data: {
         message: 'Profile updated successfully',
-        user: serialize(UserTransformer.transform(user)),
+        user: updated,
       },
       message: 'Profile updated successfully',
-      user: serialize(UserTransformer.transform(user)),
+      user: updated,
     })
   }
 
@@ -34,7 +42,8 @@ export default class ProfileController {
     const id = params.id
     if (id) {
       const user = await User.findByOrFail('id', id)
-      await user.load('checklists', (q) => q.preload('checklist').preload('subCategory'))
+      const privacy = JSON.parse(user.privacyPreferences ?? '{}') as { showProfile?: boolean }
+      if (user.status !== 'active' || user.blocked || privacy.showProfile === false) return { data: null }
       return serialize({
         id: user.id,
         username: user.username,

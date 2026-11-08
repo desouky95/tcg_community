@@ -295,6 +295,15 @@
     }
   },
   "dashboard": {
+    "my_collections": "My collections",
+    "my_collections_subtitle": "Pick up where you left off.",
+    "my_collections_loading": "Loading your collections…",
+    "my_collections_error": "Could not load your collections. Please try again later.",
+    "my_collections_empty": "Start a collection from a checklist in the catalogue.",
+    "owned_progress": "{{owned}} / {{total}} owned",
+    "collection_activity": "{{wanted}} wanted · {{offered}} offered",
+    "catalogue_loading": "Loading collections",
+    "catalogue_error": "Could not load the catalogue. Please try again later.",
     "title": "Community Vault",
     "subtitle": "Explore curated collections by category.",
     "categories": "Categories",
@@ -361,7 +370,17 @@
     "swap_hint": "Temporarily hide your swap lists",
     "start_conversation_error": "Failed to start conversation"
   },
+  "shared_collection": {
+      "missing": "Missing",
+      "duplicates": "Duplicates",
+      "no_missing": "No missing cards.",
+      "no_duplicates": "No duplicates available.",
+      "quantity_one": "{{count}} copy",
+      "quantity_other": "{{count}} copies"
+  },
   "collection_edit": {
+    "duplicates_hint": "Use 22(2) for two copies of card 22 available to offer.",
+    "missing_hint": "Use 22(2) when you need two copies of card 22.",
     "title": "Edit My Collection",
     "save": "Save Changes",
     "missing_list": "Missing List (comma separated numbers)",

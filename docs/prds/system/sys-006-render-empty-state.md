@@ -1,18 +1,9 @@
 # SYS-006: Render empty result
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously partial) |
-| Actor | guest, collector, administrator, worker |
-| Surface / owner | Relevant application and owning backend |
-| Dependencies | None |
-
-Previous documented surface (unverified): `collection and search surfaces`.
 
 ## Outcome and scope
 
-The user sees why no records exist and the next useful action. 
+The user sees why no records exist and the next useful action.
 
 ## Requirements
 
@@ -27,3 +18,17 @@ The user sees why no records exist and the next useful action.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: Implemented inconsistently. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/app/exceptions/handler.ts
+- apps/web/src/main.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

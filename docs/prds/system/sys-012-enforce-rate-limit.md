@@ -1,18 +1,9 @@
 # SYS-012: Enforce rate limit
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously planned) |
-| Actor | guest, collector, administrator, worker |
-| Surface / owner | Relevant application and owning backend |
-| Dependencies | None |
-
-Previous documented surface (unverified): `API edge`.
 
 ## Outcome and scope
 
-Token-bucket limits return Retry-After and protect sensitive actions. 
+Token-bucket limits return Retry-After and protect sensitive actions.
 
 ## Requirements
 
@@ -27,3 +18,17 @@ Token-bucket limits return Retry-After and protect sensitive actions.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No explicit rate limiter. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/app/exceptions/handler.ts
+- apps/web/src/main.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

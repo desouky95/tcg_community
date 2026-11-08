@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_slider_hero_sliders",
+  "info": {
+    "displayName": "HeroSlider"
+  },
+  "options": {},
+  "attributes": {
+    "banners": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::banner.banner",
+      "required": true
+    },
+    "interactive_banners": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::interactive-banner.interactive-banner"
+    }
+  },
+  "config": {}
+}

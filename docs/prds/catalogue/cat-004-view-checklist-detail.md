@@ -1,14 +1,5 @@
 # CAT-004: View checklist detail
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | guest, collector |
-| Surface / owner | Collector Disk and AdonisJS catalogue |
-| Dependencies | [CAT-003](../catalogue/cat-003-browse-checklists.md) |
-
-Previous documented surface (unverified): `/checklists/:id`.
 
 ## Outcome and scope
 
@@ -27,3 +18,18 @@ Checklist metadata and cards are returned. This is an established capability; pr
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: apps/api ChecklistsController.show. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/checklists.routes.ts
+- apps/api/app/controllers/checklists_controller.ts
+- apps/web/src/pages/Checklists.tsx
+- apps/public-web/app/(shared-layout)/checklists/page.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

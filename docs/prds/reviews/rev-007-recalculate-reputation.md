@@ -1,18 +1,9 @@
 # REV-007: Recalculate reputation
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously planned) |
-| Actor | worker |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [REV-003](../reviews/rev-003-submit-review.md), [REV-006](../reviews/rev-006-moderate-review.md) |
-
-Previous documented surface (unverified): `background worker`.
 
 ## Outcome and scope
 
-A deterministic projection updates the public trust score. 
+A deterministic projection updates the public trust score.
 
 ## Requirements
 
@@ -27,3 +18,18 @@ A deterministic projection updates the public trust score.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No current worker. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/reviews_controller.ts
+- apps/api/app/models/review.ts
+- apps/api/app/validators/review.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

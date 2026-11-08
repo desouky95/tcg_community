@@ -1,18 +1,9 @@
 # AUTH-003: Verify mobile OTP
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | guest |
-| Surface / owner | AdonisJS identity and applicable client |
-| Dependencies | [AUTH-001](../identity/auth-001-register-account.md) |
-
-Previous documented surface (unverified): `/verify-otp`.
 
 ## Outcome and scope
 
-The challenge is consumed, the account is verified, and a session is issued. 
+The challenge is consumed, the account is verified, and a session is issued.
 
 ## Requirements
 
@@ -27,3 +18,19 @@ The challenge is consumed, the account is verified, and a session is issued.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: apps/web/src/pages/VerifyOTP.tsx; apps/api AuthController.verifyOtp. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- /verify-otp
+
+## Backend API Route Used
+- POST /api/v1/auth/verify-otp
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/auth_controller.ts
+- apps/api/app/controllers/identity_controller.ts
+- apps/web/src/pages/Login.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

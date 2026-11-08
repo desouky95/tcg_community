@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import {
   Globe,
   LogIn,
@@ -33,11 +34,16 @@ export default function UserDrawer({
   const { user: tcgUser, clearSession } = useTcgSession();
   const { theme, setTheme } = useTheme();
   const { logout } = useAuth();
-  const handleLogout = () => {
-    void logout.mutateAsync();
-    clearSession();
-    onClose();
-    window.open(import.meta.env.VITE_PUBLIC_WEB_URL, "_self");
+  const handleLogout = async () => {
+    try {
+      await logout.mutateAsync();
+      clearSession();
+      useStore.getState().setUser(null);
+      onClose();
+      window.location.assign(import.meta.env.VITE_PUBLIC_WEB_URL);
+    } catch {
+      toast.error("Could not sign out. Please try again.");
+    }
   };
 
   return (
@@ -94,7 +100,7 @@ export default function UserDrawer({
               <Link to="/profile" onClick={onClose}>
                 <UserRound aria-hidden="true" /> Profile
               </Link>
-              <Link to="/profile/edit" onClick={onClose}>
+              <Link to="/settings" onClick={onClose}>
                 <Settings aria-hidden="true" /> Account settings
               </Link>
               {tcgUser?.role !== "user" && (

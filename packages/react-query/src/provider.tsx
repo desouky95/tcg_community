@@ -20,7 +20,7 @@ export type ApiHooksContextValue = {
   client: ApiClient;
   defaultQuery?: QueryInput;
   isAuthenticated: boolean;
-  onAuthenticated?: (session: AuthSession) => void;
+  onAuthenticated?: (session: AuthSession) => void | Promise<void>;
 
   onLoggedOut?: () => void;
   onProfileUpdated?: (user: User) => void;

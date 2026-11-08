@@ -28,3 +28,4 @@ export * from "./category-index-item";
 export * from "./listing-preview";
 export * from "./marketplace-hero";
 export * from "./filters-dialog";
+export * from './hero-slider'

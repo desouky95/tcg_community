@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
+    "@medusajs/js-sdk": "^2.22.3",
+    "@medusajs/types": "^2.22.3",
     "@next/env": "catalog:",
+    "@strapi/client": "^1.6.2",
     "@tanstack/react-query": "^5.104.0",
     "@tanstack/react-query-devtools": "^5.104.0",
     "@tcg/api-contracts": "workspace:*",
@@ -19,7 +22,10 @@
     "@tcg/design-tokens": "workspace:*",
     "@tcg/locale": "workspace:*",
     "@tcg/react-query": "workspace:*",
+    "@tcg/strapi-client": "workspace:*",
     "@tcg/ui-web": "workspace:*",
+    "axios": "catalog:",
+    "embla-carousel-react": "^8.6.0",
     "i18next": "^26.4.2",
     "i18next-resources-to-backend": "catalog:",
     "lucide-react": "catalog:",
@@ -32,6 +38,7 @@
     "react-hot-toast": "^2.6.1",
     "react-i18next": "^17.0.15",
     "react-use": "catalog:",
+    "strapi-typed-client": "^2.4.0",
     "zod": "^4.6.5"
   },
   "devDependencies": {

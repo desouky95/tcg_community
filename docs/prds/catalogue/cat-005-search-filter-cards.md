@@ -1,14 +1,5 @@
 # CAT-005: Search and filter cards
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously partial) |
-| Actor | guest, collector |
-| Surface / owner | Collector Disk and AdonisJS catalogue |
-| Dependencies | [CAT-003](../catalogue/cat-003-browse-checklists.md) |
-
-Previous documented surface (unverified): `catalogue search`.
 
 ## Outcome and scope
 
@@ -27,3 +18,18 @@ Users receive paginated cards matching normalized filters. This is an establishe
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: Client-side search exists; server search is incomplete. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/checklists.routes.ts
+- apps/api/app/controllers/checklists_controller.ts
+- apps/web/src/pages/Checklists.tsx
+- apps/public-web/app/(shared-layout)/checklists/page.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

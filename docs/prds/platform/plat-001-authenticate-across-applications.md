@@ -1,14 +1,7 @@
 # PLAT-001: Authenticate across applications
 
-| Field | Value |
-| --- | --- |
-| Horizon | Planned |
-| Implementation | Unverified; audit existing code before implementation |
-| Domain | Platform |
-| Owner | The named backend and its clients |
-| Dependencies | None |
 
-## Outcome
+## Outcome and scope
 
 A user can authenticate with their AdonisJS account across the storefront and Collector Disk.
 
@@ -24,3 +17,18 @@ A user can authenticate with their AdonisJS account across the storefront and Co
 - The outcome is achieved for an eligible actor and unauthorized actors cannot access or change the resource.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
 - Verify integration with the owning service and its persisted state.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/database/migrations
+- apps/api/database/seeders
+- apps/backend/src/scripts/seed-demo-products.ts
+- apps/cms/config
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

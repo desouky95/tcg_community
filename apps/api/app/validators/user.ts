@@ -83,7 +83,7 @@ export const signupOtpValidator = vine.create({
  */
 export const verifyOtpValidator = vine.create({
   mobile: vine.string().mobile(),
-  otp: vine.string().minLength(6).maxLength(6),
+  otp: vine.string().regex(/^\d{6}$/),
 })
 
 /**

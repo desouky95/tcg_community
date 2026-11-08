@@ -1,0 +1,166 @@
+[
+  {
+    "id": "installation",
+    "url": "https://docs.adonisjs.com/installation.md"
+  },
+  {
+    "id": "folder-structure",
+    "url": "https://docs.adonisjs.com/folder-structure.md"
+  },
+  {
+    "id": "configuration",
+    "url": "https://docs.adonisjs.com/configuration.md"
+  },
+  {
+    "id": "deployment",
+    "url": "https://docs.adonisjs.com/deployment.md"
+  },
+  {
+    "id": "routing",
+    "url": "https://docs.adonisjs.com/guides/basics/routing.md"
+  },
+  {
+    "id": "controllers",
+    "url": "https://docs.adonisjs.com/guides/basics/controllers.md"
+  },
+  {
+    "id": "http-context",
+    "url": "https://docs.adonisjs.com/guides/basics/http-context.md"
+  },
+  {
+    "id": "middleware",
+    "url": "https://docs.adonisjs.com/guides/basics/middleware.md"
+  },
+  {
+    "id": "request",
+    "url": "https://docs.adonisjs.com/guides/basics/request.md"
+  },
+  {
+    "id": "response",
+    "url": "https://docs.adonisjs.com/guides/basics/response.md"
+  },
+  {
+    "id": "validation",
+    "url": "https://docs.adonisjs.com/guides/basics/validation.md"
+  },
+  {
+    "id": "file-uploads",
+    "url": "https://docs.adonisjs.com/guides/basics/file-uploads.md"
+  },
+  {
+    "id": "exception-handling",
+    "url": "https://docs.adonisjs.com/guides/basics/exception-handling.md"
+  },
+  {
+    "id": "url-builder",
+    "url": "https://docs.adonisjs.com/guides/basics/url-builder.md"
+  },
+  {
+    "id": "lucid",
+    "url": "https://docs.adonisjs.com/guides/database/lucid.md"
+  },
+  {
+    "id": "auth-introduction",
+    "url": "https://docs.adonisjs.com/guides/auth/introduction.md"
+  },
+  {
+    "id": "auth-credentials",
+    "url": "https://docs.adonisjs.com/guides/auth/verifying-user-credentials.md"
+  },
+  {
+    "id": "session-guard",
+    "url": "https://docs.adonisjs.com/guides/auth/session-guard.md"
+  },
+  {
+    "id": "access-tokens",
+    "url": "https://docs.adonisjs.com/guides/auth/access-tokens-guard.md"
+  },
+  {
+    "id": "authorization",
+    "url": "https://docs.adonisjs.com/guides/auth/authorization.md"
+  },
+  {
+    "id": "transformers",
+    "url": "https://docs.adonisjs.com/guides/frontend/transformers.md"
+  },
+  {
+    "id": "api-client",
+    "url": "https://docs.adonisjs.com/guides/frontend/api-client.md"
+  },
+  {
+    "id": "inertia",
+    "url": "https://docs.adonisjs.com/guides/frontend/inertia.md"
+  },
+  {
+    "id": "testing",
+    "url": "https://docs.adonisjs.com/guides/testing/introduction.md"
+  },
+  {
+    "id": "api-tests",
+    "url": "https://docs.adonisjs.com/guides/testing/api-tests.md"
+  },
+  {
+    "id": "dependency-injection",
+    "url": "https://docs.adonisjs.com/guides/concepts/dependency-injection.md"
+  },
+  {
+    "id": "service-providers",
+    "url": "https://docs.adonisjs.com/guides/concepts/service-providers.md"
+  },
+  {
+    "id": "codegen",
+    "url": "https://docs.adonisjs.com/guides/concepts/codegen.md"
+  },
+  {
+    "id": "barrel-files",
+    "url": "https://docs.adonisjs.com/guides/concepts/barrel-files.md"
+  },
+  {
+    "id": "ace",
+    "url": "https://docs.adonisjs.com/guides/ace/introduction.md"
+  },
+  {
+    "id": "creating-commands",
+    "url": "https://docs.adonisjs.com/guides/ace/creating-commands.md"
+  },
+  {
+    "id": "security-cors",
+    "url": "https://docs.adonisjs.com/guides/security/cors.md"
+  },
+  {
+    "id": "security-ssr",
+    "url": "https://docs.adonisjs.com/guides/security/securing-ssr-applications.md"
+  },
+  {
+    "id": "rate-limiting",
+    "url": "https://docs.adonisjs.com/guides/security/rate-limiting.md"
+  },
+  {
+    "id": "logger",
+    "url": "https://docs.adonisjs.com/guides/digging-deeper/logger.md"
+  },
+  {
+    "id": "emitter",
+    "url": "https://docs.adonisjs.com/guides/digging-deeper/emitter.md"
+  },
+  {
+    "id": "locks",
+    "url": "https://docs.adonisjs.com/guides/digging-deeper/locks.md"
+  },
+  {
+    "id": "cache",
+    "url": "https://docs.adonisjs.com/guides/digging-deeper/cache.md"
+  },
+  {
+    "id": "drive",
+    "url": "https://docs.adonisjs.com/guides/digging-deeper/drive.md"
+  },
+  {
+    "id": "mail",
+    "url": "https://docs.adonisjs.com/guides/digging-deeper/mail.md"
+  },
+  {
+    "id": "v6-to-v7",
+    "url": "https://docs.adonisjs.com/v6-to-v7.md"
+  }
+]

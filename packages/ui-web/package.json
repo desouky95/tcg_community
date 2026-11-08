@@ -47,6 +47,7 @@
     "@tanstack/react-table-devtools": "catalog:",
     "add": "catalog:",
     "clsx": "catalog:",
+    "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.43.0",
     "lucide-react": "catalog:",
     "motion": "catalog:",

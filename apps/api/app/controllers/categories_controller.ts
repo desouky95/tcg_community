@@ -4,7 +4,6 @@ import pagination from '#services/pagination_service'
 import type { HttpContext } from '@adonisjs/core/http'
 import { ControllerWithPagination, type FilterItem } from '../interfaces/pagination.controller.ts'
 import string from '@adonisjs/core/helpers/string'
-import CategoryTransformer from '#transformers/category_transformer'
 
 export default class CategoriesController extends ControllerWithPagination {
   protected allowedColumns: string[] = ['status']
@@ -27,8 +26,8 @@ export default class CategoriesController extends ControllerWithPagination {
     const filters = await this.getFiltersOptions()
     const query = Category.query()
       .where('parentId', -1)
-      .whereNot('status', 'archived')
-      .preload('children', (children) => children.whereNot('status', 'archived'))
+      .where('status', 'published')
+      .preload('children', (children) => children.where('status', 'published').orderBy('id', 'asc'))
       .orderBy('id', 'asc')
     // filtering.filter(query, { allowedFields: ['status'] })
     const result = await pagination.paginate<typeof Category>(query)

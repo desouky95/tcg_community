@@ -1,14 +1,5 @@
 # CAT-001: Browse catalogue categories
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | guest, collector |
-| Surface / owner | Collector Disk and AdonisJS catalogue |
-| Dependencies | None |
-
-Previous documented surface (unverified): `/checklists`.
 
 ## Outcome and scope
 
@@ -27,3 +18,21 @@ Published catalogue categories are listed. This is an established capability; pr
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: apps/web/src/pages/Checklists.tsx. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- /checklists
+
+## Backend API Route Used
+- GET /api/v1/categories
+
+## Related Files
+- apps/api/start/routes/v1/categories.routes.ts
+- apps/api/app/controllers/categories_controller.ts
+- apps/api/app/models/category.ts
+- apps/api/tests/functional/categories.spec.ts
+- packages/api-contracts/src/client.ts
+- packages/react-query/src/hooks.ts
+- apps/web/src/pages/Checklists.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

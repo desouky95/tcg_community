@@ -10,7 +10,7 @@ import {
 import { useCategoryAddForm } from "./CategoryAddForm.hook";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Plus, X } from "lucide-react";
-import { DevTool } from "@hookform/devtools";
+// import { DevTool } from "@hookform/devtools";
 import { Controller } from "react-hook-form";
 
 export function CategoryAddForm() {
@@ -44,7 +44,7 @@ export function CategoryAddForm() {
           </Button>
         }
       />
-      <DevTool control={control} />
+      {/* <DevTool control={control} /> */}
       <Surface className="rounded-xl p-5 sm:p-7">
         <form onSubmit={onSubmit} className="grid gap-6">
           <fieldset className="grid gap-3">
@@ -66,7 +66,7 @@ export function CategoryAddForm() {
                     {(["parent", "subcategory"] as const).map((type) => (
                       <label
                         key={type}
-                        className="flex cursor-pointer items-center gap-2 rounded-md border border-wax-line px-3 py-2 text-sm font-semibold text-wax-ink has-[:checked]:border-primary-500 has-[:checked]:bg-primary-500/10"
+                        className="flex cursor-pointer items-center gap-2 rounded-md border border-wax-line px-3 py-2 text-sm font-semibold text-wax-ink has-checked:border-primary-500 has-checked:bg-primary-500/10"
                       >
                         <RadioGroup.Item
                           value={type}

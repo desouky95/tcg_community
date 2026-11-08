@@ -1,0 +1,22 @@
+{
+  "name": "@tcg/strapi-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "strapi:generate": "strapi-types generate --output ./src/generated --format ts --force",
+    "strapi:check": "strapi-types check --output ./src/generated",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "strapi-typed-client": "^2.4.0",
+    "typescript": "~5.9.3"
+  }
+}

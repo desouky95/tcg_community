@@ -1,18 +1,9 @@
 # AUTH-009: Handle expired or revoked session
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously partial) |
-| Actor | collector |
-| Surface / owner | AdonisJS identity and applicable client |
-| Dependencies | [AUTH-005](../identity/auth-005-sign-in-password.md) |
-
-Previous documented surface (unverified): `all protected routes`.
 
 ## Outcome and scope
 
-The client clears private state and returns the user to sign-in. 
+The client clears private state and returns the user to sign-in.
 
 ## Requirements
 
@@ -27,3 +18,19 @@ The client clears private state and returns the user to sign-in.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: ProtectedRoute exists; refresh/revocation UX is partial. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/auth_controller.ts
+- apps/api/app/controllers/identity_controller.ts
+- apps/web/src/pages/Login.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

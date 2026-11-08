@@ -1,14 +1,7 @@
 # SWAP-009: Send items to NextPull
 
-| Field | Value |
-| --- | --- |
-| Horizon | Planned |
-| Implementation | Unverified; audit existing code before implementation |
-| Domain | Swaps |
-| Owner | Collector Disk and AdonisJS |
-| Dependencies | [SWAP-008](../swaps/swap-008-pay-middleman-fees.md) |
 
-## Outcome
+## Outcome and scope
 
 Both participants send their items to NextPull after required fees are paid.
 
@@ -24,3 +17,19 @@ Both participants send their items to NextPull after required fees are paid.
 - The outcome is achieved for an eligible actor and unauthorized actors cannot access or change the resource.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
 - Test each affected participant and operator permission, state transition, block and dispute path.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/swaps.routes.ts
+- apps/api/app/controllers/swaps_controller.ts
+- apps/api/app/controllers/swap_deals_controller.ts
+- apps/api/app/services/swap_service.ts
+- apps/web/src/pages/Swapping.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

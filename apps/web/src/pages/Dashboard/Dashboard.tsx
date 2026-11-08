@@ -18,9 +18,13 @@ export function Dashboard() {
   const {
     categories,
     checklists,
+    summaries,
+    summariesLoading,
+    summariesError,
     categorySelected,
     handleCategorySelect,
     isLoading,
+    catalogueError,
     setViewMode,
     t,
     viewMode,
@@ -29,14 +33,36 @@ export function Dashboard() {
     clear,
   } = useDashboard();
 
-  if (isLoading) {
-    <Layout>
-      <LoadingGrid />
-    </Layout>;
-  }
   return (
     <Layout>
-      <div className="wax-workspace-view ">
+      <div className="wax-workspace-view">
+        <section aria-labelledby="my-collections-heading" className="pb-10 pt-4">
+          <SectionHeading>
+            <div>
+              <h2 id="my-collections-heading">{t("dashboard.my_collections")}</h2>
+              <p>{t("dashboard.my_collections_subtitle")}</p>
+            </div>
+          </SectionHeading>
+          {summariesLoading ? (
+            <p role="status" className="text-wax-muted">{t("dashboard.my_collections_loading")}</p>
+          ) : summariesError ? (
+            <p role="alert" className="text-wax-muted">{t("dashboard.my_collections_error")}</p>
+          ) : summaries.length === 0 ? (
+            <p className="text-wax-muted">{t("dashboard.my_collections_empty")}</p>
+          ) : (
+            <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {summaries.map((item) => (
+                <li key={item.id}>
+                  <Link to={`/collection/${item.slug}`} className="block h-full rounded-xl border border-wax-line bg-wax-paper p-5 transition-colors hover:border-primary-500 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-primary-500">
+                    <h3 className="font-display text-lg font-bold text-wax-ink">{item.name}</h3>
+                    <p className="mt-4 text-sm font-semibold tabular-nums text-wax-ink">{t("dashboard.owned_progress", { owned: item.owned, total: item.totalCards })}</p>
+                    <p className="mt-1 text-sm tabular-nums text-wax-muted">{t("dashboard.collection_activity", { wanted: item.wanted, offered: item.offered })}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
         <SectionHeading className="border-b-2 border-wax-ink pt-4">
           <div>
             <h2>
@@ -52,7 +78,7 @@ export function Dashboard() {
             </p>
           </div>
           <div className="grid gap-2 justify-items-end">
-            <div className="grid shrink-0 gap-1.5 text-start md:text-end [&_span]:font-mono [&_span]:text-utility [&_span]:uppercase [&_span]:text-wax-red [&_strong]:font-display [&_strong]:text-3xl [&_strong]:leading-none">
+            <div className="grid shrink-0 gap-1.5 text-start md:text-end [&_span]:text-sm [&_span]:text-wax-muted [&_strong]:font-display [&_strong]:text-2xl [&_strong]:leading-none">
               <span>
                 {t("dashboard.workspace_label", {
                   defaultValue: "Collector workspace",
@@ -76,6 +102,11 @@ export function Dashboard() {
           </div>
         </SectionHeading>
 
+        {isLoading ? (
+          <LoadingGrid label={t("dashboard.catalogue_loading")} />
+        ) : catalogueError ? (
+          <p role="alert" className="py-6 text-wax-muted">{t("dashboard.catalogue_error")}</p>
+        ) : (
         <div className="mt-8 flex flex-col lg:flex-row gap-8 items-start">
           {/* Sidebar Filters */}
           <div className="w-full lg:w-64 shrink-0 space-y-2 rtl:text-right lg:sticky top-[20vh]">
@@ -120,7 +151,7 @@ export function Dashboard() {
           <div className="flex-1 w-full">
             <div>
               <div className="pt-4 lg:sticky top-[10vh] mb-4 shadow-md bg-wax-paper z-10">
-                <Field label="Search">
+                <Field label={t("common.search")}>
                   <Input
                     value={query || ""}
                     name="search"
@@ -173,6 +204,7 @@ export function Dashboard() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </Layout>
   );

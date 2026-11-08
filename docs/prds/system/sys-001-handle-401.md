@@ -1,18 +1,9 @@
 # SYS-001: Handle unauthenticated request
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously partial) |
-| Actor | guest, collector, administrator, worker |
-| Surface / owner | Relevant application and owning backend |
-| Dependencies | None |
-
-Previous documented surface (unverified): `all protected surfaces`.
 
 ## Outcome and scope
 
-Clients clear private state and offer safe sign-in recovery. 
+Clients clear private state and offer safe sign-in recovery.
 
 ## Requirements
 
@@ -27,3 +18,17 @@ Clients clear private state and offer safe sign-in recovery.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: ProtectedRoute and Axios handling exist. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/app/exceptions/handler.ts
+- apps/web/src/main.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

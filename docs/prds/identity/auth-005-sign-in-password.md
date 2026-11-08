@@ -1,18 +1,9 @@
 # AUTH-005: Sign in with password
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | guest |
-| Surface / owner | AdonisJS identity and applicable client |
-| Dependencies | [AUTH-003](../identity/auth-003-verify-mobile-otp.md) |
-
-Previous documented surface (unverified): `/login`.
 
 ## Outcome and scope
 
-Valid credentials create an authenticated session. 
+Valid credentials create an authenticated session.
 
 ## Requirements
 
@@ -27,3 +18,19 @@ Valid credentials create an authenticated session.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: apps/web/src/pages/Login.tsx; apps/api AuthController.login. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- /login
+
+## Backend API Route Used
+- POST /api/v1/auth/login
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/auth_controller.ts
+- apps/api/app/controllers/identity_controller.ts
+- apps/web/src/pages/Login.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

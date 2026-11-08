@@ -1,18 +1,9 @@
 # REV-005: Report abusive review
 
-| Field | Value |
-| --- | --- |
-| Horizon | future |
-| Implementation | unverified (previously absent) |
-| Actor | collector |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [REV-001](../reviews/rev-001-view-collector-reviews.md) |
-
-Previous documented surface (unverified): `review actions`.
 
 ## Outcome and scope
 
-A unique open report enters moderation. 
+A unique open report enters moderation.
 
 ## Requirements
 
@@ -27,3 +18,18 @@ A unique open report enters moderation.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No current implementation. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/reviews_controller.ts
+- apps/api/app/models/review.ts
+- apps/api/app/validators/review.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

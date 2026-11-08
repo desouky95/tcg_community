@@ -1,14 +1,5 @@
 # COL-013: Reset or remove collection
 
-| Field | Value |
-| --- | --- |
-| Horizon | future |
-| Implementation | unverified (previously absent) |
-| Actor | collector |
-| Surface / owner | Existing Collector Disk collections and AdonisJS; preserve established behavior |
-| Dependencies | [COL-003](../collections/col-003-view-own-collection.md) |
-
-Previous documented surface (unverified): `collection settings`.
 
 ## Outcome and scope
 
@@ -27,3 +18,18 @@ A confirmed reset removes active progress while preserving audit obligations. Th
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No current implementation. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/collection_progress_controller.ts
+- apps/api/app/services/collection_progress_service.ts
+- apps/web/src/pages/CollectionEdit.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

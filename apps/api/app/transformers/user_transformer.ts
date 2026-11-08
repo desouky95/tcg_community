@@ -16,6 +16,8 @@ export default class UserTransformer extends BaseTransformer<User> {
         'email',
         'role',
         'blocked',
+        'isVerified',
+        'notReadyForSwap',
         'status',
         'locale',
         'theme',

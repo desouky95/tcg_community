@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import {
   TcgApiProvider,
   TcgSessionProvider,
@@ -42,7 +42,18 @@ export const SessionWrapper = ({ children }: { children: ReactNode }) => {
   );
 };
 export function ApiHooksProvider({ children }: { children: ReactNode }) {
-  const { client, status } = useTcgSession();
+  const { client, status, refresh, clearSession } = useTcgSession();
+  useEffect(() => {
+    const id = client.http.interceptors.response.use(undefined, (error) => {
+      const url = error.config?.url ?? "";
+      if (status === "authenticated" && error.response?.status === 401 && !url.startsWith("/auth/")) {
+        clearSession();
+        useStore.getState().setUser(null);
+      }
+      return Promise.reject(error);
+    });
+    return () => client.http.interceptors.response.eject(id);
+  }, [client, status, clearSession]);
   const defaultQuery = useDefaultApiQuery();
 
   return (
@@ -50,6 +61,8 @@ export function ApiHooksProvider({ children }: { children: ReactNode }) {
       client={client}
       defaultQuery={defaultQuery}
       isAuthenticated={status === "authenticated"}
+      onAuthenticated={async () => { await refresh(); }}
+      onLoggedOut={() => { clearSession(); useStore.getState().setUser(null); }}
       notify={{ success: toast.success, error: toast.error }}
       fallbacks={{
         categories: () => mockCategories,

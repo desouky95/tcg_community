@@ -122,6 +122,12 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"otp-login"]],
     types: placeholder as Registry['identity.otp_login']['types'],
   },
+  'identity.delete_deactivated_account': {
+    methods: ["POST"],
+    pattern: '/api/v1/auth/deactivated-privacy-deletion',
+    tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"deactivated-privacy-deletion"]],
+    types: placeholder as Registry['identity.delete_deactivated_account']['types'],
+  },
   'identity.recover_password': {
     methods: ["POST"],
     pattern: '/api/v1/auth/password-recovery',
@@ -284,6 +290,12 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"swap-deals"],[1,"id"],[0,"scan-qr"]],
     types: placeholder as Registry['swap_deals.scan_qr']['types'],
   },
+  'collection_progress.public_view': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/users/:userId/collections/:checklistId',
+    tokens: [[0,"api"],[0,"v1"],[0,"users"],[1,"userId"],[0,"collections"],[1,"checklistId"]],
+    types: placeholder as Registry['collection_progress.public_view']['types'],
+  },
   'reviews.index': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/users/:id/reviews',
@@ -308,6 +320,54 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"users"]],
     types: placeholder as Registry['admin.list_users']['types'],
   },
+  'collection_progress.start': {
+    methods: ["POST"],
+    pattern: '/api/v1/user-checklists/:id/start',
+    tokens: [[0,"api"],[0,"v1"],[0,"user-checklists"],[1,"id"],[0,"start"]],
+    types: placeholder as Registry['collection_progress.start']['types'],
+  },
+  'collection_progress.details': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/user-checklists/:id/details',
+    tokens: [[0,"api"],[0,"v1"],[0,"user-checklists"],[1,"id"],[0,"details"]],
+    types: placeholder as Registry['collection_progress.details']['types'],
+  },
+  'collection_progress.batch': {
+    methods: ["PATCH"],
+    pattern: '/api/v1/user-checklists/:id/entries',
+    tokens: [[0,"api"],[0,"v1"],[0,"user-checklists"],[1,"id"],[0,"entries"]],
+    types: placeholder as Registry['collection_progress.batch']['types'],
+  },
+  'collection_progress.visibility': {
+    methods: ["PUT"],
+    pattern: '/api/v1/user-checklists/:id/visibility',
+    tokens: [[0,"api"],[0,"v1"],[0,"user-checklists"],[1,"id"],[0,"visibility"]],
+    types: placeholder as Registry['collection_progress.visibility']['types'],
+  },
+  'collection_progress.reset': {
+    methods: ["POST"],
+    pattern: '/api/v1/user-checklists/:id/reset',
+    tokens: [[0,"api"],[0,"v1"],[0,"user-checklists"],[1,"id"],[0,"reset"]],
+    types: placeholder as Registry['collection_progress.reset']['types'],
+  },
+  'collection_progress.preview': {
+    methods: ["POST"],
+    pattern: '/api/v1/user-checklists/:id/import/preview',
+    tokens: [[0,"api"],[0,"v1"],[0,"user-checklists"],[1,"id"],[0,"import"],[0,"preview"]],
+    types: placeholder as Registry['collection_progress.preview']['types'],
+  },
+  'collection_progress.commit': {
+    methods: ["POST"],
+    pattern: '/api/v1/user-checklists/:id/import/commit',
+    tokens: [[0,"api"],[0,"v1"],[0,"user-checklists"],[1,"id"],[0,"import"],[0,"commit"]],
+    types: placeholder as Registry['collection_progress.commit']['types'],
+  },
+  'collection_progress.export': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/user-checklists/:id/export',
+    tokens: [[0,"api"],[0,"v1"],[0,"user-checklists"],[1,"id"],[0,"export"]],
+    types: placeholder as Registry['collection_progress.export']['types'],
+  },
   'user_checklists.show': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/user-checklists/:id',
@@ -320,11 +380,23 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"user-checklists"],[1,"id"]],
     types: placeholder as Registry['user_checklists.update']['types'],
   },
-  'user_checklists.import': {
+  'collection_progress.legacy_import': {
     methods: ["POST"],
     pattern: '/api/v1/user-checklists/:id/import',
     tokens: [[0,"api"],[0,"v1"],[0,"user-checklists"],[1,"id"],[0,"import"]],
-    types: placeholder as Registry['user_checklists.import']['types'],
+    types: placeholder as Registry['collection_progress.legacy_import']['types'],
+  },
+  'collection_progress.shared_view': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/shared/collections/:token',
+    tokens: [[0,"api"],[0,"v1"],[0,"shared"],[0,"collections"],[1,"token"]],
+    types: placeholder as Registry['collection_progress.shared_view']['types'],
+  },
+  'collection_progress.dashboard': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/account/collections',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"collections"]],
+    types: placeholder as Registry['collection_progress.dashboard']['types'],
   },
   'profile.show': {
     methods: ["GET","HEAD"],
@@ -337,6 +409,12 @@ const routes = {
     pattern: '/api/v1/account/profile',
     tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"profile"]],
     types: placeholder as Registry['profile.update']['types'],
+  },
+  'identity.get_preferences': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/account/preferences',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"preferences"]],
+    types: placeholder as Registry['identity.get_preferences']['types'],
   },
   'identity.preferences': {
     methods: ["PUT"],
@@ -355,6 +433,24 @@ const routes = {
     pattern: '/api/v1/account/privacy-exports',
     tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"privacy-exports"]],
     types: placeholder as Registry['identity.export_personal_data']['types'],
+  },
+  'identity.list_personal_exports': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/account/privacy-exports',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"privacy-exports"]],
+    types: placeholder as Registry['identity.list_personal_exports']['types'],
+  },
+  'identity.get_personal_export': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/account/privacy-exports/:id',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"privacy-exports"],[1,"id"]],
+    types: placeholder as Registry['identity.get_personal_export']['types'],
+  },
+  'identity.download_personal_export': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/account/privacy-exports/:id/download',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"privacy-exports"],[1,"id"],[0,"download"]],
+    types: placeholder as Registry['identity.download_personal_export']['types'],
   },
   'identity.delete_personal_data': {
     methods: ["POST"],
@@ -385,6 +481,12 @@ const routes = {
     pattern: '/api/v1/internal/card-catalog/cards/batch',
     tokens: [[0,"api"],[0,"v1"],[0,"internal"],[0,"card-catalog"],[0,"cards"],[0,"batch"]],
     types: placeholder as Registry['commerce_catalog.batch']['types'],
+  },
+  'configs.config': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/config',
+    tokens: [[0,"api"],[0,"v1"],[0,"config"]],
+    types: placeholder as Registry['configs.config']['types'],
   },
 } as const satisfies Record<string, AdonisEndpoint>
 

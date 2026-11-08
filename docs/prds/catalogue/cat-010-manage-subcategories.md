@@ -1,14 +1,5 @@
 # CAT-010: Manage subcategories
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | administrator |
-| Surface / owner | Collector Disk and AdonisJS catalogue |
-| Dependencies | [CAT-007](../catalogue/cat-007-create-category.md) |
-
-Previous documented surface (unverified): `/admin/categories`.
 
 ## Outcome and scope
 
@@ -27,3 +18,18 @@ A validated parent-child relationship is created. This is an established capabil
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: apps/api CategoriesController.addSubcategory. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/checklists.routes.ts
+- apps/api/app/controllers/checklists_controller.ts
+- apps/web/src/pages/Checklists.tsx
+- apps/public-web/app/(shared-layout)/checklists/page.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

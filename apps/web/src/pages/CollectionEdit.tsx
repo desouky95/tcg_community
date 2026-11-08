@@ -4,101 +4,144 @@ import { useChecklist } from "../hooks/useChecklists";
 import {
   useUserChecklist,
   useUpdateUserChecklist,
-  useUserChecklistMutation,
 } from "../hooks/useUserChecklists";
 import Layout from "../components/Layout";
 import { Save, FileSpreadsheet } from "lucide-react";
 import { BackButton } from "../components/common/BackButton";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
-import { useImportUserChecklist } from "@tcg/react-query";
-import { Controller, useForm } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
+import { api } from "../lib/api";
+import { useQueryClient } from "@tanstack/react-query";
+import CollectionControls from "../components/collections/CollectionControls";
+import {
+  Button,
+  Checkbox,
+  Field,
+  PageHeading,
+  Skeleton,
+  Surface,
+  Textarea,
+} from "@tcg/ui-web";
 
 export default function CollectionEdit() {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
   const { data: checklist, isLoading: checklistLoading } = useChecklist(id);
-  const { data: userProgress, isLoading: progressLoading } = useUserChecklist(
-    id!,
-  );
+  const {
+    data: userProgress,
+    isLoading: progressLoading,
+    refetch: refetchProgress,
+  } = useUserChecklist(id!);
 
-  const { mutateAsync: getUserChecklist } = useUserChecklistMutation(id);
   const updateMutation = useUpdateUserChecklist();
 
-  const { control } = useForm({
-    values: {
-      missingList: userProgress?.data?.missingList,
-      duplicatesList: userProgress?.data?.duplicatesList,
-      collectedList: userProgress?.data?.collectedList,
-    },
-  });
-
   const [missingList, setMissingList] = useState(
-    userProgress?.data.missingList,
+    userProgress?.data?.missingList,
   );
   const [duplicatesList, setDuplicatesList] = useState(
-    userProgress?.data.duplicatesList,
+    userProgress?.data?.duplicatesList,
   );
   const [collectedList, setCollectedList] = useState(
-    userProgress?.data.collectedList,
+    userProgress?.data?.collectedList,
   );
   const [treatEmptyAsMissing, setTreatEmptyAsMissing] = useState(true);
+  const [revision, setRevision] = useState(0);
+  const [preview, setPreview] = useState<{
+    file: File;
+    version: number;
+    previewToken: string;
+    entries: unknown[];
+    issues: { row: number; message: string }[];
+    treatEmptyAsMissing: boolean;
+  }>();
+  const [importPending, setImportPending] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
-      const data = await getUserChecklist();
-      setMissingList(data?.data.missingList);
-      setDuplicatesList(data?.data.duplicatesList);
-      setCollectedList(data?.data.collectedList);
-    };
-    init();
-  }, [getUserChecklist]);
+    setMissingList(userProgress?.data?.missingList);
+    setDuplicatesList(userProgress?.data?.duplicatesList);
+    setCollectedList(userProgress?.data?.collectedList);
+  }, [userProgress?.data]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { mutate } = useImportUserChecklist();
-
-  const handleExcelImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleExcelImport = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
     if (!file || !id) return;
-
+    setImportPending(true);
     try {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("treatEmptyAsMissing", String(treatEmptyAsMissing));
-
-      mutate(
-        { id, data: formData },
-        {
-          onSuccess(data) {
-            console.log(data);
-            setCollectedList(data.data.collectedList);
-            setMissingList(data.data.missingList);
-            setDuplicatesList(data.data.duplicatesList);
-          },
-        },
+      const response = await api.http.post(
+        `/user-checklists/${id}/import/preview`,
+        formData,
       );
-
-      toast.success(t("collection_edit.import_success"));
-    } catch (error) {
-      console.error("Excel import error:", error);
-      toast.error(t("collection_edit.import_error"));
+      setPreview({ file, ...response.data.data, treatEmptyAsMissing });
+    } catch {
+      toast.error(
+        "Could not preview this file. Start the collection first and check the spreadsheet.",
+      );
     } finally {
+      setImportPending(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+  const commitImport = async () => {
+    if (!preview || !id) return;
+    setImportPending(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", preview.file);
+      formData.append(
+        "treatEmptyAsMissing",
+        String(preview.treatEmptyAsMissing),
+      );
+      formData.append("expectedVersion", String(preview.version));
+      formData.append("previewToken", preview.previewToken);
+      await api.http.post(`/user-checklists/${id}/import/commit`, formData);
+      await refetchProgress();
+      setPreview(undefined);
+      void queryClient.invalidateQueries({
+        queryKey: ["collection-summaries"],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ["checklists", "cards", id],
+      });
+      setRevision((value) => value + 1);
+      toast.success(t("collection_edit.import_success"));
+    } catch {
+      toast.error(
+        "Could not import. The collection may have changed; preview the file again.",
+      );
+    } finally {
+      setImportPending(false);
     }
   };
 
   const handleSave = async () => {
-    if (!id) return;
-    await updateMutation.mutateAsync({
-      id,
-      data: {
-        missingList,
-        duplicatesList,
-        collectedList,
-      },
-    });
+    if (!id || updateMutation.isPending) return;
+    try {
+      await updateMutation.mutateAsync({
+        id,
+        data: {
+          missingList,
+          duplicatesList,
+          collectedList,
+        },
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ["collection-summaries"],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ["checklists", "cards", id],
+      });
+      setRevision((value) => value + 1);
+    } catch {
+      // The mutation reports the error; preserve the current edits for retry.
+    }
   };
 
   const loading = checklistLoading || progressLoading;
@@ -106,11 +149,15 @@ export default function CollectionEdit() {
   if (loading) {
     return (
       <Layout>
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 w-1/4 bg-card rounded" />
-          <div className="h-40 bg-card rounded" />
-          <div className="h-40 bg-card rounded" />
-          <div className="h-40 bg-card rounded" />
+        <div
+          role="status"
+          aria-label={t("common.loading")}
+          className="grid gap-6"
+        >
+          <Skeleton className="h-10 w-1/3" />
+          <Skeleton className="h-40" />
+          <Skeleton className="h-40" />
+          <Skeleton className="h-40" />
         </div>
       </Layout>
     );
@@ -128,112 +175,158 @@ export default function CollectionEdit() {
 
   return (
     <Layout>
-      <DevTool control={control} />
-      <div className="wax-workspace-view wax-collection-edit-view">
-        <div className="mb-8 flex items-center justify-between">
-          <div className="flex items-center space-x-4 rtl:space-x-reverse">
-            <BackButton />
-            <div>
-              <h1 className="text-2xl font-black tracking-tight uppercase">
-                {t("collection_edit.title")}
-              </h1>
-              <p className="text-muted-foreground text-xs font-bold opacity-70">
-                {checklist.name}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex lg:items-center space-x-3 rtl:space-x-reverse items-stretch gap-3">
-            <div className="flex items-center gap-2 mr-4 bg-muted/30 px-3 py-2 rounded-lg border border-border/50">
-              <input
-                type="checkbox"
-                id="treatEmptyAsMissing"
-                checked={treatEmptyAsMissing}
-                onChange={(e) => setTreatEmptyAsMissing(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-              />
-              <label
-                htmlFor="treatEmptyAsMissing"
-                className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground cursor-pointer select-none"
+      <div className="wax-workspace-view mx-auto grid w-full max-w-screen-2xl gap-8">
+        <div className="flex min-w-0 items-start gap-3 border-b border-wax-line pb-6 sm:gap-4">
+          <BackButton />
+          <PageHeading
+            className="min-w-0 flex-1"
+            size="xl"
+            title={t("collection_edit.title")}
+            description={checklist.name}
+            actions={
+              <Button
+                type="submit"
+                form="collection-edit-form"
+                loading={updateMutation.isPending}
               >
-                {t("collection_edit.treat_empty_as_missing")}
-              </label>
-            </div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleExcelImport}
-              accept=".xlsx, .xls"
-              className="hidden"
-            />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 px-6 py-2.5 bg-card hover:bg-border/40 text-foreground border border-border rounded-xl text-sm font-black uppercase tracking-widest transition-all shadow-sm"
-            >
-              <FileSpreadsheet className="w-4 h-4 text-green-500" />
-              <span>{t("collection_edit.import_excel")}</span>
-            </button>
-
-            <button
-              onClick={handleSave}
-              disabled={updateMutation.isPending}
-              className="flex items-center gap-2 px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl text-sm font-black uppercase tracking-widest transition-all shadow-xl shadow-primary-500/20 disabled:opacity-50"
-            >
-              <Save className="w-4 h-4" />
-              <span>
+                <Save className="size-4" aria-hidden="true" />
                 {updateMutation.isPending
                   ? t("common.loading")
                   : t("collection_edit.save")}
-              </span>
-            </button>
-          </div>
+              </Button>
+            }
+          />
         </div>
 
-        <div className="grid grid-cols-1 gap-6">
-          {/* Missing List */}
-          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-            <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 ml-1">
-              {t("collection_edit.missing_list")}
-            </label>
-            <Controller
-              control={control}
-              name="missingList"
-              render={({ field }) => (
-                <textarea
-                  value={field.value ?? ""}
-                  onChange={field.onChange}
-                  placeholder="1, 2, 3, 45, 102..."
-                  className="w-full bg-input/20 border-2 border-border/50 rounded-xl p-4 min-h-37.5 focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 transition-all text-sm font-medium font-mono placeholder:text-muted-foreground/30"
+        <div className="grid min-w-0 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,22rem)]">
+          <div className="grid min-w-0 gap-6">
+            <Surface className="rounded-xl p-4 sm:p-7">
+              <form
+                id="collection-edit-form"
+                className="grid min-w-0 gap-6 sm:gap-8"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void handleSave();
+                }}
+              >
+                <Field
+                  label={t("collection_edit.missing_list")}
+                  hint={t("collection_edit.missing_hint")}
+                >
+                  <Textarea
+                    value={missingList ?? ""}
+                    onChange={(event) => setMissingList(event.target.value)}
+                    placeholder="1, 2(2), 3(4)..."
+                    className="min-h-32 text-base leading-relaxed sm:text-sm"
+                  />
+                </Field>
+                <Field
+                  label={t("collection_edit.duplicates")}
+                  hint={t("collection_edit.duplicates_hint")}
+                >
+                  <Textarea
+                    value={duplicatesList ?? ""}
+                    onChange={(event) => setDuplicatesList(event.target.value)}
+                    placeholder="10, 15, 22(2), 104..."
+                    className="min-h-32 text-base leading-relaxed sm:text-sm"
+                  />
+                </Field>
+                <Field label={t("collection_edit.my_collection")}>
+                  <Textarea
+                    value={collectedList ?? ""}
+                    onChange={(event) => setCollectedList(event.target.value)}
+                    placeholder="1, 2, 3, 5, 6, 7, 8..."
+                    className="min-h-32 text-base leading-relaxed sm:text-sm"
+                  />
+                </Field>
+              </form>
+            </Surface>
+
+            <Surface className="flex flex-wrap items-center gap-x-6 gap-y-4 rounded-xl p-4 sm:p-5">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleExcelImport}
+                accept=".xlsx, .xls"
+                className="hidden"
+              />
+              <Button
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                loading={importPending}
+              >
+                <FileSpreadsheet className="size-4" aria-hidden="true" />
+                {t("collection_edit.import_excel")}
+              </Button>
+              <label
+                htmlFor="treatEmptyAsMissing"
+                className="inline-flex cursor-pointer items-center gap-2 text-sm font-semibold text-wax-ink"
+              >
+                <Checkbox
+                  id="treatEmptyAsMissing"
+                  checked={treatEmptyAsMissing}
+                  onCheckedChange={(checked) =>
+                    setTreatEmptyAsMissing(checked === true)
+                  }
                 />
-              )}
-            />
+                {t("collection_edit.treat_empty_as_missing")}
+              </label>
+            </Surface>
+
+            {preview && (
+              <Surface
+                role="region"
+                className="grid gap-3 rounded-xl p-5"
+                aria-label="Import preview"
+              >
+                <h2 className="font-display text-lg font-bold">
+                  Import preview
+                </h2>
+                <p className="text-sm text-wax-muted">
+                  {preview.entries.length} valid rows; {preview.issues.length}{" "}
+                  errors.
+                </p>
+                {preview.issues.length > 0 && (
+                  <ul className="grid gap-1 text-sm">
+                    {preview.issues.map((issue, index) => (
+                      <li key={`${issue.row}-${index}`}>
+                        Row {issue.row}: {issue.message}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    type="button"
+                    disabled={importPending || preview.issues.length > 0}
+                    onClick={commitImport}
+                  >
+                    Import valid preview
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={importPending}
+                    onClick={() => setPreview(undefined)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </Surface>
+            )}
           </div>
 
-          {/* Duplicates */}
-          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-            <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 ml-1">
-              {t("collection_edit.duplicates")}
-            </label>
-            <textarea
-              value={duplicatesList ?? ""}
-              onChange={(e) => setDuplicatesList(e.target.value)}
-              placeholder="10, 15, 22, 22, 104..."
-              className="w-full bg-input/20 border-2 border-border/50 rounded-xl p-4 min-h-37.5 focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 transition-all text-sm font-medium font-mono placeholder:text-muted-foreground/30"
-            />
-          </div>
-
-          {/* My Collection */}
-          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-            <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3 ml-1">
-              {t("collection_edit.my_collection")}
-            </label>
-            <textarea
-              value={collectedList ?? ""}
-              onChange={(e) => setCollectedList(e.target.value)}
-              placeholder="1, 2, 3, 5, 6, 7, 8..."
-              className="w-full bg-input/20 border-2 border-border/50 rounded-xl p-4 min-h-[150px] focus:outline-none focus:border-primary-500/50 focus:ring-4 focus:ring-primary-500/5 transition-all text-sm font-medium font-mono placeholder:text-muted-foreground/30"
-            />
-          </div>
+          <aside className="min-w-0 wrap-anywhere">
+            {id && (
+              <CollectionControls
+                id={id}
+                revision={revision}
+                onChanged={() => {
+                  void refetchProgress();
+                }}
+              />
+            )}
+          </aside>
         </div>
       </div>
     </Layout>

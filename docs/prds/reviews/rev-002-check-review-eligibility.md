@@ -1,18 +1,9 @@
 # REV-002: Check review eligibility
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously partial) |
-| Actor | collector |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [REV-001](../reviews/rev-001-view-collector-reviews.md) |
-
-Previous documented surface (unverified): `/profile/:id`.
 
 ## Outcome and scope
 
-Only completed counterparties can review once. 
+Only completed counterparties can review once.
 
 ## Requirements
 
@@ -27,3 +18,18 @@ Only completed counterparties can review once.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: Store validation exists; explicit eligibility endpoint absent. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/reviews_controller.ts
+- apps/api/app/models/review.ts
+- apps/api/app/validators/review.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

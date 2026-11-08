@@ -16,7 +16,7 @@ export default class AdminMiddleware {
     const user = await ctx.auth.authenticateUsing(['web'])
 
     if (user.role !== 'super_admin') {
-      throw new Error('Unauthorized')
+      return ctx.response.status(403).json({ error: { code: 'forbidden', message: 'Administrator access required' } })
     }
 
     /**

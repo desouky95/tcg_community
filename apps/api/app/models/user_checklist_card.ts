@@ -1,5 +1,5 @@
 import { UserChecklistCardSchema } from '#database/schema'
-import { belongsTo, computed } from '@adonisjs/lucid/orm'
+import { belongsTo, column, computed } from '@adonisjs/lucid/orm'
 import Card from './card.ts'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import UserChecklist from './user_checklist.ts'
@@ -12,6 +12,11 @@ export default class UserChecklistCard extends UserChecklistCardSchema {
 
   declare checklistId: number
   declare quantity: number
+
+  // This column is introduced by the collection progress migration. It remains
+  // declared here until `schema:generate` runs against a migrated database.
+  @column()
+  declare wantedQuantity: number
 
   declare userChecklistId: number
   @belongsTo(() => UserChecklist, { foreignKey: 'userChecklistId' })

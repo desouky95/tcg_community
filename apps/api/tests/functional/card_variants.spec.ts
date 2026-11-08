@@ -4,7 +4,7 @@ import Checklist from '#models/checklist'
 import User from '#models/user'
 import UserChecklist from '#models/user_checklist'
 import { ChecklistService } from '#services/checklist_service'
-import { updateOrCreateUserChecklistValidator } from '#validators/user_checklist'
+import { CollectionError, parseQuantityList } from '#services/collection_progress_service'
 import testUtils from '@adonisjs/core/services/test_utils'
 import { test } from '@japa/runner'
 
@@ -169,13 +169,11 @@ test.group('Card variants API', (group) => {
 
     await checklist.load('cards', (cards) => cards.whereNull('variant'))
     const validCardNumbers = checklist.cards.map((card) => card.number)
-    const progress = await updateOrCreateUserChecklistValidator.validate(
-      { missingList: '10bu,10', collectedList: '10bu,10', duplicatesList: '10bu,10' },
-      { meta: { cards: validCardNumbers } }
+    assert.throws(
+      () => parseQuantityList('10bu,10', validCardNumbers),
+      CollectionError,
+      'Unknown card or sticker: 10bu'
     )
-    assert.notInclude(progress.missingList!, '10bu')
-    assert.notInclude(progress.collectedList!, '10bu')
-    assert.notInclude(progress.duplicatesList!, '10bu')
 
     await UserChecklist.updateOrCreate(
       { userId: user.id, checklistId: checklist.id },

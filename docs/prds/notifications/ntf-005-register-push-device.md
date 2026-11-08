@@ -1,18 +1,9 @@
 # NTF-005: Register mobile push device
 
-| Field | Value |
-| --- | --- |
-| Horizon | future |
-| Implementation | unverified (previously absent) |
-| Actor | collector |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | None |
-
-Previous documented surface (unverified): `mobile settings`.
 
 ## Outcome and scope
 
-The authenticated installation owns one rotated push token. 
+The authenticated installation owns one rotated push token.
 
 ## Requirements
 
@@ -27,3 +18,16 @@ The authenticated installation owns one rotated push token.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No mobile implementation. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/app/models/user.ts
+- apps/api/start/routes/v1/users.routes.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

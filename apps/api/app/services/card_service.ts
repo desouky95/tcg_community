@@ -20,7 +20,7 @@ export class CardService {
     qs: Record<string, string>,
     user?: User
   ): Promise<ModelQueryBuilderContract<typeof Card, Card>> {
-    const checklist = await Checklist.findByOrFail('slug', slug)
+    const checklist = /^\d+$/.test(slug) ? await Checklist.findOrFail(Number(slug)) : await Checklist.findByOrFail('slug', slug)
     const query = Card.query()
       .where('checklistId', checklist.id)
       .whereHas('checklist', (c) =>
@@ -44,7 +44,7 @@ export class CardService {
   }
 
   async getFiltersOptions(slug: string) {
-    const checklist = await Checklist.findByOrFail('slug', slug)
+    const checklist = /^\d+$/.test(slug) ? await Checklist.findOrFail(Number(slug)) : await Checklist.findByOrFail('slug', slug)
     const query = Card.query().where('checklistId', checklist.id)
 
     const types = await query

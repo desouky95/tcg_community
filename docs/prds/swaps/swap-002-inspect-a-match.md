@@ -1,14 +1,7 @@
 # SWAP-002: Inspect a match
 
-| Field | Value |
-| --- | --- |
-| Horizon | Planned |
-| Implementation | Unverified; audit existing code before implementation |
-| Domain | Swaps |
-| Owner | Collector Disk and AdonisJS |
-| Dependencies | [SWAP-001](../swaps/swap-001-find-matching-collectors.md) |
 
-## Outcome
+## Outcome and scope
 
 A collector reviews a match before proposing a deal.
 
@@ -24,3 +17,19 @@ A collector reviews a match before proposing a deal.
 - The outcome is achieved for an eligible actor and unauthorized actors cannot access or change the resource.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
 - Test each affected participant and operator permission, state transition, block and dispute path.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/swaps.routes.ts
+- apps/api/app/controllers/swaps_controller.ts
+- apps/api/app/controllers/swap_deals_controller.ts
+- apps/api/app/services/swap_service.ts
+- apps/web/src/pages/Swapping.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

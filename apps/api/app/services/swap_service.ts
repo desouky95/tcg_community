@@ -6,7 +6,7 @@ import { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Checklist from '#models/checklist'
 import UserChecklist from '#models/user_checklist'
 import { SwapFilter } from '#validators/swap'
-import UserChecklistTransformer from '#transformers/user_checklist_transformer'
+import { expandQuantityList } from '#services/collection_progress_service'
 
 export type SwapResult = {
   user: {
@@ -45,19 +45,31 @@ export class SwapService {
     const myOffers: Record<number, string[]> = {}
 
     for (const cl of myChecklists) {
-      myNeeds[cl.checklist.id!] = cl.missingList?.split(',') || []
-      myOffers[cl.checklist.id!] = cl.duplicatesList?.split(',') || []
+      myNeeds[cl.checklist.id!] = expandQuantityList(cl.missingList)
+      myOffers[cl.checklist.id!] = expandQuantityList(cl.duplicatesList)
     }
     return { myNeeds, myOffers }
   }
   async getPossibleUsers(checklistIdsToSearch: number[]) {
     const current = this.ctx.auth.user
-    return await User.query()
+    const candidates = await User.query()
+      .where('status', 'active')
+      .where('blocked', false)
+      .where('is_verified', true)
       .whereNot('id', current?.id!)
       .where('not_ready_for_swap', false)
       .preload('checklists', (q) => {
-        q.whereIn('checklistId', checklistIdsToSearch).preload('checklist')
+        q.whereIn('checklistId', checklistIdsToSearch)
+          .where('visibility', 'public')
+          .preload('checklist')
       })
+    return candidates.filter((user) => {
+      const privacy = JSON.parse(user.privacyPreferences ?? '{}') as {
+        showProfile?: boolean
+        showCollection?: boolean
+      }
+      return privacy.showProfile !== false && privacy.showCollection !== false
+    })
   }
   async getSwapMatchPerUser(
     user: User,
@@ -71,8 +83,8 @@ export class SwapService {
     let matchedChecklists = []
     for (const theirChecklist of user.checklists) {
       const clId = theirChecklist.checklistId!
-      const theirOffers = theirChecklist.duplicatesList?.split(',') || []
-      const theirNeeds = theirChecklist.missingList?.split(',') || []
+      const theirOffers = expandQuantityList(theirChecklist.duplicatesList)
+      const theirNeeds = expandQuantityList(theirChecklist.missingList)
 
       const myNeedsForCl = needs[clId] || []
       const myOffersForCl = offers[clId] || []

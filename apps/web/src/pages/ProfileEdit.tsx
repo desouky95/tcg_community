@@ -73,7 +73,7 @@ export default function ProfileEdit() {
         navigate("/profile");
       }
     } catch {
-      // Error handled by mutation
+      toast.error("Could not update your profile. Check your details and try again.");
     }
   };
 

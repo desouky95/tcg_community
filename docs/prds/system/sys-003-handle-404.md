@@ -1,18 +1,9 @@
 # SYS-003: Handle missing resource
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously absent) |
-| Actor | guest, collector, administrator, worker |
-| Surface / owner | Relevant application and owning backend |
-| Dependencies | None |
-
-Previous documented surface (unverified): `all routes`.
 
 ## Outcome and scope
 
-Unknown or removed resources show a useful recovery action. 
+Unknown or removed resources show a useful recovery action.
 
 ## Requirements
 
@@ -27,3 +18,17 @@ Unknown or removed resources show a useful recovery action.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No shared 404 surface. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/app/exceptions/handler.ts
+- apps/web/src/main.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

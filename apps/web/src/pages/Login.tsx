@@ -11,7 +11,7 @@ import { AuthField, AuthInput, Button } from "@tcg/ui-web";
 
 const loginSchema = z.object({
   uid: z.string().min(3, "Username, email or mobile is required"),
-  password: z.string().min(6, "Password is required"),
+  password: z.string().min(8, "Password must be at least 8 characters").max(32, "Password must be at most 32 characters"),
 });
 type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -41,7 +41,7 @@ export default function Login() {
       } else {
         const message =
           err instanceof AxiosError ? err.response?.data?.error : undefined;
-        toast.error(message || "Invalid credentials");
+        toast.error(typeof message === "string" ? message : message?.message || "Invalid credentials");
       }
     }
   };
@@ -100,7 +100,9 @@ export default function Login() {
               disabled={loading}
             />
         </AuthField>
-        <Button type="submit" loading={loading} className="w-full">Sign in{!loading && <ArrowRight aria-hidden="true" />}</Button>
+        <div className="flex flex-wrap justify-between gap-3 text-sm"><Link to="/login/otp">Sign in with a code</Link><Link to="/forgot-password">Forgot password?</Link></div>
+        <Link to="/delete-deactivated" className="text-sm">Delete a deactivated account</Link>
+        <Button type="submit" loading={loading} disabled={loading} className="w-full">Sign in{!loading && <ArrowRight aria-hidden="true" />}</Button>
       </form>
     </AuthShell>
   );

@@ -1,18 +1,9 @@
 # NTF-001: List notifications
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously planned) |
-| Actor | collector |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [AUTH-005](../identity/auth-005-sign-in-password.md) |
-
-Previous documented surface (unverified): `/notifications`.
 
 ## Outcome and scope
 
-The user receives cursor-paginated notifications. 
+The user receives cursor-paginated notifications.
 
 ## Requirements
 
@@ -27,3 +18,16 @@ The user receives cursor-paginated notifications.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: Planned route. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/app/models/user.ts
+- apps/api/start/routes/v1/users.routes.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

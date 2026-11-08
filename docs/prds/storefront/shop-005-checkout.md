@@ -1,14 +1,7 @@
 # SHOP-005: Checkout
 
-| Field | Value |
-| --- | --- |
-| Horizon | Planned |
-| Implementation | Unverified; audit existing code before implementation |
-| Domain | Storefront |
-| Owner | Next.js, Medusa and Strapi as applicable |
-| Dependencies | [SHOP-004](../storefront/shop-004-manage-cart.md), [PLAT-001](../platform/plat-001-authenticate-across-applications.md) |
 
-## Outcome
+## Outcome and scope
 
 A shopper submits delivery and payment details for a NextPull order.
 
@@ -24,3 +17,17 @@ A shopper submits delivery and payment details for a NextPull order.
 - The outcome is achieved for an eligible actor and unauthorized actors cannot access or change the resource.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
 - Verify integration with the owning service and its persisted state.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/backend/src/modules/card-catalog/service.ts
+- apps/backend/src/modules/collection-sale/service.ts
+- apps/public-web/app/(shared-layout)/checklists/page.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

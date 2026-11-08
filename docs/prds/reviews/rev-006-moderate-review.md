@@ -1,18 +1,9 @@
 # REV-006: Moderate review
 
-| Field | Value |
-| --- | --- |
-| Horizon | future |
-| Implementation | unverified (previously absent) |
-| Actor | moderator |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [REV-005](../reviews/rev-005-report-abusive-review.md) |
-
-Previous documented surface (unverified): `/admin/reports`.
 
 ## Outcome and scope
 
-An authorized decision publishes, hides, or removes the review. 
+An authorized decision publishes, hides, or removes the review.
 
 ## Requirements
 
@@ -27,3 +18,18 @@ An authorized decision publishes, hides, or removes the review.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No current implementation. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/reviews_controller.ts
+- apps/api/app/models/review.ts
+- apps/api/app/validators/review.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

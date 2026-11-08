@@ -1,3 +1,14 @@
 # Experience, localization and accessibility
 
-Make primary actions, fees, responsibilities, safety guidance and failure recovery clear. Support accessible keyboard interaction, labels, focus and readable status messages. Preserve the existing English and Arabic/RTL experience where supported. Dedicated swap pages show the current deal and next eligible action; chat can link to them without hosting the deal workflow.
+## UI Page Used
+- N/A — shared guidance
+
+## Backend API Route Used
+- N/A — shared guidance
+
+## Related Files
+- docs/prds/README.md
+- AGENTS.md
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

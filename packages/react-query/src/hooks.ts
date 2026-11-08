@@ -35,12 +35,16 @@ export function useAuth() {
   const verifyOtp = useMutation({
     mutationFn: async ({ mobile, otp }: { mobile: string; otp: string }) =>
       (await client.verifyOtp(mobile, otp)).data,
-    onSuccess: (response) => onAuthenticated?.(response.data),
+    onSuccess: async (response) => {
+      await onAuthenticated?.(response.data);
+    },
   });
   const login = useMutation({
     mutationFn: async (credentials: LoginInput) =>
       (await client.login(credentials)).data,
-    onSuccess: (response) => onAuthenticated?.(response.data),
+    onSuccess: async (response) => {
+      await onAuthenticated?.(response.data);
+    },
   });
   const signup = useMutation({
     mutationFn: async (data: SignupInput) => (await client.signup(data)).data,
@@ -616,7 +620,16 @@ export function useStartScrapperJob(requestOptions?: ApiRequestOptions) {
   const { client, defaultQuery } = useApiHooksContext();
   return useMutation({
     mutationKey: [],
-    mutationFn: async (collections : string[]) => (await client.startScrapperJob(collections,requestOptions)).data,
+    mutationFn: async (collections: string[]) =>
+      (await client.startScrapperJob(collections, requestOptions)).data,
   });
 }
 
+export function useConfig(requestOptions?: ApiRequestOptions) {
+  const { client } = useApiHooksContext();
+  return useQuery({
+    queryKey: ["config"],
+    queryFn: async () => await client.getConfig(requestOptions),
+    refetchInterval: 4000,
+  });
+}

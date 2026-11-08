@@ -9,6 +9,7 @@ import { TcgApiProvider } from "../../../packages/react-query/src";
 import { api } from "../src/lib/api";
 import { useDefaultApiQuery } from "../src/lib/request-query";
 import { Toaster } from "react-hot-toast";
+import { RegionProvider } from "../src/providers/RegionProvider";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -51,8 +52,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         defaultQuery={defaultQuery}
         isAuthenticated={false}
       >
-        <Toaster position="top-right" />
-        {children}
+        <RegionProvider>
+          <Toaster position="top-right" />
+          {children}
+        </RegionProvider>
       </TcgApiProvider>
     </QueryClientProvider>
   );

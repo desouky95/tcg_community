@@ -43,10 +43,15 @@ export interface ApiDefinition {
   }
   identity: {
     otpLogin: typeof routes['identity.otp_login']
+    deleteDeactivatedAccount: typeof routes['identity.delete_deactivated_account']
     recoverPassword: typeof routes['identity.recover_password']
+    getPreferences: typeof routes['identity.get_preferences']
     preferences: typeof routes['identity.preferences']
     deactivate: typeof routes['identity.deactivate']
     exportPersonalData: typeof routes['identity.export_personal_data']
+    listPersonalExports: typeof routes['identity.list_personal_exports']
+    getPersonalExport: typeof routes['identity.get_personal_export']
+    downloadPersonalExport: typeof routes['identity.download_personal_export']
     deletePersonalData: typeof routes['identity.delete_personal_data']
   }
   categories: {
@@ -80,6 +85,20 @@ export interface ApiDefinition {
     markReceived: typeof routes['swap_deals.mark_received']
     scanQr: typeof routes['swap_deals.scan_qr']
   }
+  collectionProgress: {
+    publicView: typeof routes['collection_progress.public_view']
+    start: typeof routes['collection_progress.start']
+    details: typeof routes['collection_progress.details']
+    batch: typeof routes['collection_progress.batch']
+    visibility: typeof routes['collection_progress.visibility']
+    reset: typeof routes['collection_progress.reset']
+    preview: typeof routes['collection_progress.preview']
+    commit: typeof routes['collection_progress.commit']
+    export: typeof routes['collection_progress.export']
+    legacyImport: typeof routes['collection_progress.legacy_import']
+    sharedView: typeof routes['collection_progress.shared_view']
+    dashboard: typeof routes['collection_progress.dashboard']
+  }
   reviews: {
     index: typeof routes['reviews.index']
     store: typeof routes['reviews.store']
@@ -91,12 +110,14 @@ export interface ApiDefinition {
   userChecklists: {
     show: typeof routes['user_checklists.show']
     update: typeof routes['user_checklists.update']
-    import: typeof routes['user_checklists.import']
   }
   commerceCatalog: {
     collections: typeof routes['commerce_catalog.collections']
     collection: typeof routes['commerce_catalog.collection']
     cards: typeof routes['commerce_catalog.cards']
     batch: typeof routes['commerce_catalog.batch']
+  }
+  configs: {
+    config: typeof routes['configs.config']
   }
 }

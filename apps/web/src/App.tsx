@@ -11,6 +11,14 @@ import { Dashboard } from "./pages/Dashboard";
 import CollectionEdit from "./pages/CollectionEdit";
 import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import VerifyOTP from "./pages/VerifyOTP";
+import Recovery from "./pages/Recovery";
+import OtpLogin from "./pages/OtpLogin";
+import AccountSettings from "./pages/AccountSettings";
+import DeleteDeactivated from "./pages/DeleteDeactivated";
+import SharedCollection from "./pages/SharedCollection";
 import Swapping from "./pages/Swapping";
 import Chat from "./pages/Chat";
 
@@ -127,9 +135,18 @@ function App() {
                 <Toaster position="top-right" />
 
                 <Routes location={location} key={location.key}>
+                  <Route path="/shared/collection/:token" element={<SharedCollection />} />
+                  <Route path="/collectors/:userId/collections/:checklistId" element={<SharedCollection />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/verify-otp" element={<VerifyOTP />} />
+                  <Route path="/login/otp" element={<OtpLogin />} />
+                  <Route path="/delete-deactivated" element={<DeleteDeactivated />} />
+                  <Route path="/forgot-password" element={<Recovery />} />
                   <Route element={<Outlet />}>
                     <Route element={<ProtectedRoute />}>
                       <Route path="/" element={<Dashboard />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/test" element={<Test />} />
                       <Route path="/checklists/*" element={<Checklists />} />
                       <Route
@@ -148,6 +165,7 @@ function App() {
                       />
                       <Route path="/profile" element={<Profile />} />
                       <Route path="/profile/edit" element={<ProfileEdit />} />
+                      <Route path="/settings" element={<AccountSettings />} />
                       <Route path="/profile/:id" element={<Profile />} />
                       <Route path="/swapping" element={<Swapping />} />
                       <Route path="/chat" element={<Chat />} />

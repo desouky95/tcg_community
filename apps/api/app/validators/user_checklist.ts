@@ -1,31 +1,14 @@
 import vine from '@vinejs/vine'
-
-const transform = (value: string, cards: string[]) => {
-  const submittedCards = value.split(',')
-  const validCards = submittedCards.map((_) =>
-    cards.find((c) => c.toLowerCase() === _.toLowerCase())
-  )
-  return validCards.filter((card): card is string => Boolean(card)).join(',')
-}
 export const updateOrCreateUserChecklistValidator = vine.create({
   missingList: vine
     .string()
-    .optional()
-    .transform((value, field) => {
-      return transform(value, field.meta.cards)
-    }),
+    .optional(),
   duplicatesList: vine
     .string()
-    .optional()
-    .transform((value, field) => {
-      return transform(value, field.meta.cards)
-    }),
+    .optional(),
   collectedList: vine
     .string()
-    .optional()
-    .transform((value, field) => {
-      return transform(value, field.meta.cards)
-    }),
+    .optional(),
 })
 
 export const importUpdateChecklist = vine.create({

@@ -1,16 +1,16 @@
 import vine from '@vinejs/vine'
 import { EGYPT_GOVERNORATES } from './user.js'
 
-const password = () => vine.string().minLength(8).maxLength(72)
+const password = () => vine.string().minLength(8).maxLength(32)
 
 export const otpLoginValidator = vine.create({
   mobile: vine.string().mobile(),
-  otp: vine.string().minLength(6).maxLength(6),
+  otp: vine.string().regex(/^\d{6}$/),
 })
 
 export const passwordRecoveryValidator = vine.create({
   mobile: vine.string().mobile(),
-  otp: vine.string().minLength(6).maxLength(6).optional(),
+  otp: vine.string().regex(/^\d{6}$/).optional(),
   password: password().optional(),
   passwordConfirmation: password().sameAs('password').optional(),
 })
@@ -34,6 +34,7 @@ export const preferencesValidator = vine.create({
 
 export const accountActionValidator = vine.create({
   confirmation: vine.string().optional(),
+  password: vine.string().optional(),
   expectedVersion: vine.number().optional(),
 })
 
@@ -47,4 +48,10 @@ export const profileVersionValidator = vine.create({
     .optional(),
   governorate: vine.enum(EGYPT_GOVERNORATES).optional(),
   notReadyForSwap: vine.boolean().optional(),
+})
+
+export const deactivatedDeletionValidator = vine.create({
+  mobile: vine.string().mobile(),
+  password: vine.string().minLength(8).maxLength(32),
+  confirmation: vine.string(),
 })

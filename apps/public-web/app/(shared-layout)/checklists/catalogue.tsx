@@ -99,30 +99,32 @@ export function Catalogue() {
           />
         )}
       </section>
-      <section
-        className="mx-auto max-w-360 px-gutter py-section bg-wax-navy text-wax-paper"
-        aria-labelledby="category-index-heading"
-      >
-        <div className="flex flex-col items-start justify-between gap-4 border-b border-wax-paper/30 pb-6 md:flex-row md:items-end md:gap-8 [&_h2]:font-display [&_h2]:text-3xl [&_h2]:font-extrabold [&_h2]:uppercase [&_h2]:leading-none md:[&_h2]:text-title [&_p]:mt-3 [&_p]:leading-relaxed [&_p]:text-wax-paper/80">
-          <h2 id="category-index-heading">Browse every category</h2>
-          <p>Start broad, then narrow the shelf by series or era.</p>
-        </div>
-        <div className="grid lg:grid-cols-3">
-          {categories?.data.map((category, index) => (
-            <CategoryIndexItem
-              key={category.id}
-              index={index}
-              Link={Link}
-              name={category.name}
-              href={`/s/${category.slug}`}
-              entries={category.children.map((child) => ({
-                name: child.name,
-                href: `/s/${child.id}`,
-              }))}
-            />
-          ))}
-        </div>
-      </section>
+      {categories?.data.length! > 0 && (
+        <section
+          className="mx-auto max-w-360 px-gutter py-section bg-wax-navy text-wax-paper"
+          aria-labelledby="category-index-heading"
+        >
+          <div className="flex flex-col items-start justify-between gap-4 border-b border-wax-paper/30 pb-6 md:flex-row md:items-end md:gap-8 [&_h2]:font-display [&_h2]:text-3xl [&_h2]:font-extrabold [&_h2]:uppercase [&_h2]:leading-none md:[&_h2]:text-title [&_p]:mt-3 [&_p]:leading-relaxed [&_p]:text-wax-paper/80">
+            <h2 id="category-index-heading">Browse every category</h2>
+            <p>Start broad, then narrow the shelf by series or era.</p>
+          </div>
+          <div className="grid lg:grid-cols-3">
+            {categories?.data.map((category, index) => (
+              <CategoryIndexItem
+                key={category.id}
+                index={index}
+                Link={Link}
+                name={category.name}
+                href={`/s/${category.slug}`}
+                entries={category.children.map((child) => ({
+                  name: child.name,
+                  href: `/s/${child.id}`,
+                }))}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }

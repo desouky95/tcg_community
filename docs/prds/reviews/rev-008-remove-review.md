@@ -1,18 +1,9 @@
 # REV-008: Remove review
 
-| Field | Value |
-| --- | --- |
-| Horizon | future |
-| Implementation | unverified (previously absent) |
-| Actor | collector |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [REV-003](../reviews/rev-003-submit-review.md) |
-
-Previous documented surface (unverified): `review actions`.
 
 ## Outcome and scope
 
-The author removes visible content while preserving transaction and moderation audit references. 
+The author removes visible content while preserving transaction and moderation audit references.
 
 ## Requirements
 
@@ -27,3 +18,18 @@ The author removes visible content while preserving transaction and moderation a
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No current implementation. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/reviews_controller.ts
+- apps/api/app/models/review.ts
+- apps/api/app/validators/review.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

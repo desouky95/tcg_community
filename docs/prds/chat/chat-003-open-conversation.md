@@ -1,18 +1,9 @@
 # CHAT-003: Open conversation history
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | collector |
-| Surface / owner | Collector Disk conversations and AdonisJS messaging |
-| Dependencies | [CHAT-001](../chat/chat-001-list-conversations.md) |
-
-Previous documented surface (unverified): `/chat/:id`.
 
 ## Outcome and scope
 
-Authorized history is cursor-paginated. 
+Authorized history is cursor-paginated.
 
 ## Requirements
 
@@ -27,3 +18,18 @@ Authorized history is cursor-paginated.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: apps/api ConversationsController.show. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/conversations.routes.ts
+- apps/api/app/controllers/conversations_controller.ts
+- apps/api/app/models/conversation.ts
+- apps/web/src/pages/Chat.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

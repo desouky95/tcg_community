@@ -69,6 +69,27 @@
         }
       },
       "default": false
+    },
+    "country": {
+      "type": "customField",
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      },
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "active"
+            },
+            true
+          ]
+        }
+      },
+      "customField": "plugin::country-select.country",
+      "default": "eg",
+      "required": true
     }
   }
 }

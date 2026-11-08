@@ -1,14 +1,5 @@
 # CAT-006: View card detail
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously partial) |
-| Actor | guest, collector |
-| Surface / owner | Collector Disk and AdonisJS catalogue |
-| Dependencies | [CAT-004](../catalogue/cat-004-view-checklist-detail.md) |
-
-Previous documented surface (unverified): `card detail surface`.
 
 ## Outcome and scope
 
@@ -27,3 +18,18 @@ Canonical card metadata and associated availability are shown. This is an establ
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: Card data exists without a dedicated route. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/checklists.routes.ts
+- apps/api/app/controllers/checklists_controller.ts
+- apps/web/src/pages/Checklists.tsx
+- apps/public-web/app/(shared-layout)/checklists/page.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

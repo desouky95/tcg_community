@@ -1,18 +1,9 @@
 # AUTH-012: Change mobile and reverify
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | collector |
-| Surface / owner | AdonisJS identity and applicable client |
-| Dependencies | [AUTH-011](../identity/auth-011-edit-profile.md), [AUTH-003](../identity/auth-003-verify-mobile-otp.md) |
-
-Previous documented surface (unverified): `/profile/edit`.
 
 ## Outcome and scope
 
-The new number remains unverified until OTP succeeds. 
+The new number remains unverified until OTP succeeds.
 
 ## Requirements
 
@@ -27,3 +18,19 @@ The new number remains unverified until OTP succeeds.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: apps/api ProfileController.update. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/auth_controller.ts
+- apps/api/app/controllers/identity_controller.ts
+- apps/web/src/pages/Login.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

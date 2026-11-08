@@ -7,8 +7,8 @@ import conversationsRoutes from './conversations.routes.ts'
 import scrapperRoutes from './scrapper.routes.ts'
 import swapsRoutes from './swaps.routes.ts'
 import usersRoutes from './users.routes.ts'
-import { middleware } from '#start/kernel'
 import commerceCatalogRoutes from './commerce-catalog.routes.ts'
+import configRoutes from './config.routes.ts'
 
 router
   .group(() => {
@@ -21,5 +21,6 @@ router
     swapsRoutes()
     usersRoutes()
     commerceCatalogRoutes()
+    configRoutes()
   })
   .prefix('/api/v1')

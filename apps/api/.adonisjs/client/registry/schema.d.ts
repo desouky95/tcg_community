@@ -255,6 +255,19 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['otpLogin']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'identity.delete_deactivated_account': {
+    methods: ["POST"]
+    pattern: '/api/v1/auth/deactivated-privacy-deletion'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/identity').deactivatedDeletionValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/identity').deactivatedDeletionValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deleteDeactivatedAccount']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deleteDeactivatedAccount']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deleteDeactivatedAccount']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
   'identity.recover_password': {
     methods: ["POST"]
     pattern: '/api/v1/auth/password-recovery'
@@ -606,6 +619,19 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/swap_deals_controller').default['scanQr']>>>
     }
   }
+  'collection_progress.public_view': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/users/:userId/collections/:checklistId'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { userId: ParamValue; checklistId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['publicView']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['publicView']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['publicView']>>>
+    }
+  }
   'reviews.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/users/:id/reviews'
@@ -658,6 +684,110 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['listUsers']>>>
     }
   }
+  'collection_progress.start': {
+    methods: ["POST"]
+    pattern: '/api/v1/user-checklists/:id/start'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['start']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['start']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['start']>>>
+    }
+  }
+  'collection_progress.details': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/user-checklists/:id/details'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['details']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['details']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['details']>>>
+    }
+  }
+  'collection_progress.batch': {
+    methods: ["PATCH"]
+    pattern: '/api/v1/user-checklists/:id/entries'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/collection').collectionBatchValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/collection').collectionBatchValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['batch']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['batch']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['batch']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'collection_progress.visibility': {
+    methods: ["PUT"]
+    pattern: '/api/v1/user-checklists/:id/visibility'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/collection').collectionVisibilityValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/collection').collectionVisibilityValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['visibility']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['visibility']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['visibility']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'collection_progress.reset': {
+    methods: ["POST"]
+    pattern: '/api/v1/user-checklists/:id/reset'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/collection').collectionResetValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/collection').collectionResetValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['reset']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['reset']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['reset']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'collection_progress.preview': {
+    methods: ["POST"]
+    pattern: '/api/v1/user-checklists/:id/import/preview'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/collection').collectionImportValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/collection').collectionImportValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['preview']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['preview']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['preview']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'collection_progress.commit': {
+    methods: ["POST"]
+    pattern: '/api/v1/user-checklists/:id/import/commit'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/collection').collectionImportValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/collection').collectionImportValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['commit']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['commit']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['commit']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'collection_progress.export': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/user-checklists/:id/export'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['export']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['export']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['export']>>>
+    }
+  }
   'user_checklists.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/user-checklists/:id'
@@ -684,17 +814,43 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/user_checklists_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'user_checklists.import': {
+  'collection_progress.legacy_import': {
     methods: ["POST"]
     pattern: '/api/v1/user-checklists/:id/import'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/user_checklist').importUpdateChecklist)>>
+      body: {}
       paramsTuple: [ParamValue]
       params: { id: ParamValue }
-      query: ExtractQuery<InferInput<(typeof import('#validators/user_checklist').importUpdateChecklist)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/user_checklists_controller').default['import']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/user_checklists_controller').default['import']>>> | { status: 422; response: { errors: SimpleError[] } }
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/user_checklists_controller').default['import']>>> | { status: 422; response: { errors: SimpleError[] } }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['legacyImport']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['legacyImport']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['legacyImport']>>>
+    }
+  }
+  'collection_progress.shared_view': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/shared/collections/:token'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { token: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['sharedView']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['sharedView']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['sharedView']>>>
+    }
+  }
+  'collection_progress.dashboard': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/account/collections'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['dashboard']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['dashboard']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['dashboard']>>>
     }
   }
   'profile.show': {
@@ -721,6 +877,19 @@ export interface Registry {
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/profile_controller').default['update']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/profile_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/profile_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'identity.get_preferences': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/account/preferences'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['getPreferences']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['getPreferences']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['getPreferences']>>>
     }
   }
   'identity.preferences': {
@@ -760,6 +929,45 @@ export interface Registry {
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['exportPersonalData']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['exportPersonalData']>>>
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['exportPersonalData']>>>
+    }
+  }
+  'identity.list_personal_exports': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/account/privacy-exports'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['listPersonalExports']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['listPersonalExports']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['listPersonalExports']>>>
+    }
+  }
+  'identity.get_personal_export': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/account/privacy-exports/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['getPersonalExport']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['getPersonalExport']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['getPersonalExport']>>>
+    }
+  }
+  'identity.download_personal_export': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/account/privacy-exports/:id/download'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['downloadPersonalExport']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['downloadPersonalExport']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['downloadPersonalExport']>>>
     }
   }
   'identity.delete_personal_data': {
@@ -825,6 +1033,19 @@ export interface Registry {
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['batch']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['batch']>>>
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_catalog_controller').default['batch']>>>
+    }
+  }
+  'configs.config': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/config'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/configs_controller').default['config']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/configs_controller').default['config']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/configs_controller').default['config']>>>
     }
   }
 }

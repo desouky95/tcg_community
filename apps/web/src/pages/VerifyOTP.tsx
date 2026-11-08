@@ -42,7 +42,7 @@ export default function VerifyOTP() {
     } catch (err: unknown) {
       const message =
         err instanceof AxiosError ? err.response?.data?.error : undefined;
-      toast.error(message || "Invalid verification code");
+      toast.error(typeof message === "string" ? message : message?.message || "Invalid verification code");
     }
   };
 
@@ -50,8 +50,9 @@ export default function VerifyOTP() {
     try {
       await requestOtp.mutateAsync(mobileNumber);
       toast.success("A new verification code was requested.");
-    } catch {
-      toast.error("Failed to resend code");
+    } catch (err: unknown) {
+      const message = err instanceof AxiosError ? err.response?.data?.error : undefined;
+      toast.error(typeof message === "string" ? message : message?.message || "Failed to resend code");
     }
   };
 
@@ -139,7 +140,7 @@ export default function VerifyOTP() {
               )}
             />
 
-            <Button type="submit" loading={loading} className="w-full">Verify and continue{!loading && <ArrowRight aria-hidden="true" />}</Button>
+            <Button type="submit" loading={loading} disabled={loading} className="w-full">Verify and continue{!loading && <ArrowRight aria-hidden="true" />}</Button>
           </form>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-1.5 text-sm text-wax-muted [&_button]:min-h-control-sm [&_button]:p-1.5 [&_button:disabled]:cursor-not-allowed [&_button:disabled]:opacity-50">

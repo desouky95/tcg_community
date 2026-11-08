@@ -6,7 +6,14 @@ import { PublicFooter } from "../../patterns";
 export type PublicShellProps = ComponentPropsWithoutRef<"div"> &
   Pick<
     PublicHeaderProps,
-    "currentPath" | "Link" | "links" | "authenticated" | "applink" | "isNext"
+    | "currentPath"
+    | "Link"
+    | "links"
+    | "authenticated"
+    | "applink"
+    | "isNext"
+    | "config"
+    | "storeNavigation"
   > & { mainClassName?: string };
 
 export function PublicShell({
@@ -18,6 +25,8 @@ export function PublicShell({
   className,
   mainClassName,
   isNext = true,
+  config = {},
+  storeNavigation = false,
   ...props
 }: PublicShellProps) {
   return (
@@ -35,6 +44,8 @@ export function PublicShell({
         authenticated={authenticated}
         applink={props.applink}
         isNext
+        config={config}
+        storeNavigation={storeNavigation}
       />
       <main className={mainClassName}>{children}</main>
       <PublicFooter />

@@ -1,18 +1,9 @@
 # NTF-002: Mark notification read
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously planned) |
-| Actor | collector |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [NTF-001](../notifications/ntf-001-list-notifications.md) |
-
-Previous documented surface (unverified): `/notifications`.
 
 ## Outcome and scope
 
-Read time is set idempotently. 
+Read time is set idempotently.
 
 ## Requirements
 
@@ -27,3 +18,16 @@ Read time is set idempotently.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No current implementation. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/app/models/user.ts
+- apps/api/start/routes/v1/users.routes.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

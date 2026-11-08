@@ -1,18 +1,9 @@
 # NTF-008: Dead-letter notification
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously planned) |
-| Actor | worker |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [NTF-007](../notifications/ntf-007-retry-failed-notification.md) |
-
-Previous documented surface (unverified): `notification worker`.
 
 ## Outcome and scope
 
-Exhausted delivery records become operator-visible without blocking the queue. 
+Exhausted delivery records become operator-visible without blocking the queue.
 
 ## Requirements
 
@@ -27,3 +18,16 @@ Exhausted delivery records become operator-visible without blocking the queue.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No current implementation. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/app/models/user.ts
+- apps/api/start/routes/v1/users.routes.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

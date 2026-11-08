@@ -1,3 +1,15 @@
 # Atomic PRD standard
 
-Each scenario describes one actor outcome with owner, horizon, implementation status, dependencies, requirements and verification. Shared contracts define cross-cutting behavior. Implementation marked unverified is not a claim that code is absent or complete. Before implementation, audit existing behavior and define unresolved interfaces and business policies. Catalogue and collection scenarios describe established capabilities and do not authorize their redesign.
+## UI Page Used
+- N/A — shared guidance
+
+## Backend API Route Used
+- N/A — shared guidance
+
+## Related Files
+- docs/prds/README.md
+- AGENTS.md
+- Scenario PRDs include Outcome and scope, Requirements, Acceptance and verification, UI Page Used, Backend API Route Used, Related Files, and After Implementation. Keep requirements and verification aligned with the product and implementation evidence.
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

@@ -1,18 +1,9 @@
 # CHAT-010: Report conversation
 
-| Field | Value |
-| --- | --- |
-| Horizon | future |
-| Implementation | unverified (previously absent) |
-| Actor | collector |
-| Surface / owner | Collector Disk conversations and AdonisJS messaging |
-| Dependencies | [CHAT-003](../chat/chat-003-open-conversation.md) |
-
-Previous documented surface (unverified): `/chat/:id`.
 
 ## Outcome and scope
 
-A moderation report is created without notifying the reported participant. 
+A moderation report is created without notifying the reported participant.
 
 ## Requirements
 
@@ -27,3 +18,18 @@ A moderation report is created without notifying the reported participant.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No current implementation. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/conversations.routes.ts
+- apps/api/app/controllers/conversations_controller.ts
+- apps/api/app/models/conversation.ts
+- apps/web/src/pages/Chat.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

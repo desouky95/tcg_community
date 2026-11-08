@@ -3,6 +3,7 @@ import testUtils from '@adonisjs/core/services/test_utils'
 import db from '@adonisjs/lucid/services/db'
 import hash from '@adonisjs/core/services/hash'
 import User from '#models/user'
+import { DateTime } from 'luxon'
 import { consumeOtp, createOtpChallenge } from '#services/identity_service'
 
 const signup = {
@@ -58,6 +59,7 @@ test.group('Account registration', (group) => {
   test('resends a signup challenge and separates it from login challenges', async ({ client, assert }) => {
     const first = await client.post('/api/v1/auth/signup').withCsrfToken().json(signup)
     first.assertStatus(202)
+    await db.from('otp_challenges').where({ mobile: signup.mobile, purpose: 'signup' }).update({ created_at: DateTime.utc().minus({ minutes: 2 }).toSQL() })
     const resend = await client.post('/api/v1/auth/request-otp').withCsrfToken().json({ mobile: signup.mobile })
     resend.assertStatus(200)
     const challenges = await db.from('otp_challenges').where({ mobile: signup.mobile, purpose: 'signup' }).orderBy('id')

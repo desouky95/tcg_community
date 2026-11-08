@@ -118,7 +118,7 @@ export function Collection() {
             <p className="mb-0.5 font-mono text-[0.6875rem] font-bold tracking-[0.08em] text-wax-red uppercase">
               {collection.category?.name} - {collection.year}
             </p>
-            <h1 className="max-w-3xl text-xl leading-tight tracking-[-0.025em] break-words text-wax-ink sm:text-2xl lg:text-3xl">
+            <h1 className="max-w-3xl text-xl leading-tight tracking-tight wrap-break-word text-wax-ink sm:text-2xl lg:text-3xl">
               {collection.name}
             </h1>
           </div>
@@ -144,6 +144,7 @@ export function Collection() {
                 tone="success"
                 type="button"
                 onClick={handleDownloadExcel}
+                aria-label="Download checklist"
               >
                 <FileSpreadsheet aria-hidden="true" />
                 <span className="lg:hidden">Download</span>
@@ -155,7 +156,7 @@ export function Collection() {
                   className="w-full whitespace-nowrap md:w-auto"
                   size="sm"
                 >
-                  <Link to={`/collection/${id}/edit`}>
+                  <Link to={`/collection/${id}/edit`} aria-label="Edit my list">
                     <Edit3 aria-hidden="true" />
                     <span className="lg:hidden">Edit</span>
                     <span className="hidden lg:inline">Edit my list</span>
@@ -222,6 +223,7 @@ export function Collection() {
             </label>
             <Input
               id="collection-search"
+              type="search"
               placeholder="Search number, card, type, or section"
               value={table.state.globalFilter}
               onChange={(e) => table.setGlobalFilter(e.target.value)}

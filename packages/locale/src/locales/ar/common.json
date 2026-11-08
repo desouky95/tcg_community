@@ -311,6 +311,15 @@
     }
   },
   "dashboard": {
+    "my_collections": "مجموعاتي",
+    "my_collections_subtitle": "تابع من حيث توقفت.",
+    "my_collections_loading": "جارٍ تحميل مجموعاتك…",
+    "my_collections_error": "تعذر تحميل مجموعاتك. يرجى المحاولة لاحقًا.",
+    "my_collections_empty": "ابدأ مجموعة من قائمة في الكتالوج.",
+    "owned_progress": "{{owned}} / {{total}} مملوكة",
+    "collection_activity": "{{wanted}} مطلوبة · {{offered}} معروضة",
+    "catalogue_loading": "جارٍ تحميل المجموعات",
+    "catalogue_error": "تعذر تحميل الكتالوج. يرجى المحاولة لاحقًا.",
     "title": "خزنة المجتمع",
     "subtitle": "استكشف المجموعات المنسقة حسب الفئة.",
     "categories": "الفئات",
@@ -377,7 +386,20 @@
     "swap_hint": "إخفاء قوائم المبادلة مؤقتاً",
     "start_conversation_error": "تعذر بدء المحادثة"
   },
+  "shared_collection": {
+      "missing": "المطلوب",
+      "duplicates": "المكرر",
+      "no_missing": "لا توجد بطاقات مطلوبة.",
+      "no_duplicates": "لا توجد بطاقات مكررة متاحة.",
+      "quantity_one": "نسخة واحدة",
+      "quantity_two": "نسختان",
+      "quantity_few": "{{count}} نسخ",
+      "quantity_many": "{{count}} نسخة",
+      "quantity_other": "{{count}} نسخة"
+  },
   "collection_edit": {
+    "duplicates_hint": "اكتب 22(2) لعرض نسختين من البطاقة 22 للتبادل.",
+    "missing_hint": "اكتب 22(2) عندما تحتاج إلى نسختين من البطاقة 22.",
     "title": "تعديل مجموعتي",
     "save": "حفظ التغييرات",
     "missing_list": "قائمة النواقص (أرقام مفصولة بفاصلة)",

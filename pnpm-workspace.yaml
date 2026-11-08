@@ -90,7 +90,7 @@ catalog:
   "@yudiel/react-qr-scanner": ^2.5.1
   add: ^2.0.9
   autoprefixer: ^10.4.27
-  axios: ^1.14.0
+  axios: ^1.21.0
   better-sqlite3: ^12.8.0
   cheerio: ^1.2.0
   clsx: ^2.1.1

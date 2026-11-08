@@ -1,18 +1,9 @@
 # REV-003: Submit review
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | collector |
-| Surface / owner | Collector Disk and AdonisJS |
-| Dependencies | [REV-002](../reviews/rev-002-check-review-eligibility.md) |
-
-Previous documented surface (unverified): `/profile/:id`.
 
 ## Outcome and scope
 
-A validated review is linked to an eligible transaction. 
+A validated review is linked to an eligible transaction.
 
 ## Requirements
 
@@ -27,3 +18,18 @@ A validated review is linked to an eligible transaction.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: apps/api ReviewsController.store. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/reviews_controller.ts
+- apps/api/app/models/review.ts
+- apps/api/app/validators/review.ts
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

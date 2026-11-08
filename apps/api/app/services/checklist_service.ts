@@ -12,7 +12,6 @@ import { MultipartFile } from '@adonisjs/core/bodyparser'
 import * as xlsx from 'xlsx'
 import User from '#models/user'
 import Card from '#models/card'
-import stringHelpers from '@adonisjs/core/helpers/string'
 import UserChecklistCard from '#models/user_checklist_card'
 xlsx.set_fs(fs)
 @inject()
@@ -65,11 +64,11 @@ export class ChecklistService {
     return result
   }
 
-  async get(slug: string, qs: Record<string, any>, user?: User) {
+  async get(slug: string, qs: Record<string, any>, _user?: User) {
     const expand = qs.expand ?? ''
     const expendedFields = expand.split(',') as string[]
     const query = Checklist.query()
-      .where('slug', slug)
+      .if(/^\d+$/.test(slug), (q) => q.where('id', Number(slug)), (q) => q.where('slug', slug))
 
       .if(expendedFields.includes('cards'), (q) => q.preload('cards'))
       .if(expendedFields.includes('category'), (q) =>

@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "sections": {
+    "collectionTypes": {
+      "groups": [
+        {
+          "parent": null,
+          "name": "Banners",
+          "id": "grp_fbb6868032ee46a2bd729f0f",
+          "children": [
+            {
+              "uid": "api::banner.banner",
+              "type": "contentType"
+            },
+            {
+              "uid": "api::interactive-banner.interactive-banner",
+              "type": "contentType"
+            }
+          ]
+        }
+      ]
+    },
+    "singleTypes": {
+      "groups": []
+    }
+  }
+}

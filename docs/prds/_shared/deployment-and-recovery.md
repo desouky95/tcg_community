@@ -1,3 +1,14 @@
 # Deployment and database initialization
 
-The target is a clean installation, not an upgrade of existing production data. For each service document prerequisites and run its supported schema or migration mechanism before seeders. Distinguish required baseline configuration from optional development/demo fixtures; no real credentials or personal data belong in seeds. Document rerun behavior, dependency ordering, validation, failure recovery and environment-specific configuration. Use isolated clean databases to verify the process; do not assume all frameworks expose identical migration or seed commands. Preserve collection behavior when modifying backend setup.
+## UI Page Used
+- N/A — shared guidance
+
+## Backend API Route Used
+- N/A — shared guidance
+
+## Related Files
+- docs/prds/README.md
+- AGENTS.md
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

@@ -1,14 +1,25 @@
 import db from '@adonisjs/lucid/services/db'
 import hash from '@adonisjs/core/services/hash'
 import { DateTime } from 'luxon'
-import { randomInt } from 'node:crypto'
+import { createHash, randomInt } from 'node:crypto'
 import User from '#models/user'
 import app from '@adonisjs/core/services/app'
 import type { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export type OtpPurpose = 'signup' | 'login' | 'password_recovery' | 'mobile_change'
 
+export function sessionFingerprint(password: string | null) {
+  return createHash('sha256').update(password ?? '').digest('hex')
+}
+
 export const IDENTITY_VERSION = 1
+export const OTP_RESEND_COOLDOWN_SECONDS = 60
+
+export class OtpCooldownError extends Error {
+  constructor(public retryAfterSeconds: number) {
+    super('Please wait before requesting another code')
+  }
+}
 
 export function requestMeta(request: { header(name: string): string | undefined }) {
   return {
@@ -44,9 +55,20 @@ export async function createOtpChallenge(
   mobile: string,
   purpose: OtpPurpose,
   userId?: number,
-  ttlMinutes = 10
+  ttlMinutes = 10,
+  cooldownSeconds = 0
 ) {
   const code = randomInt(100000, 1000000).toString()
+  // Serialize issuance for this account so overlapping requests cannot leave two active challenges.
+  if (userId !== undefined) await trx.from('users').where('id', userId).forUpdate().first()
+  if (cooldownSeconds > 0) {
+    const latest = await trx.from('otp_challenges').where({ mobile, purpose }).orderBy('created_at', 'desc').first()
+    if (latest) {
+      const createdAt = latest.created_at instanceof Date ? DateTime.fromJSDate(latest.created_at) : DateTime.fromSQL(String(latest.created_at), { zone: 'utc' })
+      const remaining = Math.ceil(createdAt.plus({ seconds: cooldownSeconds }).diff(DateTime.utc(), 'seconds').seconds)
+      if (remaining > 0) throw new OtpCooldownError(remaining)
+    }
+  }
   await trx.from('otp_challenges').where({ mobile, purpose }).whereNull('consumed_at')
     .update({ consumed_at: DateTime.utc().toSQL() })
   await trx.table('otp_challenges').insert({
@@ -62,19 +84,21 @@ export function deliverMockOtp(mobile: string, purpose: OtpPurpose, code: string
   if (app.inDev) console.info(`[DEV OTP] ${purpose} code for ${mobile}: ${code}`)
 }
 
-export async function issueOtp(mobile: string, purpose: OtpPurpose, userId?: number, ttlMinutes = 10) {
+export async function issueOtp(mobile: string, purpose: OtpPurpose, userId?: number, ttlMinutes = 10, cooldownSeconds = 0) {
   ensureOtpDeliveryAvailable()
-  const challenge = await db.transaction((trx) => createOtpChallenge(trx, mobile, purpose, userId, ttlMinutes))
+  const challenge = await db.transaction((trx) => createOtpChallenge(trx, mobile, purpose, userId, ttlMinutes, cooldownSeconds))
   deliverMockOtp(mobile, purpose, challenge.code)
   return { expiresInSeconds: challenge.expiresInSeconds }
 }
 
-export async function consumeOtp(mobile: string, purpose: OtpPurpose, code: string) {
-  const challenge = await db
+export async function consumeOtp(mobile: string, purpose: OtpPurpose, code: string, transaction?: TransactionClientContract): Promise<{ ok: true } | { ok: false; reason: 'not_found' | 'expired' | 'locked' | 'invalid' }> {
+  if (!transaction) return db.transaction((trx) => consumeOtp(mobile, purpose, code, trx))
+  const challenge = await transaction
     .from('otp_challenges')
     .where({ mobile, purpose })
     .whereNull('consumed_at')
     .orderBy('created_at', 'desc')
+    .forUpdate()
     .first()
 
   if (!challenge) return { ok: false as const, reason: 'not_found' as const }
@@ -93,11 +117,11 @@ export async function consumeOtp(mobile: string, purpose: OtpPurpose, code: stri
 
   const valid = await hash.verify(challenge.code_hash, code)
   if (!valid) {
-    await db.from('otp_challenges').where('id', challenge.id).increment('attempts', 1)
+    await transaction.from('otp_challenges').where('id', challenge.id).increment('attempts', 1)
     return { ok: false as const, reason: 'invalid' as const }
   }
 
-  await db.from('otp_challenges').where('id', challenge.id).update({
+  await transaction.from('otp_challenges').where('id', challenge.id).update({
     consumed_at: DateTime.utc().toSQL(),
     updated_at: DateTime.utc().toSQL(),
   })

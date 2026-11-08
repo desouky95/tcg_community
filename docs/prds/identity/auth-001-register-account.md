@@ -1,12 +1,5 @@
 # AUTH-001: Register an account
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | partial: registration and development-only OTP delivery |
-| Actor | guest |
-| Surface / owner | Collector Disk `/signup`; AdonisJS `POST /api/v1/auth/signup` |
-| Dependencies | None |
 
 ## Outcome and scope
 
@@ -25,3 +18,19 @@ A guest creates an unverified account and a signup verification challenge, then 
 - A valid submission creates one unverified user and one signup challenge and returns 202. Only subsequent successful verification establishes an authenticated session.
 - Invalid, duplicate and failed requests do not create a partial registration. A verified user's login challenge remains separate from signup challenges.
 - Verify the registration API, transaction rollback, purpose-specific resend and verification, form validation, errors and navigation. Production OTP delivery requires separate implementation and verification.
+
+## UI Page Used
+- /signup
+
+## Backend API Route Used
+- POST /api/v1/auth/signup
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/auth_controller.ts
+- apps/api/app/controllers/identity_controller.ts
+- apps/web/src/pages/Login.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

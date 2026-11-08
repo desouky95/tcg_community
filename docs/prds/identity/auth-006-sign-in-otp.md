@@ -1,18 +1,9 @@
 # AUTH-006: Sign in with OTP
 
-| Field | Value |
-| --- | --- |
-| Horizon | future |
-| Implementation | unverified (previously absent) |
-| Actor | guest |
-| Surface / owner | AdonisJS identity and applicable client |
-| Dependencies | [AUTH-002](../identity/auth-002-request-signup-otp.md) |
-
-Previous documented surface (unverified): `/login`.
 
 ## Outcome and scope
 
-A consumed login challenge creates a session without a password. 
+A consumed login challenge creates a session without a password.
 
 ## Requirements
 
@@ -27,3 +18,19 @@ A consumed login challenge creates a session without a password.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: No dedicated route. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/auth_controller.ts
+- apps/api/app/controllers/identity_controller.ts
+- apps/web/src/pages/Login.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

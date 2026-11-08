@@ -1,14 +1,5 @@
 # COL-001: Start collection from checklist
 
-| Field | Value |
-| --- | --- |
-| Horizon | current |
-| Implementation | unverified (previously implemented) |
-| Actor | collector |
-| Surface / owner | Existing Collector Disk collections and AdonisJS; preserve established behavior |
-| Dependencies | [CAT-004](../catalogue/cat-004-view-checklist-detail.md) |
-
-Previous documented surface (unverified): `/dashboard`.
 
 ## Outcome and scope
 
@@ -16,6 +7,7 @@ A single owned collection is created for the checklist. This is an established c
 
 ## Requirements
 
+- Accept comma-separated card or sticker identifiers, optionally followed by a quantity in parentheses, such as `1,2(2),3(4)`, for missing or duplicate entries.
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.
@@ -27,3 +19,18 @@ A single owned collection is created for the checklist. This is an established c
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: apps/web/src/pages/Dashboard.tsx. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/collection_progress_controller.ts
+- apps/api/app/services/collection_progress_service.ts
+- apps/web/src/pages/CollectionEdit.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.

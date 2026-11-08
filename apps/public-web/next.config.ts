@@ -1,9 +1,10 @@
-import path from 'node:path'
+import path from "node:path";
+import { withStrapiTypes } from "strapi-typed-client/next";
 
 import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
-  output : 'standalone',
-  outputFileTracingRoot: path.resolve(process.cwd(), '../..'),
+  output: "standalone",
+  outputFileTracingRoot: path.resolve(process.cwd(), "../.."),
   transpilePackages: [
     "@tcg/api-contracts",
     "@tcg/auth-client",

@@ -1,18 +1,9 @@
 # AUTH-014: Manage account preferences
 
-| Field | Value |
-| --- | --- |
-| Horizon | v1 |
-| Implementation | unverified (previously planned) |
-| Actor | collector |
-| Surface / owner | AdonisJS identity and applicable client |
-| Dependencies | [AUTH-010](../identity/auth-010-view-own-profile.md) |
-
-Previous documented surface (unverified): `/settings`.
 
 ## Outcome and scope
 
-Language, theme, privacy, and communication settings are saved. 
+Language, theme, privacy, and communication settings are saved.
 
 ## Requirements
 
@@ -27,3 +18,19 @@ Language, theme, privacy, and communication settings are saved.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
 Existing evidence pointer: Planned /settings route. This pointer is not a fresh implementation audit.
+
+## UI Page Used
+- N/A — no dedicated UI page
+
+## Backend API Route Used
+- N/A — no HTTP route
+
+## Related Files
+- apps/api/start/routes/v1/auth.routes.ts
+- apps/api/start/routes/v1/users.routes.ts
+- apps/api/app/controllers/auth_controller.ts
+- apps/api/app/controllers/identity_controller.ts
+- apps/web/src/pages/Login.tsx
+
+## After Implementation
+- Update this PRD’s UI page, API route, and related-files entries to match the implementation.
