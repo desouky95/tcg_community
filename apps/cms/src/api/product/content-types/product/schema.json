@@ -28,20 +28,25 @@
       "type": "richtext"
     },
     "handle": {
-      "type": "uid",
-      "targetField": "title"
+      "type": "string",
+      "required": true,
+      "unique": true
     },
     "images": {
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "thumbnail": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "locale": {
       "type": "string",
@@ -58,6 +63,12 @@
       "relation": "manyToMany",
       "target": "api::product-option.product-option",
       "inversedBy": "products"
+    },
+    "imageUrls": {
+      "type": "json"
+    },
+    "thumbnailUrl": {
+      "type": "string"
     }
   }
 }

@@ -57,6 +57,7 @@
     "youch": "catalog:"
   },
   "dependencies": {
+    "@adonisjs/ally": "^6.3.2",
     "@adonisjs/auth": "catalog:",
     "@adonisjs/core": "catalog:",
     "@adonisjs/cors": "catalog:",

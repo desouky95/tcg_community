@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
 
 export interface HeroSlideItem {
   web_image: string;
-  mobile_image: string;
+  mobile_image?: string;
   title: string;
   subtitle: string;
   url: string;

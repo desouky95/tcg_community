@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_homepage_banner_strips",
+  "info": {
+    "displayName": "BannerStrip"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  },
+  "config": {}
+}

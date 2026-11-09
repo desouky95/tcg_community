@@ -1,7 +1,7 @@
 /* eslint-disable */
 // Auto-generated Strapi API client
 // Do not edit manually
-export const SCHEMA_HASH = '281e1053d0d0f72cc7e9ce59501c9b4b33770343cf02bae2583349e805316590'
+export const SCHEMA_HASH = 'fed60290f71b7a4c02592b149782e327bd79639b1b50bfe01f3dfa852ec468b2'
 export const GENERATOR_VERSION = '2.4.0'
 export const AUTH_MODE: 'legacy' | 'refresh' = 'refresh'
 export const VALIDATION = 'none'
@@ -11,9 +11,37 @@ import type {
   BannerPopulateParam,
   BannerCreateInput,
   BannerUpdateInput,
+  Homepage,
+  HomepageGetPayload,
+  HomepagePopulateParam,
+  HomepageUpdateInput,
   InteractiveBanner,
   InteractiveBannerCreateInput,
   InteractiveBannerUpdateInput,
+  PageTransition,
+  PageTransitionGetPayload,
+  PageTransitionPopulateParam,
+  PageTransitionUpdateInput,
+  ProductOptionValue,
+  ProductOptionValueGetPayload,
+  ProductOptionValuePopulateParam,
+  ProductOptionValueCreateInput,
+  ProductOptionValueUpdateInput,
+  ProductOption,
+  ProductOptionGetPayload,
+  ProductOptionPopulateParam,
+  ProductOptionCreateInput,
+  ProductOptionUpdateInput,
+  ProductVariant,
+  ProductVariantGetPayload,
+  ProductVariantPopulateParam,
+  ProductVariantCreateInput,
+  ProductVariantUpdateInput,
+  Product,
+  ProductGetPayload,
+  ProductPopulateParam,
+  ProductCreateInput,
+  ProductUpdateInput,
   Permission,
   PermissionGetPayload,
   PermissionPopulateParam,
@@ -34,7 +62,13 @@ import type {
 } from './types'
 import type {
   BannerFilters,
+  HomepageFilters,
   InteractiveBannerFilters,
+  PageTransitionFilters,
+  ProductOptionValueFilters,
+  ProductOptionFilters,
+  ProductVariantFilters,
+  ProductFilters,
   PermissionFilters,
   RoleFilters,
   UserFilters,
@@ -958,13 +992,25 @@ type Equal<X, Y> =
 type GetPopulated<TBase, TPopulate> =
   Equal<TBase, Banner> extends true
     ? BannerGetPayload<{ populate: TPopulate }>
-    : Equal<TBase, Permission> extends true
-      ? PermissionGetPayload<{ populate: TPopulate }>
-      : Equal<TBase, Role> extends true
-        ? RoleGetPayload<{ populate: TPopulate }>
-        : Equal<TBase, User> extends true
-          ? UserGetPayload<{ populate: TPopulate }>
-          : TBase
+    : Equal<TBase, Homepage> extends true
+      ? HomepageGetPayload<{ populate: TPopulate }>
+      : Equal<TBase, PageTransition> extends true
+        ? PageTransitionGetPayload<{ populate: TPopulate }>
+        : Equal<TBase, ProductOptionValue> extends true
+          ? ProductOptionValueGetPayload<{ populate: TPopulate }>
+          : Equal<TBase, ProductOption> extends true
+            ? ProductOptionGetPayload<{ populate: TPopulate }>
+            : Equal<TBase, ProductVariant> extends true
+              ? ProductVariantGetPayload<{ populate: TPopulate }>
+              : Equal<TBase, Product> extends true
+                ? ProductGetPayload<{ populate: TPopulate }>
+                : Equal<TBase, Permission> extends true
+                  ? PermissionGetPayload<{ populate: TPopulate }>
+                  : Equal<TBase, Role> extends true
+                    ? RoleGetPayload<{ populate: TPopulate }>
+                    : Equal<TBase, User> extends true
+                      ? UserGetPayload<{ populate: TPopulate }>
+                      : TBase
 /** Utility type for narrowing return type based on fields parameter */
 type SelectFields<TFull, TBase, TFields extends string> = [TFields] extends [never]
   ? TFull
@@ -2284,6 +2330,62 @@ export namespace ContentTypeBuilderPluginAPI {
   }
 }
 
+/** Content-API routes of the `croppable-media` plugin. */
+export class CroppableMediaPluginAPI extends PluginRoutesAPI {
+  /**
+   * GET /croppable-media
+   * Handler: plugin::croppable-media.controller.index
+   * Response type is not declared by the plugin — pass it as the type argument.
+   */
+  async index<T = unknown>(
+    params?: Record<string, unknown>,
+    nextOptions?: NextOptions
+  ): Promise<T> {
+    const url = `${this.config.baseURL}/api/croppable-media${this.buildQueryString(params)}`
+    return this.request<T>(url, {}, nextOptions)
+  }
+
+  /**
+   * GET /croppable-media/assets/:id/decrypt-social-proxy
+   * Handler: plugin::croppable-media.controller.proxyAsset
+   * Response type is not declared by the plugin — pass it as the type argument.
+   */
+  async proxyAsset<T = unknown>(
+    id: string,
+    params?: Record<string, unknown>,
+    nextOptions?: NextOptions
+  ): Promise<T> {
+    const url = `${this.config.baseURL}/api/croppable-media/assets/${encodeURIComponent(id)}/decrypt-social-proxy${this.buildQueryString(params)}`
+    return this.request<T>(url, {}, nextOptions)
+  }
+
+  /**
+   * GET /croppable-media/config
+   * Handler: plugin::croppable-media.controller.getConfig
+   * Response type is not declared by the plugin — pass it as the type argument.
+   */
+  async getConfig<T = unknown>(
+    params?: Record<string, unknown>,
+    nextOptions?: NextOptions
+  ): Promise<T> {
+    const url = `${this.config.baseURL}/api/croppable-media/config${this.buildQueryString(params)}`
+    return this.request<T>(url, {}, nextOptions)
+  }
+
+  /**
+   * GET /croppable-media/remote/decrypt-social-proxy
+   * Handler: plugin::croppable-media.controller.proxyRemoteAsset
+   * Response type is not declared by the plugin — pass it as the type argument.
+   */
+  async proxyRemoteAsset<T = unknown>(
+    params?: Record<string, unknown>,
+    nextOptions?: NextOptions
+  ): Promise<T> {
+    const url = `${this.config.baseURL}/api/croppable-media/remote/decrypt-social-proxy${this.buildQueryString(params)}`
+    return this.request<T>(url, {}, nextOptions)
+  }
+}
+
 /** Content-API routes of the `email` plugin. */
 export class EmailPluginAPI extends PluginRoutesAPI {
   /**
@@ -2346,6 +2448,14 @@ export class StrapiClient {
     true,
     true
   >
+  homepage: SingleTypeAPI<
+    Homepage,
+    HomepageUpdateInput,
+    HomepageFilters,
+    HomepagePopulateParam,
+    false,
+    true
+  >
   interactiveBanners: CollectionAPI<
     InteractiveBanner,
     InteractiveBannerCreateInput,
@@ -2354,6 +2464,50 @@ export class StrapiClient {
     Record<string, any>,
     false,
     true
+  >
+  pageTransition: SingleTypeAPI<
+    PageTransition,
+    PageTransitionUpdateInput,
+    PageTransitionFilters,
+    PageTransitionPopulateParam,
+    false,
+    true
+  >
+  productOptionValues: CollectionAPI<
+    ProductOptionValue,
+    ProductOptionValueCreateInput,
+    ProductOptionValueUpdateInput,
+    ProductOptionValueFilters,
+    ProductOptionValuePopulateParam,
+    false,
+    false
+  >
+  productOptions: CollectionAPI<
+    ProductOption,
+    ProductOptionCreateInput,
+    ProductOptionUpdateInput,
+    ProductOptionFilters,
+    ProductOptionPopulateParam,
+    false,
+    false
+  >
+  productVariants: CollectionAPI<
+    ProductVariant,
+    ProductVariantCreateInput,
+    ProductVariantUpdateInput,
+    ProductVariantFilters,
+    ProductVariantPopulateParam,
+    false,
+    false
+  >
+  products: CollectionAPI<
+    Product,
+    ProductCreateInput,
+    ProductUpdateInput,
+    ProductFilters,
+    ProductPopulateParam,
+    false,
+    false
   >
   permissions: CollectionAPI<
     Permission,
@@ -2378,6 +2532,7 @@ export class StrapiClient {
 
   // Content-API routes of other installed plugins
   contentTypeBuilder: ContentTypeBuilderPluginAPI
+  croppableMedia: CroppableMediaPluginAPI
   email: EmailPluginAPI
 
   constructor(config: StrapiClientConfig) {
@@ -2391,13 +2546,20 @@ export class StrapiClient {
     this.i18n = new I18nAPI(this.config)
 
     this.banners = new CollectionAPI('banners', this.config)
+    this.homepage = new SingleTypeAPI('homepage', this.config)
     this.interactiveBanners = new CollectionAPI('interactive-banners', this.config)
+    this.pageTransition = new SingleTypeAPI('page-transition', this.config)
+    this.productOptionValues = new CollectionAPI('product-option-values', this.config)
+    this.productOptions = new CollectionAPI('product-options', this.config)
+    this.productVariants = new CollectionAPI('product-variants', this.config)
+    this.products = new CollectionAPI('products', this.config)
     this.permissions = new CollectionAPI('users-permissions/permissions', this.config)
     this.roles = new RoleAPI('users-permissions/roles', this.config)
     this.users = new UsersPermissionsUserAPI('users', this.config)
     this.usersPermissionsPermissions = new UsersPermissionsPermissionsAPI(this.config)
 
     this.contentTypeBuilder = new ContentTypeBuilderPluginAPI(this.config)
+    this.croppableMedia = new CroppableMediaPluginAPI(this.config)
     this.email = new EmailPluginAPI(this.config)
 
     // Auto-validate schema in development mode

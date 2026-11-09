@@ -24,13 +24,11 @@ export async function generateStaticParams() {
 
 export default async function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ lng: string }>;
 }) {
-  const { lng } = await params;
   const { i18n } = await getT();
+  const lng = i18n.resolvedLanguage || i18n.language || "en";
   const resources = getResources(i18n);
 
   if (process.env.NODE_ENV === "development") {
@@ -47,7 +45,7 @@ export default async function RootLayout({
             </Providers>
           </Suspense>
         </I18nProvider>
-      </body>
+</body>
     </html>
   );
 }

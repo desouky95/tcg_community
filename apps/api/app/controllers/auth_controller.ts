@@ -12,6 +12,7 @@ import { DateTime } from 'luxon'
 import { consumeOtp, errorBody, issueOtp, requestMeta, createOtpChallenge, deliverMockOtp, ensureOtpDeliveryAvailable, OtpCooldownError, OTP_RESEND_COOLDOWN_SECONDS, sessionFingerprint } from '#services/identity_service'
 import db from '@adonisjs/lucid/services/db'
 import app from '@adonisjs/core/services/app'
+import { pendingFacebook } from '#services/facebook_identity_service'
 
 export default class AuthController {
   /**
@@ -150,6 +151,7 @@ export default class AuthController {
     await user.save()
     await auth.use('web').login(user)
     session.put('auth_password_fingerprint', sessionFingerprint(user.password))
+    if (await pendingFacebook(session)) session.put('facebook_link_user_id', user.id)
 
     return serialize({
       user: UserTransformer.transform(user),

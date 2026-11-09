@@ -11,11 +11,7 @@ import { Dashboard } from "./pages/Dashboard";
 import CollectionEdit from "./pages/CollectionEdit";
 import Profile from "./pages/Profile";
 import ProfileEdit from "./pages/ProfileEdit";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import VerifyOTP from "./pages/VerifyOTP";
 import Recovery from "./pages/Recovery";
-import OtpLogin from "./pages/OtpLogin";
 import AccountSettings from "./pages/AccountSettings";
 import DeleteDeactivated from "./pages/DeleteDeactivated";
 import SharedCollection from "./pages/SharedCollection";
@@ -34,6 +30,19 @@ function RedirectToLogin() {
   }, [location.hash, location.pathname, location.search]);
 
   return <p role="status">Redirecting to sign in…</p>;
+}
+function RedirectPublicAuth({ page }: { page: "login" | "signup" | "verify-otp" | "login/otp" }) {
+  const location = useLocation();
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    params.set("destination", "collector");
+    if (!params.has("returnTo")) params.set("returnTo", "/dashboard");
+    if (page === "verify-otp" && typeof location.state?.mobile === "string") params.set("mobile", location.state.mobile);
+    const url = new URL(`/${page}`, import.meta.env.VITE_PUBLIC_WEB_URL);
+    url.search = params.toString();
+    window.location.replace(url.toString());
+  }, [location.search, location.state, page]);
+  return <p role="status">Redirecting to authentication…</p>;
 }
 const ProtectedRoute = ({ requireAdmin }: { requireAdmin?: boolean }) => {
   const { status, user } = useTcgSession();
@@ -137,10 +146,10 @@ function App() {
                 <Routes location={location} key={location.key}>
                   <Route path="/shared/collection/:token" element={<SharedCollection />} />
                   <Route path="/collectors/:userId/collections/:checklistId" element={<SharedCollection />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/verify-otp" element={<VerifyOTP />} />
-                  <Route path="/login/otp" element={<OtpLogin />} />
+                  <Route path="/login" element={<RedirectPublicAuth page="login" />} />
+                  <Route path="/signup" element={<RedirectPublicAuth page="signup" />} />
+                  <Route path="/verify-otp" element={<RedirectPublicAuth page="verify-otp" />} />
+                  <Route path="/login/otp" element={<RedirectPublicAuth page="login/otp" />} />
                   <Route path="/delete-deactivated" element={<DeleteDeactivated />} />
                   <Route path="/forgot-password" element={<Recovery />} />
                   <Route element={<Outlet />}>

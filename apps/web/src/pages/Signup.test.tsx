@@ -24,6 +24,18 @@ async function fillForm(password = "password123") {
 
 describe("Signup", () => {
   beforeEach(() => { mutateAsync.mockReset(); navigate.mockReset(); });
+  it("offers both social providers", () => {
+    render(<MemoryRouter><Signup /></MemoryRouter>);
+    expect(screen.getByRole("link", { name: "Continue with Google" })).toHaveAttribute("href", expect.stringContaining("/api/v1/auth/oauth/google/redirect"));
+    expect(screen.getByRole("link", { name: "Continue with Facebook" })).toHaveAttribute("href", expect.stringContaining("/api/v1/auth/oauth/facebook/redirect"));
+  });
+  it("preserves the destination in both social sign-in links", () => {
+    render(<MemoryRouter initialEntries={["/signup?returnTo=%2Fdashboard%3Ftab%3Dcards"]}><Signup /></MemoryRouter>);
+    for (const name of ["Continue with Google", "Continue with Facebook"]) {
+      const url = new URL(screen.getByRole("link", { name }).getAttribute("href")!);
+      expect(url.searchParams.get("returnTo")).toBe("/dashboard?tab=cards");
+    }
+  });
   it("rejects passwords shorter than the API minimum", async () => {
     render(<MemoryRouter><Signup /></MemoryRouter>);
     const user = await fillForm("short12");

@@ -289,8 +289,116 @@ type _ApplyFields<TFull, TBase, TEntry> = TEntry extends true
     ? Pick<TBase, Extract<F | 'id' | 'documentId', keyof TBase>> & Omit<TFull, keyof TBase>
     : TFull
 
+export interface GeneralPageTransition {
+  id: number
+}
+
+export interface HomepageBannerStrip {
+  id: number
+}
+
+export interface HomepageLatestProducts {
+  id: number
+  heading: string
+  description: string | null
+  shop_link: string | null
+  collection: string
+  /**
+   * @minimum 1
+   * @maximum 48
+   * @default 8
+   */
+  limit: number
+}
+
+export interface HomepageProductSection {
+  id: number
+  heading: string
+  description: string | null
+  shop_link: string | null
+}
+
 export interface SliderHeroSlider {
   id: number
+}
+
+export type HomepageBannerStripDz = HomepageBannerStrip & { __component: 'homepage.banner-strip' }
+export type HomepageLatestProductsDz = HomepageLatestProducts & {
+  __component: 'homepage.latest-products'
+}
+export type HomepageProductSectionDz = HomepageProductSection & {
+  __component: 'homepage.product-section'
+}
+export type SliderHeroSliderDz = SliderHeroSlider & { __component: 'slider.hero-slider' }
+
+/** Create input for GeneralPageTransition */
+export interface GeneralPageTransitionCreateInput {
+  id?: number | undefined
+}
+
+/** Update input for GeneralPageTransition */
+export interface GeneralPageTransitionUpdateInput {
+  id?: number | undefined
+}
+
+/** Create input for HomepageBannerStrip */
+export interface HomepageBannerStripCreateInput {
+  id?: number | undefined
+  image?: MediaInput | undefined
+}
+
+/** Update input for HomepageBannerStrip */
+export interface HomepageBannerStripUpdateInput {
+  id?: number | undefined
+  image?: MediaInput | undefined
+}
+
+/** Create input for HomepageLatestProducts */
+export interface HomepageLatestProductsCreateInput {
+  id?: number | undefined
+  heading: string
+  description?: string | null | undefined
+  shop_link?: string | null | undefined
+  collection: string
+  /**
+   * @minimum 1
+   * @maximum 48
+   * @default 8
+   */
+  limit?: number | undefined
+}
+
+/** Update input for HomepageLatestProducts */
+export interface HomepageLatestProductsUpdateInput {
+  id?: number | undefined
+  heading?: string | undefined
+  description?: string | null | undefined
+  shop_link?: string | null | undefined
+  collection?: string | undefined
+  /**
+   * @minimum 1
+   * @maximum 48
+   * @default 8
+   */
+  limit?: number | undefined
+}
+
+/** Create input for HomepageProductSection */
+export interface HomepageProductSectionCreateInput {
+  id?: number | undefined
+  heading: string
+  description?: string | null | undefined
+  shop_link?: string | null | undefined
+  products?: RelationInput<'oneToMany'> | undefined
+}
+
+/** Update input for HomepageProductSection */
+export interface HomepageProductSectionUpdateInput {
+  id?: number | undefined
+  heading?: string | undefined
+  description?: string | null | undefined
+  shop_link?: string | null | undefined
+  products?: RelationInput<'oneToMany'> | undefined
 }
 
 /** Create input for SliderHeroSlider */
@@ -307,6 +415,31 @@ export interface SliderHeroSliderUpdateInput {
   interactive_banners?: RelationInput<'oneToMany'> | undefined
 }
 
+export type HomepageBannerStripDzCreateInput = HomepageBannerStripCreateInput & {
+  __component: 'homepage.banner-strip'
+}
+export type HomepageBannerStripDzUpdateInput = HomepageBannerStripUpdateInput & {
+  __component: 'homepage.banner-strip'
+}
+export type HomepageLatestProductsDzCreateInput = HomepageLatestProductsCreateInput & {
+  __component: 'homepage.latest-products'
+}
+export type HomepageLatestProductsDzUpdateInput = HomepageLatestProductsUpdateInput & {
+  __component: 'homepage.latest-products'
+}
+export type HomepageProductSectionDzCreateInput = HomepageProductSectionCreateInput & {
+  __component: 'homepage.product-section'
+}
+export type HomepageProductSectionDzUpdateInput = HomepageProductSectionUpdateInput & {
+  __component: 'homepage.product-section'
+}
+export type SliderHeroSliderDzCreateInput = SliderHeroSliderCreateInput & {
+  __component: 'slider.hero-slider'
+}
+export type SliderHeroSliderDzUpdateInput = SliderHeroSliderUpdateInput & {
+  __component: 'slider.hero-slider'
+}
+
 export interface Banner {
   readonly __typename?: 'Banner'
   id: number
@@ -320,7 +453,17 @@ export interface Banner {
   active: boolean | null
   /** @default "eg" */
   country: string
+  url: string | null
   locale: string | null
+}
+
+export interface Homepage {
+  readonly __typename?: 'Homepage'
+  id: number
+  documentId: string
+  createdAt: string
+  updatedAt: string
+  publishedAt: string | null
 }
 
 export interface InteractiveBanner {
@@ -333,6 +476,69 @@ export interface InteractiveBanner {
   /** @default "url" */
   url: string
   type: 'open_pack' | 'card_3d' | null
+}
+
+export interface PageTransition {
+  readonly __typename?: 'PageTransition'
+  id: number
+  documentId: string
+  createdAt: string
+  updatedAt: string
+  publishedAt: string | null
+}
+
+export interface ProductOptionValue {
+  readonly __typename?: 'ProductOptionValue'
+  id: number
+  documentId: string
+  createdAt: string
+  updatedAt: string
+  publishedAt: string | null
+  medusaId: string
+  value: string
+}
+
+export interface ProductOption {
+  readonly __typename?: 'ProductOption'
+  id: number
+  documentId: string
+  createdAt: string
+  updatedAt: string
+  publishedAt: string | null
+  medusaId: string
+  title: string
+}
+
+export interface ProductVariant {
+  readonly __typename?: 'ProductVariant'
+  id: number
+  documentId: string
+  createdAt: string
+  updatedAt: string
+  publishedAt: string | null
+  medusaId: string
+  title: string
+  sku: string | null
+  imageUrls: unknown | null
+  thumbnailUrl: string | null
+  /** @default false */
+  managedByMedusa: boolean | null
+}
+
+export interface Product {
+  readonly __typename?: 'Product'
+  id: number
+  documentId: string
+  createdAt: string
+  updatedAt: string
+  publishedAt: string | null
+  medusaId: string
+  title: string
+  subtitle: string | null
+  description: string | null
+  handle: string
+  imageUrls: unknown | null
+  thumbnailUrl: string | null
 }
 
 export interface Permission {
@@ -384,6 +590,7 @@ export interface BannerCreateInput {
   active?: boolean | null | undefined
   /** @default "eg" */
   country?: string | undefined
+  url?: string | null | undefined
   web_image?: MediaInput | undefined
   mobile_image?: MediaInput | undefined
 }
@@ -396,8 +603,33 @@ export interface BannerUpdateInput {
   active?: boolean | null | undefined
   /** @default "eg" */
   country?: string | undefined
+  url?: string | null | undefined
   web_image?: MediaInput | undefined
   mobile_image?: MediaInput | undefined
+}
+
+/** Create input for Homepage */
+export interface HomepageCreateInput {
+  sections?:
+    | (
+        | SliderHeroSliderDzCreateInput
+        | HomepageProductSectionDzCreateInput
+        | HomepageLatestProductsDzCreateInput
+        | HomepageBannerStripDzCreateInput
+      )[]
+    | undefined
+}
+
+/** Update input for Homepage */
+export interface HomepageUpdateInput {
+  sections?:
+    | (
+        | SliderHeroSliderDzUpdateInput
+        | HomepageProductSectionDzUpdateInput
+        | HomepageLatestProductsDzUpdateInput
+        | HomepageBannerStripDzUpdateInput
+      )[]
+    | undefined
 }
 
 /** Create input for InteractiveBanner */
@@ -412,6 +644,108 @@ export interface InteractiveBannerUpdateInput {
   /** @default "url" */
   url?: string | undefined
   type?: 'open_pack' | 'card_3d' | null | undefined
+}
+
+/** Create input for PageTransition */
+export interface PageTransitionCreateInput {
+  packs?: MultiMediaInput | undefined
+}
+
+/** Update input for PageTransition */
+export interface PageTransitionUpdateInput {
+  packs?: MultiMediaInput | undefined
+}
+
+/** Create input for ProductOptionValue */
+export interface ProductOptionValueCreateInput {
+  medusaId: string
+  value: string
+  option?: RelationInput<'manyToOne'> | undefined
+  variants?: RelationInput<'manyToMany'> | undefined
+}
+
+/** Update input for ProductOptionValue */
+export interface ProductOptionValueUpdateInput {
+  medusaId?: string | undefined
+  value?: string | undefined
+  option?: RelationInput<'manyToOne'> | undefined
+  variants?: RelationInput<'manyToMany'> | undefined
+}
+
+/** Create input for ProductOption */
+export interface ProductOptionCreateInput {
+  medusaId: string
+  title: string
+  products?: RelationInput<'manyToMany'> | undefined
+  values?: RelationInput<'oneToMany'> | undefined
+}
+
+/** Update input for ProductOption */
+export interface ProductOptionUpdateInput {
+  medusaId?: string | undefined
+  title?: string | undefined
+  products?: RelationInput<'manyToMany'> | undefined
+  values?: RelationInput<'oneToMany'> | undefined
+}
+
+/** Create input for ProductVariant */
+export interface ProductVariantCreateInput {
+  medusaId: string
+  title: string
+  sku?: string | null | undefined
+  imageUrls?: unknown | null | undefined
+  thumbnailUrl?: string | null | undefined
+  /** @default false */
+  managedByMedusa?: boolean | null | undefined
+  images?: MultiMediaInput | undefined
+  thumbnail?: MediaInput | undefined
+  product?: RelationInput<'manyToOne'> | undefined
+  option_values?: RelationInput<'manyToMany'> | undefined
+}
+
+/** Update input for ProductVariant */
+export interface ProductVariantUpdateInput {
+  medusaId?: string | undefined
+  title?: string | undefined
+  sku?: string | null | undefined
+  imageUrls?: unknown | null | undefined
+  thumbnailUrl?: string | null | undefined
+  /** @default false */
+  managedByMedusa?: boolean | null | undefined
+  images?: MultiMediaInput | undefined
+  thumbnail?: MediaInput | undefined
+  product?: RelationInput<'manyToOne'> | undefined
+  option_values?: RelationInput<'manyToMany'> | undefined
+}
+
+/** Create input for Product */
+export interface ProductCreateInput {
+  medusaId: string
+  title: string
+  subtitle?: string | null | undefined
+  description?: string | null | undefined
+  handle: string
+  imageUrls?: unknown | null | undefined
+  thumbnailUrl?: string | null | undefined
+  images?: MultiMediaInput | undefined
+  thumbnail?: MediaInput | undefined
+  variants?: RelationInput<'oneToMany'> | undefined
+  options?: RelationInput<'manyToMany'> | undefined
+}
+
+/** Update input for Product */
+export interface ProductUpdateInput {
+  medusaId?: string | undefined
+  title?: string | undefined
+  subtitle?: string | null | undefined
+  description?: string | null | undefined
+  handle?: string | undefined
+  imageUrls?: unknown | null | undefined
+  thumbnailUrl?: string | null | undefined
+  images?: MultiMediaInput | undefined
+  thumbnail?: MediaInput | undefined
+  variants?: RelationInput<'oneToMany'> | undefined
+  options?: RelationInput<'manyToMany'> | undefined
 }
 
 /** Create input for Permission */
@@ -488,13 +822,57 @@ export const BannerDefaults = {
 export const InteractiveBannerDefaults = {
   url: 'url',
 } as const satisfies Partial<InteractiveBannerCreateInput>
+export const ProductVariantDefaults = {
+  managedByMedusa: false,
+} as const satisfies Partial<ProductVariantCreateInput>
 export const UserDefaults = {
   confirmed: false,
   blocked: false,
 } as const satisfies Partial<UserCreateInput>
+export const HomepageLatestProductsDefaults = {
+  limit: 8,
+} as const satisfies Partial<HomepageLatestProductsCreateInput>
+export const HomepageBannerStripDzDefaults = {
+  __component: 'homepage.banner-strip',
+} as const satisfies Partial<HomepageBannerStripDzCreateInput>
+export const HomepageLatestProductsDzDefaults = {
+  __component: 'homepage.latest-products',
+  limit: 8,
+} as const satisfies Partial<HomepageLatestProductsDzCreateInput>
+export const HomepageProductSectionDzDefaults = {
+  __component: 'homepage.product-section',
+} as const satisfies Partial<HomepageProductSectionDzCreateInput>
+export const SliderHeroSliderDzDefaults = {
+  __component: 'slider.hero-slider',
+} as const satisfies Partial<SliderHeroSliderDzCreateInput>
 // ============================================
 // PopulateParam types for type-safe populate
 // ============================================
+export type HomepageBannerStripPopulateParam = {
+  image?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
+}
+export type HomepageProductSectionPopulateParam = {
+  products?:
+    | true
+    | {
+        count: true
+        filters?: ProductFilters
+        fields?: never
+        populate?: never
+        sort?: never
+        limit?: never
+        start?: never
+      }
+    | {
+        count?: false
+        fields?: _EntityField<Product>[]
+        populate?: ProductPopulateParam | (keyof ProductPopulateParam & string)[] | '*'
+        filters?: ProductFilters
+        sort?: _SortValue<Product> | _SortValue<Product>[]
+        limit?: number
+        start?: number
+      }
+}
 export type SliderHeroSliderPopulateParam = {
   banners?:
     | true
@@ -559,6 +937,226 @@ export type BannerPopulateParam = {
       }
   web_image?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
   mobile_image?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
+}
+export type HomepagePopulateParam = {
+  sections?:
+    | true
+    | {
+        on?: {
+          'slider.hero-slider'?:
+            | true
+            | {
+                fields?: (keyof SliderHeroSlider & string)[]
+                populate?:
+                  | SliderHeroSliderPopulateParam
+                  | (keyof SliderHeroSliderPopulateParam & string)[]
+                  | '*'
+                count?: never
+              }
+          'homepage.product-section'?:
+            | true
+            | {
+                fields?: (keyof HomepageProductSection & string)[]
+                populate?:
+                  | HomepageProductSectionPopulateParam
+                  | (keyof HomepageProductSectionPopulateParam & string)[]
+                  | '*'
+                count?: never
+              }
+          'homepage.latest-products'?:
+            true | { fields?: (keyof HomepageLatestProducts & string)[]; count?: never }
+          'homepage.banner-strip'?:
+            | true
+            | {
+                fields?: (keyof HomepageBannerStrip & string)[]
+                populate?:
+                  | HomepageBannerStripPopulateParam
+                  | (keyof HomepageBannerStripPopulateParam & string)[]
+                  | '*'
+                count?: never
+              }
+        }
+        count?: never
+      }
+}
+export type PageTransitionPopulateParam = {
+  packs?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
+}
+export type ProductOptionValuePopulateParam = {
+  option?:
+    | true
+    | {
+        count: true
+        filters?: ProductOptionFilters
+        fields?: never
+        populate?: never
+        sort?: never
+        limit?: never
+        start?: never
+      }
+    | {
+        count?: false
+        fields?: _EntityField<ProductOption>[]
+        populate?: ProductOptionPopulateParam | (keyof ProductOptionPopulateParam & string)[] | '*'
+        filters?: ProductOptionFilters
+        sort?: _SortValue<ProductOption> | _SortValue<ProductOption>[]
+        limit?: number
+        start?: number
+      }
+  variants?:
+    | true
+    | {
+        count: true
+        filters?: ProductVariantFilters
+        fields?: never
+        populate?: never
+        sort?: never
+        limit?: never
+        start?: never
+      }
+    | {
+        count?: false
+        fields?: _EntityField<ProductVariant>[]
+        populate?:
+          ProductVariantPopulateParam | (keyof ProductVariantPopulateParam & string)[] | '*'
+        filters?: ProductVariantFilters
+        sort?: _SortValue<ProductVariant> | _SortValue<ProductVariant>[]
+        limit?: number
+        start?: number
+      }
+}
+export type ProductOptionPopulateParam = {
+  products?:
+    | true
+    | {
+        count: true
+        filters?: ProductFilters
+        fields?: never
+        populate?: never
+        sort?: never
+        limit?: never
+        start?: never
+      }
+    | {
+        count?: false
+        fields?: _EntityField<Product>[]
+        populate?: ProductPopulateParam | (keyof ProductPopulateParam & string)[] | '*'
+        filters?: ProductFilters
+        sort?: _SortValue<Product> | _SortValue<Product>[]
+        limit?: number
+        start?: number
+      }
+  values?:
+    | true
+    | {
+        count: true
+        filters?: ProductOptionValueFilters
+        fields?: never
+        populate?: never
+        sort?: never
+        limit?: never
+        start?: never
+      }
+    | {
+        count?: false
+        fields?: _EntityField<ProductOptionValue>[]
+        populate?:
+          ProductOptionValuePopulateParam | (keyof ProductOptionValuePopulateParam & string)[] | '*'
+        filters?: ProductOptionValueFilters
+        sort?: _SortValue<ProductOptionValue> | _SortValue<ProductOptionValue>[]
+        limit?: number
+        start?: number
+      }
+}
+export type ProductVariantPopulateParam = {
+  product?:
+    | true
+    | {
+        count: true
+        filters?: ProductFilters
+        fields?: never
+        populate?: never
+        sort?: never
+        limit?: never
+        start?: never
+      }
+    | {
+        count?: false
+        fields?: _EntityField<Product>[]
+        populate?: ProductPopulateParam | (keyof ProductPopulateParam & string)[] | '*'
+        filters?: ProductFilters
+        sort?: _SortValue<Product> | _SortValue<Product>[]
+        limit?: number
+        start?: number
+      }
+  option_values?:
+    | true
+    | {
+        count: true
+        filters?: ProductOptionValueFilters
+        fields?: never
+        populate?: never
+        sort?: never
+        limit?: never
+        start?: never
+      }
+    | {
+        count?: false
+        fields?: _EntityField<ProductOptionValue>[]
+        populate?:
+          ProductOptionValuePopulateParam | (keyof ProductOptionValuePopulateParam & string)[] | '*'
+        filters?: ProductOptionValueFilters
+        sort?: _SortValue<ProductOptionValue> | _SortValue<ProductOptionValue>[]
+        limit?: number
+        start?: number
+      }
+  images?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
+  thumbnail?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
+}
+export type ProductPopulateParam = {
+  variants?:
+    | true
+    | {
+        count: true
+        filters?: ProductVariantFilters
+        fields?: never
+        populate?: never
+        sort?: never
+        limit?: never
+        start?: never
+      }
+    | {
+        count?: false
+        fields?: _EntityField<ProductVariant>[]
+        populate?:
+          ProductVariantPopulateParam | (keyof ProductVariantPopulateParam & string)[] | '*'
+        filters?: ProductVariantFilters
+        sort?: _SortValue<ProductVariant> | _SortValue<ProductVariant>[]
+        limit?: number
+        start?: number
+      }
+  options?:
+    | true
+    | {
+        count: true
+        filters?: ProductOptionFilters
+        fields?: never
+        populate?: never
+        sort?: never
+        limit?: never
+        start?: never
+      }
+    | {
+        count?: false
+        fields?: _EntityField<ProductOption>[]
+        populate?: ProductOptionPopulateParam | (keyof ProductOptionPopulateParam & string)[] | '*'
+        filters?: ProductOptionFilters
+        sort?: _SortValue<ProductOption> | _SortValue<ProductOption>[]
+        limit?: number
+        start?: number
+      }
+  images?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
+  thumbnail?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
 }
 export type PermissionPopulateParam = {
   role?:
@@ -654,6 +1252,50 @@ export type UserPopulateParam = {
 // const items = await strapi.items.find({ populate: { category: true } }) as ItemWithCategory[]
 //
 // This ensures that relations are only included in the type when populate is used
+// Payload type for HomepageBannerStrip with populate support
+export type HomepageBannerStripGetPayload<P extends { populate?: unknown } = {}> =
+  HomepageBannerStrip &
+    (P extends { populate: infer Pop }
+      ? Pop extends '*' | true
+        ? {
+            image?: MediaFile | null
+          }
+        : Pop extends readonly (infer _)[]
+          ? {
+              image?: 'image' extends Pop[number] ? MediaFile | null : never
+            }
+          : {
+              image?: 'image' extends keyof Pop
+                ? _ApplyFields<MediaFile, MediaFile, Pop['image']> | null
+                : never
+            }
+      : {})
+// Payload type for HomepageProductSection with populate support
+export type HomepageProductSectionGetPayload<P extends { populate?: unknown } = {}> =
+  HomepageProductSection &
+    (P extends { populate: infer Pop }
+      ? Pop extends '*' | true
+        ? {
+            products?: Product[]
+          }
+        : Pop extends readonly (infer _)[]
+          ? {
+              products?: 'products' extends Pop[number] ? Product[] : never
+            }
+          : {
+              products?: 'products' extends keyof Pop
+                ? Pop['products'] extends { count: true }
+                  ? { count: number }
+                  : _ApplyFields<
+                      Pop['products'] extends { populate: infer NestedPop }
+                        ? ProductGetPayload<{ populate: NestedPop }>
+                        : Product,
+                      Product,
+                      Pop['products']
+                    >[]
+                : never
+            }
+      : {})
 // Payload type for SliderHeroSlider with populate support
 export type SliderHeroSliderGetPayload<P extends { populate?: unknown } = {}> = SliderHeroSlider &
   (P extends { populate: infer Pop }
@@ -720,6 +1362,254 @@ export type BannerGetPayload<P extends { populate?: unknown } = {}> = Banner &
               : never
             mobile_image?: 'mobile_image' extends keyof Pop
               ? _ApplyFields<MediaFile, MediaFile, Pop['mobile_image']> | null
+              : never
+          }
+    : {})
+// Payload type for Homepage with populate support
+export type HomepageGetPayload<P extends { populate?: unknown } = {}> = Homepage &
+  (P extends { populate: infer Pop }
+    ? Pop extends '*' | true
+      ? {
+          sections?: (
+            | SliderHeroSliderDz
+            | HomepageProductSectionDz
+            | HomepageLatestProductsDz
+            | HomepageBannerStripDz
+          )[]
+        }
+      : Pop extends readonly (infer _)[]
+        ? {
+            sections?: 'sections' extends Pop[number]
+              ? (
+                  | SliderHeroSliderDz
+                  | HomepageProductSectionDz
+                  | HomepageLatestProductsDz
+                  | HomepageBannerStripDz
+                )[]
+              : never
+          }
+        : {
+            sections?: 'sections' extends keyof Pop
+              ? (
+                  | (Pop['sections'] extends { on: infer On }
+                      ? 'slider.hero-slider' extends keyof On
+                        ? On['slider.hero-slider'] extends { populate: infer NestedPop }
+                          ? SliderHeroSliderGetPayload<{ populate: NestedPop }> & {
+                              __component: 'slider.hero-slider'
+                            }
+                          : SliderHeroSliderDz
+                        : SliderHeroSliderDz
+                      : SliderHeroSliderDz)
+                  | (Pop['sections'] extends { on: infer On }
+                      ? 'homepage.product-section' extends keyof On
+                        ? On['homepage.product-section'] extends { populate: infer NestedPop }
+                          ? HomepageProductSectionGetPayload<{ populate: NestedPop }> & {
+                              __component: 'homepage.product-section'
+                            }
+                          : HomepageProductSectionDz
+                        : HomepageProductSectionDz
+                      : HomepageProductSectionDz)
+                  | HomepageLatestProductsDz
+                  | (Pop['sections'] extends { on: infer On }
+                      ? 'homepage.banner-strip' extends keyof On
+                        ? On['homepage.banner-strip'] extends { populate: infer NestedPop }
+                          ? HomepageBannerStripGetPayload<{ populate: NestedPop }> & {
+                              __component: 'homepage.banner-strip'
+                            }
+                          : HomepageBannerStripDz
+                        : HomepageBannerStripDz
+                      : HomepageBannerStripDz)
+                )[]
+              : never
+          }
+    : {})
+// Payload type for PageTransition with populate support
+export type PageTransitionGetPayload<P extends { populate?: unknown } = {}> = PageTransition &
+  (P extends { populate: infer Pop }
+    ? Pop extends '*' | true
+      ? {
+          packs?: MediaFile[]
+        }
+      : Pop extends readonly (infer _)[]
+        ? {
+            packs?: 'packs' extends Pop[number] ? MediaFile[] : never
+          }
+        : {
+            packs?: 'packs' extends keyof Pop
+              ? _ApplyFields<MediaFile, MediaFile, Pop['packs']>[]
+              : never
+          }
+    : {})
+// Payload type for ProductOptionValue with populate support
+export type ProductOptionValueGetPayload<P extends { populate?: unknown } = {}> =
+  ProductOptionValue &
+    (P extends { populate: infer Pop }
+      ? Pop extends '*' | true
+        ? {
+            option?: ProductOption | null
+            variants?: ProductVariant[]
+          }
+        : Pop extends readonly (infer _)[]
+          ? {
+              option?: 'option' extends Pop[number] ? ProductOption | null : never
+              variants?: 'variants' extends Pop[number] ? ProductVariant[] : never
+            }
+          : {
+              option?: 'option' extends keyof Pop
+                ? Pop['option'] extends { count: true }
+                  ? { count: number }
+                  : _ApplyFields<
+                      Pop['option'] extends { populate: infer NestedPop }
+                        ? ProductOptionGetPayload<{ populate: NestedPop }>
+                        : ProductOption,
+                      ProductOption,
+                      Pop['option']
+                    > | null
+                : never
+              variants?: 'variants' extends keyof Pop
+                ? Pop['variants'] extends { count: true }
+                  ? { count: number }
+                  : _ApplyFields<
+                      Pop['variants'] extends { populate: infer NestedPop }
+                        ? ProductVariantGetPayload<{ populate: NestedPop }>
+                        : ProductVariant,
+                      ProductVariant,
+                      Pop['variants']
+                    >[]
+                : never
+            }
+      : {})
+// Payload type for ProductOption with populate support
+export type ProductOptionGetPayload<P extends { populate?: unknown } = {}> = ProductOption &
+  (P extends { populate: infer Pop }
+    ? Pop extends '*' | true
+      ? {
+          products?: Product[]
+          values?: ProductOptionValue[]
+        }
+      : Pop extends readonly (infer _)[]
+        ? {
+            products?: 'products' extends Pop[number] ? Product[] : never
+            values?: 'values' extends Pop[number] ? ProductOptionValue[] : never
+          }
+        : {
+            products?: 'products' extends keyof Pop
+              ? Pop['products'] extends { count: true }
+                ? { count: number }
+                : _ApplyFields<
+                    Pop['products'] extends { populate: infer NestedPop }
+                      ? ProductGetPayload<{ populate: NestedPop }>
+                      : Product,
+                    Product,
+                    Pop['products']
+                  >[]
+              : never
+            values?: 'values' extends keyof Pop
+              ? Pop['values'] extends { count: true }
+                ? { count: number }
+                : _ApplyFields<
+                    Pop['values'] extends { populate: infer NestedPop }
+                      ? ProductOptionValueGetPayload<{ populate: NestedPop }>
+                      : ProductOptionValue,
+                    ProductOptionValue,
+                    Pop['values']
+                  >[]
+              : never
+          }
+    : {})
+// Payload type for ProductVariant with populate support
+export type ProductVariantGetPayload<P extends { populate?: unknown } = {}> = ProductVariant &
+  (P extends { populate: infer Pop }
+    ? Pop extends '*' | true
+      ? {
+          product?: Product | null
+          option_values?: ProductOptionValue[]
+          images?: MediaFile[]
+          thumbnail?: MediaFile | null
+        }
+      : Pop extends readonly (infer _)[]
+        ? {
+            product?: 'product' extends Pop[number] ? Product | null : never
+            option_values?: 'option_values' extends Pop[number] ? ProductOptionValue[] : never
+            images?: 'images' extends Pop[number] ? MediaFile[] : never
+            thumbnail?: 'thumbnail' extends Pop[number] ? MediaFile | null : never
+          }
+        : {
+            product?: 'product' extends keyof Pop
+              ? Pop['product'] extends { count: true }
+                ? { count: number }
+                : _ApplyFields<
+                    Pop['product'] extends { populate: infer NestedPop }
+                      ? ProductGetPayload<{ populate: NestedPop }>
+                      : Product,
+                    Product,
+                    Pop['product']
+                  > | null
+              : never
+            option_values?: 'option_values' extends keyof Pop
+              ? Pop['option_values'] extends { count: true }
+                ? { count: number }
+                : _ApplyFields<
+                    Pop['option_values'] extends { populate: infer NestedPop }
+                      ? ProductOptionValueGetPayload<{ populate: NestedPop }>
+                      : ProductOptionValue,
+                    ProductOptionValue,
+                    Pop['option_values']
+                  >[]
+              : never
+            images?: 'images' extends keyof Pop
+              ? _ApplyFields<MediaFile, MediaFile, Pop['images']>[]
+              : never
+            thumbnail?: 'thumbnail' extends keyof Pop
+              ? _ApplyFields<MediaFile, MediaFile, Pop['thumbnail']> | null
+              : never
+          }
+    : {})
+// Payload type for Product with populate support
+export type ProductGetPayload<P extends { populate?: unknown } = {}> = Product &
+  (P extends { populate: infer Pop }
+    ? Pop extends '*' | true
+      ? {
+          variants?: ProductVariant[]
+          options?: ProductOption[]
+          images?: MediaFile[]
+          thumbnail?: MediaFile | null
+        }
+      : Pop extends readonly (infer _)[]
+        ? {
+            variants?: 'variants' extends Pop[number] ? ProductVariant[] : never
+            options?: 'options' extends Pop[number] ? ProductOption[] : never
+            images?: 'images' extends Pop[number] ? MediaFile[] : never
+            thumbnail?: 'thumbnail' extends Pop[number] ? MediaFile | null : never
+          }
+        : {
+            variants?: 'variants' extends keyof Pop
+              ? Pop['variants'] extends { count: true }
+                ? { count: number }
+                : _ApplyFields<
+                    Pop['variants'] extends { populate: infer NestedPop }
+                      ? ProductVariantGetPayload<{ populate: NestedPop }>
+                      : ProductVariant,
+                    ProductVariant,
+                    Pop['variants']
+                  >[]
+              : never
+            options?: 'options' extends keyof Pop
+              ? Pop['options'] extends { count: true }
+                ? { count: number }
+                : _ApplyFields<
+                    Pop['options'] extends { populate: infer NestedPop }
+                      ? ProductOptionGetPayload<{ populate: NestedPop }>
+                      : ProductOption,
+                    ProductOption,
+                    Pop['options']
+                  >[]
+              : never
+            images?: 'images' extends keyof Pop
+              ? _ApplyFields<MediaFile, MediaFile, Pop['images']>[]
+              : never
+            thumbnail?: 'thumbnail' extends keyof Pop
+              ? _ApplyFields<MediaFile, MediaFile, Pop['thumbnail']> | null
               : never
           }
     : {})
@@ -963,6 +1853,36 @@ export interface TypedQueryParams<TEntity, TFilters = Record<string, any>, TPopu
   /** Select specific fields */
   fields?: (keyof TEntity)[]
 }
+/** Type-safe filters for the GeneralPageTransition component */
+export interface GeneralPageTransitionFilters extends LogicalOperators<GeneralPageTransitionFilters> {
+  id?: number | IdFilterOperators
+}
+/** Type-safe filters for the HomepageBannerStrip component */
+export interface HomepageBannerStripFilters extends LogicalOperators<HomepageBannerStripFilters> {
+  id?: number | IdFilterOperators
+  image?: { id?: number | IdFilterOperators; [key: string]: any }
+}
+/** Type-safe filters for the HomepageLatestProducts component */
+export interface HomepageLatestProductsFilters extends LogicalOperators<HomepageLatestProductsFilters> {
+  id?: number | IdFilterOperators
+  heading?: string | StringFilterOperators
+  description?: string | StringFilterOperators
+  shop_link?: string | StringFilterOperators
+  collection?: string | StringFilterOperators
+  limit?: number | NumberFilterOperators
+}
+/** Type-safe filters for the HomepageProductSection component */
+export interface HomepageProductSectionFilters extends LogicalOperators<HomepageProductSectionFilters> {
+  id?: number | IdFilterOperators
+  heading?: string | StringFilterOperators
+  description?: string | StringFilterOperators
+  shop_link?: string | StringFilterOperators
+  products?: {
+    id?: number | IdFilterOperators
+    documentId?: string | StringFilterOperators
+    [key: string]: any
+  }
+}
 /** Type-safe filters for the SliderHeroSlider component */
 export interface SliderHeroSliderFilters extends LogicalOperators<SliderHeroSliderFilters> {
   id?: number | IdFilterOperators
@@ -988,6 +1908,7 @@ export interface BannerFilters extends LogicalOperators<BannerFilters> {
   subtitle?: string | StringFilterOperators
   active?: boolean | BooleanFilterOperators
   country?: string | StringFilterOperators
+  url?: string | StringFilterOperators
   locale?: string | StringFilterOperators
   localizations?: {
     id?: number | IdFilterOperators
@@ -996,6 +1917,14 @@ export interface BannerFilters extends LogicalOperators<BannerFilters> {
   }
   web_image?: { id?: number | IdFilterOperators; [key: string]: any }
   mobile_image?: { id?: number | IdFilterOperators; [key: string]: any }
+}
+/** Type-safe filters for Homepage */
+export interface HomepageFilters extends LogicalOperators<HomepageFilters> {
+  id?: number | IdFilterOperators
+  documentId?: string | StringFilterOperators
+  createdAt?: string | DateFilterOperators
+  updatedAt?: string | DateFilterOperators
+  publishedAt?: string | DateFilterOperators
 }
 /** Type-safe filters for InteractiveBanner */
 export interface InteractiveBannerFilters extends LogicalOperators<InteractiveBannerFilters> {
@@ -1006,6 +1935,108 @@ export interface InteractiveBannerFilters extends LogicalOperators<InteractiveBa
   publishedAt?: string | DateFilterOperators
   url?: string | StringFilterOperators
   type?: ('open_pack' | 'card_3d') | StringFilterOperators
+}
+/** Type-safe filters for PageTransition */
+export interface PageTransitionFilters extends LogicalOperators<PageTransitionFilters> {
+  id?: number | IdFilterOperators
+  documentId?: string | StringFilterOperators
+  createdAt?: string | DateFilterOperators
+  updatedAt?: string | DateFilterOperators
+  publishedAt?: string | DateFilterOperators
+  packs?: { id?: number | IdFilterOperators; [key: string]: any }
+}
+/** Type-safe filters for ProductOptionValue */
+export interface ProductOptionValueFilters extends LogicalOperators<ProductOptionValueFilters> {
+  id?: number | IdFilterOperators
+  documentId?: string | StringFilterOperators
+  createdAt?: string | DateFilterOperators
+  updatedAt?: string | DateFilterOperators
+  publishedAt?: string | DateFilterOperators
+  medusaId?: string | StringFilterOperators
+  value?: string | StringFilterOperators
+  option?: {
+    id?: number | IdFilterOperators
+    documentId?: string | StringFilterOperators
+    [key: string]: any
+  }
+  variants?: {
+    id?: number | IdFilterOperators
+    documentId?: string | StringFilterOperators
+    [key: string]: any
+  }
+}
+/** Type-safe filters for ProductOption */
+export interface ProductOptionFilters extends LogicalOperators<ProductOptionFilters> {
+  id?: number | IdFilterOperators
+  documentId?: string | StringFilterOperators
+  createdAt?: string | DateFilterOperators
+  updatedAt?: string | DateFilterOperators
+  publishedAt?: string | DateFilterOperators
+  medusaId?: string | StringFilterOperators
+  title?: string | StringFilterOperators
+  products?: {
+    id?: number | IdFilterOperators
+    documentId?: string | StringFilterOperators
+    [key: string]: any
+  }
+  values?: {
+    id?: number | IdFilterOperators
+    documentId?: string | StringFilterOperators
+    [key: string]: any
+  }
+}
+/** Type-safe filters for ProductVariant */
+export interface ProductVariantFilters extends LogicalOperators<ProductVariantFilters> {
+  id?: number | IdFilterOperators
+  documentId?: string | StringFilterOperators
+  createdAt?: string | DateFilterOperators
+  updatedAt?: string | DateFilterOperators
+  publishedAt?: string | DateFilterOperators
+  medusaId?: string | StringFilterOperators
+  title?: string | StringFilterOperators
+  sku?: string | StringFilterOperators
+  imageUrls?: any
+  thumbnailUrl?: string | StringFilterOperators
+  managedByMedusa?: boolean | BooleanFilterOperators
+  product?: {
+    id?: number | IdFilterOperators
+    documentId?: string | StringFilterOperators
+    [key: string]: any
+  }
+  option_values?: {
+    id?: number | IdFilterOperators
+    documentId?: string | StringFilterOperators
+    [key: string]: any
+  }
+  images?: { id?: number | IdFilterOperators; [key: string]: any }
+  thumbnail?: { id?: number | IdFilterOperators; [key: string]: any }
+}
+/** Type-safe filters for Product */
+export interface ProductFilters extends LogicalOperators<ProductFilters> {
+  id?: number | IdFilterOperators
+  documentId?: string | StringFilterOperators
+  createdAt?: string | DateFilterOperators
+  updatedAt?: string | DateFilterOperators
+  publishedAt?: string | DateFilterOperators
+  medusaId?: string | StringFilterOperators
+  title?: string | StringFilterOperators
+  subtitle?: string | StringFilterOperators
+  description?: string | StringFilterOperators
+  handle?: string | StringFilterOperators
+  imageUrls?: any
+  thumbnailUrl?: string | StringFilterOperators
+  variants?: {
+    id?: number | IdFilterOperators
+    documentId?: string | StringFilterOperators
+    [key: string]: any
+  }
+  options?: {
+    id?: number | IdFilterOperators
+    documentId?: string | StringFilterOperators
+    [key: string]: any
+  }
+  images?: { id?: number | IdFilterOperators; [key: string]: any }
+  thumbnail?: { id?: number | IdFilterOperators; [key: string]: any }
 }
 /** Type-safe filters for Permission */
 export interface PermissionFilters extends LogicalOperators<PermissionFilters> {

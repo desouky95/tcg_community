@@ -41,6 +41,15 @@ export interface ApiDefinition {
   commerce: {
     customer: typeof routes['commerce.customer']
   }
+  facebookAuth: {
+    redirect: typeof routes['facebook_auth.redirect']
+    finish: typeof routes['facebook_auth.finish']
+    callback: typeof routes['facebook_auth.callback']
+    signup: typeof routes['facebook_auth.signup']
+    verify: typeof routes['facebook_auth.verify']
+    pending: typeof routes['facebook_auth.pending']
+    link: typeof routes['facebook_auth.link']
+  }
   identity: {
     otpLogin: typeof routes['identity.otp_login']
     deleteDeactivatedAccount: typeof routes['identity.delete_deactivated_account']

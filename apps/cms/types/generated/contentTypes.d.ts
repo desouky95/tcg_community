@@ -504,6 +504,12 @@ export interface ApiBannerBanner extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    url: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     web_image: Schema.Attribute.Media<
       'images' | 'files' | 'videos' | 'audios'
     > &
@@ -512,6 +518,41 @@ export interface ApiBannerBanner extends Struct.CollectionTypeSchema {
           localized: true;
         };
       }>;
+  };
+}
+
+export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
+  collectionName: 'homepages';
+  info: {
+    displayName: 'Homepage';
+    pluralName: 'homepages';
+    singularName: 'homepage';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::homepage.homepage'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    sections: Schema.Attribute.DynamicZone<
+      [
+        'slider.hero-slider',
+        'homepage.product-section',
+        'homepage.latest-products',
+        'homepage.banner-strip',
+      ]
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -544,6 +585,35 @@ export interface ApiInteractiveBannerInteractiveBanner
     url: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'url'>;
+  };
+}
+
+export interface ApiPageTransitionPageTransition
+  extends Struct.SingleTypeSchema {
+  collectionName: 'page_transitions';
+  info: {
+    displayName: 'Page Transition';
+    pluralName: 'page-transitions';
+    singularName: 'page-transition';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::page-transition.page-transition'
+    > &
+      Schema.Attribute.Private;
+    packs: Schema.Attribute.Media<'images', true> & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -643,12 +713,15 @@ export interface ApiProductVariantProductVariant
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     images: Schema.Attribute.Media<'images', true>;
+    imageUrls: Schema.Attribute.JSON;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::product-variant.product-variant'
     > &
       Schema.Attribute.Private;
+    managedByMedusa: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
     medusaId: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
@@ -660,6 +733,7 @@ export interface ApiProductVariantProductVariant
     publishedAt: Schema.Attribute.DateTime;
     sku: Schema.Attribute.String;
     thumbnail: Schema.Attribute.Media<'images'>;
+    thumbnailUrl: Schema.Attribute.String;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -683,8 +757,11 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.RichText;
-    handle: Schema.Attribute.UID<'title'>;
+    handle: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     images: Schema.Attribute.Media<'images', true>;
+    imageUrls: Schema.Attribute.JSON;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -701,6 +778,7 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     subtitle: Schema.Attribute.String;
     thumbnail: Schema.Attribute.Media<'images'>;
+    thumbnailUrl: Schema.Attribute.String;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1224,7 +1302,9 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::banner.banner': ApiBannerBanner;
+      'api::homepage.homepage': ApiHomepageHomepage;
       'api::interactive-banner.interactive-banner': ApiInteractiveBannerInteractiveBanner;
+      'api::page-transition.page-transition': ApiPageTransitionPageTransition;
       'api::product-option-value.product-option-value': ApiProductOptionValueProductOptionValue;
       'api::product-option.product-option': ApiProductOptionProductOption;
       'api::product-variant.product-variant': ApiProductVariantProductVariant;

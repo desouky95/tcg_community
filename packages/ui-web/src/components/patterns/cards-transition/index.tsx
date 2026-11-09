@@ -130,7 +130,7 @@ const Cards = ({ type = "sticker-packs" }: CardsProps) => {
             key={`pack-row-${rowIndex}`}
             custom={{ rowIndex, reducedMotion }}
             variants={rowVariants}
-            className={`absolute inset-x-0 top-0 flex h-[calc(100dvh/3)] w-max min-w-full justify-center will-change-transform ${zIndexClassName}`}
+            className={`absolute inset-x-0 top-0 flex h-[calc(100dvh/2.9)] w-max min-w-full justify-center will-change-transform ${zIndexClassName}`}
           >
             {packs.map((pack, index) => (
               <motion.img

@@ -25,6 +25,7 @@
     "@tcg/strapi-client": "workspace:*",
     "@tcg/ui-web": "workspace:*",
     "axios": "catalog:",
+    "better-auth": "^1.7.18",
     "embla-carousel-react": "^8.6.0",
     "i18next": "^26.4.2",
     "i18next-resources-to-backend": "catalog:",

@@ -116,6 +116,48 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"login"]],
     types: placeholder as Registry['auth.login']['types'],
   },
+  'facebook_auth.redirect': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/auth/oauth/:provider/redirect',
+    tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"redirect"]],
+    types: placeholder as Registry['facebook_auth.redirect']['types'],
+  },
+  'facebook_auth.finish': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/auth/oauth/:provider/finish',
+    tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"finish"]],
+    types: placeholder as Registry['facebook_auth.finish']['types'],
+  },
+  'facebook_auth.callback': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/auth/oauth/:provider/callback',
+    tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"callback"]],
+    types: placeholder as Registry['facebook_auth.callback']['types'],
+  },
+  'facebook_auth.signup': {
+    methods: ["POST"],
+    pattern: '/api/v1/auth/oauth/:provider/signup',
+    tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"signup"]],
+    types: placeholder as Registry['facebook_auth.signup']['types'],
+  },
+  'facebook_auth.verify': {
+    methods: ["POST"],
+    pattern: '/api/v1/auth/oauth/:provider/verify',
+    tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"verify"]],
+    types: placeholder as Registry['facebook_auth.verify']['types'],
+  },
+  'facebook_auth.pending': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/auth/oauth/:provider/pending',
+    tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"pending"]],
+    types: placeholder as Registry['facebook_auth.pending']['types'],
+  },
+  'facebook_auth.link': {
+    methods: ["POST"],
+    pattern: '/api/v1/auth/oauth/:provider/link',
+    tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"link"]],
+    types: placeholder as Registry['facebook_auth.link']['types'],
+  },
   'identity.otp_login': {
     methods: ["POST"],
     pattern: '/api/v1/auth/otp-login',

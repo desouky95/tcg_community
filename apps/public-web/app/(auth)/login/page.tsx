@@ -1,9 +1,13 @@
-import { Suspense } from "react";
+import { authDestination, authQuery, destinationPath } from "../../../src/lib/auth-destination";
 import { AuthShell } from "@tcg/ui-web";
 import { LoginForm } from "../../../src/components/LoginForm";
-export default function LoginPage() {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ returnTo?: string; destination?: string; social_error?: string; facebook_error?: string; google_error?: string }> }) {
+  const params = await searchParams;
+  const destination = authDestination(params.destination);
+  const returnTo = destinationPath(destination, params.returnTo);
   return (
     <AuthShell
+      quiet
       eyebrow="Welcome back"
       title={
         <>
@@ -22,7 +26,7 @@ export default function LoginPage() {
         <>
           New to Next Pull?{" "}
           <a
-            href="/signup"
+            href={`/signup?${authQuery(destination, returnTo)}`}
             className="font-mono text-utility uppercase text-wax-red hover:underline focus-ring"
           >
             Create an account
@@ -30,15 +34,7 @@ export default function LoginPage() {
         </>
       }
     >
-      <Suspense
-        fallback={
-          <div role="status" className="min-h-48 text-wax-muted">
-            Loading sign in...
-          </div>
-        }
-      >
-        <LoginForm />
-      </Suspense>
+      <LoginForm destination={destination} returnTo={returnTo} socialError={Boolean(params.social_error || params.facebook_error || params.google_error)} />
     </AuthShell>
   );
 }

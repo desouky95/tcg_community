@@ -1,0 +1,9 @@
+# Social sign-in configuration
+
+Social OAuth is handled by Better Auth in the public Next.js app. Adonis remains the authority for Next Pull users, sessions, mobile verification, and explicit linking. Configure `BETTER_AUTH_URL` as the public-site origin and set a strong, unique `BETTER_AUTH_SECRET` on the public server. Configure `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `FACEBOOK_CLIENT_ID`, and `FACEBOOK_CLIENT_SECRET` there; never expose these values to browser code. Register the exact Better Auth callback URLs `${BETTER_AUTH_URL}/api/auth/callback/google` and `${BETTER_AUTH_URL}/api/auth/callback/facebook` with the respective providers.
+
+Set the same independently generated `SOCIAL_AUTH_BRIDGE_SECRET` of at least 32 characters on both the public server and Adonis API. Apply the additive `create_social_auth_attempts` migration through the normal deployment process before enabling social sign-in. Configure `PUBLIC_WEB_URL`, `COLLECTOR_APP_URL`, `NEXT_PUBLIC_API_URL`, `WEB_ORIGINS`, and `SESSION_COOKIE_DOMAIN` for the actual deployment. The API session cookie must be sent on the browser's OAuth handoff; use HTTPS and compatible same-site domains/cookie settings in production.
+
+Each attempt is bound to the initiating Adonis session and a short-lived, single-use database record. The public server verifies the Better Auth account before signing an assertion. Existing external identities remain linked; a new identity requires mobile verification or explicit password-confirmed linking. An email match never links an account. Production OTP delivery must be configured before new-account verification is available.
+
+Existing `/login/facebook` URLs redirect to the provider-neutral `/login/social` completion page. Provider callback URLs changed, so OAuth flows started before the cutover must restart. Expired `social_auth_attempts` may be purged according to the deployment retention schedule.

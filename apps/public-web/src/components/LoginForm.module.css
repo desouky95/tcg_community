@@ -1,0 +1,26 @@
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.88rem;
+}
+
+.form > * {
+  grid-column: 1 / -1;
+}
+
+.form > .social {
+  grid-column: auto;
+  text-align: center;
+}
+
+@media (min-width: 64rem) {
+  .form > div[data-state] {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 26rem) {
+  .form > .social {
+    grid-column: 1 / -1;
+  }
+}

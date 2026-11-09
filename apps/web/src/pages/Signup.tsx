@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuth } from "../hooks/useAuth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AtSign, LockKeyhole, Mail, MapPin, UserRound } from "lucide-react";
 import { AxiosError } from "axios";
 import { PhoneNumber } from "../components/common/PhoneNumber";
@@ -11,7 +11,7 @@ import { EGYPT_GOVERNORATES } from "../lib/constants";
 import { useTranslation } from "react-i18next";
 import AuthShell from "../components/AuthShell";
 import type { ReactNode } from "react";
-import { AuthField, AuthInput, AuthSelect, Button } from "@tcg/ui-web";
+import { AuthField, AuthInput, AuthSelect, Button, SocialAuthButton } from "@tcg/ui-web";
 
 const signupSchema = z.object({
   fullName: z.string().min(3, "Full name must be at least 3 characters").max(255, "Full name is too long"),
@@ -26,6 +26,7 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 export default function Signup() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { signup } = useAuth();
   const { t } = useTranslation();
   const { register, handleSubmit, setError, clearErrors, formState: { errors } } = useForm<SignupFormData>({ resolver: zodResolver(signupSchema), mode: "onBlur" });
@@ -60,6 +61,13 @@ export default function Signup() {
   );
   return (
     <AuthShell eyebrow="Join the club / 01" title={<>Make room for <em>more.</em></>} description="Build your collector profile, find your people, and give every card a place in the story." asideTitle="Collection starts with a first pull." asideDescription="Bring your binder online and make every swap, want, and discovery count." asideItems={["A profile made for collecting", "Local context, global community", "Mobile verification for trust"]} footer={<>Already have a vault? <Link to="/login" className="font-mono text-utility uppercase text-wax-red hover:underline focus-ring">Sign in</Link></>}>
+      <div className="grid gap-3 pb-5 sm:grid-cols-2">
+        {(["google", "facebook"] as const).map((provider) => {
+          const url = new URL(`/api/v1/auth/oauth/${provider}/redirect`, import.meta.env.VITE_API_URL ?? "http://localhost:3333");
+          url.searchParams.set("returnTo", searchParams.get("returnTo") || "/");
+          return <SocialAuthButton key={provider} provider={provider} href={url.toString()} />;
+        })}
+      </div>
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-5 ">
         <div className="grid gap-5 sm:grid-cols-2">
           {field("fullName", "Full name", <UserRound aria-hidden="true" />, <AuthInput id="signup-fullName" {...register("fullName")} type="text" autoComplete="name" placeholder="Your name" invalid={Boolean(errors.fullName)} aria-describedby={errors.fullName ? "signup-fullName-error" : undefined} disabled={signup.isPending} />)}

@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "page_transitions",
+  "info": {
+    "singularName": "page-transition",
+    "pluralName": "page-transitions",
+    "displayName": "Page Transition"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "packs": {
+      "type": "media",
+      "multiple": true,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

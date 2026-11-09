@@ -1,3 +1,4 @@
+import multer from "multer";
 import {
   configureStoreSearch,
   defineMiddlewares,
@@ -14,6 +15,8 @@ import { CreateCardCollectionSchema } from "./admin/card-collections/validators"
 // the route narrows it to published products in the key's sales channels.
 export default defineMiddlewares({
   routes: [
+    { matcher: "/admin/products/:id/sync-cms", method: "POST", policies: [{ resource: "product", operation: "update" }], middlewares: [authenticate("user", ["session", "bearer", "api-key"])] },
+    { matcher: "/admin/products/:id/avif", method: "POST", policies: [{ resource: "file", operation: "create" }, { resource: "product", operation: "update" }], middlewares: [authenticate("user", ["session", "bearer", "api-key"]), multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024, files: 1 } }).single("file") as any] },
     { matcher: "/admin/missing-lists", method: "POST", middlewares: [authenticate("user", ["session", "bearer", "api-key"]), validateAndTransformBody(CreateMissingListSchema)] },
     { matcher: "/admin/missing-lists/:id", method: "POST", middlewares: [authenticate("user", ["session", "bearer", "api-key"]), validateAndTransformBody(UpdateMissingListSchema)] },
     {

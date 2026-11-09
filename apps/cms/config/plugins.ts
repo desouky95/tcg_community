@@ -51,8 +51,21 @@ const config = ({
       ],
     },
   },
+  "medusa-collections": {
+    enabled: true,
+    resolve: "./src/plugins/medusa-collections",
+  },
   "strapi-typed-client": {
     enabled: true,
+  },
+  "croppable-media": {
+    enabled: true,
+    config: {
+      cropSizes: [
+        { label: "hero", ratio: [21, 9], maxWidth: 2400 },
+        { label: "portrait", ratio: [3, 4], maxWidth: 900 },
+      ],
+    },
   },
 });
 

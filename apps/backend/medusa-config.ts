@@ -2,6 +2,10 @@ import { loadEnv, defineConfig } from "@medusajs/framework/utils";
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
+if (process.env.NODE_ENV === "production" && process.env.STRAPI_SYNC_URL && !process.env.EVENTS_REDIS_URL) {
+  throw new Error("EVENTS_REDIS_URL is required for durable Strapi synchronization in production");
+}
+
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -14,6 +18,13 @@ module.exports = defineConfig({
     }
   },
   modules: [
+    ...(process.env.EVENTS_REDIS_URL ? [{
+      resolve: "@medusajs/medusa/locking",
+      options: { providers: [{ resolve: "@medusajs/medusa/locking-redis", id: "strapi-sync-redis", is_default: true, options: { redisUrl: process.env.EVENTS_REDIS_URL } }] },
+    }, {
+      resolve: "@medusajs/medusa/event-bus-redis",
+      options: { redisUrl: process.env.EVENTS_REDIS_URL, jobOptions: { attempts: 8, backoff: { type: "exponential", delay: 5000 }, removeOnFail: false } },
+    }] : []),
     {
       resolve: "./src/modules/card-catalog",
       options: {

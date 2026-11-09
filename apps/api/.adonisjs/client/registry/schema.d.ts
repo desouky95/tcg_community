@@ -242,6 +242,97 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['login']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
+  'facebook_auth.redirect': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/auth/oauth/:provider/redirect'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { provider: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['redirect']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['redirect']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['redirect']>>>
+    }
+  }
+  'facebook_auth.finish': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/auth/oauth/:provider/finish'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { provider: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['finish']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['finish']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['finish']>>>
+    }
+  }
+  'facebook_auth.callback': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/auth/oauth/:provider/callback'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { provider: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['callback']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['callback']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['callback']>>>
+    }
+  }
+  'facebook_auth.signup': {
+    methods: ["POST"]
+    pattern: '/api/v1/auth/oauth/:provider/signup'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/user').signupValidator)>>
+      paramsTuple: [ParamValue]
+      params: { provider: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/user').signupValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['signup']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['signup']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['signup']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'facebook_auth.verify': {
+    methods: ["POST"]
+    pattern: '/api/v1/auth/oauth/:provider/verify'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/user').verifyOtpValidator)>>
+      paramsTuple: [ParamValue]
+      params: { provider: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/user').verifyOtpValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['verify']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['verify']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['verify']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'facebook_auth.pending': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/auth/oauth/:provider/pending'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { provider: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['pending']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['pending']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['pending']>>>
+    }
+  }
+  'facebook_auth.link': {
+    methods: ["POST"]
+    pattern: '/api/v1/auth/oauth/:provider/link'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { provider: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['link']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['link']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['link']>>>
+    }
+  }
   'identity.otp_login': {
     methods: ["POST"]
     pattern: '/api/v1/auth/otp-login'

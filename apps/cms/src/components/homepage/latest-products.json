@@ -1,0 +1,11 @@
+{
+  "collectionName": "components_homepage_latest_products",
+  "info": { "displayName": "Latest products" },
+  "attributes": {
+    "heading": { "type": "string", "required": true },
+    "description": { "type": "text" },
+    "shop_link": { "type": "string" },
+    "collection": { "type": "customField", "customField": "global::medusa-collection", "required": true },
+    "limit": { "type": "integer", "min": 1, "max": 48, "default": 8, "required": true }
+  }
+}

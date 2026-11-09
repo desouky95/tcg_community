@@ -90,6 +90,14 @@
       "customField": "plugin::country-select.country",
       "default": "eg",
       "required": true
+    },
+    "url": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }

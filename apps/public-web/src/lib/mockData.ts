@@ -119,7 +119,7 @@ export const mockChecklists = [
   },
 ];
 
-type CardFixture = Omit<Card, "id" | "checklistId" | "variant" | "baseCardId">;
+type CardFixture = Omit<Card, "id" | "checklistId" | "variant" | "baseCardId" | "order">;
 
 const mockCardsByChecklist: Record<string, CardFixture[]> = {
   cl1: [
@@ -322,9 +322,16 @@ const mockCardsByChecklist: Record<string, CardFixture[]> = {
 
 export const mockChecklistDetails = mockChecklists.map((checklist) => ({
   ...checklist,
+  slug: checklist.id,
+  category: { ...checklist.category, slug: checklist.category.id },
+  subcategory: { ...checklist.subcategory, slug: checklist.subcategory.id },
+  needs: 0,
+  holds: 0,
+  offers: 0,
   cards: (mockCardsByChecklist[checklist.id] ?? []).map((card, index) => ({
     ...card,
     id: index + 1,
+    order: index,
     checklistId: Number(checklist.id.replace("cl", "")),
     variant: null,
     baseCardId: null,

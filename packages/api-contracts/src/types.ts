@@ -258,6 +258,15 @@ export type SignupInput = {
   passwordConfirmation: string;
   governorate: string;
 };
+export type FacebookPendingResponse = {
+  destination: "public" | "collector";
+  email: string | null;
+  returnTo: string;
+  signupStarted: boolean;
+  mobile: string | null;
+};
+export type FacebookVerifyInput = { mobile: string; otp: string };
+export type FacebookLinkResponse = { returnTo: string };
 export type LoginInput = { uid: string; password: string };
 /** Browser authentication is established by the HttpOnly session cookie. */
 export type AuthSession = { user: ExtendedUser | User; token?: string };

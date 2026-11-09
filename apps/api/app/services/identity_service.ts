@@ -6,7 +6,7 @@ import User from '#models/user'
 import app from '@adonisjs/core/services/app'
 import type { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
-export type OtpPurpose = 'signup' | 'login' | 'password_recovery' | 'mobile_change'
+export type OtpPurpose = 'signup' | 'facebook_signup' | 'google_signup' | 'login' | 'password_recovery' | 'mobile_change'
 
 export function sessionFingerprint(password: string | null) {
   return createHash('sha256').update(password ?? '').digest('hex')

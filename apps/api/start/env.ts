@@ -21,6 +21,9 @@ export default await Env.create(new URL('../', import.meta.url), {
   // App
   APP_KEY: Env.schema.secret(),
   APP_URL: Env.schema.string({ format: 'url', tld: false }),
+  SOCIAL_AUTH_BRIDGE_SECRET: Env.schema.string.optional(),
+  PUBLIC_WEB_URL: Env.schema.string.optional({ format: 'url', tld: false }),
+  COLLECTOR_APP_URL: Env.schema.string.optional({ format: 'url', tld: false }),
   WEB_ORIGINS: Env.schema.string.optional(),
   SESSION_COOKIE_DOMAIN: Env.schema.string.optional(),
   MEDUSA_INTERNAL_URL: Env.schema.string.optional(),
@@ -40,7 +43,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   DB_DATABASE: Env.schema.string(),
   TEXT_BEE_API_KEY: Env.schema.string(),
   TEXT_BEE_DEVICE_ID: Env.schema.string(),
-  COLLECTOR_DISK_ENABLED : Env.schema.boolean(),
+  COLLECTOR_DISK_ENABLED: Env.schema.boolean(),
   SWAPS_ENABLED: Env.schema.boolean.optional(),
 
   /*
@@ -55,5 +58,15 @@ export default await Env.create(new URL('../', import.meta.url), {
   | Variables for configuring the drive package
   |----------------------------------------------------------
   */
-  DRIVE_DISK: Env.schema.enum(['fs'] as const)
+  DRIVE_DISK: Env.schema.enum(['fs'] as const),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring ally package
+  |----------------------------------------------------------
+  */
+  GOOGLE_CLIENT_ID: Env.schema.string.optional(),
+  GOOGLE_CLIENT_SECRET: Env.schema.string.optional(),
+  FACEBOOK_CLIENT_ID: Env.schema.string(),
+  FACEBOOK_CLIENT_SECRET: Env.schema.string()
 })

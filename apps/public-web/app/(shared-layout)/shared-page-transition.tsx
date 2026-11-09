@@ -20,8 +20,10 @@ const tcgImages = [
 ];
 export function SharedPageTransition({
   children,
+  images = [],
 }: {
   children: React.ReactNode;
+  images?: string[];
 }) {
   const pathname = usePathname();
 
@@ -31,8 +33,8 @@ export function SharedPageTransition({
     matchesRoute(pathname, "/s");
   return (
     <PageAnimatePresence
-      type={usesTcgArtwork ? "tcg-games" : "sticker-packs"}
-      tcgImages={usesTcgArtwork ? tcgImages : undefined}
+      type={"sticker-packs"}
+      tcgImages={images.length === 0 ? tcgImages : images}
       //   key={pathname}
     >
       {children}

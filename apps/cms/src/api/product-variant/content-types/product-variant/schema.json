@@ -28,13 +28,17 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "thumbnail": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "locale": {
       "type": "string",
@@ -51,6 +55,16 @@
       "relation": "manyToMany",
       "target": "api::product-option-value.product-option-value",
       "inversedBy": "variants"
+    },
+    "imageUrls": {
+      "type": "json"
+    },
+    "thumbnailUrl": {
+      "type": "string"
+    },
+    "managedByMedusa": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
