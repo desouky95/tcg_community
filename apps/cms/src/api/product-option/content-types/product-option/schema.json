@@ -29,7 +29,7 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::product.product",
-      "inversedBy": "options"
+      "mappedBy": "options"
     },
     "values": {
       "type": "relation",

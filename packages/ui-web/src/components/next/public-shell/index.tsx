@@ -14,6 +14,8 @@ export type PublicShellProps = ComponentPropsWithoutRef<"div"> &
     | "isNext"
     | "config"
     | "storeNavigation"
+    | "categories"
+    | "cartAction"
   > & { mainClassName?: string };
 
 export function PublicShell({
@@ -27,6 +29,8 @@ export function PublicShell({
   isNext = true,
   config = {},
   storeNavigation = false,
+  categories = [],
+  cartAction,
   ...props
 }: PublicShellProps) {
   return (
@@ -46,6 +50,8 @@ export function PublicShell({
         isNext
         config={config}
         storeNavigation={storeNavigation}
+        categories={categories}
+        cartAction={cartAction}
       />
       <main className={mainClassName}>{children}</main>
       <PublicFooter />

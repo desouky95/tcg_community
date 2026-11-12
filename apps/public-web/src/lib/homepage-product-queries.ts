@@ -1,3 +1,4 @@
+import Medusa from "@medusajs/js-sdk";
 import type { HttpTypes } from "@medusajs/types";
 
 type ProductResponse = { products: HttpTypes.StoreProduct[] };
@@ -31,7 +32,7 @@ export type ProductSectionData =
   | { kind: "unavailable" };
 
 export function createHomepageProductQueries(
-  sdk: Client,
+  sdk: Medusa,
   configuredRegion: string | undefined,
 ) {
   async function regionId(): Promise<string | undefined> {
@@ -65,6 +66,25 @@ export function createHomepageProductQueries(
       ? { region_id: region, fields: "*variants.calculated_price" }
       : {};
   }
+  async function getProducts(
+    collection: string,
+    limit: number,
+    isCaterogry: boolean = false,
+  ): Promise<ProductSectionData> {
+    try {
+      const { products } = await sdk.store.product.list({
+        ...(!isCaterogry && { collection_id: [collection] }),
+        ...(isCaterogry && { category_id: [collection] }),
+        order: "-created_at",
+        limit: Math.min(48, Math.max(1, limit || 8)),
+        ...(await priceOptions()),
+      });
+      return { kind: "ready", products };
+    } catch {
+      return { kind: "unavailable" };
+    }
+  }
+
   return {
     async selected(ids: string[]): Promise<ProductSectionData> {
       if (!ids.length) return { kind: "ready", products: [] };
@@ -101,6 +121,20 @@ export function createHomepageProductQueries(
       } catch {
         return { kind: "unavailable" };
       }
+    },
+    async getProductsByCollections(
+      collection: string | null | undefined,
+      limit: number,
+    ): Promise<ProductSectionData> {
+      const id = collection?.trim();
+      if (!id) return { kind: "ready", products: [] };
+      return getProducts(id, limit, false);
+    },
+    async getProductsByCategory(
+      collection: string,
+      limit: number,
+    ): Promise<ProductSectionData> {
+      return getProducts(collection, limit, true);
     },
   };
 }

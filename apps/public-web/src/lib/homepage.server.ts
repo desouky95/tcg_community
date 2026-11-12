@@ -25,6 +25,7 @@ async function fetchHomepage() {
             "homepage.product-section": { populate: { products: true } },
             "homepage.latest-products": true,
             "homepage.banner-strip": { populate: { image: true } },
+            'homepage.collection-section': true
           },
         },
       },
@@ -109,7 +110,7 @@ export async function getPageTransition(): Promise<PageTransitionState> {
   try {
     const pagetransition = await fetchPageTransition();
     console.log(pagetransition);
-    return pagetransition;
+    return pagetransition
   } catch (error) {
     throw error;
   }

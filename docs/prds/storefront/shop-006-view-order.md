@@ -19,12 +19,19 @@ A customer can view their own order and its status.
 - Verify integration with the owning service and its persisted state.
 
 ## UI Page Used
-- N/A — no dedicated UI page
+- apps/public-web/app/(shared-layout)/account/page.tsx
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- GET /api/v1/account/commerce/orders
+- GET /api/v1/account/commerce/orders/:id
+- POST /store/community/account (service-only Medusa bridge)
 
 ## Related Files
+- apps/public-web/app/(shared-layout)/account/account-settings.tsx
+- apps/public-web/app/(shared-layout)/account/commerce-sections.tsx
+- apps/api/app/controllers/commerce_controller.ts
+- apps/api/app/services/commerce_customer_service.ts
+- apps/backend/src/api/store/community/account/route.ts
 - apps/backend/src/modules/card-catalog/service.ts
 - apps/backend/src/modules/collection-sale/service.ts
 - apps/public-web/app/(shared-layout)/checklists/page.tsx

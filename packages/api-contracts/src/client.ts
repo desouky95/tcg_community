@@ -124,6 +124,24 @@ export function createApiClient(options: ApiClientOptions) {
       xsrfHeaderName: "X-XSRF-TOKEN",
     });
 
+  http.interceptors.request.use(
+    (value) => {
+      return value;
+    },
+    (err) => {
+      return Promise.reject(err);
+    },
+  );
+
+  http.interceptors.response.use(
+    (value) => {
+      return value;
+    },
+    (err) => {
+      return Promise.reject(err);
+    },
+  );
+
   const requestConfig = (
     inheritDefaultQuery: boolean,
     requestOptions?: ApiRequestOptions,

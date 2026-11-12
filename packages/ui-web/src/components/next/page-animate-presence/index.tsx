@@ -62,7 +62,7 @@ function DestinationArtwork({
       initial="above"
       animate={controls}
     >
-      {type === "sticker-packs" && <Cards />}
+      {type === "sticker-packs" && <Cards images={tcgImages} />}
 
       {type === "tcg-games" && tcgImages && tcgImages.length > 0 && (
         <TCG images={tcgImages} />

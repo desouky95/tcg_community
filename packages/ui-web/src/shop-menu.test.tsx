@@ -1,0 +1,116 @@
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from "vitest";
+import { MobileShopCategories, ShopMenu } from "./components/next/shop-menu";
+
+vi.mock("next/link", () => ({ default: ({ href, children, onClick, ...props }: React.ComponentProps<"a">) => <a href={href} {...props} onClick={event => { event.preventDefault(); onClick?.(event); }}>{children}</a> }));
+const categories = [{ id: "a", name: "Cards", href: "/categories/cards", children: [{ id: "b", name: "Packs", href: "/categories/packs", children: [] }] }];
+
+describe("shop navigation", () => {
+  it("opens on hover, keeps links accessible, and closes on Escape", async () => {
+    const user = userEvent.setup();
+    render(<ShopMenu categories={categories} />);
+    const trigger = screen.getByRole("button", { name: "Shop" });
+    await user.hover(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    const panel = document.getElementById(trigger.getAttribute("aria-controls")!)!;
+    expect(within(panel).getByRole("link", { name: "Cards" })).toHaveAttribute("href", "/categories/cards");
+    expect(within(panel).getByRole("link", { name: "Packs" })).toHaveAttribute("href", "/categories/packs");
+    fireEvent.mouseLeave(trigger.parentElement!, { relatedTarget: within(panel).getByRole("link", { name: "Packs" }) });
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await user.keyboard("{Escape}");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveFocus();
+  });
+  it("keeps the menu open through a gap and cancels a pending close on return", () => {
+    vi.useFakeTimers();
+    const { unmount } = render(<ShopMenu categories={categories} />);
+    const trigger = screen.getByRole("button", { name: "Shop" });
+    const region = trigger.parentElement!;
+    fireEvent.mouseEnter(region);
+    const panel = document.getElementById(trigger.getAttribute("aria-controls")!)!;
+    fireEvent.mouseLeave(region, { relatedTarget: document.body });
+    act(() => vi.advanceTimersByTime(100));
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    fireEvent.mouseEnter(panel);
+    act(() => vi.advanceTimersByTime(250));
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(within(panel).getByRole("link", { name: "Packs" })).toBeVisible();
+    fireEvent.mouseLeave(region, { relatedTarget: document.body });
+    act(() => vi.advanceTimersByTime(200));
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    unmount();
+    vi.useRealTimers();
+  });
+  it("cancels a pending pointer close when Escape is pressed", () => {
+    vi.useFakeTimers();
+    const { unmount } = render(<ShopMenu categories={categories} />);
+    const trigger = screen.getByRole("button", { name: "Shop" });
+    fireEvent.mouseEnter(trigger.parentElement!);
+    fireEvent.mouseLeave(trigger.parentElement!, { relatedTarget: document.body });
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveFocus();
+    act(() => vi.advanceTimersByTime(250));
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    unmount();
+    vi.useRealTimers();
+  });
+  it("opens with keyboard and retains a shop link for empty categories", async () => {
+    const user = userEvent.setup();
+    render(<ShopMenu categories={[]} />);
+    await user.tab();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("link", { name: /shop all/i })).toHaveAttribute("href", "/shop");
+    expect(screen.getByText(/categories are not available/i)).toBeInTheDocument();
+  });
+  it("closes after an outside interaction", async () => {
+    const user = userEvent.setup();
+    render(<><ShopMenu categories={categories} /><button>Outside</button></>);
+    await user.click(screen.getByRole("button", { name: "Shop" }));
+    expect(screen.getByRole("button", { name: "Shop" })).toHaveAttribute("aria-expanded", "true");
+    await user.click(screen.getByRole("button", { name: "Outside" }));
+    expect(screen.getByRole("button", { name: "Shop" })).toHaveAttribute("aria-expanded", "false");
+  });
+  it("previews parent and child categories on hover and focus, with image fallback", async () => {
+    const user = userEvent.setup();
+    const items = [{ id: "a", name: "Cards", href: "/categories/cards", image: "/cards.jpg", children: [{ id: "b", name: "Packs", href: "/categories/packs", children: [] }] }];
+    render(<ShopMenu categories={items} />);
+    const trigger = screen.getByRole("button", { name: "Shop" });
+    await user.hover(trigger);
+    expect(screen.getByText("Explore categories")).toBeVisible();
+    const categoryLink = screen.getByRole("link", { name: "Cards" });
+    fireEvent.mouseEnter(categoryLink);
+    let feature = screen.getByRole("link", { name: "Explore Cards" });
+    expect(feature).toHaveAttribute("href", "/categories/cards");
+    expect(feature.querySelector("img")).toHaveAttribute("src", "/cards.jpg");
+    expect(within(feature).getByTestId("category-feature-shape")).toBeInTheDocument();
+    expect(within(feature).getByTestId("category-feature-spark")).toBeInTheDocument();
+    fireEvent.error(feature.querySelector("img")!);
+    expect(feature.querySelector("img")).toBeNull();
+    expect(within(feature).getByTestId("category-feature-shape")).toBeInTheDocument();
+    expect(within(feature).getByTestId("category-feature-spark")).toBeInTheDocument();
+    expect(feature).toHaveTextContent("Cards");
+    const childLink = screen.getByRole("link", { name: "Packs" });
+    fireEvent.focus(childLink);
+    feature = screen.getByRole("link", { name: "Explore Packs" });
+    expect(feature).toHaveAttribute("href", "/categories/packs");
+    expect(feature.querySelector("img")).toBeNull();
+    expect(within(feature).getByTestId("category-feature-shape")).toBeInTheDocument();
+    fireEvent.mouseEnter(feature);
+    expect(screen.getByRole("link", { name: "Explore Packs" })).toBeVisible();
+    fireEvent.keyDown(document, { key: "Escape" });
+    fireEvent.keyDown(trigger, { key: "Enter" });
+    fireEvent.click(trigger, { detail: 0 });
+    expect(screen.getByText("Explore categories")).toBeVisible();
+    expect(screen.queryByRole("link", { name: "Explore Packs" })).not.toBeInTheDocument();
+  });
+  it("offers expandable mobile navigation and closes on selection", async () => {
+    const user = userEvent.setup();
+    const onNavigate = vi.fn();
+    render(<MobileShopCategories categories={categories} onNavigate={onNavigate} />);
+    await user.click(screen.getByText("Shop categories"));
+    fireEvent.click(screen.getByRole("link", { name: "Packs" }), { preventDefault: () => {} });
+    expect(onNavigate).toHaveBeenCalledOnce();
+  });
+});

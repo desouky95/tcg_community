@@ -40,6 +40,12 @@ export interface ApiDefinition {
   }
   commerce: {
     customer: typeof routes['commerce.customer']
+    orders: typeof routes['commerce.orders']
+    order: typeof routes['commerce.order']
+    addresses: typeof routes['commerce.addresses']
+    createAddress: typeof routes['commerce.create_address']
+    updateAddress: typeof routes['commerce.update_address']
+    deleteAddress: typeof routes['commerce.delete_address']
   }
   facebookAuth: {
     redirect: typeof routes['facebook_auth.redirect']

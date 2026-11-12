@@ -8,6 +8,7 @@ import {
   mapHeroSlides,
   mediaURL,
 } from "../../src/lib/homepage.server";
+import { getProductsByCollection } from "#lib/homepage-product-data";
 
 type Sections = Extract<
   Awaited<ReturnType<typeof getHomepage>>,
@@ -22,17 +23,25 @@ type LatestBlock = Extract<
   Sections[number],
   { __component: "homepage.latest-products" }
 >;
+
+type CollectionBlock = Extract<
+  Sections[number],
+  { __component: "homepage.collection-section" }
+>;
+
 async function ProductSection({
   section,
   dark = false,
 }: {
-  section: ProductBlock | LatestBlock;
+  section: ProductBlock | LatestBlock | CollectionBlock;
   dark?: boolean;
 }) {
   const result =
-    section.__component === "homepage.latest-products"
-      ? await getLatestHomepageProducts(section.collection, section.limit)
-      : await getHomepageProducts(
+    section.__component === "homepage.collection-section"
+      ? await getProductsByCollection(section.collection, section.limit)
+      : section.__component === "homepage.latest-products"
+        ? await getLatestHomepageProducts(section.collection, section.limit)
+        : await getHomepageProducts(
           (section.products ?? []).map((product) => product.medusaId),
         );
   return (
@@ -113,6 +122,9 @@ async function ProductSection({
 }
 
 const renderers = {
+  "homepage.collection-section": (section: CollectionBlock) => (
+    <ProductSection dark={section.variant === "dark"} section={section} />
+  ),
   "slider.hero-slider": (
     section: Extract<Sections[number], { __component: "slider.hero-slider" }>,
   ) => {
@@ -138,6 +150,7 @@ const renderers = {
 
 export default async function HomePage() {
   const homepage = await getHomepage();
+  console.log({ homepage });
   if (homepage.kind !== "ready")
     return (
       <section className="mx-auto max-w-360 px-gutter py-section">
@@ -182,6 +195,12 @@ export default async function HomePage() {
               </div>
             );
           case "homepage.banner-strip":
+            return (
+              <div key={`${section.__component}-${section.id}`}>
+                {renderers[section.__component](section)}
+              </div>
+            );
+          case "homepage.collection-section":
             return (
               <div key={`${section.__component}-${section.id}`}>
                 {renderers[section.__component](section)}

@@ -28,6 +28,7 @@
     "typecheck": "pnpm --recursive --filter './packages/*' --filter './apps/*' run typecheck",
     "test": "pnpm --recursive --if-present --filter './packages/*' --filter './apps/*' run test",
     "backend:seed": "turbo --filter=@dtc/backend seed",
-    "backend:dev": "turbo  --filter=@dtc/backend dev"
+    "backend:dev": "turbo  --filter=@dtc/backend dev",
+    "docker:start": "docker compose --env-file infra/.env -f infra/compose.yaml -f infra/compose.dev.yaml up --build"
   }
 }

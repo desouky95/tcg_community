@@ -20,12 +20,17 @@ Validated profile fields are persisted.
 Existing evidence pointer: apps/web/src/pages/ProfileEdit.tsx. This pointer is not a fresh implementation audit.
 
 ## UI Page Used
-- N/A — no dedicated UI page
+- apps/public-web/app/(shared-layout)/account/page.tsx
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- GET /api/v1/account/profile
+- PUT /api/v1/account/profile
 
 ## Related Files
+- apps/public-web/app/(shared-layout)/account/account-settings.tsx
+- apps/public-web/app/(shared-layout)/account/account-hub.tsx
+- apps/public-web/app/(shared-layout)/account/commerce-sections.tsx
+- apps/api/app/controllers/profile_controller.ts
 - apps/api/start/routes/v1/auth.routes.ts
 - apps/api/start/routes/v1/users.routes.ts
 - apps/api/app/controllers/auth_controller.ts

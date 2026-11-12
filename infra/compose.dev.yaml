@@ -1,0 +1,45 @@
+services:
+  api:
+    build:
+      target: development
+    command: pnpm dev
+    
+    volumes:
+      - ../apps/api/app:/workspace/apps/api/app
+      - ../apps/api/start:/workspace/apps/api/start
+      - ../apps/api/config:/workspace/apps/api/config
+      - ../apps/api/database:/workspace/apps/api/database
+      - ../apps/api/providers:/workspace/apps/api/providers
+  cms:
+    build:
+      target: development
+    command: pnpm dev
+    volumes:
+      - ../apps/cms/src:/workspace/apps/cms/src
+      - ../apps/cms/config:/workspace/apps/cms/config
+      - ../apps/cms/database:/workspace/apps/cms/database
+  backend:
+    build:
+      target: development
+    command: pnpm dev
+    volumes:
+      - ../apps/backend/src:/workspace/apps/backend/src
+      - ../apps/backend/medusa-config.ts:/workspace/apps/backend/medusa-config.ts
+  public-web:
+    build:
+      target: development
+    command: pnpm dev --hostname 0.0.0.0
+    volumes:
+      - ../apps/public-web/app:/workspace/apps/public-web/app
+      - ../apps/public-web/src:/workspace/apps/public-web/src
+      - ../apps/public-web/public:/workspace/apps/public-web/public
+      - ../packages/api-contracts/src:/workspace/packages/api-contracts/src
+      - ../packages/auth-client/src:/workspace/packages/auth-client/src
+      - ../packages/design-tokens/src:/workspace/packages/design-tokens/src
+      - ../packages/locale/src:/workspace/packages/locale/src
+      - ../packages/react-query/src:/workspace/packages/react-query/src
+      - ../packages/strapi-client/src:/workspace/packages/strapi-client/src
+      - ../packages/ui-web/src:/workspace/packages/ui-web/src
+      - web-next:/workspace/apps/public-web/.next
+volumes:
+  web-next:

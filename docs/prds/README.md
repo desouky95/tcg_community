@@ -104,6 +104,7 @@
   - [SHOP-006: View order](storefront/shop-006-view-order.md)
   - [SHOP-007: Fulfill order](storefront/shop-007-fulfill-order.md)
   - [SHOP-008: Manage storefront content](storefront/shop-008-manage-storefront-content.md)
+  - [SHOP-009: Manage saved addresses](storefront/shop-009-manage-saved-addresses.md)
 - **swaps**
   - [SWAP-001: Find matching collectors](swaps/swap-001-find-matching-collectors.md)
   - [SWAP-002: Inspect a match](swaps/swap-002-inspect-a-match.md)

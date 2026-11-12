@@ -8,5 +8,6 @@ export function createServerApiClient(query?: QueryInput) {
       "http://localhost:3333/api/v1",
     getDefaultQuery: () => query,
     withCredentials: true,
+    
   });
 }

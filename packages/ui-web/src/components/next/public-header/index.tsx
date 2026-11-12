@@ -15,6 +15,11 @@ import { Dialog } from "../../radix/dialog";
 import type { LinkComponent } from "../../patterns";
 import NextLink from "next/link";
 import { AnimatedBrandLogo } from "../../primitives";
+import {
+  ShopMenu,
+  MobileShopCategories,
+  type ShopCategory,
+} from "../shop-menu";
 export type PublicNavItem = { href: string; label: string; flag?: string };
 export const publicLinks: readonly PublicNavItem[] = [
   { href: "/", label: "Home" },
@@ -31,6 +36,8 @@ export type PublicHeaderProps = ComponentPropsWithoutRef<"header"> & {
   isNext?: boolean;
   config?: Record<string, boolean>;
   storeNavigation?: boolean;
+  categories?: ShopCategory[];
+  cartAction?: React.ReactNode;
 };
 
 export function PublicHeader({
@@ -42,6 +49,8 @@ export function PublicHeader({
   isNext = false,
   config = {},
   storeNavigation = false,
+  categories = [],
+  cartAction,
   ...props
 }: PublicHeaderProps) {
   const Link = NextLink;
@@ -49,8 +58,16 @@ export function PublicHeader({
   const isActive = (path: string) =>
     currentPath === path ||
     (path !== "/" && currentPath.startsWith(`${path}/`));
-  const actionHref = storeNavigation ? "/shop" : authenticated ? applink || "" : "/signup";
-  const actionLabel = storeNavigation ? "Shop now" : authenticated ? "Collector desk" : "Get started";
+  const actionHref = storeNavigation
+    ? "/shop"
+    : authenticated
+      ? applink || ""
+      : "/signup";
+  const actionLabel = storeNavigation
+    ? "Shop now"
+    : authenticated
+      ? "Collector desk"
+      : "Get started";
   return (
     <header
       {...props}
@@ -67,32 +84,31 @@ export function PublicHeader({
         <div className="w-20">
           <AnimatedBrandLogo />
         </div>
-        {/* <img
-          src="/brand/next-pull-logo-navy.svg"
-          alt="Next Pull"
-          className="h-auto w-[5rem]"
-        /> */}
       </Link>
       <nav
-        className="ms-auto hidden items-center gap-6 lg:flex"
+        className="ms-auto hidden items-center gap-6 self-stretch lg:flex"
         aria-label="Primary navigation"
       >
         {links.map(({ href, label, flag }) => (
           <Fragment key={href}>
-            {(flag === undefined || (!!flag && config[flag])) && (
-              <Link
-                key={href}
-                href={href}
-                className="focus-ring py-3 font-display font-semibold hover:text-accent-500 aria-[current=page]:text-accent-500 aria-[current=page]:underline"
-                aria-current={isActive(href) ? "page" : undefined}
-              >
-                {label}
-              </Link>
-            )}
+            {(flag === undefined || (!!flag && config[flag])) &&
+              (href === "/shop" && storeNavigation ? (
+                <ShopMenu categories={categories} />
+              ) : (
+                <Link
+                  key={href}
+                  href={href}
+                  className="focus-ring py-3 font-display font-semibold hover:text-accent-500 aria-[current=page]:text-accent-500 aria-[current=page]:underline"
+                  aria-current={isActive(href) ? "page" : undefined}
+                >
+                  {label}
+                </Link>
+              ))}
           </Fragment>
         ))}
       </nav>
       <div className="flex items-center gap-3">
+        {cartAction}
         {!authenticated && !storeNavigation && (
           <Link
             href="/login"
@@ -102,7 +118,13 @@ export function PublicHeader({
           </Link>
         )}
         {(!authenticated || storeNavigation) && (
-          <Link href="/login" aria-label="Your account" className="focus-ring hidden size-11 items-center justify-center rounded-md bg-wax-navy text-wax-paper sm:inline-flex"><UserRound aria-hidden="true" className="size-5" /></Link>
+          <Link
+            href={storeNavigation ? "/account" : "/login"}
+            aria-label="Your account"
+            className="focus-ring hidden size-11 items-center justify-center rounded-md bg-wax-navy text-wax-paper sm:inline-flex"
+          >
+            <UserRound aria-hidden="true" className="size-5" />
+          </Link>
         )}
 
         <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
@@ -133,17 +155,34 @@ export function PublicHeader({
               </IconButton>
             </Dialog.Close>
             <nav className="mt-8 grid gap-2" aria-label="Mobile navigation">
-              {links.map(({ href, label }) => (
+              {links.map(({ href, label }) =>
+                href === "/shop" && storeNavigation ? (
+                  <MobileShopCategories
+                    key={href}
+                    categories={categories}
+                    onNavigate={() => setMenuOpen(false)}
+                  />
+                ) : (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="focus-ring border-b border-wax-line py-4 font-display text-xl font-semibold aria-[current=page]:text-accent-500"
+                    aria-current={isActive(href) ? "page" : undefined}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {label}
+                  </Link>
+                ),
+              )}
+              {storeNavigation && (
                 <Link
-                  key={href}
-                  href={href}
-                  className="focus-ring border-b border-wax-line py-4 font-display text-xl font-semibold aria-[current=page]:text-accent-500"
-                  aria-current={isActive(href) ? "page" : undefined}
+                  href="/account"
+                  className="focus-ring border-b border-wax-line py-4 font-display text-xl font-semibold"
                   onClick={() => setMenuOpen(false)}
                 >
-                  {label}
+                  Your account
                 </Link>
-              ))}
+              )}
               {!authenticated && !storeNavigation && (
                 <Link
                   href="/login"

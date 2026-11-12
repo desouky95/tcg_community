@@ -541,13 +541,13 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
       'api::homepage.homepage'
     > &
       Schema.Attribute.Private;
+    missing_list: Schema.Attribute.Component<'missing-list.missing-list', true>;
     publishedAt: Schema.Attribute.DateTime;
     sections: Schema.Attribute.DynamicZone<
       [
         'slider.hero-slider',
-        'homepage.product-section',
-        'homepage.latest-products',
         'homepage.banner-strip',
+        'homepage.collection-section',
       ]
     >;
     updatedAt: Schema.Attribute.DateTime;

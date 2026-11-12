@@ -7,6 +7,8 @@ The current token is revoked and local credentials are cleared.
 
 ## Requirements
 
+- The storefront account security section signs out the current session, clears cached account data, and returns to sign-in. An expired session is treated as signed out; other failures allow a retry.
+
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.
@@ -20,12 +22,15 @@ The current token is revoked and local credentials are cleared.
 Existing evidence pointer: apps/api AuthController.logout. This pointer is not a fresh implementation audit.
 
 ## UI Page Used
-- N/A — no dedicated UI page
+- apps/public-web/app/(shared-layout)/account/page.tsx
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- POST /api/v1/auth/logout
 
 ## Related Files
+- apps/public-web/app/(shared-layout)/account/account-hub.tsx
+- apps/public-web/src/lib/api.ts
+- packages/api-contracts/src/client.ts
 - apps/api/start/routes/v1/auth.routes.ts
 - apps/api/start/routes/v1/users.routes.ts
 - apps/api/app/controllers/auth_controller.ts

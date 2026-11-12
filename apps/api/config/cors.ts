@@ -21,7 +21,11 @@ const corsConfig = defineConfig({
    */
   origin: app.inDev
     ? true
-    : (env.get('WEB_ORIGINS')?.split(',').map((origin) => origin.trim()).filter(Boolean) ?? []),
+    : (env
+        .get('WEB_ORIGINS')
+        ?.split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean) ?? []),
 
   /**
    * HTTP methods accepted for cross-origin requests.

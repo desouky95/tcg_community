@@ -3,13 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { AxiosError } from "@tcg/api-contracts";
 import { useAuth } from "@tcg/react-query";
-import {
-  AuthField,
-  AuthInput,
-  AuthSelect,
-  Button,
-  SocialAuthButton,
-} from "@tcg/ui-web";
+import { AuthField, AuthInput, AuthSelect, Button } from "@tcg/ui-web";
 import { authQuery, type AuthDestination } from "../lib/auth-destination";
 
 const governorates = [
@@ -91,21 +85,8 @@ export function SignupForm({
       );
     }
   }
-  function socialUrl(provider: "google" | "facebook") {
-    const url = new URL(
-      `/api/v1/auth/oauth/${provider}/redirect`,
-      process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333",
-    );
-    url.searchParams.set("destination", destination);
-    url.searchParams.set("returnTo", returnTo);
-    return url.toString();
-  }
   return (
     <>
-      <div className="grid gap-3 pb-5 sm:grid-cols-2">
-        <SocialAuthButton provider="google" href={socialUrl("google")} />
-        <SocialAuthButton provider="facebook" href={socialUrl("facebook")} />
-      </div>
       <form onSubmit={submit} className="grid gap-5">
         <div className="grid gap-5 sm:grid-cols-2">
           <AuthField id="signup-name" label="Full name">

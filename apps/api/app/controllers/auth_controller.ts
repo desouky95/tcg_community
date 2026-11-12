@@ -9,7 +9,18 @@ import type { HttpContext } from '@adonisjs/core/http'
 import UserTransformer from '#transformers/user_transformer'
 import hash from '@adonisjs/core/services/hash'
 import { DateTime } from 'luxon'
-import { consumeOtp, errorBody, issueOtp, requestMeta, createOtpChallenge, deliverMockOtp, ensureOtpDeliveryAvailable, OtpCooldownError, OTP_RESEND_COOLDOWN_SECONDS, sessionFingerprint } from '#services/identity_service'
+import {
+  consumeOtp,
+  errorBody,
+  issueOtp,
+  requestMeta,
+  createOtpChallenge,
+  deliverMockOtp,
+  ensureOtpDeliveryAvailable,
+  OtpCooldownError,
+  OTP_RESEND_COOLDOWN_SECONDS,
+  sessionFingerprint,
+} from '#services/identity_service'
 import db from '@adonisjs/lucid/services/db'
 import app from '@adonisjs/core/services/app'
 import { pendingFacebook } from '#services/facebook_identity_service'
@@ -34,14 +45,30 @@ export default class AuthController {
         .status(403)
         .json(errorBody('account_unavailable', 'This account is not available'))
     }
-    if (app.inProduction) return response.status(503).json(errorBody('delivery_unavailable', 'Verification delivery is unavailable'))
+    if (app.inProduction)
+      return response
+        .status(503)
+        .json(errorBody('delivery_unavailable', 'Verification delivery is unavailable'))
     try {
-      const challenge = await issueOtp(mobile, user.isVerified ? 'login' : 'signup', user.id, 10, OTP_RESEND_COOLDOWN_SECONDS)
+      const challenge = await issueOtp(
+        mobile,
+        user.isVerified ? 'login' : 'signup',
+        user.id,
+        10,
+        OTP_RESEND_COOLDOWN_SECONDS
+      )
       return response.json({ data: { challenge: 'issued', ...challenge }, ...requestMeta(request) })
     } catch (error) {
       if (error instanceof OtpCooldownError) {
         response.header('Retry-After', String(error.retryAfterSeconds))
-        return response.status(429).json(errorBody('otp_cooldown', `Please wait ${error.retryAfterSeconds} seconds before requesting another code`))
+        return response
+          .status(429)
+          .json(
+            errorBody(
+              'otp_cooldown',
+              `Please wait ${error.retryAfterSeconds} seconds before requesting another code`
+            )
+          )
       }
       throw error
     }
@@ -53,31 +80,58 @@ export default class AuthController {
   async signup({ request, response, serialize }: HttpContext) {
     const data = await request.validateUsing(signupValidator)
 
-    if (app.inProduction) return response.status(503).json(errorBody('delivery_unavailable', 'Verification delivery is unavailable'))
+    if (app.inProduction)
+      return response
+        .status(503)
+        .json(errorBody('delivery_unavailable', 'Verification delivery is unavailable'))
     ensureOtpDeliveryAvailable()
     try {
       const { user, challenge } = await db.transaction(async (trx) => {
-        const user = await User.create({
-          fullName: data.fullName, username: data.username, email: data.email,
-          mobile: data.mobile, password: data.password, governorate: data.governorate,
-          role: 'user', blocked: false, isVerified: false, otpCode: null,
-          status: 'active', locale: 'en', theme: 'system', version: 1,
-        }, { client: trx })
+        const user = await User.create(
+          {
+            fullName: data.fullName,
+            username: data.username,
+            email: data.email,
+            mobile: data.mobile,
+            password: data.password,
+            governorate: data.governorate,
+            role: 'user',
+            blocked: false,
+            isVerified: false,
+            otpCode: null,
+            status: 'active',
+            locale: 'en',
+            theme: 'system',
+            version: 1,
+          },
+          { client: trx }
+        )
         const challenge = await createOtpChallenge(trx, data.mobile, 'signup', user.id)
         return { user, challenge }
       })
       deliverMockOtp(data.mobile, 'signup', challenge.code)
-      return response.status(202).send(await serialize({
-        challenge: 'issued', expiresInSeconds: challenge.expiresInSeconds,
-        user: UserTransformer.transform(user), ...requestMeta(request),
-      }))
+      return response.status(202).send(
+        await serialize({
+          challenge: 'issued',
+          expiresInSeconds: challenge.expiresInSeconds,
+          user: UserTransformer.transform(user),
+          ...requestMeta(request),
+        })
+      )
     } catch (error) {
       const candidate = error as { code?: string; constraint?: string }
-      if (candidate.code === '23505' && /^users_(username|email|mobile)_unique$/.test(candidate.constraint ?? '')) {
+      if (
+        candidate.code === '23505' &&
+        /^users_(username|email|mobile)_unique$/.test(candidate.constraint ?? '')
+      ) {
         const field = candidate.constraint!.split('_')[1]
-        return response.status(422).json(errorBody('validation_error', 'Request validation failed', [
-          { field, message: 'This value is already in use', code: 'unique' },
-        ]))
+        return response
+          .status(422)
+          .json(
+            errorBody('validation_error', 'Request validation failed', [
+              { field, message: 'This value is already in use', code: 'unique' },
+            ])
+          )
       }
       throw error
     }
@@ -94,7 +148,8 @@ export default class AuthController {
       if (!user) return { kind: 'invalid' as const }
       if (user.blocked || user.status !== 'active') return { kind: 'unavailable' as const }
       let result = await consumeOtp(mobile, user.isVerified ? 'login' : 'signup', otp, trx)
-      if (!result.ok && !user.isVerified) result = await consumeOtp(mobile, 'mobile_change', otp, trx)
+      if (!result.ok && !user.isVerified)
+        result = await consumeOtp(mobile, 'mobile_change', otp, trx)
       if (!result.ok) return { kind: 'invalid' as const }
       user.isVerified = true
       user.otpCode = null
@@ -103,8 +158,14 @@ export default class AuthController {
       await user.save()
       return { kind: 'success' as const, user }
     })
-    if (outcome.kind === 'unavailable') return response.status(403).json(errorBody('account_unavailable', 'This account is not available'))
-    if (outcome.kind === 'invalid') return response.status(401).json(errorBody('invalid_otp', 'Invalid or expired verification code'))
+    if (outcome.kind === 'unavailable')
+      return response
+        .status(403)
+        .json(errorBody('account_unavailable', 'This account is not available'))
+    if (outcome.kind === 'invalid')
+      return response
+        .status(401)
+        .json(errorBody('invalid_otp', 'Invalid or expired verification code'))
     const { user } = outcome
     await auth.use('web').login(user)
     session.put('auth_password_fingerprint', sessionFingerprint(user.password))
@@ -122,7 +183,13 @@ export default class AuthController {
     const { uid, password } = await request.validateUsing(loginValidator)
 
     // Find user by email or mobile
-    const user = await User.query().where('email', uid).orWhere('mobile', uid).orWhere('username', uid).first()
+    const user = await User.query()
+      .where('email', uid)
+      .orWhere('mobile', uid)
+      .orWhere('username', uid)
+      .first()
+
+    console.log({user})
 
     if (!user || !user.password) {
       return response.status(401).json({ error: 'Invalid credentials' })
@@ -135,7 +202,9 @@ export default class AuthController {
     }
 
     if (user.blocked || user.status !== 'active') {
-      return response.status(403).json(errorBody('account_unavailable', 'This account is not available'))
+      return response
+        .status(403)
+        .json(errorBody('account_unavailable', 'This account is not available'))
     }
 
     if (!user.isVerified) {
@@ -174,9 +243,15 @@ export default class AuthController {
   }
   async me({ auth, request, response, session }: HttpContext) {
     const user = await auth.authenticateUsing(['web'])
-    if (user.blocked || user.status !== 'active' || session.get('auth_password_fingerprint') !== sessionFingerprint(user.password)) {
+    if (
+      user.blocked ||
+      user.status !== 'active' ||
+      session.get('auth_password_fingerprint') !== sessionFingerprint(user.password)
+    ) {
       await auth.use('web').logout()
-      return response.status(401).json(errorBody('session_expired', 'Your session is no longer active'))
+      return response
+        .status(401)
+        .json(errorBody('session_expired', 'Your session is no longer active'))
     }
     return response.json({
       data: user,

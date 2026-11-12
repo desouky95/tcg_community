@@ -17,7 +17,11 @@ export default class AuthMiddleware {
   ) {
     try {
       const user = await ctx.auth.authenticateUsing(['web'])
-      if (user.status !== 'active' || user.blocked || ctx.session.get('auth_password_fingerprint') !== sessionFingerprint(user.password)) {
+      if (
+        user.status !== 'active' ||
+        user.blocked ||
+        ctx.session.get('auth_password_fingerprint') !== sessionFingerprint(user.password)
+      ) {
         return ctx.response.status(401).json({
           error: { code: 'session_expired', message: 'Your session is no longer active' },
         })

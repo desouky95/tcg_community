@@ -103,7 +103,7 @@ export default class IdentityController {
       locale: user.locale, theme: user.theme,
       privacy: JSON.parse(user.privacyPreferences ?? '{}'),
       communication: JSON.parse(user.communicationPreferences ?? '{}'),
-    }))
+    }, { version: user.version }))
   }
 
   async preferences({ auth, request, response }: HttpContext) {

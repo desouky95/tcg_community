@@ -297,6 +297,17 @@ export interface HomepageBannerStrip {
   id: number
 }
 
+export interface HomepageCollectionSection {
+  id: number
+  collection: string | null
+  /** @default 4 */
+  limit: number
+  heading: string
+  description: string | null
+  shop_link: string | null
+  variant: 'dark' | 'default' | null
+}
+
 export interface HomepageLatestProducts {
   id: number
   heading: string
@@ -323,6 +334,9 @@ export interface SliderHeroSlider {
 }
 
 export type HomepageBannerStripDz = HomepageBannerStrip & { __component: 'homepage.banner-strip' }
+export type HomepageCollectionSectionDz = HomepageCollectionSection & {
+  __component: 'homepage.collection-section'
+}
 export type HomepageLatestProductsDz = HomepageLatestProducts & {
   __component: 'homepage.latest-products'
 }
@@ -351,6 +365,32 @@ export interface HomepageBannerStripCreateInput {
 export interface HomepageBannerStripUpdateInput {
   id?: number | undefined
   image?: MediaInput | undefined
+}
+
+/** Create input for HomepageCollectionSection */
+export interface HomepageCollectionSectionCreateInput {
+  id?: number | undefined
+  collection?: string | null | undefined
+  /** @default 4 */
+  limit?: number | undefined
+  heading: string
+  description?: string | null | undefined
+  shop_link?: string | null | undefined
+  variant?: 'dark' | 'default' | null | undefined
+  banner?: MediaInput | undefined
+}
+
+/** Update input for HomepageCollectionSection */
+export interface HomepageCollectionSectionUpdateInput {
+  id?: number | undefined
+  collection?: string | null | undefined
+  /** @default 4 */
+  limit?: number | undefined
+  heading?: string | undefined
+  description?: string | null | undefined
+  shop_link?: string | null | undefined
+  variant?: 'dark' | 'default' | null | undefined
+  banner?: MediaInput | undefined
 }
 
 /** Create input for HomepageLatestProducts */
@@ -420,6 +460,12 @@ export type HomepageBannerStripDzCreateInput = HomepageBannerStripCreateInput & 
 }
 export type HomepageBannerStripDzUpdateInput = HomepageBannerStripUpdateInput & {
   __component: 'homepage.banner-strip'
+}
+export type HomepageCollectionSectionDzCreateInput = HomepageCollectionSectionCreateInput & {
+  __component: 'homepage.collection-section'
+}
+export type HomepageCollectionSectionDzUpdateInput = HomepageCollectionSectionUpdateInput & {
+  __component: 'homepage.collection-section'
 }
 export type HomepageLatestProductsDzCreateInput = HomepageLatestProductsCreateInput & {
   __component: 'homepage.latest-products'
@@ -616,6 +662,7 @@ export interface HomepageCreateInput {
         | HomepageProductSectionDzCreateInput
         | HomepageLatestProductsDzCreateInput
         | HomepageBannerStripDzCreateInput
+        | HomepageCollectionSectionDzCreateInput
       )[]
     | undefined
 }
@@ -628,6 +675,7 @@ export interface HomepageUpdateInput {
         | HomepageProductSectionDzUpdateInput
         | HomepageLatestProductsDzUpdateInput
         | HomepageBannerStripDzUpdateInput
+        | HomepageCollectionSectionDzUpdateInput
       )[]
     | undefined
 }
@@ -829,12 +877,19 @@ export const UserDefaults = {
   confirmed: false,
   blocked: false,
 } as const satisfies Partial<UserCreateInput>
+export const HomepageCollectionSectionDefaults = {
+  limit: 4,
+} as const satisfies Partial<HomepageCollectionSectionCreateInput>
 export const HomepageLatestProductsDefaults = {
   limit: 8,
 } as const satisfies Partial<HomepageLatestProductsCreateInput>
 export const HomepageBannerStripDzDefaults = {
   __component: 'homepage.banner-strip',
 } as const satisfies Partial<HomepageBannerStripDzCreateInput>
+export const HomepageCollectionSectionDzDefaults = {
+  __component: 'homepage.collection-section',
+  limit: 4,
+} as const satisfies Partial<HomepageCollectionSectionDzCreateInput>
 export const HomepageLatestProductsDzDefaults = {
   __component: 'homepage.latest-products',
   limit: 8,
@@ -850,6 +905,9 @@ export const SliderHeroSliderDzDefaults = {
 // ============================================
 export type HomepageBannerStripPopulateParam = {
   image?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
+}
+export type HomepageCollectionSectionPopulateParam = {
+  banner?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
 }
 export type HomepageProductSectionPopulateParam = {
   products?:
@@ -972,6 +1030,16 @@ export type HomepagePopulateParam = {
                 populate?:
                   | HomepageBannerStripPopulateParam
                   | (keyof HomepageBannerStripPopulateParam & string)[]
+                  | '*'
+                count?: never
+              }
+          'homepage.collection-section'?:
+            | true
+            | {
+                fields?: (keyof HomepageCollectionSection & string)[]
+                populate?:
+                  | HomepageCollectionSectionPopulateParam
+                  | (keyof HomepageCollectionSectionPopulateParam & string)[]
                   | '*'
                 count?: never
               }
@@ -1270,6 +1338,24 @@ export type HomepageBannerStripGetPayload<P extends { populate?: unknown } = {}>
                 : never
             }
       : {})
+// Payload type for HomepageCollectionSection with populate support
+export type HomepageCollectionSectionGetPayload<P extends { populate?: unknown } = {}> =
+  HomepageCollectionSection &
+    (P extends { populate: infer Pop }
+      ? Pop extends '*' | true
+        ? {
+            banner?: MediaFile | null
+          }
+        : Pop extends readonly (infer _)[]
+          ? {
+              banner?: 'banner' extends Pop[number] ? MediaFile | null : never
+            }
+          : {
+              banner?: 'banner' extends keyof Pop
+                ? _ApplyFields<MediaFile, MediaFile, Pop['banner']> | null
+                : never
+            }
+      : {})
 // Payload type for HomepageProductSection with populate support
 export type HomepageProductSectionGetPayload<P extends { populate?: unknown } = {}> =
   HomepageProductSection &
@@ -1375,6 +1461,7 @@ export type HomepageGetPayload<P extends { populate?: unknown } = {}> = Homepage
             | HomepageProductSectionDz
             | HomepageLatestProductsDz
             | HomepageBannerStripDz
+            | HomepageCollectionSectionDz
           )[]
         }
       : Pop extends readonly (infer _)[]
@@ -1385,6 +1472,7 @@ export type HomepageGetPayload<P extends { populate?: unknown } = {}> = Homepage
                   | HomepageProductSectionDz
                   | HomepageLatestProductsDz
                   | HomepageBannerStripDz
+                  | HomepageCollectionSectionDz
                 )[]
               : never
           }
@@ -1419,6 +1507,15 @@ export type HomepageGetPayload<P extends { populate?: unknown } = {}> = Homepage
                           : HomepageBannerStripDz
                         : HomepageBannerStripDz
                       : HomepageBannerStripDz)
+                  | (Pop['sections'] extends { on: infer On }
+                      ? 'homepage.collection-section' extends keyof On
+                        ? On['homepage.collection-section'] extends { populate: infer NestedPop }
+                          ? HomepageCollectionSectionGetPayload<{ populate: NestedPop }> & {
+                              __component: 'homepage.collection-section'
+                            }
+                          : HomepageCollectionSectionDz
+                        : HomepageCollectionSectionDz
+                      : HomepageCollectionSectionDz)
                 )[]
               : never
           }
@@ -1861,6 +1958,17 @@ export interface GeneralPageTransitionFilters extends LogicalOperators<GeneralPa
 export interface HomepageBannerStripFilters extends LogicalOperators<HomepageBannerStripFilters> {
   id?: number | IdFilterOperators
   image?: { id?: number | IdFilterOperators; [key: string]: any }
+}
+/** Type-safe filters for the HomepageCollectionSection component */
+export interface HomepageCollectionSectionFilters extends LogicalOperators<HomepageCollectionSectionFilters> {
+  id?: number | IdFilterOperators
+  collection?: string | StringFilterOperators
+  limit?: number | NumberFilterOperators
+  heading?: string | StringFilterOperators
+  description?: string | StringFilterOperators
+  shop_link?: string | StringFilterOperators
+  variant?: ('dark' | 'default') | StringFilterOperators
+  banner?: { id?: number | IdFilterOperators; [key: string]: any }
 }
 /** Type-safe filters for the HomepageLatestProducts component */
 export interface HomepageLatestProductsFilters extends LogicalOperators<HomepageLatestProductsFilters> {

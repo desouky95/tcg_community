@@ -1,0 +1,14 @@
+@media (prefers-reduced-motion: no-preference) {
+  .shop-menu-image-reveal {
+    animation: shop-menu-reveal-from-bottom 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@keyframes shop-menu-reveal-from-bottom {
+  from {
+    clip-path: inset(100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}

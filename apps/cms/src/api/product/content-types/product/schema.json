@@ -12,14 +12,14 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
     "medusaId": {
       "type": "string",
       "required": true,
       "unique": true
-    },
-    "title": {
-      "type": "string",
-      "required": true
     },
     "subtitle": {
       "type": "string"
@@ -47,10 +47,6 @@
       "allowedTypes": [
         "images"
       ]
-    },
-    "locale": {
-      "type": "string",
-      "default": "en"
     },
     "variants": {
       "type": "relation",

@@ -1,6 +1,7 @@
 **/node_modules
 **/.env
 **/.env.*
+docker/env/
 !**/.env.example
 !**/.env.template
 docker/env
@@ -13,3 +14,14 @@ apps/api/storage
 apps/backend/static
 apps/cms/public/uploads
 *.dump
+.git
+.pnpm-store
+.turbo
+**/.turbo
+**/*.log
+apps/api/private
+env/
+**/*.env
+**/*.env.*
+**/*.pem
+**/*.key

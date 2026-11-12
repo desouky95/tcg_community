@@ -1,0 +1,33 @@
+FROM node:24-bookworm-slim AS dependencies
+WORKDIR /workspace
+RUN npm install --global pnpm@11.24.0
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY apps ./apps
+COPY packages ./packages
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm config set store-dir /pnpm/store && pnpm install --frozen-lockfile --filter @tcg/api... --filter @tcg/strapi... --filter @tcg/medusa... --filter @tcg/public-web...
+
+FROM dependencies AS development
+ENV NODE_ENV=development
+RUN mkdir -p /workspace/apps/api/storage /workspace/apps/cms/public/uploads /workspace/apps/backend/static /workspace/apps/public-web/.next && find /workspace -name node_modules -prune -o -exec chown node:node {} +
+USER node
+WORKDIR /workspace/apps/public-web
+EXPOSE 3000
+
+FROM dependencies AS build
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL
+ARG NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+ARG NEXT_PUBLIC_DEFAULT_REGION
+ARG NEXT_PUBLIC_STRAPI_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL NEXT_PUBLIC_MEDUSA_BACKEND_URL=$NEXT_PUBLIC_MEDUSA_BACKEND_URL NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=$NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY NEXT_PUBLIC_DEFAULT_REGION=$NEXT_PUBLIC_DEFAULT_REGION NEXT_PUBLIC_STRAPI_API_URL=$NEXT_PUBLIC_STRAPI_API_URL
+RUN pnpm --filter @tcg/public-web build
+RUN mkdir -p apps/public-web/.next/standalone/apps/public-web/.next && cp -a apps/public-web/.next/static apps/public-web/.next/standalone/apps/public-web/.next/static && cp -a apps/public-web/public apps/public-web/.next/standalone/apps/public-web/public
+
+FROM build AS production
+ENV NODE_ENV=production
+RUN mkdir -p /workspace/apps/api/storage /workspace/apps/cms/public/uploads /workspace/apps/backend/static && find /workspace -name node_modules -prune -o -exec chown node:node {} +
+USER node
+WORKDIR /workspace/apps/public-web/.next/standalone/apps/public-web
+EXPOSE 3000
+CMD ["node", "server.js"]

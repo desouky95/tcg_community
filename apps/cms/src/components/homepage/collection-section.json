@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_homepage_collection_sections",
+  "info": {
+    "displayName": "Collection Section"
+  },
+  "options": {},
+  "attributes": {
+    "collection": {
+      "type": "customField",
+      "customField": "global::medusa-collection"
+    },
+    "limit": {
+      "type": "integer",
+      "required": true,
+      "default": 4
+    },
+    "heading": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "shop_link": {
+      "type": "string"
+    },
+    "variant": {
+      "type": "enumeration",
+      "enum": [
+        "dark",
+        "default"
+      ]
+    },
+    "banner": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  },
+  "config": {}
+}

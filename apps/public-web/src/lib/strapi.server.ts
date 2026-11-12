@@ -8,9 +8,11 @@ export const getBanners = async () => {
   const mapped = result.map((_) => ({
     ..._,
     web_image: `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${_.web_image?.url}`,
-    mobile_image : _.mobile_image &&`${process.env.NEXT_PUBLIC_STRAPI_API_URL}${_.mobile_image?.url}`,
+    mobile_image:
+      _.mobile_image &&
+      `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${_.mobile_image?.url}`,
     title: _.Title,
   }));
-  console.log(mapped);
+  console.log({ mapped });
   return mapped;
 };

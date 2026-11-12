@@ -1,48 +1,94 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@tcg/ui-web";
+import {
+  CardJourney,
+  CollectorFeature,
+  FeaturedCard,
+} from "./collector-scenes";
+import styles from "./collector-disk.module.css";
 
 export const metadata = {
   title: "Collector Disk | Next Pull",
   description: "Discover the collector tools coming soon to Next Pull.",
 };
 
-const features = [
-  { name: "Swapping", description: "Find other collectors and make your next exchange." },
-  { name: "Collection Tracking", description: "Keep track of your collection and the cards you are looking for." },
-  { name: "Marketplace Listing", description: "Give your cards their next chapter with listings for collectors." },
+const chapters = [
+  {
+    id: "collection",
+    title: "Collection Tracking",
+    description:
+      "Keep track of your collection and the cards you are looking for.",
+    scene: "collection" as const,
+  },
+  {
+    id: "swapping",
+    title: "Swapping",
+    description: "Find other collectors and make your next exchange.",
+    scene: "swap" as const,
+  },
+  {
+    id: "marketplace",
+    title: "Marketplace Listing",
+    description:
+      "Give your cards their next chapter with listings for collectors.",
+    scene: "listing" as const,
+  },
 ];
 
 export default function CollectorDiskPage() {
   return (
-    <>
-      <section className="bg-wax-navy px-gutter py-section text-wax-paper">
-        <div className="mx-auto grid max-w-360 gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end">
+    <main className={styles.page} data-journey-root>
+      <CardJourney />
+      <section className={styles.hero}>
+        <div className={styles.heroInner}>
+          <div className={styles.heroCopy}>
+            <p className={styles.status}>Coming soon</p>
+            <h1>
+              More ways to collect are coming
+              <span className={styles.dot}>.</span>
+            </h1>
+            <p>
+              Collector Disk is bringing your collection, swaps, and listings
+              together in one place.
+            </p>
+            <a className={styles.discover} href="#collection">
+              Discover Collector Disk <ArrowDown size={18} aria-hidden="true" />
+            </a>
+          </div>
+          <div className={styles.heroArtwork} aria-hidden="true">
+            <span className={styles.heroCardBack} />
+            <span className={styles.heroCardMiddle} />
+            <span className={styles.heroCardFront}>
+              <FeaturedCard anchor={0} />
+            </span>
+          </div>
+        </div>
+      </section>
+      {chapters.map((chapter, index) => (
+        <CollectorFeature
+          key={chapter.id}
+          id={chapter.id}
+          title={chapter.title}
+          description={chapter.description}
+          variant={chapter.scene}
+          dark={index === 1}
+        />
+      ))}
+      <section className={styles.final}>
+        <div className={styles.finalInner}>
           <div>
-            <h1 className="max-w-3xl font-display text-5xl font-bold leading-none md:text-7xl">More ways to collect are coming.</h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-wax-paper/85">Collector Disk is coming soon. We are bringing your collection, swaps, and listings together in one place.</p>
+            <p className={styles.status}>Coming soon</p>
+            <h2>Until then, find your next pull.</h2>
+            <p>Explore the Next Pull store for your next addition.</p>
           </div>
-          <div className="border-t border-wax-paper/40 pt-6 lg:ms-auto lg:max-w-sm">
-            <p className="text-sm font-semibold uppercase tracking-wider">Coming soon</p>
-            <p className="mt-3 leading-relaxed text-wax-paper/85">Until then, explore the Next Pull store for your next addition.</p>
-            <Button asChild className="mt-6"><Link href="/shop">Explore the store <ArrowRight aria-hidden="true" /></Link></Button>
-          </div>
+          <Button asChild>
+            <Link href="/shop">
+              Explore the store <ArrowRight aria-hidden="true" />
+            </Link>
+          </Button>
         </div>
       </section>
-      <style>{`@media (prefers-reduced-motion: no-preference) { .collector-features article { animation: collector-focus 650ms cubic-bezier(.16,1,.3,1) both; } } @keyframes collector-focus { from { filter: blur(2px); opacity: .7; } to { filter: blur(0); opacity: 1; } }`}</style>
-      <section className="collector-features mx-auto max-w-360 px-gutter py-section" aria-labelledby="features-heading">
-        <div className="grid gap-8 lg:grid-cols-[1fr_2fr] lg:gap-16">
-          <div><h2 id="features-heading" className="font-display text-3xl font-bold md:text-5xl">Made for the way you collect.</h2><p className="mt-5 max-w-sm leading-relaxed text-wax-muted">Three tools, one home for your collection. Each is coming in a future release.</p></div>
-          <div className="border-t border-wax-line">
-            {features.map((feature) => (
-              <article key={feature.name} className="grid gap-3 border-b border-wax-line py-7 sm:grid-cols-[1fr_1.3fr] sm:gap-8">
-                <h3 className="font-display text-2xl font-semibold">{feature.name}</h3>
-                <div><p className="leading-relaxed text-wax-muted">{feature.description}</p><p className="mt-3 text-sm font-semibold">Coming soon</p></div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-    </>
+    </main>
   );
 }

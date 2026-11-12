@@ -34,3 +34,21 @@ test('missing prices are omitted and lowest available price is used', () => {
   const price = lowestProductPrice({ variants: [{ calculated_price: { calculated_amount: 25, currency_code: 'egp' } }, { calculated_price: { calculated_amount: 10, currency_code: 'egp' } }] });
   assert.equal(price.calculated_amount, 10);
 });
+
+
+test('collection sections query their selected collection and limit', async () => {
+  const { sdk, calls } = fixture();
+  const queries = createHomepageProductQueries(sdk, 'reg_1');
+  await queries.getProductsByCollections('pcol_one', 3);
+  await queries.getProductsByCollections('pcol_two', 6);
+  assert.deepEqual(calls.map(([, query]) => [query.collection_id, query.limit]), [[['pcol_one'], 3], [['pcol_two'], 6]]);
+});
+test('missing collection does not request products and failures are unavailable', async () => {
+  const { sdk, calls } = fixture();
+  const queries = createHomepageProductQueries(sdk, 'reg_1');
+  assert.deepEqual(await queries.getProductsByCollections(null, 4), { kind: 'ready', products: [] });
+  assert.deepEqual(await queries.getProductsByCollections('  ', 4), { kind: 'ready', products: [] });
+  assert.equal(calls.length, 0);
+  const failed = fixture({ failProducts: true });
+  assert.equal((await createHomepageProductQueries(failed.sdk, 'reg_1').getProductsByCollections('pcol_1', 4)).kind, 'unavailable');
+});

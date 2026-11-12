@@ -35,6 +35,12 @@ export default () => {
   router
     .group(() => {
       router.get('/collections', [() => import('#controllers/collection_progress_controller'), 'dashboard'])
+      router.get('/commerce/orders', [() => import('#controllers/commerce_controller'), 'orders'])
+      router.get('/commerce/orders/:id', [() => import('#controllers/commerce_controller'), 'order'])
+      router.get('/commerce/addresses', [() => import('#controllers/commerce_controller'), 'addresses'])
+      router.post('/commerce/addresses', [() => import('#controllers/commerce_controller'), 'createAddress'])
+      router.put('/commerce/addresses/:id', [() => import('#controllers/commerce_controller'), 'updateAddress'])
+      router.delete('/commerce/addresses/:id', [() => import('#controllers/commerce_controller'), 'deleteAddress'])
       router.get('/profile', [() => import('#controllers/profile_controller'), 'show'])
       router.put('/profile', [() => import('#controllers/profile_controller'), 'update'])
       router.get('/preferences', [() => import('#controllers/identity_controller'), 'getPreferences'])

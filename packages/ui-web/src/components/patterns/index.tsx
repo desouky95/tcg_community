@@ -30,3 +30,5 @@ export * from "./marketplace-hero";
 export * from "./filters-dialog";
 export * from './hero-slider'
 export * from "./social-auth-button";
+
+export * from "./product-card";

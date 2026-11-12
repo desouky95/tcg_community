@@ -38,7 +38,7 @@ Molecules centralized here:
 - Marketplace: `SearchBox`, `FilterSelect`, `MarketplaceToolbar`,
   `MarketplaceCard`, `MarketplaceHeroAction`, `EmptyStatePanel`.
 - Public discovery: `SearchRail`, `CategoryIndexItem`, `CategoryRow`,
-  `SectionHeading`, `ListingPreview`, `CardSpecimen`, `TrustStrip`,
+  `SectionHeading`, `ListingPreview`, `ProductCard`, `CardSpecimen`, `TrustStrip`,
   `ActivityPanel`, `PublicFooter`.
 
 ## CSS Ownership

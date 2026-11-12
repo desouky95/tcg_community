@@ -1,69 +1,150 @@
-import Link from "next/link";
-import { Button, EmptyStatePanel } from "@tcg/ui-web";
-import { listStoreProducts } from "../../../../src/lib/medusa.server";
+import { Suspense } from "react";
+import { parseCollectionFilters } from "../../../../src/lib/collection-queries";
+import {
+  listDiscovery,
+  listProductResults,
+} from "../../../../src/lib/shop-data.server";
+import { DiscoverySection } from "../_components/discovery-section";
+import { ProductListing } from "../_components/product-listing";
 import { CommerceCustomerLink } from "./commerce-customer-link";
 
 export const metadata = {
   title: "Shop | Next Pull",
-  description: "Official Next Pull releases, fulfilled through our store.",
+  description: "Explore collections, categories and products at Next Pull.",
 };
 
-export default async function ShopPage() {
-  const products = await listStoreProducts();
-  
-  console.log({products})
+function metadataImage(metadata: Record<string, unknown> | null | undefined) {
+  const image = metadata?.image || metadata?.thumbnail;
+  if (typeof image !== "string") return undefined;
+  try {
+    const url = new URL(image);
+    return url.href;
+    // return ["https:", "http:"].includes(url.protocol) ? image : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export default async function ShopPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const filters = parseCollectionFilters(await searchParams);
   return (
-    <section className="mx-auto max-w-360 px-gutter py-section">
+    <section className="mx-auto max-w-360 px-gutter pb-24 pt-12 text-primary-500 sm:pt-16">
       <CommerceCustomerLink />
-      <div className="mb-10 max-w-2xl border-b-2 border-wax-ink pb-6">
-        <p className="ui-kicker">OFFICIAL STORE</p>
-        <h1>New pulls, direct from Next Pull.</h1>
-        <p className="mt-4 text-wax-muted">
-          Products, stock, carts, and orders are managed securely by our store.
+      <header className="max-w-3xl">
+        <h1 className="font-display text-[clamp(2.4rem,5vw,4rem)] font-semibold leading-[1.05] tracking-tight">
+          Find your next pull.
+        </h1>
+        <p className="mt-4 max-w-2xl text-primary-400">
+          Explore collections and categories, then discover your next release.
         </p>
-      </div>
-      {products === null ? (
-        <EmptyStatePanel
-          title="The shop is being prepared."
-          description="Configure Medusa Store API access to publish the official catalogue."
-          action={
-            <Button asChild>
-              <Link href="/collector-disk">Discover Collector Disk</Link>
-            </Button>
+      </header>
+      <Suspense
+        fallback={
+          <p className="mt-12" role="status">
+            Loading collections and categories…
+          </p>
+        }
+      >
+        <Discovery />
+      </Suspense>
+      <section className="mt-14" aria-labelledby="all-products">
+        <h2
+          id="all-products"
+          className="font-display text-2xl font-semibold tracking-tight sm:text-3xl"
+        >
+          All products
+        </h2>
+        <Suspense
+          key={JSON.stringify(filters)}
+          fallback={
+            <p className="mt-6" role="status">
+              Loading products…
+            </p>
           }
-        />
-      ) : products.count === 0 ? (
-        <EmptyStatePanel
-          title="No products are available yet."
-          description="Check back for the next release."
-        />
-      ) : (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {products.products
-            // .filter((product) => product.handle)
-            .map((product) => (
-              <Link
-                key={product.id}
-                href={`/shop/${product.id}`}
-                className="focus-ring border border-wax-line bg-card p-4 hover:border-accent-500"
-              >
-                <div className="aspect-square bg-wax-paper">
-                  {product.thumbnail ? (
-                    <img
-                      src={product.thumbnail}
-                      alt={product.title}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : null}
-                </div>
-                <h2 className="mt-4 text-xl">{product.title}</h2>
-                <p className="mt-2 line-clamp-2 text-sm text-wax-muted">
-                  {product.description}
-                </p>
-              </Link>
-            ))}
-        </div>
-      )}
+        >
+          <ShopProducts filters={filters} />
+        </Suspense>
+      </section>
     </section>
   );
+}
+
+async function Discovery() {
+  const [discovery] = await Promise.allSettled([listDiscovery()]);
+  return discovery.status === "fulfilled" ? (
+    <>
+      {discovery.value.collections.length === 0 &&
+        discovery.value.categories.length === 0 && (
+          <p className="mt-12 text-primary-400">
+            Collections and categories will appear here when available.
+          </p>
+        )}
+      <DiscoverySection
+        title="Browse collections"
+        path="/collections"
+        items={discovery.value.collections
+          .filter((item) => !!item.handle)
+          .map((item) => {
+            return {
+              id: item.id,
+              handle: item.handle!,
+              name: item.title,
+              image: metadataImage(item.metadata),
+            };
+          })}
+      />
+      <DiscoverySection
+        title="Shop by category"
+        path="/categories"
+        items={discovery.value.categories
+          .filter((item) => !!item.handle)
+          .map((item) => {
+            console.log({ image: metadataImage(item.metadata) });
+
+            return {
+              id: item.id,
+              handle: item.handle,
+              name: item.name,
+              image: metadataImage(item.metadata),
+            };
+          })}
+      />
+    </>
+  ) : (
+    <p className="mt-12 text-primary-400" role="status">
+      Collections and categories are temporarily unavailable. Please try again
+      later.
+    </p>
+  );
+}
+
+async function ShopProducts({
+  filters,
+}: {
+  filters: ReturnType<typeof parseCollectionFilters>;
+}) {
+  try {
+    return (
+      <ProductListing
+        result={await listProductResults(filters)}
+        filters={filters}
+      />
+    );
+  } catch {
+    return (
+      <div className="mt-6 border-y border-wax-line py-12">
+        <p>Products are temporarily unavailable. Please try again later.</p>
+        <a
+          href="/shop"
+          className="focus-ring mt-4 inline-block font-semibold underline underline-offset-4"
+        >
+          Try again
+        </a>
+      </div>
+    );
+  }
 }

@@ -1,7 +1,7 @@
 /* eslint-disable */
 // Auto-generated Strapi API client
 // Do not edit manually
-export const SCHEMA_HASH = 'fed60290f71b7a4c02592b149782e327bd79639b1b50bfe01f3dfa852ec468b2'
+export const SCHEMA_HASH = '6b6f1b5d1c61f1a4c3bcf7be6d6a68fa02556bb401489a370e3aa12312aa9787'
 export const GENERATOR_VERSION = '2.4.0'
 export const AUTH_MODE: 'legacy' | 'refresh' = 'refresh'
 export const VALIDATION = 'none'

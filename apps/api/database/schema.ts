@@ -471,7 +471,7 @@ export class SwapDealSchema extends BaseModel {
 }
 
 export class UserChecklistCardSchema extends BaseModel {
-  static $columns = ['cardId', 'checklistId', 'createdAt', 'id', 'offeredQuantity', 'quantity', 'updatedAt', 'userChecklistId'] as const
+  static $columns = ['cardId', 'checklistId', 'createdAt', 'id', 'offeredQuantity', 'quantity', 'updatedAt', 'userChecklistId', 'wantedQuantity'] as const
   $columns = UserChecklistCardSchema.$columns
   @column()
   declare cardId: number | null
@@ -489,6 +489,8 @@ export class UserChecklistCardSchema extends BaseModel {
   declare updatedAt: DateTime | null
   @column()
   declare userChecklistId: number | null
+  @column()
+  declare wantedQuantity: number
 }
 
 export class UserChecklistSchema extends BaseModel {

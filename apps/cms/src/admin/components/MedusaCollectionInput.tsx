@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from "react";
+import { ComponentType, forwardRef, useEffect, useState } from "react";
 import { useFetchClient } from "@strapi/strapi/admin";
 
 type Collection = { id: string; title: string };
@@ -37,7 +37,7 @@ const MedusaCollectionInput = forwardRef<HTMLInputElement, Props>(function Medus
       return;
     }
     let active = true;
-    get("/medusa-collections/collections", { params: { id: value } })
+    get<any>("/medusa-collections/collections", { params: { id: value } })
       .then(({ data }) => {
         if (active) {
           setSelected(data.collections[0] ?? null);
@@ -56,7 +56,7 @@ const MedusaCollectionInput = forwardRef<HTMLInputElement, Props>(function Medus
     setLoading(true);
     setFailed(false);
     const timer = window.setTimeout(() => {
-      get("/medusa-collections/collections", { params: { q: query, offset } })
+      get<any>("/medusa-collections/collections", { params: { q: query, offset } })
         .then(({ data }) => {
           if (!active) return;
           setItems(data.collections);
@@ -152,4 +152,4 @@ const MedusaCollectionInput = forwardRef<HTMLInputElement, Props>(function Medus
   );
 });
 
-export default MedusaCollectionInput;
+export default MedusaCollectionInput as any as ComponentType;

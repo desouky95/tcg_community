@@ -1,0 +1,29 @@
+services:
+  api:
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+    restart: unless-stopped
+    volumes:
+      - api-storage:/workspace/apps/api/build/storage
+  cms:
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+    restart: unless-stopped
+  backend:
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+    restart: unless-stopped
+    volumes:
+      - backend-static:/workspace/apps/backend/.medusa/server/static
+  public-web:
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+    restart: unless-stopped

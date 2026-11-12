@@ -116,6 +116,7 @@ test.group('Remaining identity flows', (group) => {
     const loaded = await client.get('/api/v1/account/preferences').withSession(session(user))
     loaded.assertStatus(200)
     assert.equal((loaded.body() as { data: { locale: string } }).data.locale, 'ar')
+    assert.isNumber((loaded.body() as { version: number }).version)
     assert.isFalse(
       (loaded.body() as { data: { privacy: { showProfile: boolean } } }).data.privacy.showProfile
     )

@@ -7,6 +7,8 @@ Eligible profile data is deleted or anonymized while retained records preserve l
 
 ## Requirements
 
+- The account hub requires the password and DELETE confirmation, then signs the user out after anonymization. Existing retained records and deactivated-account deletion behavior remain in place.
+
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.
@@ -20,12 +22,14 @@ Eligible profile data is deleted or anonymized while retained records preserve l
 Existing evidence pointer: No current implementation. This pointer is not a fresh implementation audit.
 
 ## UI Page Used
-- N/A — no dedicated UI page
+- apps/public-web/app/(shared-layout)/account/page.tsx
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- POST /api/v1/account/privacy-deletions
 
 ## Related Files
+- apps/public-web/app/(shared-layout)/account/account-settings.tsx
+- apps/api/app/controllers/identity_controller.ts
 - apps/api/start/routes/v1/auth.routes.ts
 - apps/api/start/routes/v1/users.routes.ts
 - apps/api/app/controllers/auth_controller.ts

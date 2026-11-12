@@ -100,7 +100,7 @@ const TCG = ({ images, rows = 3 }: TCGProps) => {
           {images.map(({ src, id }) => (
             <motion.div
               key={id}
-              className="w-50 aspect-1/1.1 shrink-0"
+              className="w-52 aspect-1/1.1 shrink-0"
               variants={cardVariants}
               custom={{ rowIndex, reduceMotion }}
             >

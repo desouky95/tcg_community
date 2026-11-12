@@ -1,106 +1,130 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
     "better-auth-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
       "skillPath": "better-auth/best-practices/SKILL.md",
-      "computedHash": "0c30be0e118c2b7a0c4c57bd9e63bf110c7e420a79ec6ce7997153f3b1e066ee"
+      "computedHash": "2773c3687f2cf96d659049ebf2d8c86058a33541b09360712df0dc6b1404c403"
     },
     "building-admin-dashboard-customizations": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-dev/skills/building-admin-dashboard-customizations/SKILL.md",
-      "computedHash": "1d28d196d3a3c88e90fd6aac2957c24a130b43cff631d622278496987851166d"
+      "computedHash": ""
     },
     "building-storefronts": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-dev/skills/building-storefronts/SKILL.md",
-      "computedHash": "cdd94d4637a988d7e708ef9df9109b308d0e8cfe8fb602565301d045102bca43"
+      "computedHash": ""
     },
     "building-with-medusa": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-dev/skills/building-with-medusa/SKILL.md",
-      "computedHash": "a0ca76a69835fdad35aab235b5835ac3ecea8b02677cacc3af546e59e817cf02"
+      "computedHash": ""
     },
     "code-review-expert": {
       "source": "sanyuan0704/sanyuan-skills",
       "sourceType": "github",
       "skillPath": "skills/code-review-expert/SKILL.md",
-      "computedHash": "6c2fe31851a34e63e033257527eab04eea835ca1cf4c4276d1392a323e36e377"
+      "computedHash": "9a7ce8eaead22bafefade06f7480f03a562d60a319f986f1958d2ade233537f1"
     },
     "db-generate": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-dev/skills/db-generate/SKILL.md",
-      "computedHash": "ada2c0bdf020055310086c2697ca492a5d189c8e17d2793d8cb1134a609baaf4"
+      "computedHash": ""
     },
     "db-migrate": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/medusa-dev/skills/db-migrate/SKILL.md",
-      "computedHash": "0a6bf470a5313ead6b31440349404ee6a96086427602bd499a6fef846f49ae6c"
+      "computedHash": ""
     },
     "find-skills": {
       "source": "vercel-labs/skills",
       "sourceType": "github",
       "skillPath": "skills/find-skills/SKILL.md",
-      "computedHash": "913b9d37d0d54047dd65222bb8c67b2bf04e3cb87dcad1729068d7a8b2c8c396"
+      "computedHash": "7bc223e2aafbdbf6e50ea243ba6ef67fe432bb069ab439fea0390795dac0bf7f"
     },
     "firecrawl": {
       "source": "firecrawl/cli",
       "sourceType": "github",
       "skillPath": "skills/firecrawl/SKILL.md",
-      "computedHash": "1df20f02b0e1eab9cec4051b980ec41b9c0d977a9e3c136bfca99a7da0defa46"
+      "computedHash": "a74ccd30e7fda28560a00df959c2307d51d342d1de85e5dc2e70d45fc5b099c3"
+    },
+    "meltflex-3d": {
+      "source": "MeltFlexDevs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/meltflex-3d/SKILL.md",
+      "computedHash": "e92f685463a6eb952f3e0de6c264bd2205dd99d6405605d2386096d791c28b59"
+    },
+    "meltflex-design": {
+      "source": "MeltFlexDevs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/meltflex-design/SKILL.md",
+      "computedHash": "3013f1385caf85ee9a8f2bf0b0af9d4474f8fda826a0d4750ae07a4348bbfab6"
+    },
+    "meltflex-embed": {
+      "source": "MeltFlexDevs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/meltflex-embed/SKILL.md",
+      "computedHash": "958be980c28ddf04177b00a126a1a341edc583c8bbd68607b72d134875632e33"
+    },
+    "meltflex-furniture": {
+      "source": "MeltFlexDevs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/meltflex-furniture/SKILL.md",
+      "computedHash": "e8257f903cf1f5f81af28d80e24e77ea95be3b1e93de891f067e4e4f245ed255"
     },
     "monorepo-management": {
       "source": "wshobson/agents",
       "sourceType": "github",
-      "computedHash": "082be44c6320ce348b19c33f08f527ad604eed2da48f92e8c7010e206d5450cd"
+      "computedHash": "4c56b233b0e7c590e86b32e64d2c88069f0ceec4bf92effc30698df1eb907686"
     },
     "msw": {
       "source": "pproenca/dot-skills",
       "sourceType": "github",
       "skillPath": "skills/.curated/msw/SKILL.md",
-      "computedHash": "2a8ef7934bbda4992bd1ee44e521922768e55ae7134dfc668efd5cf88bfe4b40"
+      "computedHash": ""
     },
     "nextjs-app-router-patterns": {
       "source": "wshobson/agents",
       "sourceType": "github",
       "skillPath": "plugins/frontend-mobile-development/skills/nextjs-app-router-patterns/SKILL.md",
-      "computedHash": "b4fea42eecf1f803155ef7fa133d5286ee8f2dbba3e616954e9e43c6f0ffc144"
+      "computedHash": "39b84480d3a62355fd1199173dc70b97efe1daf6dbfae560cc7b85e127934a98"
     },
     "postgres": {
       "source": "planetscale/database-skills",
       "sourceType": "github",
       "skillPath": "skills/postgres/SKILL.md",
-      "computedHash": "3d4b3c578b7fcbc61e89b2731a248175e2aa740dc228a106b1a8b29b05ab000f"
+      "computedHash": "16e451102fbc0c5daf2f8fe01c860b68a7fd272207f8f59ccf8dbfda98254442"
     },
     "storefront-best-practices": {
       "source": "medusajs/medusa-agent-skills",
       "sourceType": "github",
       "skillPath": "plugins/ecommerce-storefront/skills/storefront-best-practices/SKILL.md",
-      "computedHash": "1fbde723f5cb189fd3c4f106212962f6f0c33032925188a9679424666ec529bb"
+      "computedHash": ""
     },
     "system-design": {
       "source": "wondelai/skills",
       "sourceType": "github",
       "skillPath": "system-design/SKILL.md",
-      "computedHash": "fd2daadca7d71d21cac5d375311893eaac78a02dae30422177276b7f639d7f99"
+      "computedHash": "4f29961f17cc7f5520383d27d66ad32ff5ce86d7f74b92b2a41536d7338b6290"
     },
     "typescript-pro": {
       "source": "jeffallan/claude-skills",
       "sourceType": "github",
       "skillPath": "skills/typescript-pro/SKILL.md",
-      "computedHash": "b53b57340243eab4b75acee9096f0444319bb1b9e8530fdab4d1d75e1568fa6c"
+      "computedHash": "64ce8ec603a7b119ff9b3d194bc7803c02ca1a098fcf0ee65d7123ccc3b2e272"
     },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/react-best-practices/SKILL.md",
-      "computedHash": "3219a1944e404ffc14d1d9d6aef6dd2e3855b81387ee0a044ccbfe14d34c2357"
+      "computedHash": "7991ed4fbecdac23f47c1a40c243e00a212a9e7f3604db93959b3ae11dffe299"
     }
   }
 }

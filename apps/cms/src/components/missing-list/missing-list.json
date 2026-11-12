@@ -1,0 +1,33 @@
+{
+  "collectionName": "components_missing_list_missing_lists",
+  "info": {
+    "displayName": "Missing List",
+    "icon": "bulletList"
+  },
+  "options": {},
+  "attributes": {
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product",
+      "required": true
+    },
+    "pack_images": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "stickers": {
+      "type": "media",
+      "multiple": true,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  },
+  "config": {}
+}

@@ -5,7 +5,7 @@ export default function ShopLayout({
 }) {
   return (
     <div>
-      <header>Store Header</header>
+      {/* <header>Store Header</header> */}
 
       <main>{children}</main>
     </div>

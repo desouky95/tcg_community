@@ -7,6 +7,8 @@ A consumed login challenge creates a session without a password.
 
 ## Requirements
 
+- Storefront login and signup do not offer social sign-in or code-based sign-in; existing backend routes remain available. Registration and recovery verification codes remain supported.
+
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.

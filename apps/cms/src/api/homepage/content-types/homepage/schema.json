@@ -15,10 +15,14 @@
       "type": "dynamiczone",
       "components": [
         "slider.hero-slider",
-        "homepage.product-section",
-        "homepage.latest-products",
-        "homepage.banner-strip"
+        "homepage.banner-strip",
+        "homepage.collection-section"
       ]
+    },
+    "missing_list": {
+      "type": "component",
+      "component": "missing-list.missing-list",
+      "repeatable": true
     }
   }
 }

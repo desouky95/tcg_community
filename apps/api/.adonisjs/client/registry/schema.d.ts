@@ -944,6 +944,84 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/collection_progress_controller').default['dashboard']>>>
     }
   }
+  'commerce.orders': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/account/commerce/orders'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['orders']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['orders']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['orders']>>>
+    }
+  }
+  'commerce.order': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/account/commerce/orders/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['order']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['order']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['order']>>>
+    }
+  }
+  'commerce.addresses': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/account/commerce/addresses'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['addresses']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['addresses']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['addresses']>>>
+    }
+  }
+  'commerce.create_address': {
+    methods: ["POST"]
+    pattern: '/api/v1/account/commerce/addresses'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/commerce_account').addressValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/commerce_account').addressValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['createAddress']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['createAddress']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['createAddress']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'commerce.update_address': {
+    methods: ["PUT"]
+    pattern: '/api/v1/account/commerce/addresses/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/commerce_account').addressValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/commerce_account').addressValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['updateAddress']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['updateAddress']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['updateAddress']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'commerce.delete_address': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/account/commerce/addresses/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['deleteAddress']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['deleteAddress']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['deleteAddress']>>>
+    }
+  }
   'profile.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/account/profile'

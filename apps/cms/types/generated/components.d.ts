@@ -18,6 +18,25 @@ export interface HomepageBannerStrip extends Struct.ComponentSchema {
   };
 }
 
+export interface HomepageCollectionSection extends Struct.ComponentSchema {
+  collectionName: 'components_homepage_collection_sections';
+  info: {
+    displayName: 'Collection Section';
+  };
+  attributes: {
+    banner: Schema.Attribute.Media<'images'>;
+    collection: Schema.Attribute.String &
+      Schema.Attribute.CustomField<'global::medusa-collection'>;
+    description: Schema.Attribute.String;
+    heading: Schema.Attribute.String & Schema.Attribute.Required;
+    limit: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<4>;
+    shop_link: Schema.Attribute.String;
+    variant: Schema.Attribute.Enumeration<['dark', 'default']>;
+  };
+}
+
 export interface HomepageLatestProducts extends Struct.ComponentSchema {
   collectionName: 'components_homepage_latest_products';
   info: {
@@ -56,6 +75,21 @@ export interface HomepageProductSection extends Struct.ComponentSchema {
   };
 }
 
+export interface MissingListMissingList extends Struct.ComponentSchema {
+  collectionName: 'components_missing_list_missing_lists';
+  info: {
+    displayName: 'Missing List';
+    icon: 'bulletList';
+  };
+  attributes: {
+    pack_images: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    product: Schema.Attribute.Relation<'oneToOne', 'api::product.product'> &
+      Schema.Attribute.Required;
+    stickers: Schema.Attribute.Media<'images', true> &
+      Schema.Attribute.Required;
+  };
+}
+
 export interface SliderHeroSlider extends Struct.ComponentSchema {
   collectionName: 'components_slider_hero_sliders';
   info: {
@@ -76,8 +110,10 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'general.page-transition': GeneralPageTransition;
       'homepage.banner-strip': HomepageBannerStrip;
+      'homepage.collection-section': HomepageCollectionSection;
       'homepage.latest-products': HomepageLatestProducts;
       'homepage.product-section': HomepageProductSection;
+      'missing-list.missing-list': MissingListMissingList;
       'slider.hero-slider': SliderHeroSlider;
     }
   }

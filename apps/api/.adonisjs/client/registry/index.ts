@@ -440,6 +440,42 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"collections"]],
     types: placeholder as Registry['collection_progress.dashboard']['types'],
   },
+  'commerce.orders': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/account/commerce/orders',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"commerce"],[0,"orders"]],
+    types: placeholder as Registry['commerce.orders']['types'],
+  },
+  'commerce.order': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/account/commerce/orders/:id',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"commerce"],[0,"orders"],[1,"id"]],
+    types: placeholder as Registry['commerce.order']['types'],
+  },
+  'commerce.addresses': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/account/commerce/addresses',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"commerce"],[0,"addresses"]],
+    types: placeholder as Registry['commerce.addresses']['types'],
+  },
+  'commerce.create_address': {
+    methods: ["POST"],
+    pattern: '/api/v1/account/commerce/addresses',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"commerce"],[0,"addresses"]],
+    types: placeholder as Registry['commerce.create_address']['types'],
+  },
+  'commerce.update_address': {
+    methods: ["PUT"],
+    pattern: '/api/v1/account/commerce/addresses/:id',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"commerce"],[0,"addresses"],[1,"id"]],
+    types: placeholder as Registry['commerce.update_address']['types'],
+  },
+  'commerce.delete_address': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/account/commerce/addresses/:id',
+    tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"commerce"],[0,"addresses"],[1,"id"]],
+    types: placeholder as Registry['commerce.delete_address']['types'],
+  },
   'profile.show': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/account/profile',

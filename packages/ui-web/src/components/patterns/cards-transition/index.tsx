@@ -40,7 +40,7 @@ const PACKS = [
 
 const ROWS = ROW_CONFIG.map(({ offset, zIndexClassName }) => ({
   zIndexClassName,
-  packs: Array.from({ length: 10 }, (_, index) => ({
+  packs: Array.from({ length: 12 }, (_, index) => ({
     id: `${offset}-${index}`,
     src: `/images/packs/${PACKS[(index + offset) % PACKS.length]}`,
   })),
@@ -114,15 +114,27 @@ const imageVariants: Variants = {
 
 type PageTransitionVariant = "sticker-packs" | "tcg-games";
 type CardsProps = {
-  type?: PageTransitionVariant;
+  images?: string[];
 };
-const Cards = ({ type = "sticker-packs" }: CardsProps) => {
+const Cards = ({ images }: CardsProps) => {
   const reducedMotion = Boolean(useReducedMotion());
+  const _PACKS = !!images && images.length > 0 ? images : PACKS;
+  const external = images?.length! > 0;
+  const ROWS = ROW_CONFIG.map(({ offset, zIndexClassName }) => ({
+    zIndexClassName,
+    packs: Array.from({ length: 12 }, (_, index) => {
+      const arrIndex = (index + offset) % PACKS.length;
+      return {
+        id: `${offset}-${index}`,
+        src: external ? _PACKS[arrIndex] : `/images/packs/${_PACKS[arrIndex]}`,
+      };
+    }),
+  }));
 
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none h-screen w-screen fixed inset-0 z-60 "
+      className="pointer-events-none fixed inset-0 z-60 h-dvh w-full overflow-hidden"
     >
       {ROWS.map(({ packs, zIndexClassName }, rowIndex) => {
         return (
@@ -130,7 +142,7 @@ const Cards = ({ type = "sticker-packs" }: CardsProps) => {
             key={`pack-row-${rowIndex}`}
             custom={{ rowIndex, reducedMotion }}
             variants={rowVariants}
-            className={`absolute inset-x-0 top-0 flex h-[calc(100dvh/2.9)] w-max min-w-full justify-center will-change-transform ${zIndexClassName}`}
+            className={`absolute inset-x-0 top-0 flex h-[calc((100dvh+2px)/3)] w-full justify-center overflow-hidden ${zIndexClassName}`}
           >
             {packs.map((pack, index) => (
               <motion.img
@@ -140,7 +152,7 @@ const Cards = ({ type = "sticker-packs" }: CardsProps) => {
                 alt=""
                 variants={imageVariants}
                 draggable={false}
-                className="h-full w-60 shrink-0 object-cover"
+                className="h-full w-[max(8.333333%,calc(100dvh/4))] shrink-0 object-cover"
               />
             ))}
           </motion.div>

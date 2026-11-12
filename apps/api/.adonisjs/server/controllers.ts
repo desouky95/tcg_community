@@ -15,6 +15,7 @@ export const controllers = {
   Commerce: () => import('#controllers/commerce_controller'),
   Configs: () => import('#controllers/configs_controller'),
   Conversations: () => import('#controllers/conversations_controller'),
+  FacebookAuth: () => import('#controllers/facebook_auth_controller'),
   Identity: () => import('#controllers/identity_controller'),
   Profile: () => import('#controllers/profile_controller'),
   Reviews: () => import('#controllers/reviews_controller'),

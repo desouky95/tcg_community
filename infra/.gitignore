@@ -1,0 +1,5 @@
+.env
+.env.api
+.env.cms
+.env.backend
+.env.public-web

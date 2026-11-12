@@ -9,6 +9,7 @@ import { TcgApiProvider } from "../../../packages/react-query/src";
 import { api } from "../src/lib/api";
 import { useDefaultApiQuery } from "../src/lib/request-query";
 import { Toaster } from "react-hot-toast";
+import { CartProvider } from "../src/providers/CartProvider";
 import { RegionProvider } from "../src/providers/RegionProvider";
 
 function makeQueryClient() {
@@ -54,7 +55,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       >
         <RegionProvider>
           <Toaster position="top-right" />
-          {children}
+          <CartProvider>{children}</CartProvider>
         </RegionProvider>
       </TcgApiProvider>
     </QueryClientProvider>

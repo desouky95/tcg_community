@@ -42,3 +42,9 @@ it is created lazily when a signed-in customer first opens `/shop`.
 
 Guest checkout remains a Medusa responsibility. An email supplied at checkout
 is used for that order's updates and is not used to claim an account later.
+
+## Account commerce bridge
+
+The signed-in account hub calls Adonis account commerce routes. Adonis validates the session, resolves the linked Medusa customer server-side, and calls the private Medusa account endpoint using the service key. Medusa filters order and address access by that customer; browser-supplied customer IDs are never used. Orders and addresses are private and uncached. Commerce outages do not prevent profile access.
+
+The bridge displays orders already associated with the linked customer. Guest orders are not claimed by email, and the current storefront cart does not yet attach the signed-in customer; cart and checkout association require a separate integration.
