@@ -225,7 +225,7 @@ function ProfileForm({
             ].map(([label, value]) => (
               <div key={label}>
                 <dt className="text-sm text-wax-muted">{label}</dt>
-                <dd className="mt-1 break-words font-semibold">{value}</dd>
+                <dd className="mt-1 wrap-break-word font-semibold">{value}</dd>
               </div>
             ))}
           </dl>
@@ -367,7 +367,7 @@ export function AccountHub() {
             </div>
             <div className="min-w-0">
               <p className="text-sm text-white/70">Signed in as</p>
-              <p className="break-words font-display text-xl font-semibold">
+              <p className="wrap-break-word font-display text-xl font-semibold">
                 {user.fullName}
               </p>
               <p className="break-all text-sm text-white/70">

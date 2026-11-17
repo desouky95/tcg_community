@@ -57,7 +57,7 @@ export default async function ProductPage({
       <div className="flex flex-col items-start gap-8 md:gap-10 lg:flex-row lg:gap-14 xl:gap-20">
         <ProductGallery title={product.title} images={images} />
         <div className="min-w-0 w-full max-w-xl lg:flex-1">
-          <h1 className="font-display text-[clamp(2rem,3vw,3rem)] font-semibold leading-[1.08] tracking-tight [overflow-wrap:anywhere]">
+          <h1 className="font-display text-[clamp(2rem,3vw,3rem)] font-semibold leading-[1.08] tracking-tight wrap-anywhere">
             {product.title}
           </h1>
           <PurchasePanel
@@ -87,7 +87,7 @@ export default async function ProductPage({
               >
                 Description
               </h2>
-              <p className="mt-4 whitespace-pre-line leading-relaxed text-primary-400 [overflow-wrap:anywhere]">
+              <p className="mt-4 whitespace-pre-line leading-relaxed text-primary-400 wrap-anywhere">
                 {description}
               </p>
             </section>

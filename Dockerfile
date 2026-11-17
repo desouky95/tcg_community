@@ -7,6 +7,11 @@ ENV CI=true
 RUN corepack enable
 COPY . .
 
+FROM base AS dev
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile \
+    --filter @tcg/medusa... --filter @tcg/public-web... --filter @tcg/api... --filter @tcg/strapi...
+ENV NODE_ENV=development
+
 FROM base AS backend-build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @tcg/medusa...
 RUN pnpm --filter @tcg/medusa... --if-present run build

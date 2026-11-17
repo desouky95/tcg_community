@@ -310,7 +310,7 @@ export function CartButton() {
       <span
         aria-live="polite"
         aria-atomic="true"
-        className="absolute -end-1 -top-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-signature-lime-500 px-1 text-xs font-bold text-primary-500"
+        className="absolute -inset-e-1 -top-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-signature-lime-500 px-1 text-xs font-bold text-primary-500"
       >
         {count}
       </span>

@@ -1,66 +1,130 @@
 name: tcg-dev
 
+# Hot-reload dev: repo bind-mounted, host node_modules/build dirs masked by anonymous volumes.
+# After lockfile changes: docker compose -f infra/compose.dev.yaml up --build -V
+x-workspace-volumes: &workspace-volumes
+  - ..:/workspace
+  - /workspace/node_modules
+  - /workspace/apps/backend/node_modules
+  - /workspace/apps/public-web/node_modules
+  - /workspace/apps/api/node_modules
+  - /workspace/apps/cms/node_modules
+  - /workspace/packages/api-contracts/node_modules
+  - /workspace/packages/auth-client/node_modules
+  - /workspace/packages/design-tokens/node_modules
+  - /workspace/packages/locale/node_modules
+  - /workspace/packages/react-query/node_modules
+  - /workspace/packages/strapi-client/node_modules
+  - /workspace/packages/ui-web/node_modules
+
+x-dev: &dev
+  build:
+    context: ..
+    target: dev
+  image: tcg-dev-workspace
+  restart: unless-stopped
+  volumes: *workspace-volumes
+
 services:
   backend:
-    build:
-      context: ..
-      target: backend
+    <<: *dev
+    working_dir: /workspace/apps/backend
+    command: pnpm dev
     env_file: .env.backend
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
+      HOST: 0.0.0.0
+      PORT: 9000
+      HMR_PORT: 24678
+      HMR_BIND_HOST: 0.0.0.0
       VITE_CARD_CATALOG_URL: http://api:3333/api/v1/internal/card-catalog
-    restart: unless-stopped
     ports:
       - '9000:9000'
+      - '24678:24678'
+    volumes:
+      - ..:/workspace
+      - /workspace/node_modules
+      - /workspace/apps/backend/node_modules
+      - /workspace/apps/public-web/node_modules
+      - /workspace/apps/api/node_modules
+      - /workspace/apps/cms/node_modules
+      - /workspace/packages/api-contracts/node_modules
+      - /workspace/packages/auth-client/node_modules
+      - /workspace/packages/design-tokens/node_modules
+      - /workspace/packages/locale/node_modules
+      - /workspace/packages/react-query/node_modules
+      - /workspace/packages/strapi-client/node_modules
+      - /workspace/packages/ui-web/node_modules
+      - /workspace/apps/backend/.medusa
 
   public-web:
-    build:
-      context: ..
-      target: public-web
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
-        NEXT_PUBLIC_STRAPI_API_URL: ${NEXT_PUBLIC_STRAPI_API_URL:-}
-        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-}
-        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-}
-        NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-}
-        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-}
+    <<: *dev
+    working_dir: /workspace/apps/public-web
+    command: pnpm dev --hostname 0.0.0.0 --port 3000
     env_file: .env.public-web
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       API_URL: http://api:3333/api/v1
-    restart: unless-stopped
     ports:
       - '3000:3000'
+    volumes:
+      - ..:/workspace
+      - /workspace/node_modules
+      - /workspace/apps/backend/node_modules
+      - /workspace/apps/public-web/node_modules
+      - /workspace/apps/api/node_modules
+      - /workspace/apps/cms/node_modules
+      - /workspace/packages/api-contracts/node_modules
+      - /workspace/packages/auth-client/node_modules
+      - /workspace/packages/design-tokens/node_modules
+      - /workspace/packages/locale/node_modules
+      - /workspace/packages/react-query/node_modules
+      - /workspace/packages/strapi-client/node_modules
+      - /workspace/packages/ui-web/node_modules
+      - /workspace/apps/public-web/.next
 
   api:
-    build:
-      context: ..
-      target: api
+    <<: *dev
+    working_dir: /workspace/apps/api
+    command: pnpm dev
     env_file: .env.api
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       HOST: 0.0.0.0
       PORT: 3333
       MEDUSA_INTERNAL_URL: http://backend:9000
-    restart: unless-stopped
     ports:
       - '3333:3333'
 
   cms:
-    build:
-      context: ..
-      target: cms
+    <<: *dev
+    working_dir: /workspace/apps/cms
+    command: pnpm dev
     env_file: .env.cms
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       HOST: 0.0.0.0
       PORT: 1337
       MEDUSA_BACKEND_URL: http://backend:9000
-    restart: unless-stopped
     ports:
       - '1337:1337'
     volumes:
-      - cms-uploads:/app/public/uploads
+      - ..:/workspace
+      - /workspace/node_modules
+      - /workspace/apps/backend/node_modules
+      - /workspace/apps/public-web/node_modules
+      - /workspace/apps/api/node_modules
+      - /workspace/apps/cms/node_modules
+      - /workspace/packages/api-contracts/node_modules
+      - /workspace/packages/auth-client/node_modules
+      - /workspace/packages/design-tokens/node_modules
+      - /workspace/packages/locale/node_modules
+      - /workspace/packages/react-query/node_modules
+      - /workspace/packages/strapi-client/node_modules
+      - /workspace/packages/ui-web/node_modules
+      - /workspace/apps/cms/.strapi
+      - /workspace/apps/cms/dist
+      - cms-uploads:/workspace/apps/cms/public/uploads
 
 volumes:
   cms-uploads:

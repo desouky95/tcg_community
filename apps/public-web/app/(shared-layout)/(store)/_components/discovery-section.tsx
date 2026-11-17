@@ -59,7 +59,7 @@ export function DiscoverySection({
                 />
                 <span
                   aria-hidden="true"
-                  className="absolute end-4 top-4 size-5 bg-signature-lime-500/60 [clip-path:polygon(50%_0,61%_37%,100%_50%,61%_63%,50%_100%,39%_63%,0_50%,39%_37%)]"
+                  className="absolute inset-e-4 top-4 size-5 bg-signature-lime-500/60 [clip-path:polygon(50%_0,61%_37%,100%_50%,61%_63%,50%_100%,39%_63%,0_50%,39%_37%)]"
                 />
               </>
             ) : (
@@ -70,12 +70,12 @@ export function DiscoverySection({
                 />
                 <span
                   aria-hidden="true"
-                  className="absolute end-4 top-4 size-5 bg-signature-lime-500 [clip-path:polygon(50%_0,61%_37%,100%_50%,61%_63%,50%_100%,39%_63%,0_50%,39%_37%)]"
+                  className="absolute inset-e-4 top-4 size-5 bg-signature-lime-500 [clip-path:polygon(50%_0,61%_37%,100%_50%,61%_63%,50%_100%,39%_63%,0_50%,39%_37%)]"
                 />
               </>
             )}
             <span className="relative flex items-end justify-between gap-2">
-              <span className="font-display text-lg font-semibold leading-tight [overflow-wrap:anywhere] group-hover:underline">
+              <span className="font-display text-lg font-semibold leading-tight wrap-anywhere group-hover:underline">
                 {item.name}
               </span>
               <ArrowUpRight aria-hidden="true" className="size-5 shrink-0" />

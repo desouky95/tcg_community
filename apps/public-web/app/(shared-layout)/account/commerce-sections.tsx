@@ -231,10 +231,10 @@ export function AddressesSection({ userId }: { userId: string }) {
                   className="flex flex-wrap justify-between gap-4 py-4 first:pt-0"
                 >
                   <div>
-                    <p className="break-words font-semibold">
+                    <p className="wrap-break-word font-semibold">
                       {address.first_name} {address.last_name}
                     </p>
-                    <p className="break-words text-sm text-wax-muted">
+                    <p className="wrap-break-word text-sm text-wax-muted">
                       {[
                         address.address_1,
                         address.address_2,
