@@ -1,4 +1,5 @@
 import "server-only";
+import { cacheLife } from "next/cache";
 import type { HeroSlideItem } from "@tcg/ui-web";
 
 import { StrapiError } from "@tcg/strapi-client";
@@ -11,6 +12,8 @@ const cmsURL = (
   .replace(/\/api$/, "");
 
 async function fetchHomepage() {
+  "use cache";
+  cacheLife("hours");
   return strapiClient.homepage.find(
     {
       status: "published",
@@ -35,6 +38,8 @@ async function fetchHomepage() {
 }
 
 async function fetchPageTransition() {
+  "use cache";
+  cacheLife("hours");
   return strapiClient.pageTransition.find(
     {
       status: "published",
@@ -100,7 +105,7 @@ export function mapHeroSlides(banners: Banner[] = []): HeroSlideItem[] {
       subtitle: banner.subtitle,
       url: banner.url,
       web_image: web,
-      mobile_image: mobile,
+      ...(mobile && { mobile_image: mobile }),
     };
   }) as HeroSlideItem[];
 }

@@ -329,6 +329,10 @@ export interface HomepageProductSection {
   shop_link: string | null
 }
 
+export interface MissingListMissingList {
+  id: number
+}
+
 export interface SliderHeroSlider {
   id: number
 }
@@ -336,12 +340,6 @@ export interface SliderHeroSlider {
 export type HomepageBannerStripDz = HomepageBannerStrip & { __component: 'homepage.banner-strip' }
 export type HomepageCollectionSectionDz = HomepageCollectionSection & {
   __component: 'homepage.collection-section'
-}
-export type HomepageLatestProductsDz = HomepageLatestProducts & {
-  __component: 'homepage.latest-products'
-}
-export type HomepageProductSectionDz = HomepageProductSection & {
-  __component: 'homepage.product-section'
 }
 export type SliderHeroSliderDz = SliderHeroSlider & { __component: 'slider.hero-slider' }
 
@@ -441,6 +439,22 @@ export interface HomepageProductSectionUpdateInput {
   products?: RelationInput<'oneToMany'> | undefined
 }
 
+/** Create input for MissingListMissingList */
+export interface MissingListMissingListCreateInput {
+  id?: number | undefined
+  pack_images?: MediaInput | undefined
+  stickers?: MultiMediaInput | undefined
+  product?: RelationInput<'oneToOne'> | undefined
+}
+
+/** Update input for MissingListMissingList */
+export interface MissingListMissingListUpdateInput {
+  id?: number | undefined
+  pack_images?: MediaInput | undefined
+  stickers?: MultiMediaInput | undefined
+  product?: RelationInput<'oneToOne'> | undefined
+}
+
 /** Create input for SliderHeroSlider */
 export interface SliderHeroSliderCreateInput {
   id?: number | undefined
@@ -466,18 +480,6 @@ export type HomepageCollectionSectionDzCreateInput = HomepageCollectionSectionCr
 }
 export type HomepageCollectionSectionDzUpdateInput = HomepageCollectionSectionUpdateInput & {
   __component: 'homepage.collection-section'
-}
-export type HomepageLatestProductsDzCreateInput = HomepageLatestProductsCreateInput & {
-  __component: 'homepage.latest-products'
-}
-export type HomepageLatestProductsDzUpdateInput = HomepageLatestProductsUpdateInput & {
-  __component: 'homepage.latest-products'
-}
-export type HomepageProductSectionDzCreateInput = HomepageProductSectionCreateInput & {
-  __component: 'homepage.product-section'
-}
-export type HomepageProductSectionDzUpdateInput = HomepageProductSectionUpdateInput & {
-  __component: 'homepage.product-section'
 }
 export type SliderHeroSliderDzCreateInput = SliderHeroSliderCreateInput & {
   __component: 'slider.hero-slider'
@@ -578,8 +580,8 @@ export interface Product {
   createdAt: string
   updatedAt: string
   publishedAt: string | null
-  medusaId: string
   title: string
+  medusaId: string
   subtitle: string | null
   description: string | null
   handle: string
@@ -656,11 +658,10 @@ export interface BannerUpdateInput {
 
 /** Create input for Homepage */
 export interface HomepageCreateInput {
+  missing_list?: MissingListMissingListCreateInput[] | undefined
   sections?:
     | (
         | SliderHeroSliderDzCreateInput
-        | HomepageProductSectionDzCreateInput
-        | HomepageLatestProductsDzCreateInput
         | HomepageBannerStripDzCreateInput
         | HomepageCollectionSectionDzCreateInput
       )[]
@@ -669,11 +670,10 @@ export interface HomepageCreateInput {
 
 /** Update input for Homepage */
 export interface HomepageUpdateInput {
+  missing_list?: MissingListMissingListUpdateInput[] | undefined
   sections?:
     | (
         | SliderHeroSliderDzUpdateInput
-        | HomepageProductSectionDzUpdateInput
-        | HomepageLatestProductsDzUpdateInput
         | HomepageBannerStripDzUpdateInput
         | HomepageCollectionSectionDzUpdateInput
       )[]
@@ -768,8 +768,8 @@ export interface ProductVariantUpdateInput {
 
 /** Create input for Product */
 export interface ProductCreateInput {
-  medusaId: string
   title: string
+  medusaId: string
   subtitle?: string | null | undefined
   description?: string | null | undefined
   handle: string
@@ -783,8 +783,8 @@ export interface ProductCreateInput {
 
 /** Update input for Product */
 export interface ProductUpdateInput {
-  medusaId?: string | undefined
   title?: string | undefined
+  medusaId?: string | undefined
   subtitle?: string | null | undefined
   description?: string | null | undefined
   handle?: string | undefined
@@ -890,13 +890,6 @@ export const HomepageCollectionSectionDzDefaults = {
   __component: 'homepage.collection-section',
   limit: 4,
 } as const satisfies Partial<HomepageCollectionSectionDzCreateInput>
-export const HomepageLatestProductsDzDefaults = {
-  __component: 'homepage.latest-products',
-  limit: 8,
-} as const satisfies Partial<HomepageLatestProductsDzCreateInput>
-export const HomepageProductSectionDzDefaults = {
-  __component: 'homepage.product-section',
-} as const satisfies Partial<HomepageProductSectionDzCreateInput>
 export const SliderHeroSliderDzDefaults = {
   __component: 'slider.hero-slider',
 } as const satisfies Partial<SliderHeroSliderDzCreateInput>
@@ -930,6 +923,30 @@ export type HomepageProductSectionPopulateParam = {
         limit?: number
         start?: number
       }
+}
+export type MissingListMissingListPopulateParam = {
+  product?:
+    | true
+    | {
+        count: true
+        filters?: ProductFilters
+        fields?: never
+        populate?: never
+        sort?: never
+        limit?: never
+        start?: never
+      }
+    | {
+        count?: false
+        fields?: _EntityField<Product>[]
+        populate?: ProductPopulateParam | (keyof ProductPopulateParam & string)[] | '*'
+        filters?: ProductFilters
+        sort?: _SortValue<Product> | _SortValue<Product>[]
+        limit?: number
+        start?: number
+      }
+  pack_images?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
+  stickers?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
 }
 export type SliderHeroSliderPopulateParam = {
   banners?:
@@ -997,6 +1014,16 @@ export type BannerPopulateParam = {
   mobile_image?: true | { fields?: (keyof MediaFile & string)[]; count?: never }
 }
 export type HomepagePopulateParam = {
+  missing_list?:
+    | true
+    | {
+        fields?: (keyof MissingListMissingList & string)[]
+        populate?:
+          | MissingListMissingListPopulateParam
+          | (keyof MissingListMissingListPopulateParam & string)[]
+          | '*'
+        count?: never
+      }
   sections?:
     | true
     | {
@@ -1011,18 +1038,6 @@ export type HomepagePopulateParam = {
                   | '*'
                 count?: never
               }
-          'homepage.product-section'?:
-            | true
-            | {
-                fields?: (keyof HomepageProductSection & string)[]
-                populate?:
-                  | HomepageProductSectionPopulateParam
-                  | (keyof HomepageProductSectionPopulateParam & string)[]
-                  | '*'
-                count?: never
-              }
-          'homepage.latest-products'?:
-            true | { fields?: (keyof HomepageLatestProducts & string)[]; count?: never }
           'homepage.banner-strip'?:
             | true
             | {
@@ -1382,6 +1397,42 @@ export type HomepageProductSectionGetPayload<P extends { populate?: unknown } = 
                 : never
             }
       : {})
+// Payload type for MissingListMissingList with populate support
+export type MissingListMissingListGetPayload<P extends { populate?: unknown } = {}> =
+  MissingListMissingList &
+    (P extends { populate: infer Pop }
+      ? Pop extends '*' | true
+        ? {
+            product?: Product | null
+            pack_images?: MediaFile | null
+            stickers?: MediaFile[]
+          }
+        : Pop extends readonly (infer _)[]
+          ? {
+              product?: 'product' extends Pop[number] ? Product | null : never
+              pack_images?: 'pack_images' extends Pop[number] ? MediaFile | null : never
+              stickers?: 'stickers' extends Pop[number] ? MediaFile[] : never
+            }
+          : {
+              product?: 'product' extends keyof Pop
+                ? Pop['product'] extends { count: true }
+                  ? { count: number }
+                  : _ApplyFields<
+                      Pop['product'] extends { populate: infer NestedPop }
+                        ? ProductGetPayload<{ populate: NestedPop }>
+                        : Product,
+                      Product,
+                      Pop['product']
+                    > | null
+                : never
+              pack_images?: 'pack_images' extends keyof Pop
+                ? _ApplyFields<MediaFile, MediaFile, Pop['pack_images']> | null
+                : never
+              stickers?: 'stickers' extends keyof Pop
+                ? _ApplyFields<MediaFile, MediaFile, Pop['stickers']>[]
+                : never
+            }
+      : {})
 // Payload type for SliderHeroSlider with populate support
 export type SliderHeroSliderGetPayload<P extends { populate?: unknown } = {}> = SliderHeroSlider &
   (P extends { populate: infer Pop }
@@ -1456,27 +1507,26 @@ export type HomepageGetPayload<P extends { populate?: unknown } = {}> = Homepage
   (P extends { populate: infer Pop }
     ? Pop extends '*' | true
       ? {
-          sections?: (
-            | SliderHeroSliderDz
-            | HomepageProductSectionDz
-            | HomepageLatestProductsDz
-            | HomepageBannerStripDz
-            | HomepageCollectionSectionDz
-          )[]
+          missing_list?: MissingListMissingList[]
+          sections?: (SliderHeroSliderDz | HomepageBannerStripDz | HomepageCollectionSectionDz)[]
         }
       : Pop extends readonly (infer _)[]
         ? {
+            missing_list?: 'missing_list' extends Pop[number] ? MissingListMissingList[] : never
             sections?: 'sections' extends Pop[number]
-              ? (
-                  | SliderHeroSliderDz
-                  | HomepageProductSectionDz
-                  | HomepageLatestProductsDz
-                  | HomepageBannerStripDz
-                  | HomepageCollectionSectionDz
-                )[]
+              ? (SliderHeroSliderDz | HomepageBannerStripDz | HomepageCollectionSectionDz)[]
               : never
           }
         : {
+            missing_list?: 'missing_list' extends keyof Pop
+              ? _ApplyFields<
+                  Pop['missing_list'] extends { populate: infer NestedPop }
+                    ? MissingListMissingListGetPayload<{ populate: NestedPop }>
+                    : MissingListMissingList,
+                  MissingListMissingList,
+                  Pop['missing_list']
+                >[]
+              : never
             sections?: 'sections' extends keyof Pop
               ? (
                   | (Pop['sections'] extends { on: infer On }
@@ -1488,16 +1538,6 @@ export type HomepageGetPayload<P extends { populate?: unknown } = {}> = Homepage
                           : SliderHeroSliderDz
                         : SliderHeroSliderDz
                       : SliderHeroSliderDz)
-                  | (Pop['sections'] extends { on: infer On }
-                      ? 'homepage.product-section' extends keyof On
-                        ? On['homepage.product-section'] extends { populate: infer NestedPop }
-                          ? HomepageProductSectionGetPayload<{ populate: NestedPop }> & {
-                              __component: 'homepage.product-section'
-                            }
-                          : HomepageProductSectionDz
-                        : HomepageProductSectionDz
-                      : HomepageProductSectionDz)
-                  | HomepageLatestProductsDz
                   | (Pop['sections'] extends { on: infer On }
                       ? 'homepage.banner-strip' extends keyof On
                         ? On['homepage.banner-strip'] extends { populate: infer NestedPop }
@@ -1991,6 +2031,17 @@ export interface HomepageProductSectionFilters extends LogicalOperators<Homepage
     [key: string]: any
   }
 }
+/** Type-safe filters for the MissingListMissingList component */
+export interface MissingListMissingListFilters extends LogicalOperators<MissingListMissingListFilters> {
+  id?: number | IdFilterOperators
+  product?: {
+    id?: number | IdFilterOperators
+    documentId?: string | StringFilterOperators
+    [key: string]: any
+  }
+  pack_images?: { id?: number | IdFilterOperators; [key: string]: any }
+  stickers?: { id?: number | IdFilterOperators; [key: string]: any }
+}
 /** Type-safe filters for the SliderHeroSlider component */
 export interface SliderHeroSliderFilters extends LogicalOperators<SliderHeroSliderFilters> {
   id?: number | IdFilterOperators
@@ -2033,6 +2084,7 @@ export interface HomepageFilters extends LogicalOperators<HomepageFilters> {
   createdAt?: string | DateFilterOperators
   updatedAt?: string | DateFilterOperators
   publishedAt?: string | DateFilterOperators
+  missing_list?: MissingListMissingListFilters
 }
 /** Type-safe filters for InteractiveBanner */
 export interface InteractiveBannerFilters extends LogicalOperators<InteractiveBannerFilters> {
@@ -2126,8 +2178,8 @@ export interface ProductFilters extends LogicalOperators<ProductFilters> {
   createdAt?: string | DateFilterOperators
   updatedAt?: string | DateFilterOperators
   publishedAt?: string | DateFilterOperators
-  medusaId?: string | StringFilterOperators
   title?: string | StringFilterOperators
+  medusaId?: string | StringFilterOperators
   subtitle?: string | StringFilterOperators
   description?: string | StringFilterOperators
   handle?: string | StringFilterOperators

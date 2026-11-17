@@ -80,10 +80,12 @@ export function HeroSlider({ slides, interval = 6000 }: HeroSliderProps) {
               inert={index !== selected}
             >
               <picture className="absolute inset-0">
-                <source
-                  media="(max-width: 640px)"
-                  srcSet={slide.mobile_image}
-                />
+                {slide.mobile_image && (
+                  <source
+                    media="(max-width: 640px)"
+                    srcSet={slide.mobile_image}
+                  />
+                )}
                 <img
                   src={slide.web_image}
                   className="h-full w-full object-cover object-[center_38%]"

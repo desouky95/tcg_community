@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
     {
       method: "POST",
       headers: { cookie: request.headers.get("cookie") ?? "" },
+      // headers: { cookie: request.headers.get("cookie") ?? "" },
       cache: "no-store",
     },
   );
