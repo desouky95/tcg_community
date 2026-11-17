@@ -88,7 +88,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     console.log("DEBUG", "CUSTOMER_ID", input.customer_id);
     const __ = await orders.listAndCountOrders(
       {
-        // customer_id: existing.id,
+        customer_id: existing.id,
       },
       {},
     );

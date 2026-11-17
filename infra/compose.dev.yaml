@@ -31,13 +31,6 @@ services:
     working_dir: /workspace/apps/backend
     command: pnpm dev
     env_file: .env.backend
-    environment:
-      NODE_ENV: development
-      HOST: 0.0.0.0
-      PORT: 9000
-      HMR_PORT: 24678
-      HMR_BIND_HOST: 0.0.0.0
-      VITE_CARD_CATALOG_URL: http://api:3333/api/v1/internal/card-catalog
     ports:
       - '9000:9000'
       - '24678:24678'
@@ -62,9 +55,6 @@ services:
     working_dir: /workspace/apps/public-web
     command: pnpm dev --hostname 0.0.0.0 --port 3000
     env_file: .env.public-web
-    environment:
-      NODE_ENV: development
-      API_URL: http://api:3333/api/v1
     ports:
       - '3000:3000'
     volumes:
@@ -88,11 +78,6 @@ services:
     working_dir: /workspace/apps/api
     command: pnpm dev
     env_file: .env.api
-    environment:
-      NODE_ENV: development
-      HOST: 0.0.0.0
-      PORT: 3333
-      MEDUSA_INTERNAL_URL: http://backend:9000
     ports:
       - '3333:3333'
 
@@ -101,11 +86,6 @@ services:
     working_dir: /workspace/apps/cms
     command: pnpm dev
     env_file: .env.cms
-    environment:
-      NODE_ENV: development
-      HOST: 0.0.0.0
-      PORT: 1337
-      MEDUSA_BACKEND_URL: http://backend:9000
     ports:
       - '1337:1337'
     volumes:
