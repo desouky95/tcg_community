@@ -1,0 +1,66 @@
+name: tcg-dev
+
+services:
+  backend:
+    build:
+      context: ..
+      target: backend
+    env_file: .env.backend
+    environment:
+      NODE_ENV: production
+      VITE_CARD_CATALOG_URL: http://api:3333/api/v1/internal/card-catalog
+    restart: unless-stopped
+    ports:
+      - '9000:9000'
+
+  public-web:
+    build:
+      context: ..
+      target: public-web
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+        NEXT_PUBLIC_STRAPI_API_URL: ${NEXT_PUBLIC_STRAPI_API_URL:-}
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-}
+        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-}
+        NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-}
+    env_file: .env.public-web
+    environment:
+      NODE_ENV: production
+      API_URL: http://api:3333/api/v1
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+
+  api:
+    build:
+      context: ..
+      target: api
+    env_file: .env.api
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3333
+      MEDUSA_INTERNAL_URL: http://backend:9000
+    restart: unless-stopped
+    ports:
+      - '3333:3333'
+
+  cms:
+    build:
+      context: ..
+      target: cms
+    env_file: .env.cms
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 1337
+      MEDUSA_BACKEND_URL: http://backend:9000
+    restart: unless-stopped
+    ports:
+      - '1337:1337'
+    volumes:
+      - cms-uploads:/app/public/uploads
+
+volumes:
+  cms-uploads:

@@ -4,4 +4,4 @@ services:
       context: ..
       dockerfile: infra/Dockerfile.backend
     env_file:
-      - ../apps/backend/.env
+      - infra/env.backend

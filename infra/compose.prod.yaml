@@ -1,0 +1,50 @@
+name: tcg-prod
+
+services:
+  backend:
+    build:
+      context: ..
+      target: backend
+    env_file: ${BACKEND_ENV_FILE:?Set BACKEND_ENV_FILE to the production environment file}
+    restart: unless-stopped
+    ports:
+      - '9000:9000'
+
+  public-web:
+    build:
+      context: ..
+      target: public-web
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+        NEXT_PUBLIC_STRAPI_API_URL: ${NEXT_PUBLIC_STRAPI_API_URL:-}
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-}
+        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-}
+        NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-}
+    env_file: ${PUBLIC_WEB_ENV_FILE:?Set PUBLIC_WEB_ENV_FILE to the production environment file}
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+
+  api:
+    build:
+      context: ..
+      target: api
+    env_file: ${API_ENV_FILE:?Set API_ENV_FILE to the production environment file}
+    restart: unless-stopped
+    ports:
+      - '3333:3333'
+
+  cms:
+    build:
+      context: ..
+      target: cms
+    env_file: ${CMS_ENV_FILE:?Set CMS_ENV_FILE to the production environment file}
+    restart: unless-stopped
+    ports:
+      - '1337:1337'
+    volumes:
+      - cms-uploads:/app/public/uploads
+
+volumes:
+  cms-uploads:
