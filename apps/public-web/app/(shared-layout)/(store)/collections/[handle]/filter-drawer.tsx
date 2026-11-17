@@ -2,7 +2,7 @@
 import { Dialog } from "@tcg/ui-web/components/radix/dialog";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
-import type { CollectionFilters } from "../../../../../src/lib/collection-queries";
+import type { CollectionFilters } from "../../../../../src/lib/catalog/collection-queries";
 
 export function FilterDrawer({ filters, priceAvailable, stockAvailable, currency }: { filters: CollectionFilters; priceAvailable: boolean; stockAvailable: boolean; currency?: string }) {
   const [open, setOpen] = useState(false);

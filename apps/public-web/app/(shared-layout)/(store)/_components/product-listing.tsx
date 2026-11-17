@@ -4,9 +4,9 @@ import {
   PAGE_SIZE,
   stockStatus,
   type CollectionFilters,
-} from "../../../../src/lib/collection-queries";
-import { lowestProductPrice } from "../../../../src/lib/homepage-product-queries";
-import type { listProductResults } from "../../../../src/lib/shop-data.server";
+} from "../../../../src/lib/catalog/collection-queries";
+import { lowestProductPrice } from "../../../../src/lib/catalog/homepage-product-queries";
+import type { listProductResults } from "../../../../src/lib/catalog/shop-data.server";
 import { FilterDrawer } from "../collections/[handle]/filter-drawer";
 
 type Results = Awaited<ReturnType<typeof listProductResults>>;

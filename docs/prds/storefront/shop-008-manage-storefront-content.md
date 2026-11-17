@@ -10,6 +10,7 @@ An authorized editor publishes storefront content.
 - Medusa search and workflow integrations retain typed query and logger dependencies during production builds.
 
 - Strapi owns editorial content and publication; Next.js displays published content only.
+- If optional page-transition content is unavailable, the shared storefront layout still renders without transition images.
 - Editors arrange hero and selected-product sections in the homepage dynamic zone. Product details and prices remain owned by Medusa.
 - Authorize each action against its resource and actor; reject invalid or stale operations without partial effects.
 - Show relevant progress, confirmation, empty and failure states, including a clear next action.
@@ -29,6 +30,7 @@ An authorized editor publishes storefront content.
 
 ## UI Page Used
 - `apps/public-web/app/(shared-layout)/page.tsx` — renders the published homepage.
+- `apps/public-web/app/(shared-layout)/layout.tsx` — uses optional page-transition content.
 
 ## Backend API Route Used
 - `GET /api/homepage` — retrieves published homepage sections.
@@ -38,9 +40,11 @@ An authorized editor publishes storefront content.
 - apps/backend/src/modules/card-catalog/service.ts
 - apps/backend/src/modules/collection-sale/service.ts
 - apps/public-web/app/(shared-layout)/checklists/page.tsx
-- apps/public-web/src/lib/homepage.server.ts
-- apps/public-web/src/lib/homepage-product-queries.ts
-- apps/public-web/src/lib/homepage-product-data.ts
+- apps/public-web/src/lib/cms/homepage.server.ts
+- apps/public-web/src/lib/catalog/homepage-product-queries.ts
+- apps/public-web/src/lib/catalog/homepage-product-data.ts
+- apps/public-web/src/lib/clients/strapi.server.ts
+- apps/public-web/src/lib/clients/medusa.ts
 - apps/public-web/tests/homepage-product-queries.test.mjs
 - apps/cms/tests/medusa-collections.test.cjs
 - apps/cms/src/api/homepage/content-types/homepage/schema.json

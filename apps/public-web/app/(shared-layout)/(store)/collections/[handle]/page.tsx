@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { ProductCard } from "@tcg/ui-web";
 import { notFound } from "next/navigation";
-import { getCollection } from "../../../../../src/lib/collection-data.server";
+import { getCollection } from "../../../../../src/lib/catalog/collection-data.server";
 import {
-  filterCollectionProducts,
   PAGE_SIZE,
   parseCollectionFilters,
   stockStatus,
-} from "../../../../../src/lib/collection-queries";
-import { lowestProductPrice } from "../../../../../src/lib/homepage-product-queries";
+} from "../../../../../src/lib/catalog/collection-queries";
+import { lowestProductPrice } from "../../../../../src/lib/catalog/homepage-product-queries";
 import { FilterDrawer } from "./filter-drawer";
 
 export default async function CollectionPage({
@@ -20,7 +19,7 @@ export default async function CollectionPage({
 }) {
   const { handle } = await params;
   const filters = parseCollectionFilters(await searchParams);
-  const result = await getCollection(handle);
+  const result = await getCollection(handle, filters);
   
   if (result.kind === "not-found") notFound();
   if (result.kind === "unavailable")
@@ -37,17 +36,15 @@ export default async function CollectionPage({
         </Link>
       </section>
     );
-  const { collection, products } = result;
-  const priceAvailable = products.some((product) =>
-    lowestProductPrice(product),
-  );
-  const stockAvailable = products.some(
-    (product) => stockStatus(product) !== undefined,
-  );
-  const filtered = filterCollectionProducts(products, filters);
-  const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const page = Math.min(filters.page, pages);
-  const shown = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const {
+    collection,
+    products,
+    count,
+    page,
+    priceAvailable,
+    stockAvailable,
+  } = result;
+  const pages = Math.max(1, Math.ceil(count / PAGE_SIZE));
   const description =
     typeof collection.metadata?.description === "string"
       ? collection.metadata.description
@@ -74,7 +71,7 @@ export default async function CollectionPage({
           <h1 className="font-display text-[clamp(2.2rem,5vw,4rem)] font-semibold leading-[1.05] tracking-tight">
             {collection.title}
           </h1>
-          <span className="text-sm text-primary-400">[{filtered.length}]</span>
+          <span className="text-sm text-primary-400">[{count}]</span>
         </div>
         {description && (
           <p className="mt-5 max-w-3xl leading-relaxed text-primary-400">
@@ -91,12 +88,12 @@ export default async function CollectionPage({
           currency={products.map(lowestProductPrice).find(Boolean)?.currency_code ?? undefined}
         />
         <p className="text-sm text-primary-400">
-          {filtered.length} {filtered.length === 1 ? "product" : "products"}
+          {count} {count === 1 ? "product" : "products"}
         </p>
       </div>
-      {shown.length ? (
+      {products.length ? (
         <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-6 lg:grid-cols-4">
-          {shown.map((product, index) => {
+          {products.map((product, index) => {
             const price = lowestProductPrice(product);
             const stock = stockStatus(product);
             return (
@@ -119,20 +116,20 @@ export default async function CollectionPage({
       ) : (
         <div className="border-y border-wax-line py-16 text-center">
           <h2 className="font-display text-xl font-semibold">
-            {products.length
+            {count
               ? "No products match your filters"
               : "No products here yet"}
           </h2>
           <p className="mt-3 text-primary-400">
-            {products.length
+            {count
               ? "Try adjusting or clearing your filters."
               : "Check back soon for new releases."}
           </p>
           <Link
-            href={products.length ? "?" : "/shop"}
+            href={count ? "?" : "/shop"}
             className="focus-ring mt-5 inline-block font-semibold underline underline-offset-4"
           >
-            {products.length ? "Clear filters" : "Browse the shop"}
+            {count ? "Clear filters" : "Browse the shop"}
           </Link>
         </div>
       )}

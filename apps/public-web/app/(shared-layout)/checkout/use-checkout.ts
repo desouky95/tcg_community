@@ -9,8 +9,8 @@ import {
 } from "react";
 import type { HttpTypes } from "@medusajs/types";
 import { useForm, useWatch } from "react-hook-form";
-import { api } from "../../../src/lib/api";
-import { checkoutReview } from "../../../src/lib/checkout-review";
+import { api } from "../../../src/lib/clients/adonis";
+import { checkoutReview } from "../../../src/lib/commerce/checkout-review";
 import {
   checkoutCart,
   saveContact,
@@ -19,7 +19,7 @@ import {
   selectPayment,
   placeOrder,
   type CheckoutAddress,
-} from "../../../src/lib/checkout-actions";
+} from "../../../src/lib/commerce/checkout-actions";
 
 export const steps = ["Contact", "Delivery", "Payment", "Review"] as const;
 const blank: CheckoutAddress = {

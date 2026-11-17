@@ -5,7 +5,7 @@ import {
   authQuery,
   destinationUrl,
   type AuthDestination,
-} from "../lib/auth-destination";
+} from "../lib/auth/auth-destination";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useAuth } from "@tcg/react-query";

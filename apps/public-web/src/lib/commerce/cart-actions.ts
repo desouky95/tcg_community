@@ -1,8 +1,8 @@
 "use server";
 import { cookies } from "next/headers";
-import { sdk } from "./sdk";
 import type { HttpTypes } from "@medusajs/types";
-import { resolveStoreRegion } from "./product-detail.server";
+import { resolveStoreRegion } from "../catalog/product-detail.server";
+import { sdk } from "../clients/medusa";
 
 const CART_COOKIE = "next_pull_cart";
 function isNotFound(error: unknown) {

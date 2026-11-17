@@ -1,14 +1,16 @@
 import Link from "next/link";
-import { lowestProductPrice } from "../../src/lib/homepage-product-queries";
+import { lowestProductPrice } from "../../src/lib/catalog/homepage-product-queries";
 import { HeroSlider } from "@tcg/ui-web";
 import {
   getHomepage,
-  getHomepageProducts,
-  getLatestHomepageProducts,
   mapHeroSlides,
   mediaURL,
-} from "../../src/lib/homepage.server";
-import { getProductsByCollection } from "#lib/homepage-product-data";
+} from "../../src/lib/cms/homepage.server";
+import {
+  getHomepageProducts,
+  getLatestHomepageProducts,
+  getProductsByCollection,
+} from "../../src/lib/catalog/homepage-product-data";
 
 type Sections = Extract<
   Awaited<ReturnType<typeof getHomepage>>,
@@ -150,7 +152,6 @@ const renderers = {
 
 export default async function HomePage() {
   const homepage = await getHomepage();
-  console.log({ homepage });
   if (homepage.kind !== "ready")
     return (
       <section className="mx-auto max-w-360 px-gutter py-section">

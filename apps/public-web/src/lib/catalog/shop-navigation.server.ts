@@ -1,6 +1,6 @@
 import "server-only";
 import type { HttpTypes } from "@medusajs/types";
-import { sdk } from "./sdk";
+import { sdk } from "../clients/medusa";
 
 type MenuCategory = {
   id: string;

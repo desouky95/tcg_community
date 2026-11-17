@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { AxiosError } from "@tcg/api-contracts";
 import { useAuth } from "@tcg/react-query";
 import { AuthField, AuthInput, AuthSelect, Button } from "@tcg/ui-web";
-import { authQuery, type AuthDestination } from "../lib/auth-destination";
+import { authQuery, type AuthDestination } from "../lib/auth/auth-destination";
 
 const governorates = [
   "Cairo",

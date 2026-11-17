@@ -1,6 +1,6 @@
 import "server-only";
-import { sdk } from "./sdk";
 import { createHomepageProductQueries } from "./homepage-product-queries";
+import { sdk } from "../clients/medusa";
 
 const queries = createHomepageProductQueries(
   sdk,
@@ -9,4 +9,3 @@ const queries = createHomepageProductQueries(
 export const getHomepageProducts = queries.selected;
 export const getLatestHomepageProducts = queries.latest;
 export const getProductsByCollection = queries.getProductsByCollections;
-export const getProductsByCategeory = queries.getProductsByCategory;

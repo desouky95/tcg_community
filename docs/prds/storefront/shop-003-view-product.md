@@ -43,8 +43,9 @@ A shopper can inspect a product before purchase.
 - `GET /store/products`, `GET /store/regions`, `POST /store/carts` and `POST /store/carts/:id/line-items` — product details, regional pricing and add to cart.
 
 ## Related Files
-- apps/public-web/src/lib/product-detail.server.ts
-- apps/public-web/src/lib/cart-actions.ts
+- apps/public-web/src/lib/catalog/product-detail.server.ts
+- apps/public-web/src/lib/commerce/cart-actions.ts
+- apps/public-web/src/lib/clients/medusa.ts
 - apps/public-web/app/api/cart/add/route.ts
 - apps/public-web/app/(shared-layout)/(store)/shop/[handle]/_components/product-gallery.tsx
 - apps/public-web/app/(shared-layout)/(store)/shop/[handle]/_components/purchase-panel.tsx

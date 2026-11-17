@@ -2,9 +2,9 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { AxiosError, type FacebookPendingResponse } from "@tcg/api-contracts";
-import { authDestination, destinationUrl } from "../lib/auth-destination";
+import { authDestination, destinationUrl } from "../lib/auth/auth-destination";
 import { Button } from "@tcg/ui-web";
-import { api } from "../lib/api";
+import { api } from "../lib/clients/adonis";
 
 const governorates = ["Cairo", "Alexandria", "Giza", "Dakahlia", "Red Sea", "Beheira", "Fayoum", "Gharbia", "Ismailia", "Monufia", "Minya", "Qalyubia", "New Valley", "Sharqia", "Suez", "Aswan", "Assiut", "Beni Suef", "Port Said", "Damietta", "South Sinai", "Kafr El Sheikh", "Matrouh", "Luxor", "Qena", "Sohag", "North Sinai"];
 const fieldClass = "w-full rounded border border-current bg-transparent px-3 py-2 focus-ring";

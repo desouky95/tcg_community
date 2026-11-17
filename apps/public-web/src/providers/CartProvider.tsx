@@ -2,14 +2,12 @@
 
 import {
   createContext,
-  useCallback,
   useContext,
-  useEffect,
   useRef,
   useState,
   type ReactNode,
 } from "react";
-import type { HttpTypes } from "@medusajs/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { Dialog } from "@tcg/ui-web/components/radix/dialog";
 import { ShoppingBag, X, Minus, Plus, Trash2 } from "lucide-react";
@@ -18,7 +16,9 @@ import {
   readCart,
   updateCartItem,
   removeCartItem,
-} from "../lib/cart-actions";
+} from "../lib/commerce/cart-actions";
+
+const CART_QUERY_KEY = ["store-cart"] as const;
 
 type CartContextValue = {
   add: (
@@ -43,43 +43,49 @@ function money(amount: number, currency: string) {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<HttpTypes.StoreCart>();
-  const [variantCounts, setVariantCounts] = useState<Record<string, number>>(
-    {},
-  );
+  const queryClient = useQueryClient();
+  const cartQuery = useQuery({
+    queryKey: CART_QUERY_KEY,
+    queryFn: async () => {
+      const result = await readCart();
+      if (result.kind === "unavailable") throw new Error("Cart unavailable");
+      return result;
+    },
+  });
+  const cart = cartQuery.data?.kind === "ready" ? cartQuery.data.cart : undefined;
+  const variantCounts =
+    cartQuery.data?.kind === "ready" ? cartQuery.data.variantCounts ?? {} : {};
+  const mutation = useMutation({
+    mutationFn: async (
+      input:
+        | { kind: "add"; productId: string; variantId: string; quantity: number }
+        | { kind: "update"; lineId: string; quantity: number }
+        | { kind: "remove"; lineId: string },
+    ) => {
+      if (input.kind === "add")
+        return addCartItem(input.productId, input.variantId, input.quantity);
+      if (input.kind === "update")
+        return updateCartItem(input.lineId, input.quantity);
+      return removeCartItem(input.lineId);
+    },
+    onMutate: () => queryClient.cancelQueries({ queryKey: CART_QUERY_KEY }),
+    onSuccess: (result) => {
+      if (result.kind === "ready" || result.kind === "empty")
+        queryClient.setQueryData(CART_QUERY_KEY, result);
+    },
+    onSettled: (result) => {
+      if (!result || result.kind === "error")
+        void queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY });
+    },
+  });
   const [mutationError, setMutationError] = useState("");
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState("");
+  const loading = cartQuery.isLoading || cartQuery.isFetching;
+  const pending = mutation.isPending;
+  const error = cartQuery.isError ? "Your cart is temporarily unavailable." : "";
   const pendingRef = useRef(false);
   const returnFocus = useRef<HTMLElement | null>(null);
-  const revision = useRef(0);
   const count = cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
-  const refresh = useCallback(async () => {
-    const current = ++revision.current;
-    setLoading(true);
-    try {
-      const result = await readCart();
-      if (current !== revision.current) return;
-      if (result.kind === "ready") {
-        setCart(result.cart);
-        setVariantCounts(result.variantCounts ?? {});
-        setError("");
-      } else if (result.kind === "empty") {
-        setCart(undefined);
-        setError("");
-      } else setError("Your cart is temporarily unavailable.");
-    } catch {
-      if (current === revision.current)
-        setError("Your cart is temporarily unavailable.");
-    } finally {
-      if (current === revision.current) setLoading(false);
-    }
-  }, []);
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
   const add = async (
     productId: string,
     variantId: string,
@@ -91,48 +97,40 @@ export function CartProvider({ children }: { children: ReactNode }) {
         ? document.activeElement
         : null;
     pendingRef.current = true;
-    setPending(true);
-    revision.current++;
-    setLoading(false);
     try {
-      const result = await addCartItem(productId, variantId, quantity);
+      const result = await mutation.mutateAsync({
+        kind: "add",
+        productId,
+        variantId,
+        quantity,
+      });
       if (result.kind === "error") return result.message;
-      setCart(result.cart);
-      setVariantCounts(result.variantCounts ?? {});
       setMutationError("");
-      setError("");
       setOpen(true);
       return undefined;
     } catch {
       return "We couldn’t add this item. Please try again.";
     } finally {
       pendingRef.current = false;
-      setPending(false);
     }
   };
   const changeItem = async (lineId: string, quantity?: number) => {
     if (pendingRef.current) return;
     pendingRef.current = true;
-    setPending(true);
     setMutationError("");
-    revision.current++;
-    setLoading(false);
     try {
-      const result =
+      const result = await mutation.mutateAsync(
         quantity === undefined
-          ? await removeCartItem(lineId)
-          : await updateCartItem(lineId, quantity);
+          ? { kind: "remove", lineId }
+          : { kind: "update", lineId, quantity },
+      );
       if (result.kind === "error") setMutationError(result.message);
-      else if (result.kind === "ready") {
-        setCart(result.cart);
-        setVariantCounts(result.variantCounts ?? {});
-      } else
+      else if (result.kind !== "ready" && result.kind !== "empty")
         setMutationError("Your cart could not be refreshed. Please try again.");
     } catch {
       setMutationError("Couldn’t update your cart. Please try again.");
     } finally {
       pendingRef.current = false;
-      setPending(false);
     }
   };
   const openCart = () => {
@@ -141,7 +139,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         ? document.activeElement
         : null;
     setOpen(true);
-    if (!pendingRef.current) void refresh();
+    if (!pendingRef.current) void cartQuery.refetch();
   };
   return (
     <CartContext.Provider value={{ add, openCart, count, pending }}>
@@ -178,7 +176,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 <p>{error}</p>
                 <button
                   type="button"
-                  onClick={() => void refresh()}
+                  onClick={() => void cartQuery.refetch()}
                   className="focus-ring mt-3 underline"
                 >
                   Try again

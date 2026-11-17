@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductDetail } from "../../../../../src/lib/product-detail.server";
 import { CommerceCustomerLink } from "../commerce-customer-link";
 import { ProductGallery } from "./_components/product-gallery";
 import { PurchasePanel } from "./_components/purchase-panel";
+import { getProductDetail } from "#lib/catalog/product-detail.server";
 
 export default async function ProductPage({
   params,
@@ -34,7 +34,6 @@ export default async function ProductPage({
       </section>
     );
   const { product, regionId } = result;
-  console.log({product});
   const description = product.description?.trim();
   const images = [
     ...new Set(

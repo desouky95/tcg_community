@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { useUpdateProfile } from "@tcg/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../../src/lib/api";
+import { api } from "../../../src/lib/clients/adonis";
 import {
   Button,
   AuthField,
@@ -23,7 +23,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import type { User } from "@tcg/api-contracts";
-import { authQuery } from "../../../src/lib/auth-destination";
+import { authQuery } from "../../../src/lib/auth/auth-destination";
 import { OrdersSection, AddressesSection } from "./commerce-sections";
 import { PreferencesSection, PrivacySection } from "./account-settings";
 

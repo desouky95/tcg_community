@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { HttpTypes } from "@medusajs/types";
-import { sdk } from "../lib/sdk";
+import { sdk } from "../lib/clients/medusa";
 
 
 type RegionContextType = {

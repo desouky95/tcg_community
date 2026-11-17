@@ -29,8 +29,7 @@ export const socialAuth = betterAuth({
     disableColors: false,
     level: "error",
     log: (level, message, ...args) => {
-      // Custom logging implementation
-      console.log(`[${level}] ${message}`, ...args);
+      console.error(`[${level}] ${message}`, ...args);
     },
   },
 });

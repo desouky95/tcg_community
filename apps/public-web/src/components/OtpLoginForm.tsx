@@ -2,7 +2,7 @@
 import { useState, type FormEvent } from "react";
 import { useAuth } from "@tcg/react-query";
 import { AuthField, AuthInput, Button } from "@tcg/ui-web";
-import { authQuery, type AuthDestination } from "../lib/auth-destination";
+import { authQuery, type AuthDestination } from "../lib/auth/auth-destination";
 
 export function OtpLoginForm({
   destination,

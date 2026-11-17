@@ -4,7 +4,7 @@ import {
   authDestination,
   authQuery,
   destinationPath,
-} from "../../../src/lib/auth-destination";
+} from "../../../src/lib/auth/auth-destination";
 
 export default async function VerifyOtpPage({
   searchParams,

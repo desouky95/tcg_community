@@ -1,13 +1,12 @@
+import "server-only";
 import { createApiClient, type QueryInput } from "@tcg/api-contracts";
 
+const API_URL =
+  process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333/api/v1";
 export function createServerApiClient(query?: QueryInput) {
   return createApiClient({
-    baseURL:
-      process.env.API_URL ??
-      // process.env.NEXT_PUBLIC_API_URL ??
-      "http://host.docker.internal:3333/api/v1",
+    baseURL: API_URL,
     getDefaultQuery: () => query,
     withCredentials: true,
-    
   });
 }

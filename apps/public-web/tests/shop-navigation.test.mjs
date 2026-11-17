@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ list: async () => ({ product_categories: [], count: 0 }) }));
 vi.mock("server-only", () => ({}));
-vi.mock("../src/lib/sdk", () => ({ sdk: { store: { category: { list: (...args) => mocks.list(...args) } } } }));
-import { getShopNavigation } from "../src/lib/shop-navigation.server.ts";
+vi.mock("../src/lib/clients/medusa", () => ({ sdk: { store: { category: { list: (...args) => mocks.list(...args) } } } }));
+import { getShopNavigation } from "../src/lib/catalog/shop-navigation.server.ts";
 
 describe("shop navigation data", () => {
   beforeEach(() => { mocks.list = async () => ({ product_categories: [], count: 0 }); });

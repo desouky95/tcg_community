@@ -1,9 +1,9 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { sdk } from "./sdk";
 import { checkoutReview } from "./checkout-review";
 import type { HttpTypes } from "@medusajs/types";
+import { sdk } from "../clients/medusa";
 
 const COOKIE = "next_pull_cart";
 const MANUAL = "pp_system_default";
@@ -28,12 +28,13 @@ export async function checkoutCart() {
   }
 }
 
-export async function saveContact(email: string) {
+export async function saveContact(input: unknown) {
   const id = await cartId();
-  if (!id || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+  const email = typeof input === "string" ? input.trim() : "";
+  if (!id || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
     return { kind: "error" as const, message: "Enter a valid email address." };
   try {
-    const { cart } = await sdk.store.cart.update(id, { email: email.trim() });
+    const { cart } = await sdk.store.cart.update(id, { email });
     return { kind: "ready" as const, cart };
   } catch {
     return {
@@ -55,15 +56,40 @@ export type CheckoutAddress = {
   phone: string;
 };
 
-export async function saveAddress(address: CheckoutAddress) {
+function isCheckoutAddress(value: unknown): value is CheckoutAddress {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value) &&
+    [
+      "first_name",
+      "last_name",
+      "address_1",
+      "address_2",
+      "city",
+      "province",
+      "postal_code",
+      "country_code",
+      "phone",
+    ].every((key) => typeof (value as Record<string, unknown>)[key] === "string")
+  );
+}
+
+export async function saveAddress(input: unknown) {
   const id = await cartId();
+  if (!id || !isCheckoutAddress(input))
+    return {
+      kind: "error" as const,
+      message:
+        "Complete your name, address, city, and two-letter country code.",
+    };
+  const address = input;
   if (
-    !id ||
-    !address.first_name?.trim() ||
-    !address.last_name?.trim() ||
-    !address.address_1?.trim() ||
-    !address.city?.trim() ||
-    !/^[a-z]{2}$/i.test(address.country_code?.trim() ?? "")
+    !address.first_name.trim() ||
+    !address.last_name.trim() ||
+    !address.address_1.trim() ||
+    !address.city.trim() ||
+    !/^[a-z]{2}$/i.test(address.country_code.trim())
   )
     return {
       kind: "error" as const,

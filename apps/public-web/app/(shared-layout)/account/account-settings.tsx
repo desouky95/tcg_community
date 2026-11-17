@@ -11,7 +11,7 @@ import {
   Checkbox,
   Surface,
 } from "@tcg/ui-web";
-import { api } from "../../../src/lib/api";
+import { api } from "../../../src/lib/clients/adonis";
 
 type Preferences = {
   locale: "en" | "ar";

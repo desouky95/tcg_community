@@ -19,8 +19,7 @@
       }
     ],
     "paths": {
-      "#lib/*": ["./src/lib/*"],
-      "#strapi/*": ["./src/strapi/*"]
+      "#lib/*": ["./src/lib/*"]
     }
   },
   "include": [

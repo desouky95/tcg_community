@@ -1,4 +1,4 @@
-import { authDestination, authQuery, destinationPath } from "../../../src/lib/auth-destination";
+import { authDestination, authQuery, destinationPath } from "../../../src/lib/auth/auth-destination";
 import { AuthShell } from "@tcg/ui-web";
 import { LoginForm } from "../../../src/components/LoginForm";
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ returnTo?: string; destination?: string; social_error?: string; facebook_error?: string; google_error?: string }> }) {

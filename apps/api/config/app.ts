@@ -47,7 +47,8 @@ export const http = defineConfig({
 
     maxAge: '2h',
     httpOnly: true,
-    secure: app.inProduction,
+    // secure: app.inProduction,
+    secure: process.env.NODE_ENV === 'production' && process.env.HTTPS === 'true',
     sameSite: 'lax',
   },
 })

@@ -31,7 +31,7 @@ Existing evidence pointer: apps/api AuthController.logout. This pointer is not a
 
 ## Related Files
 - apps/public-web/app/(shared-layout)/account/account-hub.tsx
-- apps/public-web/src/lib/api.ts
+- apps/public-web/src/lib/clients/adonis.ts
 - packages/api-contracts/src/client.ts
 - apps/api/start/routes/v1/auth.routes.ts
 - apps/api/start/routes/v1/users.routes.ts

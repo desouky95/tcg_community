@@ -2,7 +2,7 @@
 import { useState, type FormEvent } from "react";
 import { useAuth } from "@tcg/react-query";
 import { Button, AuthField, AuthInput } from "@tcg/ui-web";
-import { destinationUrl, type AuthDestination } from "../lib/auth-destination";
+import { destinationUrl, type AuthDestination } from "../lib/auth/auth-destination";
 
 export function VerifyOtpForm({
   mobile,

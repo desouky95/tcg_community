@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createHomepageProductQueries, lowestProductPrice } from '../src/lib/homepage-product-queries.ts';
+import { createHomepageProductQueries, lowestProductPrice } from '../src/lib/catalog/homepage-product-queries.ts';
 
 function fixture({ failProducts = false, failRegions = false } = {}) {
   const calls = [];

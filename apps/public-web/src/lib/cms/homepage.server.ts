@@ -2,7 +2,7 @@ import "server-only";
 import type { HeroSlideItem } from "@tcg/ui-web";
 
 import { StrapiError } from "@tcg/strapi-client";
-import { strapiClient } from "./strapi.api";
+import { strapiClient } from "../clients/strapi.server";
 
 const cmsURL = (
   process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"
@@ -25,7 +25,7 @@ async function fetchHomepage() {
             "homepage.product-section": { populate: { products: true } },
             "homepage.latest-products": true,
             "homepage.banner-strip": { populate: { image: true } },
-            'homepage.collection-section': true
+            "homepage.collection-section": true,
           },
         },
       },
@@ -57,12 +57,11 @@ export type HomepageState =
   | { kind: "setup" }
   | { kind: "unavailable" };
 
-export type PageTransitionState = PageTransition;
+export type PageTransitionState = PageTransition | null;
 
 export async function getHomepage(): Promise<HomepageState> {
   try {
     const homepage = await fetchHomepage();
-    console.log(homepage);
     return homepage
       ? { kind: "ready", sections: homepage.sections ?? [] }
       : { kind: "setup" };
@@ -108,18 +107,12 @@ export function mapHeroSlides(banners: Banner[] = []): HeroSlideItem[] {
 
 export async function getPageTransition(): Promise<PageTransitionState> {
   try {
-    const pagetransition = await fetchPageTransition();
-    console.log(pagetransition);
-    return pagetransition
-  } catch (error) {
-    throw error;
+    return await fetchPageTransition();
+  } catch {
+    return null;
   }
 }
 
 export function getStrapiURL(path = "") {
   return `${cmsURL}${path}`;
 }
-export {
-  getHomepageProducts,
-  getLatestHomepageProducts,
-} from "./homepage-product-data";

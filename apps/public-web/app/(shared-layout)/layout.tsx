@@ -1,10 +1,10 @@
 import { PageAnimatePresence, PublicShell } from "@tcg/ui-web/next";
 import { cookies } from "next/headers";
 import { SharedPageTransition } from "./shared-page-transition";
-import { createServerApiClient } from "../../src/lib/api.server";
-import { getPageTransition, getStrapiURL } from "#lib/homepage.server";
+import { createServerApiClient } from "../../src/lib/clients/adonis.server";
+import { getPageTransition, getStrapiURL } from "#lib/cms/homepage.server";
 import { CartButton } from "../../src/providers/CartProvider";
-import { getShopNavigation } from "../../src/lib/shop-navigation.server";
+import { getShopNavigation } from "../../src/lib/catalog/shop-navigation.server";
 export default async function Layout({
   children,
 }: {
@@ -20,7 +20,7 @@ export default async function Layout({
     getShopNavigation(),
   ]);
 
-  const images = (page_transition.packs ?? []).map((_) => getStrapiURL(_.url));
+  const images = (page_transition?.packs ?? []).map((_) => getStrapiURL(_.url));
 
   return (
     <PublicShell
@@ -31,8 +31,6 @@ export default async function Layout({
       storeNavigation
       categories={categories}
       cartAction={<CartButton />}
-      // mainClassName="flex-1"
-      // className="flex flex-col items-baseline"
       links={[
         { href: "/", label: "Home" },
         { href: "/shop", label: "Shop" },

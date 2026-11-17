@@ -9,6 +9,7 @@ A shopper can add an available product variant and manage quantities or remove i
 - Medusa owns cart pricing and availability; validate the product, variant, region and quantity before adding and show a recoverable error when availability changes.
 - Show selected variant details when the product has multiple variants, retaining details when variant data is unavailable. Allow quantity changes and removal with accessible controls, and provide a checkout link for a non-empty cart.
 - Persist the cart ID in an HTTP-only cookie and provide an accessible review drawer from the header and after adding an item.
+- Keep the drawer and header count synchronized through the React Query cart cache; refresh when opening the drawer and cancel stale reads before cart mutations.
 - Authorize each action against its resource and actor; reject invalid or stale operations without partial effects.
 - Show relevant progress, confirmation, empty and failure states, including a clear next action.
 - Use the service ownership and security boundaries in the shared contracts.
@@ -31,7 +32,8 @@ A shopper can add an available product variant and manage quantities or remove i
 
 ## Related Files
 
-- apps/public-web/src/lib/cart-actions.ts
+- apps/public-web/src/lib/commerce/cart-actions.ts
+- apps/public-web/src/lib/clients/medusa.ts
 - apps/public-web/app/api/cart/add/route.ts
 - apps/public-web/src/providers/CartProvider.tsx
 - apps/public-web/tests/product-cart.test.mjs

@@ -29,7 +29,7 @@ const shieldConfig = defineConfig({
    */
   csrf: {
     cookieOptions: {
-      sameSite: env.get('NODE_ENV') === 'development' ? 'none' : 'lax',
+      sameSite: env.get('NODE_ENV') === 'development' ? 'lax' : 'none',
     },
     /**
      * Enable CSRF token verification for state-changing requests.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterCollectionProducts, parseCollectionFilters, stockStatus } from "../src/lib/collection-queries";
+import { filterCollectionProducts, parseCollectionFilters, stockStatus } from "../src/lib/catalog/collection-queries";
 
 const product = (id, price, quantity) => ({ id, title: id, created_at: "2026-01-01", variants: [{ manage_inventory: true, allow_backorder: false, inventory_quantity: quantity, calculated_price: { calculated_amount: price, currency_code: "egp" } }] });
 

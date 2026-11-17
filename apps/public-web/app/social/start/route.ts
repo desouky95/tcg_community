@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { socialAuth } from "../../../src/lib/better-auth";
+import { socialAuth } from "../../../src/lib/auth/better-auth.server";
 import {
   authDestination,
   authQuery,
   destinationPath,
-} from "../../../src/lib/auth-destination";
+} from "../../../src/lib/auth/auth-destination";
 
 export async function GET(request: NextRequest) {
   const provider = request.nextUrl.searchParams.get("provider");

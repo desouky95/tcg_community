@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { parseCollectionFilters } from "../../../../../src/lib/collection-queries";
-import { categoryTreeIds, findCategory, listProductResults } from "../../../../../src/lib/shop-data.server";
+import { parseCollectionFilters } from "../../../../../src/lib/catalog/collection-queries";
+import { categoryTreeIds, findCategory, listProductResults } from "../../../../../src/lib/catalog/shop-data.server";
 import { ProductListing } from "../../_components/product-listing";
 
 export default async function CategoryPage({ params, searchParams }: { params: Promise<{ handle: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {

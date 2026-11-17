@@ -35,8 +35,9 @@ A shopper submits delivery and payment details for a NextPull order.
 - apps/public-web/app/(shared-layout)/checkout/use-checkout.ts
 - apps/public-web/app/(shared-layout)/checkout/checkout-bindings.ts
 - packages/ui-web/src/components/patterns/checkout/index.tsx
-- apps/public-web/src/lib/checkout-actions.ts
-- apps/public-web/src/lib/checkout-review.ts
+- apps/public-web/src/lib/commerce/checkout-actions.ts
+- apps/public-web/src/lib/commerce/checkout-review.ts
+- apps/public-web/src/lib/clients/medusa.ts
 - apps/public-web/src/providers/CartProvider.tsx
 - apps/public-web/tests/checkout.test.mjs
 - packages/ui-web/src/checkout-form.test.jsx

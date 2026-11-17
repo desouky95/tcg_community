@@ -9,7 +9,7 @@ import {
   Surface,
   AlertDialog,
 } from "@tcg/ui-web";
-import { api } from "../../../src/lib/api";
+import { api } from "../../../src/lib/clients/adonis";
 
 type Order = {
   id: string;

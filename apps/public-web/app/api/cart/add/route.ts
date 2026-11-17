@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { addCartItem } from "../../../../src/lib/cart-actions";
+import { addCartItem } from "../../../../src/lib/commerce/cart-actions";
 
 export async function POST(request: Request) {
   const form = await request.formData();

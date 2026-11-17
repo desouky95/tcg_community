@@ -1,9 +1,9 @@
 import { Suspense } from "react";
-import { parseCollectionFilters } from "../../../../src/lib/collection-queries";
+import { parseCollectionFilters } from "../../../../src/lib/catalog/collection-queries";
 import {
   listDiscovery,
   listProductResults,
-} from "../../../../src/lib/shop-data.server";
+} from "../../../../src/lib/catalog/shop-data.server";
 import { DiscoverySection } from "../_components/discovery-section";
 import { ProductListing } from "../_components/product-listing";
 import { CommerceCustomerLink } from "./commerce-customer-link";

@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const state = vi.hoisted(() => ({ productList: async () => ({ products: [] }), regions: async () => ({ regions: [], count: 0 }), retrieve: async () => ({}), create: async () => ({}), add: async () => ({}), cookie: undefined, written: [] }));
 vi.mock("server-only", () => ({}));
 vi.mock("next/headers", () => ({ cookies: async () => ({ get: () => state.cookie ? { value: state.cookie } : undefined, set: (...args) => state.written.push(args) }) }));
-vi.mock("../src/lib/sdk", () => ({ sdk: { store: { product: { list: (...args) => state.productList(...args) }, region: { list: (...args) => state.regions(...args) }, cart: { retrieve: (...args) => state.retrieve(...args), create: (...args) => state.create(...args), createLineItem: (...args) => state.add(...args) } } } }));
-import { getProductDetail } from "../src/lib/product-detail.server";
-import { addCartItem, readCart } from "../src/lib/cart-actions";
+vi.mock("../src/lib/clients/medusa", () => ({ sdk: { store: { product: { list: (...args) => state.productList(...args) }, region: { list: (...args) => state.regions(...args) }, cart: { retrieve: (...args) => state.retrieve(...args), create: (...args) => state.create(...args), createLineItem: (...args) => state.add(...args) } } } }));
+import { getProductDetail } from "../src/lib/catalog/product-detail.server";
+import { addCartItem, readCart } from "../src/lib/commerce/cart-actions";
 
 const product = { id: "prod_1", handle: "box", variants: [{ id: "v1", manage_inventory: true, allow_backorder: false, inventory_quantity: 3, calculated_price: { calculated_amount: 20, currency_code: "egp" } }] };
 describe("product and cart", () => {

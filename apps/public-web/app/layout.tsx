@@ -40,12 +40,10 @@ export default async function RootLayout({
       <body>
         <I18nProvider language={lng} resources={resources}>
           <Suspense fallback={null}>
-            <Providers>
-              {children}
-            </Providers>
+            <Providers>{children}</Providers>
           </Suspense>
         </I18nProvider>
-</body>
+      </body>
     </html>
   );
 }

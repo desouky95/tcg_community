@@ -15,7 +15,7 @@ vi.mock("next/headers", () => ({
     delete: (name) => state.deleted.push(name),
   }),
 }));
-vi.mock("../src/lib/sdk", () => ({
+vi.mock("../src/lib/clients/medusa", () => ({
   sdk: {
     store: {
       cart: {
@@ -42,14 +42,14 @@ vi.mock("../src/lib/sdk", () => ({
     },
   },
 }));
-import { checkoutReview } from "../src/lib/checkout-review";
+import { checkoutReview } from "../src/lib/commerce/checkout-review";
 import {
   checkoutCart,
   saveContact,
   saveAddress,
   selectPayment,
   placeOrder,
-} from "../src/lib/checkout-actions";
+} from "../src/lib/commerce/checkout-actions";
 
 beforeEach(() => {
   state.cookie = "cart_1";
@@ -76,6 +76,7 @@ describe("checkout actions", () => {
   });
   it("validates contact and delivery before contacting Medusa", async () => {
     expect((await saveContact("invalid")).kind).toBe("error");
+    expect((await saveContact(null)).kind).toBe("error");
     expect(
       (
         await saveAddress({
@@ -87,6 +88,8 @@ describe("checkout actions", () => {
         })
       ).kind,
     ).toBe("error");
+    expect((await saveAddress(null)).kind).toBe("error");
+    expect((await saveAddress({ first_name: 7 })).kind).toBe("error");
   });
   it("does not offer a calculated shipping price that failed to resolve", async () => {
     state.options = [
