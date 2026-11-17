@@ -7,6 +7,8 @@ Category metadata changes with an audit record. This is an established capabilit
 
 ## Requirements
 
+- The category endpoint validates its input and rejects duplicate names.
+
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.
@@ -20,12 +22,14 @@ Category metadata changes with an audit record. This is an established capabilit
 Existing evidence pointer: Admin UI exists; update contract incomplete. This pointer is not a fresh implementation audit.
 
 ## UI Page Used
-- N/A — no dedicated UI page
+- apps/web/src/pages/admin/AdminCategories/AdminCategoryFormPage.tsx
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- PUT /api/v1/categories/:id
 
 ## Related Files
+- apps/api/start/routes/v1/admin.routes.ts
+- apps/api/app/controllers/catalogue_controller.ts
 - apps/api/start/routes/v1/checklists.routes.ts
 - apps/api/app/controllers/checklists_controller.ts
 - apps/web/src/pages/Checklists.tsx

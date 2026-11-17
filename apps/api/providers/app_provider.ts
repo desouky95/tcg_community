@@ -1,7 +1,4 @@
-import { http } from '#config/app'
-import { PaginationService } from '#services/pagination_service'
-import { HttpContext, HttpRequest, HttpResponse } from '@adonisjs/core/http'
-import server from '@adonisjs/core/services/server'
+import { HttpResponse } from '@adonisjs/core/http'
 import type { ApplicationService } from '@adonisjs/core/types'
 import { randomUUID } from 'node:crypto'
 

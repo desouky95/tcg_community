@@ -22,6 +22,11 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
     },
+    databaseDriverOptions: {
+      connection: {
+        ssl: false,
+      },
+    },
   },
   modules: [
     ...(process.env.EVENTS_REDIS_URL
@@ -66,6 +71,12 @@ module.exports = defineConfig({
         apiKey: process.env.VITE_CARD_CATALOG_API_KEY,
       },
     },
+    {
+      resolve: "./src/modules/nextpull-user",
+      definition: {
+        isQueryable: true,
+      },
+    },
   ],
   plugins: [
     {
@@ -91,7 +102,7 @@ module.exports = defineConfig({
       resolve: "medusa-variant-images",
       options: {},
     },
-     {
+    {
       resolve: "@alphabite/medusa-category-images",
       options: {},
     },

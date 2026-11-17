@@ -44,12 +44,14 @@ export function DiscoverySection({
           >
             {item.image ? (
               <>
-                <img
-                  src={item.image}
-                  alt=""
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
+                <span className="absolute inset-2 h-3/4">
+                  <img
+                    src={item.image}
+                    alt=""
+                    loading="lazy"
+                    className="inset-0 h-full w-full object-contain"
+                  />
+                </span>
                 {/* <span className="absolute inset-0 bg-primary-500/60" /> */}
                 <span
                   aria-hidden="true"

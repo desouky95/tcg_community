@@ -1,3 +1,4 @@
+import type { SearchTypes } from '@medusajs/framework/types'
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk";
 
 import {
@@ -36,7 +37,7 @@ export const prepareCardSaleLineItemsStep = createStep(
     const cardCatalogService =
       container.resolve<CardCatalogModuleService>(CARD_CATALOG_MODULE);
 
-    const query = container.resolve(ContainerRegistrationKeys.QUERY);
+    const query = container.resolve<SearchTypes.SearchIngestionContext['container']['query']>(ContainerRegistrationKeys.QUERY);
 
     /**
      * Prevent duplicate selection IDs.

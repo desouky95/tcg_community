@@ -7,6 +7,10 @@ Login is disabled while legally required records remain retained.
 
 ## Requirements
 
+- Account action panels use shared storefront surface components.
+
+- The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.
+
 - The storefront requires the user to type DEACTIVATE, then signs them out after successful deactivation.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.

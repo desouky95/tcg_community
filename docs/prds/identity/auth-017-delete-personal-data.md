@@ -7,6 +7,10 @@ Eligible profile data is deleted or anonymized while retained records preserve l
 
 ## Requirements
 
+- Account action panels use shared storefront surface components.
+
+- The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.
+
 - The account hub requires the password and DELETE confirmation, then signs the user out after anonymization. Existing retained records and deactivated-account deletion behavior remain in place.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.

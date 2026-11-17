@@ -2,7 +2,15 @@
 
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AuthField, AuthInput, AuthSelect, Button } from "@tcg/ui-web";
+import {
+  AuthField,
+  AuthInput,
+  Field,
+  Select,
+  Button,
+  Checkbox,
+  Surface,
+} from "@tcg/ui-web";
 import { api } from "../../../src/lib/api";
 
 type Preferences = {
@@ -18,7 +26,7 @@ type ExportRecord = {
   expiresAt: string;
 };
 type Response<T> = { data: T; version?: number };
-const panel = "rounded-xl border border-wax-line bg-card p-5 sm:p-7";
+const panel = "rounded-xl p-5 sm:p-7";
 
 function failure(error: unknown) {
   const status = (error as { response?: { status?: number } })?.response
@@ -74,13 +82,13 @@ export function PreferencesSection({ userId }: { userId: string }) {
   }
   if (query.isPending)
     return (
-      <div className={panel} role="status">
+      <Surface className={panel} role="status">
         Loading preferences…
-      </div>
+      </Surface>
     );
   if (query.isError)
     return (
-      <div className={panel} role="alert">
+      <Surface className={panel} role="alert">
         <p>{failure(query.error)}</p>
         <Button
           variant="outline"
@@ -89,92 +97,108 @@ export function PreferencesSection({ userId }: { userId: string }) {
         >
           Try again
         </Button>
-      </div>
+      </Surface>
     );
   const prefs = query.data.data;
   return (
-    <form
-      key={JSON.stringify(prefs)}
-      onSubmit={submit}
-      className={`${panel} grid gap-6`}
-    >
-      <div className="grid gap-5 sm:grid-cols-2">
-        <AuthField id="account-locale" label="Language">
-          <AuthSelect
-            id="account-locale"
-            name="locale"
-            defaultValue={prefs.locale}
+    <Surface className={panel}>
+      <form
+        key={JSON.stringify(prefs)}
+        onSubmit={submit}
+        className="grid gap-6"
+      >
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field htmlFor="account-locale" label="Language">
+            <Select.Root name="locale" defaultValue={prefs.locale}>
+              <Select.Trigger id="account-locale">
+                <Select.Value />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="en">English</Select.Item>
+                <Select.Item value="ar">Arabic</Select.Item>
+              </Select.Content>
+            </Select.Root>
+          </Field>
+          <Field htmlFor="account-theme" label="Theme">
+            <Select.Root name="theme" defaultValue={prefs.theme}>
+              <Select.Trigger id="account-theme">
+                <Select.Value />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="system">System</Select.Item>
+                <Select.Item value="light">Light</Select.Item>
+                <Select.Item value="dark">Dark</Select.Item>
+              </Select.Content>
+            </Select.Root>
+          </Field>
+        </div>
+        <fieldset className="grid gap-3">
+          <legend className="mb-3 font-semibold">Privacy</legend>
+          <label
+            htmlFor="preference-showProfile"
+            className="flex min-h-11 items-center gap-3"
           >
-            <option value="en">English</option>
-            <option value="ar">Arabic</option>
-          </AuthSelect>
-        </AuthField>
-        <AuthField id="account-theme" label="Theme">
-          <AuthSelect
-            id="account-theme"
-            name="theme"
-            defaultValue={prefs.theme}
+            <Checkbox
+              id="preference-showProfile"
+              name="showProfile"
+              defaultChecked={prefs.privacy.showProfile !== false}
+            />
+            Show my public profile
+          </label>
+          <label
+            htmlFor="preference-showCollection"
+            className="flex min-h-11 items-center gap-3"
           >
-            <option value="system">System</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </AuthSelect>
-        </AuthField>
-      </div>
-      <fieldset className="grid gap-3">
-        <legend className="mb-3 font-semibold">Privacy</legend>
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            name="showProfile"
-            defaultChecked={prefs.privacy.showProfile !== false}
-          />{" "}
-          Show my public profile
-        </label>
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            name="showCollection"
-            defaultChecked={prefs.privacy.showCollection !== false}
-          />{" "}
-          Show my collection
-        </label>
-      </fieldset>
-      <fieldset className="grid gap-3">
-        <legend className="mb-3 font-semibold">Communications</legend>
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            name="email"
-            defaultChecked={prefs.communication.email === true}
-          />{" "}
-          Email
-        </label>
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            name="whatsapp"
-            defaultChecked={prefs.communication.whatsapp === true}
-          />{" "}
-          WhatsApp
-        </label>
-      </fieldset>
-      <div>
-        <Button
-          type="submit"
-          loading={save.isPending}
-          disabled={save.isPending}
-        >
-          Save preferences
-        </Button>
-      </div>
-      {notice && <p role="status">{notice}</p>}
-      {save.isError && (
-        <p role="alert" className="text-danger-600">
-          {failure(save.error)}
-        </p>
-      )}
-    </form>
+            <Checkbox
+              id="preference-showCollection"
+              name="showCollection"
+              defaultChecked={prefs.privacy.showCollection !== false}
+            />
+            Show my collection
+          </label>
+        </fieldset>
+        <fieldset className="grid gap-3">
+          <legend className="mb-3 font-semibold">Communications</legend>
+          <label
+            htmlFor="preference-email"
+            className="flex min-h-11 items-center gap-3"
+          >
+            <Checkbox
+              id="preference-email"
+              name="email"
+              defaultChecked={prefs.communication.email === true}
+            />
+            Email
+          </label>
+          <label
+            htmlFor="preference-whatsapp"
+            className="flex min-h-11 items-center gap-3"
+          >
+            <Checkbox
+              id="preference-whatsapp"
+              name="whatsapp"
+              defaultChecked={prefs.communication.whatsapp === true}
+            />
+            WhatsApp
+          </label>
+        </fieldset>
+        <div>
+          <Button
+            type="submit"
+            loading={save.isPending}
+            disabled={save.isPending}
+          >
+            Save preferences
+          </Button>
+        </div>
+        {notice && <p role="status">{notice}</p>}
+        {save.isError && (
+          <p role="alert" className="text-danger-600">
+            {failure(save.error)}
+          </p>
+        )}
+      </form>
+    </Surface>
   );
 }
 
@@ -253,7 +277,7 @@ export function PrivacySection({ userId }: { userId: string }) {
     });
   }
   return (
-    <div className={`${panel} space-y-8`}>
+    <Surface className={`${panel} space-y-8`}>
       <div>
         <h3 className="font-display text-lg font-semibold">
           Download your data
@@ -402,6 +426,6 @@ export function PrivacySection({ userId }: { userId: string }) {
           </form>
         )}
       </div>
-    </div>
+    </Surface>
   );
 }

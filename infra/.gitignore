@@ -3,3 +3,4 @@
 .env.cms
 .env.backend
 .env.public-web
+.bootstrap/

@@ -106,7 +106,7 @@ const source = {
   fields: PRODUCT_GRAPH_FIELDS,
   transform: async (
     rows: ProductRow[],
-    context: SearchTypes.SearchIngestionContext,
+    context: Parameters<NonNullable<Parameters<typeof graphSeed>[0]['transform']>>[1],
   ) => {
     const pricing = await loadPricing(
       rows.map((row) => row.id),

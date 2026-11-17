@@ -32,3 +32,5 @@ export * from './hero-slider'
 export * from "./social-auth-button";
 
 export * from "./product-card";
+
+export * from "./checkout";

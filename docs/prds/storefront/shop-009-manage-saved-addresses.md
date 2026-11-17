@@ -6,6 +6,10 @@ A signed-in customer can view and manage the delivery addresses saved to their M
 
 ## Requirements
 
+- Deleting a saved address requires confirmation in an accessible dialog; cancellation leaves the address intact.
+
+- The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.
+
 - Resolve the customer from the authenticated Next Pull user on the server; never use a browser-supplied customer ID as authorization.
 - Allow address creation, editing, and deletion with validation, ownership checks, and actionable loading, empty, success, and failure states.
 - Keep the Medusa service key private and preserve profile access during commerce outages.

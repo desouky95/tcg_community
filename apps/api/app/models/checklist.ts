@@ -1,5 +1,5 @@
 import { ChecklistSchema } from '#database/schema'
-import { afterFetch, belongsTo, column, computed, hasMany } from '@adonisjs/lucid/orm'
+import { belongsTo, column, computed, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import { appUrl } from '#config/app'
 import Card from '#models/card'
@@ -35,16 +35,16 @@ export default class Checklist extends ChecklistSchema {
 
   @computed()
   get needs() {
-    return this.cards ? this.cards.reduce((prev, curr) => prev + curr.needCount, 0) : 0
+    return this.cards ? this.cards.reduce((prev, curr) => prev + (curr.needCount ?? 0), 0) : 0
   }
 
   @computed()
   get holds() {
-    return this.cards ? this.cards.reduce((prev, curr) => prev + curr.holdCount, 0) : 0
+    return this.cards ? this.cards.reduce((prev, curr) => prev + (curr.holdCount ?? 0), 0) : 0
   }
 
   @computed()
   get offers() {
-    return this.cards ? this.cards.reduce((prev, curr) => prev + curr.offerCount, 0) : 0
+    return this.cards ? this.cards.reduce((prev, curr) => prev + (curr.offerCount ?? 0), 0) : 0
   }
 }

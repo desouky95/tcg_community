@@ -1,6 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { swapSearchValidator } from '#validators/swap'
-import UserChecklist from '#models/user_checklist'
 import { inject } from '@adonisjs/core'
 import { SwapResult, SwapService } from '#services/swap_service'
 import User from '#models/user'

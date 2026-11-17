@@ -29,3 +29,5 @@ pnpm test
 Workspace packages are private and source-consumed so Vite development reflects shared changes immediately. The dependency direction is `apps -> react-query -> api-contracts`; shared packages never import application code.
 
 Use Node 24 as declared by `.nvmrc`; the current AdonisJS TypeScript execution stack requires it.
+
+Local read-only catalogue MCP setup: [apps/mcp/README.md](apps/mcp/README.md).

@@ -1,7 +1,6 @@
-import type {
-  RemoteQueryFunction,
-  SearchTypes,
-} from "@medusajs/framework/types";
+import type { graphSeed } from '@medusajs/framework/utils'
+
+type SearchContext = Parameters<NonNullable<Parameters<typeof graphSeed>[0]['transform']>>[1];
 
 const RESOLVE_BATCH_SIZE = 200;
 
@@ -18,7 +17,7 @@ function payloadIds(data: unknown): string[] {
  * which is how a deleted variant or category still leads back to its products.
  */
 async function relatedProductIds(
-  query: RemoteQueryFunction,
+  query: SearchContext['container']['query'],
   entity: string,
   fields: string[],
   ids: string[],
@@ -43,7 +42,7 @@ async function relatedProductIds(
  * each document, which is what's searched here.
  */
 async function productIdsInSalesChannels(
-  query: RemoteQueryFunction,
+  query: SearchContext['container']['query'],
   salesChannelIds: string[],
 ): Promise<string[]> {
   const ids: string[] = [];
@@ -74,7 +73,7 @@ async function productIdsInSalesChannels(
  */
 export async function resolveProductIds(
   event: { name: string; data: unknown },
-  { container: { query } }: SearchTypes.SearchIngestionContext,
+  { container: { query } }: SearchContext,
 ): Promise<string[]> {
   const ids = payloadIds(event.data);
 

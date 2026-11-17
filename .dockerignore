@@ -25,3 +25,5 @@ env/
 **/*.env.*
 **/*.pem
 **/*.key
+
+infra/.bootstrap

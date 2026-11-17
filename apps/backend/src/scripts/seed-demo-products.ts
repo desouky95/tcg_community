@@ -61,7 +61,7 @@ const TAGS = ['sale', 'new-arrival', 'organic', 'unisex', 'bestseller', 'last-ch
 
 /**
  * Extra shared options, so the store page's option facet shows more than the
- * Size and Color the initial seed creates.
+ * existing shared options.
  */
 const EXTRA_OPTIONS = [
   { title: 'Material', values: ['Cotton', 'Linen', 'Merino', 'Fleece'] },
@@ -117,7 +117,7 @@ export default async function seedDemoProducts({ container }: ExecArgs) {
   if (!salesChannel || !shippingProfile) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
-      'No sales channel or shipping profile found. Run the initial data seed first.'
+      'No sales channel or shipping profile found. Configure them before seeding demo products.'
     )
   }
 
@@ -180,7 +180,7 @@ export default async function seedDemoProducts({ container }: ExecArgs) {
     fields: ['id', 'value'],
   })
 
-  // Shared (non-exclusive) options, the way the initial seed defines them.
+  // Shared (non-exclusive) options.
   const { data: existingOptions } = await query.graph({
     entity: 'product_option',
     fields: ['id', 'title', 'values.value'],
@@ -219,7 +219,7 @@ export default async function seedDemoProducts({ container }: ExecArgs) {
   if (!sizeOption) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
-      'No shared "Size" option found. Run the initial data seed first.'
+      'No shared "Size" option found. Create it before seeding demo products.'
     )
   }
 

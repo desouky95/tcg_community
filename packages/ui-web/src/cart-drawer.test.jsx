@@ -98,8 +98,8 @@ describe("cart drawer", () => {
       screen.getByRole("button", { name: "Decrease quantity of Box" }),
     ).toBeDisabled();
     expect(
-      screen.getByRole("button", { name: "Proceed to checkout" }),
-    ).toBeDisabled();
+      screen.getByRole("link", { name: "Proceed to checkout" }),
+    ).toHaveAttribute("href", "/checkout");
     await user.click(
       screen.getByRole("button", { name: "Increase quantity of Box" }),
     );

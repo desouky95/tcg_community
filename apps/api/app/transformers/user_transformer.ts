@@ -1,5 +1,5 @@
 import type User from '#models/user'
-import { BaseTransformer, Collection } from '@adonisjs/core/transformers'
+import { BaseTransformer } from '@adonisjs/core/transformers'
 import UserChecklistTransformer from './user_checklist_transformer.ts'
 import Category from '#models/category'
 import UserChecklist from '#models/user_checklist'

@@ -7,6 +7,8 @@ An authorized editor publishes storefront content.
 
 ## Requirements
 
+- Medusa search and workflow integrations retain typed query and logger dependencies during production builds.
+
 - Strapi owns editorial content and publication; Next.js displays published content only.
 - Editors arrange hero and selected-product sections in the homepage dynamic zone. Product details and prices remain owned by Medusa.
 - Authorize each action against its resource and actor; reject invalid or stale operations without partial effects.

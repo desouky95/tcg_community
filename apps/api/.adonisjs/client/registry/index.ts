@@ -230,11 +230,11 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"checklists"],[1,"id"],[0,"import"]],
     types: placeholder as Registry['checklists.import']['types'],
   },
-  'cards.index': {
+  'medusa.cards.index': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/medusa/checklists/:id/card',
     tokens: [[0,"api"],[0,"v1"],[0,"medusa"],[0,"checklists"],[1,"id"],[0,"card"]],
-    types: placeholder as Registry['cards.index']['types'],
+    types: placeholder as Registry['medusa.cards.index']['types'],
   },
   'cards.batch': {
     methods: ["POST"],
@@ -476,11 +476,11 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"commerce"],[0,"addresses"],[1,"id"]],
     types: placeholder as Registry['commerce.delete_address']['types'],
   },
-  'profile.show': {
+  'account.profile.show': {
     methods: ["GET","HEAD"],
     pattern: '/api/v1/account/profile',
     tokens: [[0,"api"],[0,"v1"],[0,"account"],[0,"profile"]],
-    types: placeholder as Registry['profile.show']['types'],
+    types: placeholder as Registry['account.profile.show']['types'],
   },
   'profile.update': {
     methods: ["PUT"],

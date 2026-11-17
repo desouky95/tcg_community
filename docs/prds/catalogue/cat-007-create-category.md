@@ -7,6 +7,8 @@ An administrator creates a draft or published category. This is an established c
 
 ## Requirements
 
+- The category endpoint validates names, parent and status, rejects duplicates, and creates initial subcategories atomically.
+
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.
@@ -20,12 +22,14 @@ An administrator creates a draft or published category. This is an established c
 Existing evidence pointer: apps/api CategoriesController.store. This pointer is not a fresh implementation audit.
 
 ## UI Page Used
-- N/A — no dedicated UI page
+- apps/web/src/pages/admin/AdminCategories/AdminCategoryFormPage.tsx
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- POST /api/v1/categories
 
 ## Related Files
+- apps/api/start/routes/v1/admin.routes.ts
+- apps/api/app/controllers/catalogue_controller.ts
 - apps/api/start/routes/v1/checklists.routes.ts
 - apps/api/app/controllers/checklists_controller.ts
 - apps/web/src/pages/Checklists.tsx

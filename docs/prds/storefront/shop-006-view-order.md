@@ -7,6 +7,10 @@ A customer can view their own order and its status.
 
 ## Requirements
 
+- Order panels use the shared storefront surface components.
+
+- The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.
+
 - Medusa owns order, payment and fulfillment state; enforce customer ownership.
 - Authorize each action against its resource and actor; reject invalid or stale operations without partial effects.
 - Show relevant progress, confirmation, empty and failure states, including a clear next action.

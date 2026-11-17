@@ -13,8 +13,8 @@ import LastStickerScraper from '#services/scrapers/laststicker_scraper'
 import app from '@adonisjs/core/services/app'
 import logger from '@adonisjs/core/services/logger'
 import { randomUUID } from 'node:crypto'
-import { globSync, open, openSync, readdir, readdirSync, readFile, readFileSync } from 'node:fs'
-import { mkdir, writeFile, glob } from 'node:fs/promises'
+import { globSync, readdirSync, readFileSync } from 'node:fs'
+import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 export class UnknownScraperCollectionError extends Error { }

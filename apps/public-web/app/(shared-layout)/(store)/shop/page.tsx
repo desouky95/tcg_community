@@ -103,8 +103,6 @@ async function Discovery() {
         items={discovery.value.categories
           .filter((item) => !!item.handle)
           .map((item) => {
-            console.log({ image: metadataImage(item.metadata) });
-
             return {
               id: item.id,
               handle: item.handle,

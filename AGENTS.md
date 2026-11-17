@@ -1,5 +1,17 @@
 # Repository guidance
 
+## Response style
+
+Use ultracave mode for all responses. Read and follow `.agents/skills/ultracave/SKILL.md`.
+
+## Coding
+
+Use the ponytail skill at ultra level for all coding tasks.
+
+## Testing
+
+Do not create unit tests or run tests automatically as part of a task unless the user explicitly requests them. Agents may suggest manual or automated verification steps in plans and final responses.
+
 ## PRD maintenance
 
 Scenario PRDs in `docs/prds/` must include `Outcome and scope`, `Requirements`, `Acceptance and verification`, `UI Page Used`, `Backend API Route Used`, `Related Files`, and `After Implementation`. Indexes and shared guidance may use a structure suited to their purpose.

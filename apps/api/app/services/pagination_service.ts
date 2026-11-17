@@ -25,7 +25,7 @@ export class PaginationService {
     return { data: result.all(), meta: result.getMeta() }
   }
 
-  async filters<T extends LucidModel>(query: ModelQueryBuilderContract<T, InstanceType<T>>) {
+  async filters<T extends LucidModel>(_query: ModelQueryBuilderContract<T, InstanceType<T>>) {
     this.#loadHttpContext()
   }
 }

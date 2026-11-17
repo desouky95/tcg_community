@@ -11,7 +11,7 @@ export default class AuthMiddleware {
   async handle(
     ctx: HttpContext,
     next: NextFn,
-    options: {
+    _options: {
       guards?: (keyof Authenticators)[]
     } = {}
   ) {

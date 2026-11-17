@@ -1,4 +1,4 @@
-import type { SearchTypes } from "@medusajs/framework/types";
+import type { graphSeed } from '@medusajs/framework/utils'
 import { QueryContext, search } from "@medusajs/framework/utils";
 
 /**
@@ -147,7 +147,7 @@ export function toProductPricing(
  */
 export async function loadPricing(
   ids: string[],
-  { container }: SearchTypes.SearchIngestionContext,
+  { container }: Parameters<NonNullable<Parameters<typeof graphSeed>[0]['transform']>>[1],
 ): Promise<Map<string, ProductPricingRows>> {
   const pricing = new Map<string, ProductPricingRows>();
 

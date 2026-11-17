@@ -77,6 +77,11 @@ export interface ApiDefinition {
     index: typeof routes['cards.index']
     batch: typeof routes['cards.batch']
   }
+  medusa: {
+    cards: {
+      index: typeof routes['medusa.cards.index']
+    }
+  }
   conversations: {
     index: typeof routes['conversations.index']
     findOrCreate: typeof routes['conversations.find_or_create']
@@ -125,6 +130,11 @@ export interface ApiDefinition {
   userChecklists: {
     show: typeof routes['user_checklists.show']
     update: typeof routes['user_checklists.update']
+  }
+  account: {
+    profile: {
+      show: typeof routes['account.profile.show']
+    }
   }
   commerceCatalog: {
     collections: typeof routes['commerce_catalog.collections']

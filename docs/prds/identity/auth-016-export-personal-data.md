@@ -7,6 +7,10 @@ A traceable, expiring personal-data export is queued and delivered.
 
 ## Requirements
 
+- Personal-data export controls use shared storefront surface components.
+
+- The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.
+
 - The account hub requests exports, displays their status, and offers authenticated downloads until expiry. Exports contain profile, collection and conversation data.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.

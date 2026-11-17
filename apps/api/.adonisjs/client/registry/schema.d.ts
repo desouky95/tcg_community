@@ -489,7 +489,7 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['import']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'cards.index': {
+  'medusa.cards.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/medusa/checklists/:id/card'
     types: {
@@ -1022,7 +1022,7 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['deleteAddress']>>>
     }
   }
-  'profile.show': {
+  'account.profile.show': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/account/profile'
     types: {

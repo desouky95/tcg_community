@@ -1,9 +1,6 @@
 # Deployment runbook
 
-Follow these guides in order. They describe work you perform; the repository does **not** yet contain production Dockerfiles, Compose configuration, Strapi, or its storefront integration. Do not run the deployment commands until the files and images described in the guides exist and have been tested.
-
 - [ ] [01 — Architecture and budget](01-architecture-budget.md)
-- [ ] [10 — Docker implementation plan](10-docker-implementation-plan.md) — detailed implementation companion; use with the numbered setup guides below.
 - [ ] [02 — Accounts and server setup](02-server-setup.md)
 - [ ] [03 — Application preparation](03-application-preparation.md)
 - [ ] [04 — PostgreSQL](04-postgresql.md)

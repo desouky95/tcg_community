@@ -7,6 +7,8 @@ Public, unlisted, or private visibility is enforced consistently. This is an est
 
 ## Requirements
 
+- The shared collection service rejects entry updates when the collection has no owner or checklist.
+
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.

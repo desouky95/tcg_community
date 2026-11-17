@@ -118,7 +118,7 @@ export async function lockCollection(
   trx: TransactionClientContract,
   userId: number,
   checklistId: number,
-  expectedVersion: number
+  _expectedVersion: number
 ) {
   // await Checklist.query({ client: trx }).where('id', checklistId).forUpdate().first()
 
@@ -156,6 +156,8 @@ export async function applyEntries(
       422,
       'Quantities must be whole numbers and offered quantity cannot exceed owned quantity'
     )
+  if (collection.checklistId === null || collection.userId === null)
+    throw new CollectionError(422, 'Collection must have an owner and checklist')
   const cards = await Card.query({ client: trx })
     .where('checklist_id', collection.checklistId)
     .whereIn(

@@ -57,7 +57,9 @@ export function ProductCard({
           />
         ) : (
           <div className="relative grid h-full place-items-center p-6 text-center text-sm font-semibold text-primary-500">
-            <span className="rounded-md bg-paper-50 px-3 py-2">Image unavailable</span>
+            <span className="rounded-md bg-paper-50 px-3 py-2">
+              Image unavailable
+            </span>
           </div>
         )}
         {soldOut && (

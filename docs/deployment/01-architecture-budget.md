@@ -12,7 +12,7 @@ Prerequisites: decide your domain and approximate launch traffic. The target is 
 | `commerce.example.com` | Medusa API and admin | VPS |
 | `cms.example.com` | Strapi admin and content API | VPS |
 
-On the VPS, run each Node application, PostgreSQL, reverse proxy and the Adonis worker in separate containers on a private Docker network. Use one PostgreSQL server with three databases and roles. Persist PostgreSQL, API uploads, Medusa static files and Strapi uploads in named volumes. Only the proxy publishes ports 80 and 443. The collector application is static, so it does not need a server container.
+On the VPS, run API, Strapi, Medusa, and public-web in one application container behind a reverse proxy. PostgreSQL and Redis are external services. Use one PostgreSQL server with three databases and roles. Persist API uploads, Medusa static files, and Strapi uploads in named volumes. Only the proxy publishes ports 80 and 443. The collector application is separately hosted.
 
 A VPS failure affects the store, CMS, API and database together. Daily backups can lose up to a day of changes; checkout recovery also requires reconciling orders with the payment provider. This is a launch compromise, not a high-availability design.
 

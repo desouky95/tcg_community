@@ -17,6 +17,6 @@ export default class extends BaseSchema {
   }
 
   async down() {
-    this.schema.alterTable(this.tableName, (table) => {})
+    this.schema.alterTable(this.tableName, (_table) => {})
   }
 }

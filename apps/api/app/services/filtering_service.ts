@@ -1,5 +1,4 @@
 import type User from '#models/user'
-import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import type {
   LucidModel,
@@ -21,13 +20,7 @@ type FilterFnConfig<T extends LucidModel> = {
   defaultPage?: number
   expandableFields?: ExtractModelRelations<InstanceType<T>>[]
 }
-type IndexParams = {
-  q?: string
-  limit?: number
-  page?: number
-}
 export class FilteringService {
-  #ctx!: HttpContext
   #config!: FilterFnConfig<any>
 
   #preload(query: ModelQueryBuilderContract<LucidModel>) {

@@ -7,6 +7,10 @@ The authenticated user receives their private profile.
 
 ## Requirements
 
+- Account panels use the shared storefront surface components.
+
+- The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.
+
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.
@@ -23,6 +27,7 @@ Existing evidence pointer: apps/web/src/pages/Profile.tsx. This pointer is not a
 - apps/public-web/app/(shared-layout)/account/page.tsx
 
 ## Backend API Route Used
+- The account profile GET route uses the distinct generated name `account.profile.show`.
 - GET /api/v1/account/profile
 
 ## Related Files

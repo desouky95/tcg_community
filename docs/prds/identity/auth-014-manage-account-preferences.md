@@ -7,6 +7,12 @@ Language, theme, privacy, and communication settings are saved.
 
 ## Requirements
 
+- Account selection fields use the shared accessible Select component.
+
+- Preference choices use shared accessible checkbox controls and retain their existing saved values.
+
+- The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.
+
 - Language, theme, profile and collection visibility, and email and WhatsApp communication preferences can be saved from the storefront account hub. Stored language and theme preferences do not independently change the storefront appearance.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.

@@ -15,7 +15,7 @@ export default () => {
     .middleware(middleware.auth())
   router
     .group(() => {
-      router.get('/:id/card', [() => import('#controllers/cards_controller'), 'index'])
+      router.get('/:id/card', [() => import('#controllers/cards_controller'), 'index']).as('medusa.cards.index')
     })
     .prefix('medusa/checklists')
   router

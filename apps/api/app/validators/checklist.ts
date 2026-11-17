@@ -22,7 +22,7 @@ export const updateChecklistValidator = vine.withMetaData<{ id: number }>().crea
     .unique({
       table: 'checklists',
       column: 'name',
-      filter(db, value, field) {
+      filter(db, _value, field) {
         db.where('id', '!=', field.meta.id)
       },
     }),

@@ -10,7 +10,7 @@ type FileParserOptions = XlsxParserOptions
 type XlsxParserReturn = Record<string, unknown>[]
 type FileParseReturn = XlsxParserReturn
 abstract class FileParser {
-  parse(file: MultipartFile, options: FileParserOptions): FileParseReturn {
+  parse(_file: MultipartFile, _options: FileParserOptions): FileParseReturn {
     throw new Error('Method not implemented')
   }
 }
@@ -22,7 +22,7 @@ class XlsxParser extends FileParser {
     if (!sheet) throw new Error('Sheet not found')
     const data = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet)
     if (data.length === 0) throw new Error('Sheet is empty')
-    const parsed = data.map((row, index) => {
+    const parsed = data.map((row) => {
       const parsedRow: Record<string, unknown> = {}
       for (const column of options.columns) {
         parsedRow[column] = row[column]

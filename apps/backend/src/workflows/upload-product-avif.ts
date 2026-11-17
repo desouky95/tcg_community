@@ -1,10 +1,11 @@
+import type { SearchTypes } from '@medusajs/framework/types'
 import { createStep, createWorkflow, StepResponse, transform, WorkflowResponse } from '@medusajs/framework/workflows-sdk';
 import { ContainerRegistrationKeys, MedusaError } from '@medusajs/framework/utils';
 import { uploadFilesWorkflow, updateProductsWorkflow } from '@medusajs/medusa/core-flows';
 
 type Input = { productId: string; filename: string; content: string };
 const readProduct = createStep('read-avif-product', async (productId: string, { container }) => {
-  const query = container.resolve(ContainerRegistrationKeys.QUERY);
+  const query = container.resolve<SearchTypes.SearchIngestionContext['container']['query']>(ContainerRegistrationKeys.QUERY);
   const { data } = await query.graph({ entity: 'product', fields: ['id', 'images.id', 'images.url'], filters: { id: productId } });
   if (!data.length) throw new MedusaError(MedusaError.Types.NOT_FOUND, 'Product not found');
   return new StepResponse(data[0]);

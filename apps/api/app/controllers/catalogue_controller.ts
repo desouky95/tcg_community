@@ -4,10 +4,8 @@ import { randomUUID } from 'node:crypto'
 import Category from '#models/category'
 import Checklist from '#models/checklist'
 import Card from '#models/card'
-import { createCategoryValidator, updateCategoryValidator } from '#validators/category'
-import { categoryService } from '#services/category_service'
+import { updateCategoryValidator } from '#validators/category'
 import paginationService from '#services/pagination_service'
-import filtering from '#services/filtering_service'
 
 export default class CatalogueController {
   private requestId(request: HttpContext['request']) {
@@ -24,11 +22,6 @@ export default class CatalogueController {
 
   private error(response: HttpContext['response'], code: string, message: string, status = 422) {
     return response.status(status).json({ error: { code, message } })
-  }
-
-  private categoryNames(value: unknown) {
-    if (!Array.isArray(value)) return []
-    return value.map((name) => String(name).trim())
   }
 
   private async activeParent(id: number) {
@@ -63,7 +56,7 @@ export default class CatalogueController {
     return response.api(result.data, result.meta)
   }
 
-  async category({ request, params, response }: HttpContext) {
+  async category({ params, response }: HttpContext) {
     const category = await Category.query()
       .where('slug', params.id)
       .whereNot('status', 'archived')
@@ -151,11 +144,49 @@ export default class CatalogueController {
     return this.envelope(request, { card, baseCard, variants })
   }
 
+  async createCategory({ request, response }: HttpContext) {
+    const rawName: unknown = request.input('name')
+    const name = typeof rawName === 'string' ? rawName.trim() : ''
+    if (!name) return this.error(response, 'validation_error', 'Name is required')
+    const status = request.input('status', 'draft')
+    if (status !== 'draft' && status !== 'published')
+      return this.error(response, 'validation_error', 'Status must be draft or published')
+    const rawParent = request.input('parentId')
+    const parentId = rawParent === undefined || rawParent === '' ? -1 : Number(rawParent)
+    if (parentId !== -1 && (!Number.isInteger(parentId) || !(await this.activeParent(parentId))))
+      return this.error(response, 'validation_error', 'Parent category is invalid')
+    const rawSubcategories: unknown = request.input('subcategories', [])
+    if (!Array.isArray(rawSubcategories) || rawSubcategories.some((item) => typeof item !== 'string' || !item.trim()))
+      return this.error(response, 'validation_error', 'Subcategory names must be nonempty strings')
+    const names = [name, ...rawSubcategories.map((item: string) => item.trim())]
+    if (parentId !== -1 && names.length > 1)
+      return this.error(response, 'validation_error', 'Subcategories cannot have children')
+    if (new Set(names).size !== names.length || await Category.query().whereIn('name', names).first())
+      return this.error(response, 'validation_error', 'A category with this name already exists')
+    const category = await db.transaction(async (trx) => {
+      const created = await Category.create({ name, parentId, status, version: 1 }, { client: trx })
+      for (const child of names.slice(1))
+        await Category.create({ name: child, parentId: created.id, status, version: 1 }, { client: trx })
+      return created
+    })
+    return response.status(201).json(this.envelope(request, category))
+  }
+
   async updateCategory(ctx: HttpContext) {
     const { request, response, params } = ctx
     const data = await request.validateUsing(updateCategoryValidator)
 
-    const category = await categoryService.withContext(ctx).updateCategory(params.id, data)
+    const category = await Category.find(params.id)
+    if (!category || category.status === 'archived')
+      return this.error(response, 'not_found', 'Category not found', 404)
+    const conflict = this.checkVersion(request, category.version)
+    if (conflict) return this.error(response, 'conflict', conflict, 409)
+    if (await Category.query().where('name', data.name).whereNot('id', category.id).first())
+      return this.error(response, 'validation_error', 'A category with this name already exists')
+    category.name = data.name
+    category.slug = ''
+    category.version += 1
+    await category.save()
 
     return response.status(200).json(this.envelope(request, category))
 

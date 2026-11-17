@@ -7,6 +7,8 @@ A visibility-filtered collection is shown without private notes. This is an esta
 
 ## Requirements
 
+- The shared collection service rejects entry updates when the collection has no owner or checklist.
+
 - Show missing items and duplicates with their quantities, ordered by the card or sticker's checklist order rather than its number.
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.

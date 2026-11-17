@@ -22,7 +22,7 @@ import env from '#start/env'
 @inject()
 export default class ChecklistsController {
   constructor(private service: ChecklistService) {}
-  async index({ response, request, auth }: HttpContext) {
+  async index({ response, request }: HttpContext) {
     const category = request.input('category')
     const q = request.input('q')
     const params = {

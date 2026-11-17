@@ -1,0 +1,43 @@
+# syntax=docker/dockerfile:1
+
+FROM node:24-bookworm-slim AS base
+WORKDIR /workspace
+
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+ENV CI=true
+
+RUN corepack enable
+
+# Cache dependency downloads independently of application source.
+FROM base AS fetch
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+RUN pnpm fetch
+
+# Build the backend and its workspace dependencies.
+FROM fetch AS build
+COPY . .
+RUN pnpm install --offline --frozen-lockfile --filter @tcg/medusa...
+RUN pnpm --filter @tcg/medusa... --if-present run build
+
+# Install only production dependencies.
+FROM fetch AS production-deps
+COPY . .
+RUN pnpm install --offline --frozen-lockfile --prod --filter @tcg/medusa...
+
+FROM node:24-bookworm-slim AS runtime
+WORKDIR /workspace
+
+ENV NODE_ENV=production
+
+# Preserve workspace paths and pnpm's symlink structure.
+COPY --from=production-deps --chown=node:node /workspace /workspace
+COPY --from=build --chown=node:node \
+    /workspace/apps/backend/.medusa \
+    /workspace/apps/backend/.medusa
+
+WORKDIR /workspace/apps/backend/.medusa/server
+USER node
+
+EXPOSE 9000
+CMD ["/workspace/apps/backend/node_modules/.bin/medusa", "start"]

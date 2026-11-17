@@ -88,7 +88,9 @@ test.group('Remaining identity flows', (group) => {
         notReadyForSwap: false,
       })
     updated.assertStatus(200)
-    assert.isTrue(updated.body().data.user.isVerified)
+    const updatedData = updated.body().data
+    if (!updatedData || !('user' in updatedData)) throw new Error('Expected updated user')
+    assert.isTrue(updatedData.user.isVerified)
     const publicProfile = await client.get(`/api/v1/users/${user.id}`)
     publicProfile.assertStatus(200)
     const body = publicProfile.body().data
@@ -116,7 +118,7 @@ test.group('Remaining identity flows', (group) => {
     const loaded = await client.get('/api/v1/account/preferences').withSession(session(user))
     loaded.assertStatus(200)
     assert.equal((loaded.body() as { data: { locale: string } }).data.locale, 'ar')
-    assert.isNumber((loaded.body() as { version: number }).version)
+    assert.isNumber(Reflect.get(loaded.body(), 'version'))
     assert.isFalse(
       (loaded.body() as { data: { privacy: { showProfile: boolean } } }).data.privacy.showProfile
     )
@@ -147,7 +149,9 @@ test.group('Remaining identity flows', (group) => {
       .withSession(session(user))
       .json({ mobile: newMobile })
     result.assertStatus(200)
-    assert.isFalse(result.body().data.user.isVerified)
+    const resultData = result.body().data
+    if (!resultData || !('user' in resultData)) throw new Error('Expected updated user')
+    assert.isFalse(resultData.user.isVerified)
     await db
       .from('otp_challenges')
       .where({ mobile: newMobile, purpose: 'mobile_change' })

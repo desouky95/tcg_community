@@ -2,16 +2,12 @@ import env from '#start/env'
 import db from '@adonisjs/lucid/services/db'
 import { DateTime } from 'luxon'
 import User from '#models/user'
-import { Secret } from '@adonisjs/core/helpers'
-import logger from '@adonisjs/core/services/logger'
 
 export class CommerceCustomerService {
   async resolveForUser(user: User) {
     const baseUrl = env.get('MEDUSA_INTERNAL_URL')
     const serviceKey = env.get('MEDUSA_SERVICE_KEY')
     const publisableKey = env.get('MEDUSA_PUBLISHABLE_KEY')
-    console.log('debug', `'x-next-pull-service-key': ${serviceKey?.release()}`)
-    console.log('debug', `'x-publishable-api-key': ${publisableKey?.release()}`)
     if (!baseUrl || !serviceKey || !publisableKey)
       return { linked: false, customerId: null, available: false }
     try {
@@ -20,14 +16,12 @@ export class CommerceCustomerService {
       return await db.transaction(async (trx) => {
         await User.query().where('id', user.id).forUpdate().firstOrFail()
         const existing = await trx.from('commerce_customer_links').where('user_id', user.id).first()
-        logger.log('debug', existing)
         if (existing?.medusa_customer_id)
           return {
             linked: true,
             customerId: existing.medusa_customer_id as string,
             available: true,
           }
-        console.log('debug', `${baseUrl.replace(/\/$/, '')}/store/community/customer-link`)
 
         const response = await fetch(
           `${baseUrl.replace(/\/$/, '')}/store/community/customer-link`,
@@ -46,7 +40,6 @@ export class CommerceCustomerService {
             }),
           }
         )
-        console.log('debug', response)
         if (!response.ok) throw new Error('Customer link unavailable')
         const payload = (await response.json()) as { customer?: { id?: unknown } }
         const customerId = payload.customer?.id
@@ -77,19 +70,18 @@ export class CommerceCustomerService {
           })
         return { linked: true, customerId, available: true }
       })
-    } catch {
+    } catch (error) {
+      console.error(error)
       return { linked: false, customerId: null, available: false }
     }
   }
 
   async account(user: User, payload: Record<string, unknown>) {
-    console.log('debug', 'Starting Resolving User')
     const link = await this.resolveForUser(user)
-    console.log('debug', 'Finished Resolving User')
-    console.log('debug', 'Resolved User', link)
     const baseUrl = env.get('MEDUSA_INTERNAL_URL')
     const key = env.get('MEDUSA_SERVICE_KEY')
     const publisableKey = env.get('MEDUSA_PUBLISHABLE_KEY')
+
     if (!link.customerId || !baseUrl || !key || !publisableKey)
       return { status: 503, body: { error: 'Commerce is temporarily unavailable' } }
     try {

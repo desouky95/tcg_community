@@ -3,7 +3,7 @@ import { beforeSave, belongsTo, column, hasMany, hasOne, scope } from '@adonisjs
 import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import Checklist from '#models/checklist'
 import User from './user.ts'
-import { ModelQueryBuilderContract, QueryScopeCallback } from '@adonisjs/lucid/types/model'
+import { QueryScopeCallback } from '@adonisjs/lucid/types/model'
 import UserChecklistCard from './user_checklist_card.ts'
 
 export default class Card extends CardSchema {
@@ -38,7 +38,7 @@ export default class Card extends CardSchema {
   @hasOne(() => UserChecklistCard, { foreignKey: 'cardId' })
   declare userCard: HasOne<typeof UserChecklistCard>
 
-  static missing = scope<typeof Card, QueryScopeCallback<typeof Card>>((query, user: User) => {})
+  static missing = scope<typeof Card, QueryScopeCallback<typeof Card>>((_query, _user: User) => {})
 
   static withUserCards = scope((scopeQuery, user: User, checklist: Checklist) => {
     const query = scopeQuery as any as Card

@@ -96,7 +96,7 @@ async function ProductSection({
                         src={product.thumbnail}
                         alt=""
                         loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+                        className="h-full w-full object-contain transition-transform duration-300 motion-safe:group-hover:scale-105"
                       />
                     )}
                   </div>

@@ -1,6 +1,9 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { Modules } from "@medusajs/framework/utils";
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 import { timingSafeEqual } from "node:crypto";
+import { NEXT_PULL_MODULE } from "../../../../modules/nextpull-user";
+import { CustomerDTO } from "@medusajs/framework/types";
+import NextPullUserModuleService from "../../../../modules/nextpull-user/service";
 
 type CustomerInput = {
   external_id?: string;
@@ -22,7 +25,7 @@ function hasValidServiceKey(value: string | undefined) {
 
 /** Private, idempotent bridge used only by the Adonis identity service. */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
-  console.log("CUSTOMER LINK API ROUTE")
+  console.log("CUSTOMER LINK API ROUTE");
   if (
     !hasValidServiceKey(
       req.headers["x-next-pull-service-key"] as string | undefined,
@@ -32,38 +35,58 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
   }
 
   const input = req.body as CustomerInput;
+
   if (!input.external_id)
     return res.status(400).json({ message: "external_id is required" });
 
-  const customerService = req.scope.resolve(Modules.CUSTOMER) as {
-    listCustomers: (
-      filters: Record<string, unknown>,
-    ) => Promise<Array<{ id: string }>>;
-    createCustomers: (data: Record<string, unknown>) => Promise<{ id: string }>;
-    updateCustomers: (
-      id: string,
-      data: Record<string, unknown>,
-    ) => Promise<{ id: string }>;
-  };
-  const [existing] = await customerService.listCustomers({
-    metadata: { next_pull_user_id: input.external_id },
-  });
-  const metadata = { next_pull_user_id: input.external_id };
-  const customer = existing
-    ? await customerService.updateCustomers(existing.id, {
-        email: input.email,
-        first_name: input.first_name,
-        last_name: input.last_name,
-        metadata,
-      })
-    : await customerService.createCustomers({
-        email: input.email,
-        first_name: input.first_name,
-        last_name: input.last_name,
-        metadata,
-      });
+  const customerService = req.scope.resolve(Modules.CUSTOMER);
+  // const nextpullService: NextPullUserModuleService =
+  //   req.scope.resolve(NEXT_PULL_MODULE);
 
-  return res
-    .status(existing ? 200 : 201)
-    .json({ customer: { id: customer.id } });
+  // const [externalUser] = await nextpullService.listNextPullUsers({
+  //   next_pull_user_id: input.external_id,
+  // });
+  const [existing] = await customerService.listCustomers({
+    metadata: {
+      next_pull_user_id: input.external_id,
+    },
+  } as any);
+
+  const metadata = {
+    next_pull_user_id: input.external_id,
+  };
+  const getCustomer = async (customer?: CustomerDTO) => {
+    if (!customer) {
+      // await nextpullService.createNextPullUsers({
+      //   next_pull_user_id: input.external_id,
+      // });
+
+      return await customerService.createCustomers({
+        email: input.email,
+        first_name: input.first_name,
+        last_name: input.last_name,
+        metadata,
+        has_account: true,
+      });
+    }
+    // await nextpullService.updateNextPullUsers({
+    //   next_pull_user_id: input.external_id,
+    // });
+    return await customerService.updateCustomers(existing.id, {
+      email: input.email,
+      first_name: input.first_name,
+      last_name: input.last_name,
+      metadata,
+    });
+  };
+
+  try {
+    const customer = await getCustomer(existing);
+    console.warn("DEBUG", "CUSTOMER", customer);
+    return res
+      .status(existing ? 200 : 201)
+      .json({ customer: { id: customer.id } });
+  } catch (err) {
+    throw err;
+  }
 }

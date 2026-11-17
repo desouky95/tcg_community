@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import type { HttpTypes } from "@medusajs/types";
+import Link from "next/link";
 import { Dialog } from "@tcg/ui-web/components/radix/dialog";
 import { ShoppingBag, X, Minus, Plus, Trash2 } from "lucide-react";
 import {
@@ -281,20 +282,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 <span>{money(cart.subtotal, cart.currency_code)}</span>
               </p>
             ) : null}
-            <button
-              type="button"
-              disabled
-              aria-describedby="checkout-unavailable"
-              className="min-h-12 w-full rounded-md border border-wax-line px-4 font-semibold opacity-50"
-            >
-              Proceed to checkout
-            </button>
-            <p
-              id="checkout-unavailable"
-              className="mt-3 text-center text-sm text-wax-muted"
-            >
-              Checkout coming soon.
-            </p>
+            {!loading && !error && !!cart?.items?.length && (
+              <Link
+                href="/checkout"
+                onClick={() => setOpen(false)}
+                className="focus-ring flex min-h-12 w-full items-center justify-center rounded-md bg-primary-500 px-4 font-semibold text-white"
+              >
+                Proceed to checkout
+              </Link>
+            )}
           </div>
         </Dialog.Content>
       </Dialog.Root>

@@ -1,3 +1,4 @@
+import type { SearchTypes } from '@medusajs/framework/types'
 import { createStep, createWorkflow, StepResponse, WorkflowResponse, transform } from "@medusajs/framework/workflows-sdk"
 import { ContainerRegistrationKeys, MedusaError, ProductStatus } from "@medusajs/framework/utils"
 import { createProductsWorkflow, createInventoryLevelsWorkflow, updateInventoryLevelsWorkflow, updateProductVariantsWorkflow } from "@medusajs/medusa/core-flows"
@@ -8,7 +9,7 @@ import type { CreateMissingList, UpdateMissingList } from "../api/admin/missing-
 const prepare = createStep("prepare", async (input: CreateMissingList, { container }) => {
   const keys = input.cards.map(c => input.collection_id ? c.id : c.number.toLocaleLowerCase())
   if (keys.some(k => !k) || new Set(keys).size !== keys.length) throw new MedusaError(MedusaError.Types.INVALID_DATA, "Cards must have unique identities")
-  const query = container.resolve(ContainerRegistrationKeys.QUERY)
+  const query = container.resolve<SearchTypes.SearchIngestionContext['container']['query']>(ContainerRegistrationKeys.QUERY)
   const { data: locations } = await query.graph({ entity: "stock_location", fields: ["id"], filters: { id: input.location_id } })
   if (!locations.length) throw new MedusaError(MedusaError.Types.INVALID_DATA, "Stock location not found")
   let cards = input.cards.map(c => input.collection_id ? c : { ...c, id: undefined })
@@ -25,7 +26,7 @@ const prepare = createStep("prepare", async (input: CreateMissingList, { contain
 })
 
 const inventoryInput = createStep("inventory-input", async (input: { productId: string; locationId: string }, { container }) => {
-  const query = container.resolve(ContainerRegistrationKeys.QUERY)
+  const query = container.resolve<SearchTypes.SearchIngestionContext['container']['query']>(ContainerRegistrationKeys.QUERY)
   const { data } = await query.graph({ entity: "product_variant", fields: ["id", "metadata", "inventory_items.inventory_item_id"], filters: { product_id: input.productId } })
   const levels = data.map((v: any) => {
     if (v.inventory_items?.length !== 1) throw new MedusaError(MedusaError.Types.UNEXPECTED_STATE, "Variant inventory item not found")
@@ -50,7 +51,7 @@ export const createMissingListWorkflow = createWorkflow("create-missing-list", f
 })
 
 const prepareUpdate = createStep("prepare-update", async (input: UpdateMissingList & { product_id: string }, { container }) => {
-  const query = container.resolve(ContainerRegistrationKeys.QUERY)
+  const query = container.resolve<SearchTypes.SearchIngestionContext['container']['query']>(ContainerRegistrationKeys.QUERY)
   const { data: products } = await query.graph({ entity: "product", fields: ["id", "metadata"], filters: { id: input.product_id } })
   const product = products[0]
   if (!product || product.metadata?.type !== "missing_list") throw new MedusaError(MedusaError.Types.NOT_FOUND, "Missing-list product not found")

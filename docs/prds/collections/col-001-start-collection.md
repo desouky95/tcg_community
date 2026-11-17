@@ -7,6 +7,8 @@ A single owned collection is created for the checklist. This is an established c
 
 ## Requirements
 
+- The shared collection service rejects entry updates when the collection has no owner or checklist.
+
 - Accept comma-separated card or sticker identifiers, optionally followed by a quantity in parentheses, such as `1,2(2),3(4)`, for missing or duplicate entries.
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
