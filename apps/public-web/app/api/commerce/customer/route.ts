@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 /** Server-only proxy: browser code never receives the Medusa service credential. */
 export async function POST(request: NextRequest) {
+  const authCookie = process.env.AUTH_COOKIE_NAME;
+  if (!authCookie || !request.cookies.has(authCookie))
+    return NextResponse.json({ data: { authenticated: false } });
+
   const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
   if (!apiUrl)
     return NextResponse.json(
@@ -12,11 +16,23 @@ export async function POST(request: NextRequest) {
     `${apiUrl.replace(/\/$/, "")}/auth/commerce/customer`,
     {
       method: "POST",
-      headers: { cookie: request.headers.get("cookie") ?? "" },
-      // headers: { cookie: request.headers.get("cookie") ?? "" },
+      headers: {
+        cookie: request.headers.get("cookie") ?? "",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        cart_id: request.cookies.get("next_pull_cart")?.value,
+      }),
       cache: "no-store",
     },
   );
+  if (response.status === 401)
+    return NextResponse.json(
+      {
+        error: "Your session expired. Sign in again before placing the order.",
+      },
+      { status: 503 },
+    );
   return new NextResponse(await response.text(), {
     status: response.status,
     headers: {

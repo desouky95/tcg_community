@@ -1,11 +1,13 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { CommerceCustomerService } from '#services/commerce_customer_service'
 import { addressValidator } from '#validators/commerce_account'
+import { commerceCustomerValidator } from '#validators/commerce_customer'
 
 export default class CommerceController {
-  async customer({ auth, response }: HttpContext) {
-    const result = await new CommerceCustomerService().resolveForUser(auth.getUserOrFail())
-    return response.json({ data: result })
+  async customer({ auth, request, response }: HttpContext) {
+    const { cart_id: cartId } = await request.validateUsing(commerceCustomerValidator)
+    const result = await new CommerceCustomerService().resolveForUser(auth.getUserOrFail(), cartId)
+    return response.status(result.available ? 200 : 503).json({ data: result })
   }
   private async send(ctx: HttpContext, payload: Record<string, unknown>) {
     ctx.response.header('Cache-Control', 'no-store')

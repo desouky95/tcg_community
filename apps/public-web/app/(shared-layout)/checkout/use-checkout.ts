@@ -93,6 +93,22 @@ type CheckoutForm = {
   providerId: string;
 };
 
+async function syncCheckoutCustomer() {
+  const response = await fetch("/api/commerce/customer", {
+    method: "POST",
+    credentials: "same-origin",
+  });
+  if (!response.ok) throw new Error("Customer link unavailable");
+  const result = (await response.json()) as {
+    data?: { authenticated?: boolean; available?: boolean; linked?: boolean };
+  };
+  if (
+    result.data?.authenticated !== false &&
+    (!result.data?.available || !result.data.linked)
+  )
+    throw new Error("Customer link unavailable");
+}
+
 export function useCheckout() {
   const [cart, setCart] = useState<HttpTypes.StoreCart>();
   const [load, setLoad] = useState<
@@ -207,11 +223,18 @@ export function useCheckout() {
     setError("");
     try {
       if (step === 0) {
-        const result = await saveContact(getValues("email"));
-        if (result.kind === "error") setError(result.message);
-        else {
-          setCart(result.cart);
-          setStep(1);
+        try {
+          await syncCheckoutCustomer();
+          const result = await saveContact(getValues("email"));
+          if (result.kind === "error") setError(result.message);
+          else {
+            setCart(result.cart);
+            setStep(1);
+          }
+        } catch {
+          setError(
+            "We couldn’t connect your account to this order. Please try again.",
+          );
         }
       } else if (step === 1 && !shipping.length) {
         const result = await saveAddress(getValues("address"));
@@ -244,6 +267,14 @@ export function useCheckout() {
           setStep(3);
         }
       } else if (cart?.total != null && cart.currency_code) {
+        try {
+          await syncCheckoutCustomer();
+        } catch {
+          setError(
+            "We couldn’t connect your account to this order. Please try again.",
+          );
+          return;
+        }
         const result = await placeOrder(
           cart.total,
           cart.currency_code,

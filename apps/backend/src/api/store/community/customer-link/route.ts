@@ -1,16 +1,18 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
+import { Modules } from "@medusajs/framework/utils";
+import { z } from "@medusajs/framework/zod";
+import { transferCartCustomerWorkflowId } from "@medusajs/medusa/core-flows";
 import { timingSafeEqual } from "node:crypto";
-import { NEXT_PULL_MODULE } from "../../../../modules/nextpull-user";
-import { CustomerDTO } from "@medusajs/framework/types";
-import NextPullUserModuleService from "../../../../modules/nextpull-user/service";
 
-type CustomerInput = {
-  external_id?: string;
-  email?: string;
-  first_name?: string;
-  last_name?: string;
-};
+const inputSchema = z
+  .object({
+    external_id: z.string().trim().min(1).max(255),
+    email: z.string().trim().email().max(254).optional(),
+    first_name: z.string().trim().max(255).optional(),
+    last_name: z.string().trim().max(255).optional(),
+    cart_id: z.string().trim().min(1).max(255).optional(),
+  })
+  .strict();
 
 function hasValidServiceKey(value: string | undefined) {
   const expected = process.env.NEXT_PULL_SERVICE_KEY;
@@ -25,7 +27,6 @@ function hasValidServiceKey(value: string | undefined) {
 
 /** Private, idempotent bridge used only by the Adonis identity service. */
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
-  console.log("CUSTOMER LINK API ROUTE");
   if (
     !hasValidServiceKey(
       req.headers["x-next-pull-service-key"] as string | undefined,
@@ -34,18 +35,12 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  const input = req.body as CustomerInput;
-
-  if (!input.external_id)
-    return res.status(400).json({ message: "external_id is required" });
+  const parsed = inputSchema.safeParse(req.body);
+  if (!parsed.success)
+    return res.status(400).json({ message: "Invalid request" });
+  const input = parsed.data;
 
   const customerService = req.scope.resolve(Modules.CUSTOMER);
-  // const nextpullService: NextPullUserModuleService =
-  //   req.scope.resolve(NEXT_PULL_MODULE);
-
-  // const [externalUser] = await nextpullService.listNextPullUsers({
-  //   next_pull_user_id: input.external_id,
-  // });
   const [existing] = await customerService.listCustomers({
     metadata: {
       next_pull_user_id: input.external_id,
@@ -55,38 +50,29 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const metadata = {
     next_pull_user_id: input.external_id,
   };
-  const getCustomer = async (customer?: CustomerDTO) => {
-    if (!customer) {
-      // await nextpullService.createNextPullUsers({
-      //   next_pull_user_id: input.external_id,
-      // });
-
-      return await customerService.createCustomers({
+  const customer = existing
+    ? await customerService.updateCustomers(existing.id, {
+        email: input.email,
+        first_name: input.first_name,
+        last_name: input.last_name,
+        metadata,
+      })
+    : await customerService.createCustomers({
         email: input.email,
         first_name: input.first_name,
         last_name: input.last_name,
         metadata,
         has_account: true,
       });
-    }
-    // await nextpullService.updateNextPullUsers({
-    //   next_pull_user_id: input.external_id,
-    // });
-    return await customerService.updateCustomers(existing.id, {
-      email: input.email,
-      first_name: input.first_name,
-      last_name: input.last_name,
-      metadata,
-    });
-  };
 
-  try {
-    const customer = await getCustomer(existing);
-    console.warn("DEBUG", "CUSTOMER", customer);
-    return res
-      .status(existing ? 200 : 201)
-      .json({ customer: { id: customer.id } });
-  } catch (err) {
-    throw err;
+  if (input.cart_id) {
+    const workflowEngine = req.scope.resolve(Modules.WORKFLOW_ENGINE);
+    await workflowEngine.run(transferCartCustomerWorkflowId, {
+      input: { id: input.cart_id, customer_id: customer.id },
+    });
   }
+
+  return res
+    .status(existing ? 200 : 201)
+    .json({ customer: { id: customer.id } });
 }

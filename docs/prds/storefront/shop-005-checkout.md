@@ -10,6 +10,7 @@ A shopper submits delivery and payment details for a NextPull order.
 - Medusa validates cart, shipping, totals and payment before order placement; show final charges before confirmation. Delivery options and prices come from Medusa. The system manual payment provider is supported; other providers require an explicit integration.
 - Use React Hook Form for stage-specific validation and accessible field errors; retain entered values during navigation and invalidate delivery and payment selections when the address changes.
 - Handle unavailable carts and options, invalid details, changed totals, payment failures, and uncertain order completion without inviting duplicate orders.
+- Link a signed-in shopper’s Medusa customer to the active cart before continuing checkout and before order completion; resolve customers only by the Adonis user mapping, never by matching an unverified email.
 - Authorize each action against its resource and actor; reject invalid or stale operations without partial effects.
 - Show relevant progress, confirmation, empty and failure states, including a clear next action.
 - Use the service ownership and security boundaries in the shared contracts.
@@ -27,6 +28,7 @@ A shopper submits delivery and payment details for a NextPull order.
 ## Backend API Route Used
 
 - Medusa Store API: cart retrieval and update, shipping options and calculation, shipping method selection, payment provider and session, and cart completion.
+- POST /api/commerce/customer — links the authenticated Adonis account to its Medusa customer and current cart.
 - GET /api/v1/account/commerce/addresses — optional saved addresses.
 
 ## Related Files
@@ -38,6 +40,11 @@ A shopper submits delivery and payment details for a NextPull order.
 - apps/public-web/src/lib/commerce/checkout-actions.ts
 - apps/public-web/src/lib/commerce/checkout-review.ts
 - apps/public-web/src/lib/clients/medusa.ts
+- apps/public-web/app/api/commerce/customer/route.ts
+- apps/api/app/controllers/commerce_controller.ts
+- apps/api/app/services/commerce_customer_service.ts
+- apps/api/app/validators/commerce_customer.ts
+- apps/backend/src/api/store/community/customer-link/route.ts
 - apps/public-web/src/providers/CartProvider.tsx
 - apps/public-web/tests/checkout.test.mjs
 - packages/ui-web/src/checkout-form.test.jsx

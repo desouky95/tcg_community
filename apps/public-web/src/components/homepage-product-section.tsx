@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { lowestProductPrice } from "../../../src/lib/catalog/homepage-product-queries";
-import { getProductsByCollection } from "../../../src/lib/catalog/homepage-product-data";
-import type { HomepageState } from "../../../src/lib/cms/homepage.server";
+import { lowestProductPrice } from "../lib/catalog/homepage-product-queries";
+import { getProductsByCollection } from "../lib/catalog/homepage-product-data";
+import type { HomepageState } from "../lib/cms/homepage.server";
 
 type Sections = Extract<HomepageState, { kind: "ready" }>["sections"];
 type ProductSectionBlock = Extract<

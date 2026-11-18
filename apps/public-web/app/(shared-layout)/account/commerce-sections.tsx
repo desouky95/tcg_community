@@ -102,7 +102,7 @@ export function OrdersSection({ userId }: { userId: string }) {
                   <p className="font-semibold">Order #{order.display_id}</p>
                   <p className="mt-1 text-sm text-wax-muted">
                     {new Date(order.created_at).toLocaleDateString()} ·{" "}
-                    {order.status.replaceAll("_", " ")}
+                    {order.status?.replaceAll("_", " ")}
                   </p>
                 </div>
                 <Button

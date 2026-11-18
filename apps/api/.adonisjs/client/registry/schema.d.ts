@@ -194,13 +194,13 @@ export interface Registry {
     methods: ["POST"]
     pattern: '/api/v1/auth/commerce/customer'
     types: {
-      body: {}
+      body: ExtractBody<InferInput<(typeof import('#validators/commerce_customer').commerceCustomerValidator)>>
       paramsTuple: []
       params: {}
-      query: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/commerce_customer').commerceCustomerValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['customer']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['customer']>>>
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['customer']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['customer']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/commerce_controller').default['customer']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'auth.signup': {

@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 import User from '#models/user'
 
 export class CommerceCustomerService {
-  async resolveForUser(user: User) {
+  async resolveForUser(user: User, cartId?: string) {
     const baseUrl = env.get('MEDUSA_INTERNAL_URL')
     const serviceKey = env.get('MEDUSA_SERVICE_KEY')
     const publisableKey = env.get('MEDUSA_PUBLISHABLE_KEY')
@@ -16,7 +16,7 @@ export class CommerceCustomerService {
       return await db.transaction(async (trx) => {
         await User.query().where('id', user.id).forUpdate().firstOrFail()
         const existing = await trx.from('commerce_customer_links').where('user_id', user.id).first()
-        if (existing?.medusa_customer_id)
+        if (existing?.medusa_customer_id && !cartId)
           return {
             linked: true,
             customerId: existing.medusa_customer_id as string,
@@ -37,7 +37,9 @@ export class CommerceCustomerService {
               email: user.email ?? undefined,
               first_name: user.fullName?.split(' ')[0] ?? user.username,
               last_name: user.fullName?.split(' ').slice(1).join(' ') || undefined,
+              ...(cartId ? { cart_id: cartId } : {}),
             }),
+            signal: AbortSignal.timeout(10000),
           }
         )
         if (!response.ok) throw new Error('Customer link unavailable')
@@ -70,8 +72,8 @@ export class CommerceCustomerService {
           })
         return { linked: true, customerId, available: true }
       })
-    } catch (error) {
-      console.error(error)
+    } catch {
+      console.error('Commerce customer sync failed')
       return { linked: false, customerId: null, available: false }
     }
   }

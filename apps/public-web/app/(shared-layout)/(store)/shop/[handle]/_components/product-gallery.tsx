@@ -12,6 +12,7 @@ export function ProductGallery({
 }) {
   const [viewportRef, embla] = useEmblaCarousel({
     breakpoints: { "(prefers-reduced-motion: reduce)": { duration: 0 } },
+    loop: true,
   });
   const galleryRef = useRef<HTMLElement>(null);
   const thumbnailsRef = useRef<HTMLDivElement>(null);

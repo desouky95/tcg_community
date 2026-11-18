@@ -4,7 +4,7 @@ import { HeroSlider } from "@tcg/ui-web";
 import {
   ProductSection,
   ProductSectionFallback,
-} from "./_components/homepage-product-section";
+} from "../../src/components/homepage-product-section";
 import {
   getHomepage,
   mapHeroSlides,

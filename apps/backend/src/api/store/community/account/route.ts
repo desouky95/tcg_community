@@ -85,24 +85,15 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
 
   const orders = req.scope.resolve(Modules.ORDER) as IOrderModuleService;
   if (input.operation === "orders" || input.operation === "order") {
-    console.log("DEBUG", "CUSTOMER_ID", input.customer_id);
-    const __ = await orders.listAndCountOrders(
-      {
-        customer_id: existing.id,
-      },
-      {},
-    );
-    console.log("DEBUG ORDERS", __);
+    if (!existing) return res.status(404).json({ message: "Not found" });
     const [rows, count] = await orders.listAndCountOrders(
       {
         customer_id: input.customer_id,
-        // ...(input.operation === "order" ? { id: input.id } : {}),
       },
       {
-        // take: input.operation === "order" ? 1 : 20,
-        // skip: input.operation === "orders" ? input.offset : 0,
         order: { created_at: "DESC" },
-        // ...(input.operation === "order" ? { relations: ["items"] } : {}),
+        select: ['status','id','total','created_at','display_id'],
+        
       },
     );
 

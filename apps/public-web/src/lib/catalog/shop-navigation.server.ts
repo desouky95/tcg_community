@@ -1,4 +1,5 @@
 import "server-only";
+import { cacheLife } from "next/cache";
 import type { HttpTypes } from "@medusajs/types";
 import { sdk } from "../clients/medusa";
 
@@ -39,6 +40,9 @@ function toMenuCategory(
 }
 
 export async function getShopNavigation(): Promise<MenuCategory[]> {
+  "use cache";
+  cacheLife("hours");
+
   try {
     const categories: MenuCategory[] = [];
     for (let offset = 0; ;) {
