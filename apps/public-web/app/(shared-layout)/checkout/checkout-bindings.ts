@@ -10,6 +10,7 @@ export function checkoutBindings(state: ReturnType<typeof useCheckout>) {
     setShipping,
     setValue,
     setProviders,
+    setInstapay,
     confirmedShipping,
     clearErrors,
     savedAddresses,
@@ -20,6 +21,7 @@ export function checkoutBindings(state: ReturnType<typeof useCheckout>) {
     setValue("shippingId", "");
     setValue("providerId", "");
     setProviders([]);
+    setInstapay(null);
     confirmedShipping.current = "";
     clearErrors(["shippingId", "providerId"]);
   };
@@ -56,8 +58,18 @@ export function checkoutBindings(state: ReturnType<typeof useCheckout>) {
   }));
   const paymentOptions = providers.map((provider) => ({
     id: provider.id,
-    label: "Manual payment",
-    detail: "No online payment is collected at checkout.",
+    label:
+      provider.id === "pp_instapay_offline"
+        ? "InstaPay"
+        : provider.id === "pp_cod_offline"
+          ? "Cash on delivery"
+          : "Manual payment",
+    detail:
+      provider.id === "pp_instapay_offline"
+        ? "Transfer by InstaPay, then confirm by WhatsApp."
+        : provider.id === "pp_cod_offline"
+          ? "Pay the courier when your order arrives."
+          : "No online payment is collected at checkout.",
     input: {
       value: provider.id,
       disabled: busy,

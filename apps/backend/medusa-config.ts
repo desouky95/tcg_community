@@ -58,6 +58,17 @@ module.exports = defineConfig({
         ]
       : []),
     {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/offline-payment",
+            id: "offline",
+          },
+        ],
+      },
+    },
+    {
       resolve: "./src/modules/card-catalog",
       options: {
         baseUrl: process.env.VITE_CARD_CATALOG_URL,

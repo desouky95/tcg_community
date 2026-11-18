@@ -32,6 +32,8 @@ export function Checkout() {
     savedAddresses,
     shipping,
     providers,
+    providerId,
+    instapay,
     error,
     busy,
     uncertain,
@@ -79,6 +81,23 @@ export function Checkout() {
         headingRef={heading}
         message={`Your order ${order !== "confirmed" ? `#${order} ` : ""}has been placed.`}
       >
+        {providerId === "pp_instapay_offline" && instapay && (
+          <p className="text-sm">
+            After transferring, send your screenshot with order reference {order} on{" "}
+            <a
+              className="font-semibold underline"
+              href={`https://wa.me/${instapay.whatsapp_number.replace(/\D/g, "")}?text=${encodeURIComponent(`Payment proof for order ${order}`)}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              WhatsApp
+            </a>
+            .
+          </p>
+        )}
+        {providerId === "pp_cod_offline" && (
+          <p className="text-sm">Pay the courier in cash when your order arrives.</p>
+        )}
         <TextLink asChild>{shopLink}</TextLink>
       </CheckoutStatus>
     );
@@ -137,12 +156,28 @@ export function Checkout() {
             </CheckoutDelivery>
           )}
           {step === 2 && (
-            <CheckoutChoices
-              legend="Choose an available payment method."
-              options={paymentOptions}
-              error={errors.providerId?.message}
-              empty="No supported payment methods are currently available. Please try again later or contact support."
-            />
+            <>
+              <CheckoutChoices
+                legend="Choose an available payment method."
+                options={paymentOptions}
+                error={errors.providerId?.message}
+                empty="No supported payment methods are currently available. Please try again later or contact support."
+              />
+              {providerId === "pp_instapay_offline" && instapay && (
+                <div className="mt-5 rounded-md border border-wax-line p-4" role="status">
+                  <p>Transfer {money(cart?.total, currency)} using InstaPay:</p>
+                  <a className="break-all font-semibold underline" href={instapay.instapay_url} target="_blank" rel="noreferrer">
+                    Open InstaPay payment link
+                  </a>
+                  <p className="mt-2">After placing your order, send a screenshot of the transfer by WhatsApp.</p>
+                </div>
+              )}
+              {providerId === "pp_cod_offline" && (
+                <p className="mt-5 rounded-md border border-wax-line p-4" role="status">
+                  Pay the courier in cash when your order arrives.
+                </p>
+              )}
+            </>
           )}
           {step === 3 && <CheckoutReview email={email} address={address} />}
           {error && (

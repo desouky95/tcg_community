@@ -3,6 +3,7 @@ import {
   configureStoreSearch,
   defineMiddlewares,
   validateAndTransformBody,
+  validateAndTransformQuery,
   authenticate,
 } from "@medusajs/framework/http";
 
@@ -11,10 +12,32 @@ import { PostAdminCardSaleSchema } from "./admin/collection-sale/validators";
 import { PostCardSaleItemsSchema } from "./store/carts/[id]/card-sale-items/validators";
 import { CreateMissingListSchema, UpdateMissingListSchema } from "./admin/missing-lists/validators";
 import { CreateCardCollectionSchema } from "./admin/card-collections/validators";
+import {
+  GetPaymentInstructionsSchema,
+  UpdatePaymentSettingsSchema,
+} from "./admin/payment-settings/validators";
 // The product index declares filterable `status` and `sales_channel_ids`, so
 // the route narrows it to published products in the key's sales channels.
 export default defineMiddlewares({
   routes: [
+    {
+      matcher: "/admin/payment-settings",
+      method: "GET",
+      middlewares: [authenticate("user", ["session", "bearer", "api-key"])],
+    },
+    {
+      matcher: "/admin/payment-settings",
+      method: "POST",
+      middlewares: [
+        authenticate("user", ["session", "bearer", "api-key"]),
+        validateAndTransformBody(UpdatePaymentSettingsSchema),
+      ],
+    },
+    {
+      matcher: "/store/payment-instructions",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(GetPaymentInstructionsSchema, {})],
+    },
     { matcher: "/admin/products/:id/sync-cms", method: "POST", policies: [{ resource: "product", operation: "update" }], middlewares: [authenticate("user", ["session", "bearer", "api-key"])] },
     { matcher: "/admin/products/:id/avif", method: "POST", policies: [{ resource: "file", operation: "create" }, { resource: "product", operation: "update" }], middlewares: [authenticate("user", ["session", "bearer", "api-key"]), multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024, files: 1 } }).single("file") as any] },
     { matcher: "/admin/missing-lists", method: "POST", middlewares: [authenticate("user", ["session", "bearer", "api-key"]), validateAndTransformBody(CreateMissingListSchema)] },

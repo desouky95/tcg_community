@@ -135,6 +135,7 @@ export function useCheckout() {
   });
   const email = useWatch({ control, name: "email" });
   const address = useWatch({ control, name: "address" });
+  const providerId = useWatch({ control, name: "providerId" });
   const accountEmail = useRef("");
   const cartReady = useRef(false);
   const confirmedShipping = useRef("");
@@ -145,6 +146,10 @@ export function useCheckout() {
   const [providers, setProviders] = useState<HttpTypes.StorePaymentProvider[]>(
     [],
   );
+  const [instapay, setInstapay] = useState<{
+    instapay_url: string;
+    whatsapp_number: string;
+  } | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [uncertain, setUncertain] = useState(false);
@@ -254,6 +259,7 @@ export function useCheckout() {
         else {
           setCart(result.cart);
           setProviders(result.providers);
+          setInstapay(result.instapay);
           if (confirmedShipping.current !== getValues("shippingId"))
             setValue("providerId", "");
           confirmedShipping.current = getValues("shippingId");
@@ -264,6 +270,7 @@ export function useCheckout() {
         if (result.kind === "error") setError(result.message);
         else {
           setCart(result.cart);
+          setInstapay(result.instapay);
           setStep(3);
         }
       } else if (cart?.total != null && cart.currency_code) {
@@ -315,6 +322,8 @@ export function useCheckout() {
     savedAddresses,
     shipping,
     providers,
+    providerId,
+    instapay,
     error,
     busy,
     uncertain,
@@ -324,6 +333,7 @@ export function useCheckout() {
     clearErrors,
     setShipping,
     setProviders,
+    setInstapay,
     confirmedShipping,
     setError,
     setStep,

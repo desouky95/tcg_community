@@ -7,6 +7,21 @@ import { sdk } from "../clients/medusa";
 
 const COOKIE = "next_pull_cart";
 const MANUAL = "pp_system_default";
+const INSTAPAY = "pp_instapay_offline";
+const COD = "pp_cod_offline";
+
+type InstapaySettings = { instapay_url: string; whatsapp_number: string };
+
+async function instapaySettings(regionId: string) {
+  try {
+    const result = await sdk.client.fetch<{ instapay: InstapaySettings | null }>(
+      `/store/payment-instructions?region_id=${encodeURIComponent(regionId)}`,
+    );
+    return result.instapay;
+  } catch {
+    return null;
+  }
+}
 
 async function cartId() {
   return (await cookies()).get(COOKIE)?.value;
@@ -149,10 +164,28 @@ export async function selectShipping(optionId: string) {
     const { payment_providers } = await sdk.store.payment.listPaymentProviders({
       region_id: cart.region_id,
     });
+    const eligibleForOffline =
+      cart.currency_code === "egp" &&
+      cart.shipping_address?.country_code?.toLowerCase() === "eg";
+    const regionProviders = payment_providers.filter(
+      (provider) => provider.id === MANUAL,
+    );
+    const settings = eligibleForOffline
+      ? await instapaySettings(cart.region_id)
+      : null;
+    if (eligibleForOffline) {
+      regionProviders.push(
+        ...payment_providers.filter(
+          (provider) =>
+            provider.id === COD || (provider.id === INSTAPAY && settings),
+        ),
+      );
+    }
     return {
       kind: "ready" as const,
       cart,
-      providers: payment_providers.filter((provider) => provider.id === MANUAL),
+      providers: regionProviders,
+      instapay: settings,
     };
   } catch {
     return {
@@ -164,7 +197,7 @@ export async function selectShipping(optionId: string) {
 
 export async function selectPayment(providerId: string) {
   const id = await cartId();
-  if (!id || providerId !== MANUAL)
+  if (!id || ![MANUAL, INSTAPAY, COD].includes(providerId))
     return {
       kind: "error" as const,
       message: "Choose an available payment method.",
@@ -172,6 +205,16 @@ export async function selectPayment(providerId: string) {
   try {
     const { cart } = await sdk.store.cart.retrieve(id);
     if (!cart.region_id) throw new Error("Missing region");
+    const isOffline = providerId === INSTAPAY || providerId === COD;
+    const isEgyptEgp =
+      cart.currency_code === "egp" &&
+      cart.shipping_address?.country_code?.toLowerCase() === "eg";
+    const settings = providerId === INSTAPAY
+      ? await instapaySettings(cart.region_id)
+      : null;
+    if (isOffline && !isEgyptEgp) throw new Error("Unavailable provider");
+    if (providerId === INSTAPAY && !settings)
+      throw new Error("InstaPay settings unavailable");
     const { payment_providers } = await sdk.store.payment.listPaymentProviders({
       region_id: cart.region_id,
     });
@@ -181,7 +224,11 @@ export async function selectPayment(providerId: string) {
       provider_id: providerId,
     });
     const updated = await sdk.store.cart.retrieve(id);
-    return { kind: "ready" as const, cart: updated.cart };
+    return {
+      kind: "ready" as const,
+      cart: updated.cart,
+      instapay: settings,
+    };
   } catch {
     return {
       kind: "error" as const,
