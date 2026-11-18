@@ -3,6 +3,8 @@ import testUtils from '@adonisjs/core/services/test_utils'
 import db from '@adonisjs/lucid/services/db'
 import hash from '@adonisjs/core/services/hash'
 import { DateTime } from 'luxon'
+import User from '#models/user'
+import { sessionFingerprint } from '#services/identity_service'
 
 const signup = { fullName: 'Auth Collector', username: 'auth_collector', email: 'auth@example.test', mobile: '+201012345678', password: 'password123', passwordConfirmation: 'password123', governorate: 'Cairo' as const }
 
@@ -63,5 +65,34 @@ test.group('OTP verification, resend and password sign in', (group) => {
     ;(await client.post('/api/v1/auth/login').withCsrfToken().json({ uid: signup.email, password: 'wrongpassword' })).assertStatus(401)
     await db.from('users').where('mobile', signup.mobile).update({ blocked: true })
     ;(await client.post('/api/v1/auth/login').withCsrfToken().json({ uid: signup.email, password: signup.password })).assertStatus(403)
+  })
+
+  test('logout clears the authenticated browser session', async ({ client, assert }) => {
+    const user = await User.create({
+      fullName: 'Logout Collector',
+      username: 'logout_collector',
+      email: 'logout@example.test',
+      mobile: '+201012345679',
+      password: 'password123',
+      governorate: 'Cairo',
+      isVerified: true,
+      blocked: false,
+      status: 'active',
+      role: 'user',
+      locale: 'en',
+      theme: 'system',
+      version: 1,
+    })
+    const session = {
+      auth_web: user.id,
+      auth_password_fingerprint: sessionFingerprint(user.password),
+    }
+
+    ;(await client.get('/api/v1/auth/me').withSession(session)).assertStatus(200)
+    const logout = await client.post('/api/v1/auth/logout').withCsrfToken().withSession(session)
+    logout.assertStatus(200)
+    assert.exists(logout.cookie('adonis-session'))
+    assert.deepEqual(logout.session(), {})
+    ;(await client.get('/api/v1/auth/me').withSession(logout.session())).assertStatus(401)
   })
 })

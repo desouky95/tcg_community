@@ -143,7 +143,7 @@ export default class IdentityController {
     )
   }
 
-  async deactivate({ auth, request, response }: HttpContext) {
+  async deactivate({ auth, request, response, session }: HttpContext) {
     const user = await auth.authenticateUsing(['web'])
     const data = await request.validateUsing(accountActionValidator)
     if (data.confirmation !== 'DEACTIVATE') return response.status(422).json(errorBody('confirmation_required', 'Type DEACTIVATE to confirm'))
@@ -162,6 +162,7 @@ export default class IdentityController {
       await recomputeForUser(trx, user.id)
     })
     await auth.use('web').logout()
+    session.clear()
     return response.json(this.success(request, { status: user.status }, { version: user.version }))
   }
 
@@ -212,7 +213,7 @@ export default class IdentityController {
     return response.download(exportPath(id))
   }
 
-  async deletePersonalData({ auth, request, response }: HttpContext) {
+  async deletePersonalData({ auth, request, response, session }: HttpContext) {
     const user = await auth.authenticateUsing(['web'])
     const data = await request.validateUsing(accountActionValidator)
     if (data.confirmation !== 'DELETE' || !data.password || !user.password || !(await hash.verify(user.password, data.password))) {
@@ -225,6 +226,7 @@ export default class IdentityController {
     }
     await this.anonymize(user)
     await auth.use('web').logout()
+    session.clear()
     return response.json(this.success(request, { status: user.status }, { version: user.version }))
   }
 

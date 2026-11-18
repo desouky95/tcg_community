@@ -189,8 +189,6 @@ export default class AuthController {
       .orWhere('username', uid)
       .first()
 
-    console.log({user})
-
     if (!user || !user.password) {
       return response.status(401).json({ error: 'Invalid credentials' })
     }
@@ -218,7 +216,7 @@ export default class AuthController {
     user.lastLoginAt = DateTime.now()
     user.version += 1
     await user.save()
-    await auth.use('web').login(user)
+    await auth.use('web').login(user, !!request.input('remember_me'))
     session.put('auth_password_fingerprint', sessionFingerprint(user.password))
     if (await pendingFacebook(session)) session.put('facebook_link_user_id', user.id)
 
@@ -232,9 +230,10 @@ export default class AuthController {
   /**
    * Token Revocation
    */
-  async logout({ auth, request, response }: HttpContext) {
+  async logout({ auth, request, response, session }: HttpContext) {
     const user = auth.getUserOrFail()
     await auth.use('web').logout()
+    session.clear()
     if (user.currentAccessToken) {
       await User.accessTokens.delete(user as any, user.currentAccessToken.identifier)
     }
@@ -242,21 +241,27 @@ export default class AuthController {
     return response.json({ data: { loggedOut: true }, ...requestMeta(request) })
   }
   async me({ auth, request, response, session }: HttpContext) {
-    const user = await auth.authenticateUsing(['web'])
-    if (
-      user.blocked ||
-      user.status !== 'active' ||
-      session.get('auth_password_fingerprint') !== sessionFingerprint(user.password)
-    ) {
-      await auth.use('web').logout()
-      return response
-        .status(401)
-        .json(errorBody('session_expired', 'Your session is no longer active'))
+    try {
+      const user = await auth.authenticateUsing(['web'])
+      if (
+        user.blocked ||
+        user.status !== 'active' ||
+        session.get('auth_password_fingerprint') !== sessionFingerprint(user.password)
+      ) {
+        await auth.use('web').logout()
+        session.clear()
+        return response
+          .status(401)
+          .json(errorBody('session_expired', 'Your session is no longer active'))
+      }
+      return response.json({
+        data: user,
+        ...requestMeta(request),
+        version: user.version,
+      })
+    } catch (error) {
+      console.log({ error })
+      throw error
     }
-    return response.json({
-      data: user,
-      ...requestMeta(request),
-      version: user.version,
-    })
   }
 }

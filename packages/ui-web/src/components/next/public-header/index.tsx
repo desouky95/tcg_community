@@ -109,17 +109,14 @@ export function PublicHeader({
       </nav>
       <div className="flex items-center gap-3">
         {cartAction}
-        {!authenticated && !storeNavigation && (
-          <Link
-            href="/login"
-            className="focus-ring hidden px-2 py-3 font-semibold hover:text-accent-500 lg:block"
-          >
-            Sign in
-          </Link>
+        {!authenticated && (
+          <Button asChild size="sm" tone="primary">
+            <Link href="/login">Sign in</Link>
+          </Button>
         )}
-        {(!authenticated || storeNavigation) && (
+        {authenticated && storeNavigation && (
           <Link
-            href={storeNavigation ? "/account" : "/login"}
+            href="/account"
             aria-label="Your account"
             className="focus-ring hidden size-11 items-center justify-center rounded-md bg-wax-navy text-wax-paper sm:inline-flex"
           >
@@ -174,7 +171,7 @@ export function PublicHeader({
                   </Link>
                 ),
               )}
-              {storeNavigation && (
+              {storeNavigation && authenticated && (
                 <Link
                   href="/account"
                   className="focus-ring border-b border-wax-line py-4 font-display text-xl font-semibold"
@@ -183,7 +180,7 @@ export function PublicHeader({
                   Your account
                 </Link>
               )}
-              {!authenticated && !storeNavigation && (
+              {!authenticated && (
                 <Link
                   href="/login"
                   className="focus-ring py-4 font-bold"

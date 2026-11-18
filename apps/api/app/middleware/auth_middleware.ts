@@ -27,7 +27,7 @@ export default class AuthMiddleware {
         })
       }
       return next()
-    } catch {
+    } catch (error) {
       return ctx.response.status(401).json({
         error: { code: 'unauthenticated', message: 'Authentication is required' },
       })

@@ -27,8 +27,8 @@ const authConfig = defineConfig({
       /**
        * Enable persistent login using remember-me tokens.
        */
-      useRememberMeTokens: false,
-
+      useRememberMeTokens: true,
+      rememberMeTokensAge : '10 days',
       provider: sessionUserProvider({
         model: () => import('#models/user'),
       }),

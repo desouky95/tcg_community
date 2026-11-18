@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
       fullUrl: true,
       hmrRefreshes: true,
     },
+    serverFunctions: true,
   },
   cacheComponents: true,
 };

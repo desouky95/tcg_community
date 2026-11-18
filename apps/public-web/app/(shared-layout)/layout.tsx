@@ -1,5 +1,5 @@
 import { PublicShell } from "@tcg/ui-web/next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { cacheLife } from "next/cache";
 import { Suspense } from "react";
 import { SharedPageTransition } from "./shared-page-transition";
@@ -53,16 +53,22 @@ function SharedShell({
   );
 }
 
-async function AuthenticatedShell(
-  props: Omit<ShellProps, "authenticated">,
-) {
+async function AuthenticatedShell(props: Omit<ShellProps, "authenticated">) {
   const cookieStore = await cookies();
-  return (
-    <SharedShell
-      {...props}
-      authenticated={cookieStore.has(process.env.AUTH_COOKIE_NAME as string)}
-    />
-  );
+  let authenticated = false;
+
+  try {
+    await createServerApiClient().http.get("/auth/me", {
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+    });
+    authenticated = true;
+  } catch {
+    // A missing, expired, or invalid session renders the public header.
+  }
+
+  return <SharedShell {...props} authenticated={authenticated} />;
 }
 
 export default async function Layout({

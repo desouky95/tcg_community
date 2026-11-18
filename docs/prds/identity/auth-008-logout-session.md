@@ -3,13 +3,13 @@
 
 ## Outcome and scope
 
-The current token is revoked and local credentials are cleared.
+The current token is revoked and the browser session is cleared.
 
 ## Requirements
 
 - The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.
 
-- The storefront account security section signs out the current session, clears cached account data, and returns to sign-in. An expired session is treated as signed out; other failures allow a retry.
+- The storefront account security section signs out the current session, clears all server-side session data and cached account data, and returns to sign-in. The shared storefront header determines authentication from the Adonis session validity response, forwarding the session ID cookie and its matching session-data cookie. An expired session is treated as signed out; other failures allow a retry.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.

@@ -151,6 +151,13 @@
       "skillPath": "skills/productivity/grilling/SKILL.md",
       "computedHash": "485451958784497cd4c4dbea13cb5bbb579da58fac0d0e45f3bcb310fab68ac7"
     },
+    "hyperframes": {
+      "source": "heygen-com/hyperframes",
+      "commit": "c569417bb5aea6942978fbf01f21545ed09b1bac",
+      "sourceType": "github",
+      "skillPath": "skills/hyperframes/SKILL.md",
+      "computedHash": "b36bff9ec12e1010bd3bf383753bcc642143c9fcbdeb316a32e9f8e3e3555f80"
+    },
     "investigate-first": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
