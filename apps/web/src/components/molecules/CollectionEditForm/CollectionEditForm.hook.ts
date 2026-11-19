@@ -64,7 +64,7 @@ export const useCollectionEditForm = ({
       type: checklist.type,
       year: checklist.year.toString(),
       totalCards: checklist.totalCards.toString(),
-      categoryId: checklist.category?.slug ?? "",
+      categoryId: checklist.subcategory?.slug ?? checklist.category?.slug ?? "",
       coverImage: null,
     },
   });

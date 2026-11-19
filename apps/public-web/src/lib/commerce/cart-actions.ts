@@ -81,9 +81,11 @@ export async function addCartItem(
     const { products } = await sdk.store.product.list({
       id: [productId],
       region_id: regionId,
-      fields: "*variants.calculated_price,+variants.inventory_quantity",
+      fields: "*variants.calculated_price,+variants.inventory_quantity,*type",
       limit: 1,
     });
+    if (products[0]?.type?.value === "Coming Soon")
+      return { kind: "error" as const, message: "This product is coming soon and cannot be purchased yet." };
     const variant = products[0]?.variants?.find(
       (item) => item.id === variantId,
     );
@@ -148,6 +150,123 @@ export async function addCartItem(
     return {
       kind: "error" as const,
       message: "We couldn’t add this item. Please try again.",
+    };
+  }
+}
+
+export async function addCartItems(
+  productId: string,
+  items: { variantId: string; quantity: number }[],
+) {
+  const failures: { variantId: string; message: string }[] = [];
+  const addedVariantIds: string[] = [];
+  if (
+    !productId || !items.length || new Set(items.map((item) => item.variantId)).size !== items.length ||
+    items.some((item) => !item.variantId || !Number.isSafeInteger(item.quantity) || item.quantity < 1 || item.quantity > 99)
+  ) {
+    return {
+      kind: "batch" as const,
+      addedVariantIds,
+      failures: items.map((item) => ({ variantId: item.variantId, message: "Choose a valid card and quantity." })),
+    };
+  }
+
+  try {
+    const regionId = await resolveStoreRegion();
+    if (!regionId) {
+      return {
+        kind: "batch" as const,
+        addedVariantIds,
+        failures: items.map((item) => ({ variantId: item.variantId, message: "Pricing is unavailable. Please try again later." })),
+      };
+    }
+    const { products } = await sdk.store.product.list({
+      id: [productId],
+      region_id: regionId,
+      fields: "*variants.calculated_price,+variants.inventory_quantity,*type",
+      limit: 1,
+    });
+    if (products[0]?.type?.value === "Coming Soon") {
+      return { kind: "batch" as const, addedVariantIds, failures: items.map((item) => ({ variantId: item.variantId, message: "This product is coming soon and cannot be purchased yet." })) };
+    }
+    const variants = new Map((products[0]?.variants ?? []).map((variant) => [variant.id, variant]));
+    const available = items.filter((item) => {
+      const variant = variants.get(item.variantId);
+      if (
+        !variant || variant.calculated_price?.calculated_amount == null ||
+        !variant.calculated_price.currency_code
+      ) {
+        failures.push({ variantId: item.variantId, message: "This card is unavailable. Refresh the list and try again." });
+        return false;
+      }
+      if (
+        variant.manage_inventory !== false && !variant.allow_backorder &&
+        (typeof variant.inventory_quantity !== "number" || variant.inventory_quantity < item.quantity)
+      ) {
+        failures.push({ variantId: item.variantId, message: "Requested quantity is no longer available." });
+        return false;
+      }
+      return true;
+    });
+    if (!available.length) return { kind: "batch" as const, addedVariantIds, failures };
+
+    const jar = await cookies();
+    const existing = jar.get(CART_COOKIE)?.value;
+    let cart;
+    if (existing) {
+      try {
+        cart = (await sdk.store.cart.retrieve(existing)).cart;
+      } catch (error) {
+        if (!isNotFound(error)) throw error;
+      }
+    }
+    if (cart?.completed_at) {
+      return {
+        kind: "batch" as const,
+        addedVariantIds,
+        failures: available.map((item) => ({ variantId: item.variantId, message: "This cart is already completed. Please contact support to start a new cart." })),
+      };
+    }
+    if (cart && cart.region_id !== regionId) {
+      return {
+        kind: "batch" as const,
+        addedVariantIds,
+        failures: available.map((item) => ({ variantId: item.variantId, message: "Your cart uses a different region. Please contact support before adding this item." })),
+      };
+    }
+    if (!cart) {
+      cart = (await sdk.store.cart.create({ region_id: regionId })).cart;
+      jar.set(CART_COOKIE, cart.id, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+      });
+    }
+    for (const item of available) {
+      try {
+        const result = await sdk.store.cart.createLineItem(cart.id, {
+          variant_id: item.variantId,
+          quantity: item.quantity,
+        });
+        cart = result.cart;
+        addedVariantIds.push(item.variantId);
+      } catch {
+        failures.push({ variantId: item.variantId, message: "Couldn’t add this card. Check stock and try again." });
+      }
+    }
+    return {
+      kind: "batch" as const,
+      addedVariantIds,
+      failures,
+      cartState: cart ? await withVariantCounts(cart) : undefined,
+    };
+  } catch {
+    return {
+      kind: "batch" as const,
+      addedVariantIds,
+      failures: [...failures, ...items.filter((item) => !failures.some((failure) => failure.variantId === item.variantId)).map((item) => ({ variantId: item.variantId, message: "We couldn’t add this card. Please try again." }))],
     };
   }
 }

@@ -8,6 +8,7 @@ A validated parent-child relationship is created. This is an established capabil
 ## Requirements
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
+- Taxonomy writes allow authenticated `admin` and `super_admin` roles.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.
 - Preserve existing behavior and contracts where this capability is already implemented; reconcile any discrepancy with repository evidence before changing it.
@@ -20,16 +21,19 @@ A validated parent-child relationship is created. This is an established capabil
 Existing evidence pointer: apps/api CategoriesController.addSubcategory. This pointer is not a fresh implementation audit.
 
 ## UI Page Used
-- N/A — no dedicated UI page
+- `/admin/categories/:id/edit`
+- `apps/web/src/components/molecules/CategoryEditForm/CategoryEditForm.tsx`
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- `POST /api/v1/categories/:id/subcategories`
+- `POST /api/v1/categories` (initial subcategories)
 
 ## Related Files
-- apps/api/start/routes/v1/checklists.routes.ts
-- apps/api/app/controllers/checklists_controller.ts
-- apps/web/src/pages/Checklists.tsx
-- apps/public-web/app/(shared-layout)/checklists/page.tsx
+- `apps/api/start/routes/v1/admin.routes.ts`
+- `apps/api/app/middleware/admin_middleware.ts`
+- `apps/api/app/controllers/catalogue_controller.ts`
+- `apps/web/src/components/molecules/CategoryEditForm/CategoryEditForm.hook.ts`
+- `apps/web/src/pages/admin/AdminCategories/AdminCategoryFormPage.tsx`
 
 ## After Implementation
 - Update this PRD’s UI page, API route, and related-files entries to match the implementation.

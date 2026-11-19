@@ -21,6 +21,14 @@
       "required": true,
       "unique": true
     },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "normal",
+        "missing_list"
+      ],
+      "default": "normal"
+    },
     "subtitle": {
       "type": "string"
     },
@@ -36,6 +44,7 @@
       "type": "media",
       "multiple": true,
       "required": false,
+      "description": "Sticker images shown when a missing-list pack is opened.",
       "allowedTypes": [
         "images"
       ]
@@ -44,6 +53,7 @@
       "type": "media",
       "multiple": false,
       "required": false,
+      "description": "Pack cover used on missing-list product cards.",
       "allowedTypes": [
         "images"
       ]

@@ -148,7 +148,7 @@ export default class CatalogueController {
     const rawName: unknown = request.input('name')
     const name = typeof rawName === 'string' ? rawName.trim() : ''
     if (!name) return this.error(response, 'validation_error', 'Name is required')
-    const status = request.input('status', 'draft')
+    const status = request.input('status', 'published')
     if (status !== 'draft' && status !== 'published')
       return this.error(response, 'validation_error', 'Status must be draft or published')
     const rawParent = request.input('parentId')

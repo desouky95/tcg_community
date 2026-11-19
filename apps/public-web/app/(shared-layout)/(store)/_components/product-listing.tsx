@@ -1,11 +1,12 @@
-import { ProductCard } from "@tcg/ui-web";
 import Link from "next/link";
+import { ShopProductCard } from "../../../../src/components/shop-product-card";
 import {
   PAGE_SIZE,
   stockStatus,
   type CollectionFilters,
 } from "../../../../src/lib/catalog/collection-queries";
 import { lowestProductPrice } from "../../../../src/lib/catalog/homepage-product-queries";
+import { getMissingListVisuals } from "../../../../src/lib/catalog/product-card-visuals.server";
 import type { listProductResults } from "../../../../src/lib/catalog/shop-data.server";
 import { FilterDrawer } from "../collections/[handle]/filter-drawer";
 
@@ -18,7 +19,7 @@ const sortLabels: Record<string, string> = {
   price: "Price: low to high",
   "-price": "Price: high to low",
 };
-export function ProductListing({
+export async function ProductListing({
   result,
   filters,
 }: {
@@ -35,6 +36,10 @@ export function ProductListing({
     invalidRange,
   } = result;
   const pages = Math.max(1, Math.ceil(count / PAGE_SIZE));
+  const missingListIds = products
+    .filter((product) => product.metadata?.type === "missing_list")
+    .map((product) => product.id);
+  const visuals = await getMissingListVisuals(missingListIds);
   function url(overrides: Partial<CollectionFilters>) {
     const next = { ...filters, ...overrides };
     const query = new URLSearchParams();
@@ -143,12 +148,15 @@ export function ProductListing({
           {products.map((product, index) => {
             const price = lowestProductPrice(product);
             return (
-              <ProductCard
+              <ShopProductCard
                 key={product.id}
                 Link={Link}
                 href={`/shop/${product.id}`}
                 title={product.title}
+                productType={product.type?.value}
                 image={product.thumbnail}
+                isMissingList={product.metadata?.type === "missing_list"}
+                missingListVisuals={visuals[product.id]}
                 soldOut={stockStatus(product) === "out-of-stock"}
                 imageLoading={index < 4 ? "eager" : "lazy"}
                 price={

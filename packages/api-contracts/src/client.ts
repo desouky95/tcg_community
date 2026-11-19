@@ -480,12 +480,12 @@ export function createApiClient(options: ApiClientOptions) {
         }),
       ),
     startScrapperJob: (
-      collections: string[],
+      urls: string[],
       requestOptions?: ApiRequestOptions,
     ) => {
       return http.post<APIResponse<any>>(
         "/scrapper/jobs",
-        collections,
+        { urls },
         requestConfig(true, requestOptions, undefined, {
           headers: {
             Authorization: `Bearer ${options.scrapperToken}`,

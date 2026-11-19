@@ -30,7 +30,7 @@ export default class ChecklistsController {
       q,
     }
 
-    const query = Checklist.query().preload('category')
+    const query = Checklist.query().preload('category').preload('subcategory')
     if (params.category) {
       query.if(params.category, (c) =>
         c.whereHas('category', (cat) =>
@@ -216,7 +216,8 @@ export default class ChecklistsController {
           year: data.year as unknown as number,
           type: data.type,
           totalCards: data.totalCards,
-          categoryId: category.id,
+          categoryId: category.parentId === -1 ? category.id : category.parentId,
+          subcategoryId: category.parentId === -1 ? null : category.id,
           slug,
         })
 

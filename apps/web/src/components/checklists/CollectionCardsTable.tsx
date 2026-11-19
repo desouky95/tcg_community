@@ -1,12 +1,36 @@
-import type { Checklist } from "@tcg/api-contracts";
-import { DataTable } from "@tcg/ui-web";
+import { useChecklistCards } from "@tcg/react-query";
+import { DataTable, Surface } from "@tcg/ui-web";
 import { ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export const CollectionCardsTable = ({
-  checklist,
+  checklistId,
 }: {
-  checklist: Checklist;
+  checklistId: string;
 }) => {
+  const { t } = useTranslation();
+  const { data, isLoading, isError } = useChecklistCards(checklistId);
+  const cards = data?.data ?? [];
+
+  if (isLoading)
+    return (
+      <p role="status" className="text-wax-muted">
+        {t("admin.collections.cards_loading")}
+      </p>
+    );
+  if (isError)
+    return (
+      <Surface role="alert" className="rounded-xl p-6">
+        {t("admin.collections.cards_error")}
+      </Surface>
+    );
+  if (cards.length === 0)
+    return (
+      <Surface className="rounded-xl p-6">
+        {t("admin.collections.cards_empty")}
+      </Surface>
+    );
+
   return (
     <DataTable.Root
       scrollLabel="Checklist cards"
@@ -25,7 +49,7 @@ export const CollectionCardsTable = ({
           </DataTable.Row>
         </DataTable.Header>
         <DataTable.Body>
-          {checklist.cards?.map((card) => (
+          {cards.map((card) => (
             <DataTable.Row key={card.number}>
               <DataTable.Cell>{card.number}</DataTable.Cell>
               <DataTable.Cell>{card.name}</DataTable.Cell>

@@ -18,7 +18,7 @@ export default class CommerceController {
     const offset = Number(ctx.request.input('offset', 0))
     if (!Number.isSafeInteger(offset) || offset < 0 || offset > 100000)
       return ctx.response.badRequest({ error: 'Invalid offset' })
-    return this.send(ctx, { operation: 'orders' })
+    return this.send(ctx, { operation: 'orders', offset })
   }
   async order(ctx: HttpContext) {
     return this.send(ctx, { operation: 'order', id: ctx.params.id })

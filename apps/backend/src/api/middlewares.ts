@@ -10,8 +10,10 @@ import {
 import { PostAdminCardSaleSchema } from "./admin/collection-sale/validators";
 
 import { PostCardSaleItemsSchema } from "./store/carts/[id]/card-sale-items/validators";
-import { CreateMissingListSchema, UpdateMissingListSchema } from "./admin/missing-lists/validators";
-import { CreateCardCollectionSchema } from "./admin/card-collections/validators";
+import {
+  CreateMissingListSchema,
+  UpdateMissingListSchema,
+} from "./admin/missing-lists/validators";
 import {
   GetPaymentInstructionsSchema,
   UpdatePaymentSettingsSchema,
@@ -36,21 +38,58 @@ export default defineMiddlewares({
     {
       matcher: "/store/payment-instructions",
       method: "GET",
-      middlewares: [validateAndTransformQuery(GetPaymentInstructionsSchema, {})],
+      middlewares: [
+        validateAndTransformQuery(GetPaymentInstructionsSchema, {}),
+      ],
     },
-    { matcher: "/admin/products/:id/sync-cms", method: "POST", policies: [{ resource: "product", operation: "update" }], middlewares: [authenticate("user", ["session", "bearer", "api-key"])] },
-    { matcher: "/admin/products/:id/avif", method: "POST", policies: [{ resource: "file", operation: "create" }, { resource: "product", operation: "update" }], middlewares: [authenticate("user", ["session", "bearer", "api-key"]), multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024, files: 1 } }).single("file") as any] },
-    { matcher: "/admin/missing-lists", method: "POST", middlewares: [authenticate("user", ["session", "bearer", "api-key"]), validateAndTransformBody(CreateMissingListSchema)] },
-    { matcher: "/admin/missing-lists/:id", method: "POST", middlewares: [authenticate("user", ["session", "bearer", "api-key"]), validateAndTransformBody(UpdateMissingListSchema)] },
     {
-      matcher: "/admin/card-collections/catalog",
+      matcher: "/admin/products/:id/sync-cms",
+      method: "POST",
+      policies: [{ resource: "product", operation: "update" }],
+      middlewares: [authenticate("user", ["session", "bearer", "api-key"])],
+    },
+    {
+      matcher: "/admin/products/:id/avif",
+      method: "POST",
+      policies: [
+        { resource: "file", operation: "create" },
+        { resource: "product", operation: "update" },
+      ],
+      middlewares: [
+        authenticate("user", ["session", "bearer", "api-key"]),
+        multer({
+          storage: multer.memoryStorage(),
+          limits: { fileSize: 10 * 1024 * 1024, files: 1 },
+        }).single("file") as any,
+      ],
+    },
+    {
+      matcher: "/store/card-catalog/collections",
       method: "GET",
       middlewares: [authenticate("user", ["session", "bearer", "api-key"])],
     },
     {
-      matcher: "/admin/card-collections",
+      matcher: "/store/card-catalog/collections/:id",
+      method: "GET",
+      middlewares: [authenticate("user", ["session", "bearer", "api-key"])],
+    },
+    {
+      matcher: "/admin/missing-lists",
       method: "POST",
-      middlewares: [authenticate("user", ["session", "bearer", "api-key"]), validateAndTransformBody(CreateCardCollectionSchema)],
+      bodyParser: { sizeLimit: "2mb" },
+      middlewares: [
+        authenticate("user", ["session", "bearer", "api-key"]),
+        validateAndTransformBody(CreateMissingListSchema),
+      ],
+    },
+    {
+      matcher: "/admin/missing-lists/:id",
+      method: "POST",
+      bodyParser: { sizeLimit: "2mb" },
+      middlewares: [
+        authenticate("user", ["session", "bearer", "api-key"]),
+        validateAndTransformBody(UpdateMissingListSchema),
+      ],
     },
     {
       method: ["POST"],

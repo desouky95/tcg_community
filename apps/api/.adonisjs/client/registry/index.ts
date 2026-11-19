@@ -44,17 +44,17 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"checklists"]],
     types: placeholder as Registry['checklists.store']['types'],
   },
-  'checklists.update': {
-    methods: ["PUT"],
-    pattern: '/api/v1/checklists/:id',
-    tokens: [[0,"api"],[0,"v1"],[0,"checklists"],[1,"id"]],
-    types: placeholder as Registry['checklists.update']['types'],
-  },
   'catalogue.archive_checklist': {
     methods: ["DELETE"],
     pattern: '/api/v1/checklists/:id',
     tokens: [[0,"api"],[0,"v1"],[0,"checklists"],[1,"id"]],
     types: placeholder as Registry['catalogue.archive_checklist']['types'],
+  },
+  'checklists.update': {
+    methods: ["PUT"],
+    pattern: '/api/v1/checklists/:id',
+    tokens: [[0,"api"],[0,"v1"],[0,"checklists"],[1,"id"]],
+    types: placeholder as Registry['checklists.update']['types'],
   },
   'catalogue.validate_import': {
     methods: ["POST"],

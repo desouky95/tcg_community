@@ -265,7 +265,8 @@ export async function placeOrder(
       };
     (await cookies()).delete(COOKIE);
     return { kind: "order" as const, displayId: result.order.display_id };
-  } catch {
+  } catch(error) {
+    console.log({error})
     return {
       kind: "uncertain" as const,
       message:

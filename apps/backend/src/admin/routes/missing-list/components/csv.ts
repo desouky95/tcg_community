@@ -1,6 +1,6 @@
 export type DraftCard = { key: string; id?: string; number: string; name: string; price: string; quantity: string; active: boolean }
 
-export function parseCsv(text: string): DraftCard[] {
+function parseRows(text: string): string[][] {
   const rows: string[][] = []; let row: string[] = []; let field = ""; let quoted = false; let closed = false
   const input = text.replace(/^\uFEFF/, "")
   for (let i = 0; i < input.length; i++) {
@@ -17,7 +17,11 @@ export function parseCsv(text: string): DraftCard[] {
   }
   if (quoted) throw new Error(`Unclosed quote near row ${rows.length + 1}`)
   if (row.length || field) { row.push(field); rows.push(row) }
-  console.log(rows[0]?.join(','))
+  return rows
+}
+
+export function parseCsv(text: string): DraftCard[] {
+  const rows = parseRows(text)
   if (rows[0]?.join(',').toLowerCase() !== 'number,name,price,quantity') throw new Error('Expected header: number,name,price,quantity')
   const records = rows.slice(1).filter(r => r.some(v => v.trim()))
   if (!records.length) throw new Error('The file contains no cards')
@@ -26,6 +30,35 @@ export function parseCsv(text: string): DraftCard[] {
     return { key: `row-${i + 2}`, number: r[0].trim(), name: r[1].trim(), price: r[2].trim(), quantity: r[3].trim() || '0', active: false }
   })
 }
+
+export function serializeUpdateCsv(cards: DraftCard[]): string {
+  const quote = (value: string) => `"${value.replace(/"/g, '""')}"`
+  const safeText = (value: string) => /^[\s]*[=+@-]/.test(value) ? `'${value}` : value
+  return [
+    "variant_id,card_number,card_name,price,quantity,active",
+    ...cards.map(card => [card.id!, safeText(card.number), safeText(card.name), card.price, card.quantity, String(card.active)].map(quote).join(",")),
+  ].join("\r\n") + "\r\n"
+}
+
+export function parseUpdateCsv(text: string, current: DraftCard[]): DraftCard[] {
+  const rows = parseRows(text)
+  if (rows[0]?.join(",").toLowerCase() !== "variant_id,card_number,card_name,price,quantity,active") throw new Error("Unexpected CSV header. Download a fresh product CSV and keep its columns unchanged")
+  const records = rows.slice(1).filter(row => row.some(value => value.trim()))
+  if (records.length !== current.length) throw new Error(`Expected ${current.length} card rows`)
+  const byId = new Map(current.map(card => [card.id, card]))
+  const seen = new Set<string>()
+  return records.map((row, index) => {
+    if (row.length !== 6) throw new Error(`Row ${index + 2}: expected six columns`)
+    const [id, , , price, quantity, rawActive] = row.map(value => value.trim())
+    const active = rawActive.toLowerCase()
+    const card = byId.get(id)
+    if (!card || seen.has(id)) throw new Error(`Row ${index + 2}: unknown or duplicate variant ID`)
+    if (active !== "true" && active !== "false") throw new Error(`Row ${index + 2}: active must be true or false`)
+    seen.add(id)
+    return { ...card, price, quantity, active: active === "true" }
+  })
+}
+
 export function cardErrors(cards: DraftCard[], defaultPrice = '', external = false) {
   const counts = new Map<string, number>()
   cards.forEach(c => { const key = external ? c.id : c.number.trim().toLowerCase(); if (key) counts.set(key, (counts.get(key) || 0) + 1) })

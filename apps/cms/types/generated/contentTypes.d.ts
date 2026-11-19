@@ -780,6 +780,8 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     thumbnail: Schema.Attribute.Media<'images'>;
     thumbnailUrl: Schema.Attribute.String;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    type: Schema.Attribute.Enumeration<['normal', 'missing_list']> &
+      Schema.Attribute.DefaultTo<'normal'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

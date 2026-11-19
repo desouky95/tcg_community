@@ -6,6 +6,8 @@ A shopper can add an available product variant and manage quantities or remove i
 
 ## Requirements
 
+- Reject `Coming Soon` products in Medusa cart-creation, add-item, and line-item-update workflow validation hooks, including direct Store API requests and batch missing-list additions. Keep item removal available. Pre-order products follow normal Medusa cart and inventory rules.
+
 - Medusa owns cart pricing and availability; validate the product, variant, region and quantity before adding and show a recoverable error when availability changes.
 - Show selected variant details when the product has multiple variants, retaining details when variant data is unavailable. Allow quantity changes and removal with accessible controls, and provide a checkout link for a non-empty cart.
 - Persist the cart ID in an HTTP-only cookie and provide an accessible review drawer from the header and after adding an item.
@@ -15,6 +17,8 @@ A shopper can add an available product variant and manage quantities or remove i
 - Use the service ownership and security boundaries in the shared contracts.
 
 ## Acceptance and verification
+
+- Manually verify direct cart creation with items, single and batch additions, and quantity updates reject Coming Soon products. Confirm blocked items can still be removed and ordinary/Pre-order items remain usable.
 
 - The outcome is achieved for an eligible actor and unauthorized actors cannot access or change the resource.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
@@ -31,6 +35,7 @@ A shopper can add an available product variant and manage quantities or remove i
 - `POST /api/cart/add` — purchase-form fallback that adds an item and returns to the product page.
 
 ## Related Files
+- apps/backend/src/workflows/hooks/product-availability.ts
 
 - apps/public-web/src/lib/commerce/cart-actions.ts
 - apps/public-web/src/lib/clients/medusa.ts

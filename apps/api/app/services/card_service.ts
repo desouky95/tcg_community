@@ -21,14 +21,17 @@ export class CardService {
     user?: User
   ): Promise<ModelQueryBuilderContract<typeof Card, Card>> {
     const checklist = /^\d+$/.test(slug) ? await Checklist.findOrFail(Number(slug)) : await Checklist.findByOrFail('slug', slug)
-    const query = Card.query()
-      .where('checklistId', checklist.id)
-      .whereHas('checklist', (c) =>
-        c.whereHas('userChecklist', (uc) =>
-          uc.where('user_id', user?.id!).andWhere('checklist_id', checklist.id)
+    const query = Card.query().where('checklistId', checklist.id)
+
+    if (user?.role !== 'admin' && user?.role !== 'super_admin') {
+      query
+        .whereHas('checklist', (c) =>
+          c.whereHas('userChecklist', (uc) =>
+            uc.where('user_id', user?.id!).andWhere('checklist_id', checklist.id)
+          )
         )
-      )
-      .apply((s) => s.withUserCards(user!, checklist))
+        .apply((s) => s.withUserCards(user!, checklist))
+    }
     const filtered = filtering.filter<typeof Card>(query, {
       defaultSearch: 'name',
       defaultSortDirection: 'asc',

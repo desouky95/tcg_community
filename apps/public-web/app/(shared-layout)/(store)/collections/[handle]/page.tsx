@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ProductCard } from "@tcg/ui-web";
 import { notFound } from "next/navigation";
+import { ShopProductCard } from "../../../../../src/components/shop-product-card";
 import { getCollection } from "../../../../../src/lib/catalog/collection-data.server";
 import {
   PAGE_SIZE,
@@ -8,6 +8,7 @@ import {
   stockStatus,
 } from "../../../../../src/lib/catalog/collection-queries";
 import { lowestProductPrice } from "../../../../../src/lib/catalog/homepage-product-queries";
+import { getMissingListVisuals } from "../../../../../src/lib/catalog/product-card-visuals.server";
 import { FilterDrawer } from "./filter-drawer";
 
 export default async function CollectionPage({
@@ -45,6 +46,10 @@ export default async function CollectionPage({
     stockAvailable,
   } = result;
   const pages = Math.max(1, Math.ceil(count / PAGE_SIZE));
+  const missingListIds = products
+    .filter((product) => product.metadata?.type === "missing_list")
+    .map((product) => product.id);
+  const visuals = await getMissingListVisuals(missingListIds);
   const description =
     typeof collection.metadata?.description === "string"
       ? collection.metadata.description
@@ -97,12 +102,15 @@ export default async function CollectionPage({
             const price = lowestProductPrice(product);
             const stock = stockStatus(product);
             return (
-              <ProductCard
+              <ShopProductCard
                 key={product.id}
                 Link={Link}
                 href={`/shop/${product.id}`}
                 title={product.title}
+                productType={product.type?.value}
                 image={product.thumbnail}
+                isMissingList={product.metadata?.type === "missing_list"}
+                missingListVisuals={visuals[product.id]}
                 soldOut={stock === "out-of-stock"}
                 imageLoading={index < 4 ? "eager" : "lazy"}
                 price={price ? new Intl.NumberFormat("en", {

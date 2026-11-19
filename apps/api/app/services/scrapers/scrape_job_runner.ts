@@ -29,6 +29,7 @@ function wait(milliseconds: number): Promise<void> {
 
 class ScrapeJobRunner {
   readonly #jobs = new Map<string, ScrapeJobSnapshot>()
+  readonly #jobCollections = new Map<string, readonly ScraperCollectionConfig[]>()
   readonly #pending: string[] = []
   #draining = false
   #lastRequestAt = 0
@@ -72,8 +73,38 @@ class ScrapeJobRunner {
     return jobs
   }
 
-  enqueue(requestedCollections?: readonly string[]): ScrapeJobSnapshot {
-    const collections = this.#resolveCollections(requestedCollections)
+  enqueue(
+    requestedCollections?: readonly string[],
+    requestedUrls?: readonly string[]
+  ): ScrapeJobSnapshot {
+    const collections = requestedUrls?.length
+      ? requestedUrls.map((url) => {
+          const parsed = new URL(url)
+          const segments = parsed.pathname.split('/').filter(Boolean)
+          if (
+            parsed.protocol !== 'https:' ||
+            parsed.hostname !== 'www.laststicker.com' ||
+            segments.length < 2 ||
+            segments[0] !== 'cards'
+          ) {
+            throw new UnknownScraperCollectionError(`Unsupported scraper URL: ${url}`)
+          }
+          const slug = segments
+            .at(-1)!
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '')
+          if (!slug) throw new UnknownScraperCollectionError(`Unsupported scraper URL: ${url}`)
+          const key = collectionKey(slug)
+          return {
+            source: 'laststicker',
+            key,
+            enabled: true,
+            url: parsed.toString(),
+            request: scrapersConfig.collections[0]!.request,
+          } satisfies ScraperCollectionConfig
+        })
+      : this.#resolveCollections(requestedCollections)
     const id = scrapeJobId(randomUUID())
     const job = {
       id,
@@ -83,6 +114,7 @@ class ScrapeJobRunner {
     } as const satisfies ScrapeJobSnapshot
 
     this.#jobs.set(id, job)
+    this.#jobCollections.set(id, collections)
     this.#pending.push(id)
     queueMicrotask(() => void this.#drain())
 
@@ -135,7 +167,7 @@ class ScrapeJobRunner {
 
     try {
       for (const key of queued.collections) {
-        const config = scrapersConfig.collections.find((item) => item.key === key)
+        const config = this.#jobCollections.get(id)?.find((item) => item.key === key)
         if (!config) throw new UnknownScraperCollectionError(`Missing scraper config: ${key}`)
         await this.#respectRequestInterval(config.request.minIntervalMs)
 
@@ -162,6 +194,7 @@ class ScrapeJobRunner {
       })
       logger.error({ error: message, scrapeJobId: id }, 'Scrape job failed')
     }
+    this.#jobCollections.delete(id)
   }
 
   #scrape(config: ScraperCollectionConfig): Promise<ScrapedCollection> {

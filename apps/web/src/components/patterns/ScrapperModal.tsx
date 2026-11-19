@@ -45,7 +45,7 @@ export const ScrapperModal = ({ open, onOpenChange }: Props) => {
   const onSubmit = handleSubmit((data) => {
     // data will not contain "optionalField"
     startJob(
-      data.collections.map((_) => _.url),
+      data.collections.map(({ url }) => url),
       {
         onSuccess() {
           onOpenChange?.(false);

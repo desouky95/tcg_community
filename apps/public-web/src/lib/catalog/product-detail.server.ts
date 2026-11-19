@@ -31,8 +31,8 @@ export async function getProductDetail(identifier: string) {
       /* Show product without regional pricing. */
     }
     const fields = regionId
-      ? "+description,*variants.calculated_price,+variants.inventory_quantity,*images"
-      : "+description,+variants.inventory_quantity,*images";
+      ? "+description,+metadata,*type,*variants.calculated_price,+variants.inventory_quantity,*images"
+      : "+description,+metadata,*type,+variants.inventory_quantity,*images";
     const query = identifier.startsWith("prod_")
       ? { id: [identifier] }
       : { handle: [identifier] };

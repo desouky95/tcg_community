@@ -63,8 +63,8 @@ export function createHomepageProductQueries(
   async function priceOptions() {
     const region = await regionId();
     return region
-      ? { region_id: region, fields: "*variants.calculated_price" }
-      : {};
+      ? { region_id: region, fields: "*variants.calculated_price,+metadata,*type" }
+      : { fields: "+metadata,*type" };
   }
   async function getProducts(
     collection: string,

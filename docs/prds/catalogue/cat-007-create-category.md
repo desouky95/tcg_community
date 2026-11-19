@@ -3,11 +3,13 @@
 
 ## Outcome and scope
 
-An administrator creates a draft or published category. This is an established capability; preserve current collection and checklist behavior rather than redesign it.
+An administrator creates a published category or subcategory visible in taxonomy. The API may also accept an explicit draft status.
 
 ## Requirements
 
 - The category endpoint validates names, parent and status, rejects duplicates, and creates initial subcategories atomically.
+- The admin form submits the selected category type and waits for API success before navigating; newly created categories default to published so they appear in the taxonomy list.
+- Taxonomy writes allow authenticated `admin` and `super_admin` roles.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
@@ -29,11 +31,12 @@ Existing evidence pointer: apps/api CategoriesController.store. This pointer is 
 
 ## Related Files
 - apps/api/start/routes/v1/admin.routes.ts
+- apps/api/app/middleware/admin_middleware.ts
 - apps/api/app/controllers/catalogue_controller.ts
-- apps/api/start/routes/v1/checklists.routes.ts
-- apps/api/app/controllers/checklists_controller.ts
-- apps/web/src/pages/Checklists.tsx
-- apps/public-web/app/(shared-layout)/checklists/page.tsx
+- apps/api/database/seeders/main_seeder.ts
+- apps/web/src/pages/admin/AdminCategories/AdminCategoryFormPage.tsx
+- packages/api-contracts/src/client.ts
+- packages/react-query/src/hooks.ts
 
 ## After Implementation
 - Update this PRD’s UI page, API route, and related-files entries to match the implementation.

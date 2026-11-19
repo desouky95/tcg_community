@@ -13,6 +13,7 @@ import { Dialog } from "@tcg/ui-web/components/radix/dialog";
 import { ShoppingBag, X, Minus, Plus, Trash2 } from "lucide-react";
 import {
   addCartItem,
+  addCartItems,
   readCart,
   updateCartItem,
   removeCartItem,
@@ -26,6 +27,10 @@ type CartContextValue = {
     variantId: string,
     quantity: number,
   ) => Promise<string | undefined>;
+  addMany: (
+    productId: string,
+    items: { variantId: string; quantity: number }[],
+  ) => Promise<{ addedVariantIds: string[]; failures: { variantId: string; message: string }[] }>;
   openCart: () => void;
   count: number;
   pending: boolean;
@@ -59,11 +64,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     mutationFn: async (
       input:
         | { kind: "add"; productId: string; variantId: string; quantity: number }
+        | { kind: "addMany"; productId: string; items: { variantId: string; quantity: number }[] }
         | { kind: "update"; lineId: string; quantity: number }
         | { kind: "remove"; lineId: string },
     ) => {
       if (input.kind === "add")
         return addCartItem(input.productId, input.variantId, input.quantity);
+      if (input.kind === "addMany")
+        return addCartItems(input.productId, input.items);
       if (input.kind === "update")
         return updateCartItem(input.lineId, input.quantity);
       return removeCartItem(input.lineId);
@@ -72,9 +80,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     onSuccess: (result) => {
       if (result.kind === "ready" || result.kind === "empty")
         queryClient.setQueryData(CART_QUERY_KEY, result);
+      if (result.kind === "batch" && result.cartState)
+        queryClient.setQueryData(CART_QUERY_KEY, result.cartState);
     },
     onSettled: (result) => {
-      if (!result || result.kind === "error")
+      if (!result || result.kind === "error" || (result.kind === "batch" && !result.cartState))
         void queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY });
     },
   });
@@ -114,6 +124,33 @@ export function CartProvider({ children }: { children: ReactNode }) {
       pendingRef.current = false;
     }
   };
+  const addMany = async (productId: string, items: { variantId: string; quantity: number }[]) => {
+    if (pendingRef.current) {
+      return {
+        addedVariantIds: [],
+        failures: items.map((item) => ({ variantId: item.variantId, message: "Please wait for the current request." })),
+      };
+    }
+    returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    pendingRef.current = true;
+    try {
+      const result = await mutation.mutateAsync({ kind: "addMany", productId, items });
+      if (result.kind === "batch" && result.addedVariantIds.length) {
+        setMutationError("");
+        setOpen(true);
+      }
+      return result.kind === "batch"
+        ? { addedVariantIds: result.addedVariantIds, failures: result.failures }
+        : { addedVariantIds: [], failures: items.map((item) => ({ variantId: item.variantId, message: "We couldn’t add this card. Please try again." })) };
+    } catch {
+      return {
+        addedVariantIds: [],
+        failures: items.map((item) => ({ variantId: item.variantId, message: "We couldn’t add this card. Please try again." })),
+      };
+    } finally {
+      pendingRef.current = false;
+    }
+  };
   const changeItem = async (lineId: string, quantity?: number) => {
     if (pendingRef.current) return;
     pendingRef.current = true;
@@ -142,7 +179,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!pendingRef.current) void cartQuery.refetch();
   };
   return (
-    <CartContext.Provider value={{ add, openCart, count, pending }}>
+    <CartContext.Provider value={{ add, addMany, openCart, count, pending }}>
       {children}
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Content

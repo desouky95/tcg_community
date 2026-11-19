@@ -32,10 +32,8 @@ const createParentSchema = z.object({
 });
 const createSubcategoriesSchema = z.object({
   creationType: z.literal("subcategory"),
-  category: z.array(
-    z.string().min(3, "Category name must be at least 3 characters"),
-  ),
-  subcategories: z.array(z.string()),
+  category: z.string().min(3, "Category name must be at least 3 characters"),
+  parentId: z.string().min(1, "Select a parent category"),
 });
 const formSchema = z.discriminatedUnion("creationType", [
   createParentSchema,
@@ -54,13 +52,15 @@ function CategoryForm({ category }: { category?: Category }) {
   const {
     control,
     formState: { errors },
+    handleSubmit: submitForm,
     register,
   } = useForm<FormSchema>({
     mode: "all",
     resolver: zodResolver(formSchema),
     defaultValues: {
       creationType: "parent",
-      category: isEditing ? category?.name : "",
+      category: category?.name ?? "",
+      subcategories: [],
     },
   });
   const creationType = useWatch({ control, name: "creationType" });
@@ -76,7 +76,25 @@ function CategoryForm({ category }: { category?: Category }) {
 
   const needsParent =
     (!isEditing && creationType === "subcategory") || (isEditing && !isParent);
-  const handleSubmit = async () => {};
+  const handleSubmit = submitForm(async (data) => {
+    try {
+      const subcategories =
+        data.creationType === "parent"
+          ? data.subcategories?.map((name) => name.trim()).filter(Boolean)
+          : undefined;
+      await createCategory.mutateAsync({
+        name: data.category.trim(),
+        ...(data.creationType === "subcategory"
+          ? { parentId: data.parentId }
+          : {}),
+        ...(subcategories?.length ? { subcategories } : {}),
+      });
+      toast.success(t("admin.categories.created"));
+      navigate("/admin/categories");
+    } catch {
+      toast.error(t("admin.categories.errors.save"));
+    }
+  });
 
   const handleDelete = async () => {
     if (!category) return;
@@ -157,7 +175,7 @@ function CategoryForm({ category }: { category?: Category }) {
             </fieldset>
           )}
 
-          {creationType === "parent" && (
+          {(!isEditing || creationType === "parent") && (
             <Field
               label={t(`admin.categories.cat_name`)}
               error={errors.category?.message}
@@ -231,7 +249,7 @@ function CategoryForm({ category }: { category?: Category }) {
             </Field>
           )}
 
-          {!isEditing && (
+          {!isEditing && creationType === "parent" && (
             <section className="grid gap-3 rounded-lg border border-wax-line bg-wax-input/30 p-4">
               <div>
                 <h2 className="font-display text-lg font-bold text-wax-ink">

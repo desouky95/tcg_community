@@ -40,8 +40,8 @@ export async function listProducts(categoryId?: string) {
       ...(categoryId ? { category_id: [categoryId] } : {}),
       ...(region ? { region_id: region } : {}),
       fields: region
-        ? "*variants.calculated_price,+variants.inventory_quantity"
-        : "+variants.inventory_quantity",
+        ? "*variants.calculated_price,+variants.inventory_quantity,+metadata,*type"
+        : "+variants.inventory_quantity,+metadata,*type",
       limit: 100,
       offset,
     });
@@ -127,8 +127,8 @@ export async function listProductResults(
     : filters;
   const requiresAll = !invalidRange && requiresFullCollection(effective);
   const fields = region
-    ? "*variants.calculated_price,+variants.inventory_quantity"
-    : "+variants.inventory_quantity";
+    ? "*variants.calculated_price,+variants.inventory_quantity,+metadata,*type"
+    : "+variants.inventory_quantity,+metadata,*type";
   const base = {
     ...(categoryIds?.length ? { category_id: categoryIds } : {}),
     ...(region ? { region_id: region } : {}),

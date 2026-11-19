@@ -9,7 +9,7 @@ COPY . .
 
 FROM base AS dev
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile \
-    --filter @tcg/medusa... --filter @tcg/public-web... --filter @tcg/api... --filter @tcg/strapi...
+    --filter @tcg/medusa... --filter @tcg/public-web... --filter @tcg/api... --filter @tcg/strapi... --filter @tcg/web...
 ENV NODE_ENV=development
 
 FROM base AS backend-build
@@ -82,3 +82,14 @@ RUN mkdir -p public/uploads && chown -R node:node public/uploads
 USER node
 EXPOSE 1337
 CMD ["./node_modules/.bin/strapi", "start"]
+
+FROM base AS web-build
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @tcg/web...
+ARG VITE_API_URL
+ARG VITE_PUBLIC_WEB_URL
+RUN pnpm --filter @tcg/web... --if-present run build
+
+FROM nginx:alpine AS web
+COPY --from=web-build /workspace/apps/web/dist /usr/share/nginx/html
+COPY infra/nginx.web.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80

@@ -22,6 +22,7 @@ type Product = {
   subtitle?: string | null;
   description?: string | null;
   thumbnail?: string | null;
+  metadata?: Record<string, unknown> | null;
   images?: { url: string }[];
   variants?: Variant[];
 };
@@ -106,6 +107,7 @@ export async function syncProduct(
           "description",
           "handle",
           "thumbnail",
+          "metadata",
           "images.url",
           "variants.id",
           "variants.title",
@@ -127,6 +129,7 @@ export async function syncProduct(
         throw new Error("Strapi product identity conflict");
       const entry = await api.save("products", matches[0], {
         medusaId: product.id,
+        type: product.metadata?.type === "missing_list" ? "missing_list" : "normal",
         handle: product.handle,
         title: product.title,
         subtitle: product.subtitle ?? null,

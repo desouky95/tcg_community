@@ -25,6 +25,7 @@
   - [CAT-014: Validate catalogue import](catalogue/cat-014-validate-catalogue-import.md)
   - [CAT-015: Commit catalogue import](catalogue/cat-015-commit-catalogue-import.md)
   - [CAT-016: Roll back catalogue import](catalogue/cat-016-rollback-catalogue-import.md)
+  - [CAT-017: Create missing-list draft product](catalogue/cat-017-create-missing-list-draft.md)
 - **chat**
   - [CHAT-001: List conversations](chat/chat-001-list-conversations.md)
   - [CHAT-002: Find or create direct conversation](chat/chat-002-find-create-conversation.md)
@@ -85,6 +86,7 @@
   - [PLAT-004: Initialize Strapi data](platform/plat-004-initialize-strapi-data.md)
   - [PLAT-005: Verify database setup](platform/plat-005-verify-database-setup.md)
   - [PLAT-006: Configure swap operations](platform/plat-006-configure-swap-operations.md)
+  - [PLAT-008: Maintain Medusa admin session](platform/plat-008-maintain-medusa-admin-session.md)
 - **reviews**
   - [REV-001: View collector reviews](reviews/rev-001-view-collector-reviews.md)
   - [REV-002: Check review eligibility](reviews/rev-002-check-review-eligibility.md)
@@ -104,6 +106,7 @@
   - [SHOP-007: Fulfill order](storefront/shop-007-fulfill-order.md)
   - [SHOP-008: Manage storefront content](storefront/shop-008-manage-storefront-content.md)
   - [SHOP-009: Manage saved addresses](storefront/shop-009-manage-saved-addresses.md)
+  - [SHOP-010: Browse inventory by product](storefront/shop-010-browse-inventory-by-product.md)
 - **swaps**
   - [SWAP-001: Find matching collectors](swaps/swap-001-find-matching-collectors.md)
   - [SWAP-002: Inspect a match](swaps/swap-002-inspect-a-match.md)

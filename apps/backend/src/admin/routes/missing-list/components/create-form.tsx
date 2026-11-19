@@ -37,7 +37,7 @@ export function CreateForm({ source }: { source: "external" | "csv" }) {
     enabled: source === "external",
     queryFn: () =>
       sdk.client.fetch<{ collections: Collection[]; total: number }>(
-        `/admin/card-collections/catalog?${new URLSearchParams({ search, page: String(page) })}`,
+        `/store/card-catalog/collections?${new URLSearchParams({ search, page: String(page) })}`,
       ),
   });
   const loadCards = useMutation({
@@ -50,7 +50,7 @@ export function CreateForm({ source }: { source: "external" | "csv" }) {
           cards: CatalogCard[];
           total: number;
         }>(
-          `/admin/card-collections/catalog/${encodeURIComponent(id)}?page=${current}&limit=100`,
+          `/store/card-catalog/collections/${encodeURIComponent(id)}?page=${current}&limit=100`,
         );
         if (!result.cards.length) break;
         all.push(...result.cards);

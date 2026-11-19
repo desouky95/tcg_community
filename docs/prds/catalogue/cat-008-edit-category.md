@@ -8,6 +8,7 @@ Category metadata changes with an audit record. This is an established capabilit
 ## Requirements
 
 - The category endpoint validates its input and rejects duplicate names.
+- Taxonomy writes allow authenticated `admin` and `super_admin` roles.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
@@ -29,11 +30,10 @@ Existing evidence pointer: Admin UI exists; update contract incomplete. This poi
 
 ## Related Files
 - apps/api/start/routes/v1/admin.routes.ts
+- apps/api/app/middleware/admin_middleware.ts
 - apps/api/app/controllers/catalogue_controller.ts
-- apps/api/start/routes/v1/checklists.routes.ts
-- apps/api/app/controllers/checklists_controller.ts
-- apps/web/src/pages/Checklists.tsx
-- apps/public-web/app/(shared-layout)/checklists/page.tsx
+- apps/web/src/components/molecules/CategoryEditForm/CategoryEditForm.tsx
+- apps/web/src/components/molecules/CategoryEditForm/CategoryEditForm.hook.ts
 
 ## After Implementation
 - Update this PRD’s UI page, API route, and related-files entries to match the implementation.

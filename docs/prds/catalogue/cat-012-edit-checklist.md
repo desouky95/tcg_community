@@ -10,6 +10,10 @@ Checklist metadata and version are updated. This is an established capability; p
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.
+- Load checklist rows in the Cards tab through the dedicated cards API for administrators.
+- Preload the current category for edit defaults and map a selected subcategory to both parent and subcategory IDs.
+- Allow authenticated `admin` and `super_admin` roles to update checklist details.
+- Show both the parent category and selected subcategory in the admin collections list.
 - Preserve existing behavior and contracts where this capability is already implemented; reconcile any discrepancy with repository evidence before changing it.
 
 ## Acceptance and verification
@@ -20,16 +24,31 @@ Checklist metadata and version are updated. This is an established capability; p
 Existing evidence pointer: apps/api ChecklistsController.update. This pointer is not a fresh implementation audit.
 
 ## UI Page Used
-- N/A — no dedicated UI page
+- `apps/web/src/components/molecules/CollectionEditForm/CollectionEditForm.tsx`
+- `/admin/collections/:id/edit`
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- `GET /api/v1/checklists/:id?expand=category,subcategory`
+- `GET /api/v1/checklists` (admin collections list, including category and subcategory)
+- `GET /api/v1/checklists/:id/cards` (admin catalogue view)
+- `PUT /api/v1/checklists/:id`
 
 ## Related Files
-- apps/api/start/routes/v1/checklists.routes.ts
-- apps/api/app/controllers/checklists_controller.ts
-- apps/web/src/pages/Checklists.tsx
-- apps/public-web/app/(shared-layout)/checklists/page.tsx
+- `apps/api/start/routes/v1/checklists.routes.ts`
+- `apps/api/start/routes/v1/admin.routes.ts`
+- `apps/api/app/middleware/admin_middleware.ts`
+- `apps/api/app/controllers/checklists_controller.ts`
+- `apps/api/app/services/checklist_service.ts`
+- `apps/api/app/transformers/checklist_transformer.ts`
+- `apps/api/app/controllers/cards_controller.ts`
+- `apps/api/app/services/card_service.ts`
+- `apps/api/app/models/card.ts`
+- `apps/web/src/components/checklists/CollectionCardsTable.tsx`
+- `apps/web/src/components/molecules/CollectionEditForm/CollectionEditForm.tsx`
+- `apps/web/src/components/molecules/CollectionEditForm/CollectionEditForm.hook.ts`
+- `apps/web/src/pages/admin/AdminCollections/AdminCollections.tsx`
+- `packages/locale/src/locales/en/common.json`
+- `packages/locale/src/locales/ar/common.json`
 
 ## After Implementation
 - Update this PRD’s UI page, API route, and related-files entries to match the implementation.

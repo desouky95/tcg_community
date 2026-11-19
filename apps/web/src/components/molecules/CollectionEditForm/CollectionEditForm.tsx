@@ -231,7 +231,10 @@ const EditForm = ({ checklist }: { checklist: Checklist }) => {
 export const CollectionEditForm = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  const checklistQuery = useChecklist(id);
+  const checklistQuery = useChecklist(id, {
+    withParams: true,
+    query: { expand: "category,subcategory" },
+  });
 
   if (checklistQuery.isLoading) {
     return (
@@ -284,7 +287,7 @@ export const CollectionEditForm = () => {
           />
         </Tabs.Content>
         <Tabs.Content value="checklist">
-          <CollectionCardsTable checklist={checklistQuery.data} />
+          <CollectionCardsTable checklistId={String(checklistQuery.data.id)} />
         </Tabs.Content>
       </Tabs.Root>
     </>

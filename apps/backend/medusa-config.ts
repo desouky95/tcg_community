@@ -13,8 +13,13 @@ if (
 }
 
 module.exports = defineConfig({
+  featureFlags: { view_configurations: true },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    sessionOptions: {
+      ttl: 30 * 24 * 60 * 60 * 1000,
+      rolling: true,
+    },
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
@@ -29,6 +34,37 @@ module.exports = defineConfig({
     },
   },
   modules: [
+    {
+      resolve: "@medusajs/medusa/settings",
+      options: {
+        entityOverrides: {
+          InventoryItem: {
+            defaultVisibleFields: [
+              "title",
+              "sku",
+              "linked_products",
+              "reserved_quantity",
+              "stocked_quantity",
+            ],
+            defaultFieldOrdering: { linked_products: 250 },
+            computedColumns: [
+              {
+                id: "linked_products",
+                name: "Product",
+                renderMode: "inventory_products",
+                requiredFields: [
+                  "variants.product.id",
+                  "variants.product.title",
+                ],
+                defaultVisible: true,
+                sortable: false,
+                filter: { enabled: false },
+              },
+            ],
+          },
+        },
+      },
+    },
     ...(process.env.EVENTS_REDIS_URL
       ? [
           {

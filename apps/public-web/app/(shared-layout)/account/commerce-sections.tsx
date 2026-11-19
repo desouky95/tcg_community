@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import {
   Button,
   AuthField,
@@ -10,15 +11,12 @@ import {
   AlertDialog,
 } from "@tcg/ui-web";
 import { api } from "../../../src/lib/clients/adonis";
-
-type Order = {
-  id: string;
-  display_id: number;
-  status: string;
-  created_at: string;
-  currency_code: string;
-  items?: { id: string; title: string; quantity: number }[];
-};
+import {
+  formatMoney,
+  formatStatus,
+  orderItemTitle,
+  type Order,
+} from "./order-utils";
 type Address = {
   id: string;
   first_name: string;
@@ -57,28 +55,15 @@ function ErrorState({ retry }: { retry: () => void }) {
 
 export function OrdersSection({ userId }: { userId: string }) {
   const [offset, setOffset] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
   const orders = useQuery({
     queryKey: ["account-orders", userId, offset],
     queryFn: async () =>
       (
         await api.http.get<{ orders: Order[]; count: number }>(
           "/account/commerce/orders",
-          // { params: { offset } },
+          { params: { offset } },
         )
       ).data,
-    retry: false,
-    staleTime: 0,
-  });
-  const detail = useQuery({
-    queryKey: ["account-order", userId, selected],
-    queryFn: async () =>
-      (
-        await api.http.get<{ order: Order }>(
-          `/account/commerce/orders/${encodeURIComponent(selected!)}`,
-        )
-      ).data.order,
-    enabled: !!selected,
     retry: false,
     staleTime: 0,
   });
@@ -94,50 +79,50 @@ export function OrdersSection({ userId }: { userId: string }) {
         <>
           <ul className="divide-y divide-wax-line">
             {orders.data.orders.map((order) => (
-              <li
-                key={order.id}
-                className="flex flex-wrap items-center justify-between gap-4 py-4 first:pt-0"
-              >
-                <div>
-                  <p className="font-semibold">Order #{order.display_id}</p>
-                  <p className="mt-1 text-sm text-wax-muted">
-                    {new Date(order.created_at).toLocaleDateString()} ·{" "}
-                    {order.status?.replaceAll("_", " ")}
-                  </p>
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    setSelected(selected === order.id ? null : order.id)
-                  }
-                  aria-expanded={selected === order.id}
-                >
-                  {selected === order.id ? "Close details" : "View details"}
-                </Button>
-                {selected === order.id && (
-                  <div className="w-full rounded-lg bg-muted p-4">
-                    {detail.isPending ? (
-                      <p role="status">Loading order…</p>
-                    ) : detail.isError ? (
-                      <ErrorState retry={() => void detail.refetch()} />
-                    ) : (
-                      <>
-                        <p className="font-semibold">Items</p>
-                        {detail.data.items?.length ? (
-                          <ul className="mt-2 space-y-1">
-                            {detail.data.items.map((item) => (
-                              <li key={item.id}>
-                                {item.title} × {item.quantity}
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="mt-2">No item details available.</p>
+              <li key={order.id} className="py-5 first:pt-0">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="font-display text-lg font-semibold">
+                      Your order #
+                      {String(order.customer_order_number).padStart(2, "0")}
+                    </p>
+                    <p className="mt-1 text-sm text-wax-muted">
+                      {new Date(order.created_at).toLocaleDateString()} ·{" "}
+                      {formatStatus(order.fulfillment_status || order.status)}
+                    </p>
+                    {order.items?.length ? (
+                      <ul className="mt-3 space-y-1 text-sm">
+                        {order.items.slice(0, 2).map((item) => (
+                          <li key={item.id} className="truncate">
+                            {orderItemTitle(item)}{" "}
+                            <span className="text-wax-muted">
+                              × {item.quantity}
+                            </span>
+                          </li>
+                        ))}
+                        {order.items.length > 2 && (
+                          <li className="text-sm text-wax-muted">
+                            +{order.items.length - 2} more items
+                          </li>
                         )}
-                      </>
-                    )}
+                      </ul>
+                    ) : null}
                   </div>
-                )}
+                  <div className="flex items-center gap-4">
+                    {order.total != null && (
+                      <p className="font-semibold tabular-nums">
+                        {formatMoney(order.total, order.currency_code)}
+                      </p>
+                    )}
+                    <Button asChild variant="outline">
+                      <Link
+                        href={`/account/orders/${encodeURIComponent(order.id)}`}
+                      >
+                        View details
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
               </li>
             ))}
           </ul>

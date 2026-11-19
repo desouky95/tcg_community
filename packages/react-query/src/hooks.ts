@@ -620,8 +620,8 @@ export function useStartScrapperJob(requestOptions?: ApiRequestOptions) {
   const { client, defaultQuery } = useApiHooksContext();
   return useMutation({
     mutationKey: [],
-    mutationFn: async (collections: string[]) =>
-      (await client.startScrapperJob(collections, requestOptions)).data,
+    mutationFn: async (urls: string[]) =>
+      (await client.startScrapperJob(urls, requestOptions)).data,
   });
 }
 

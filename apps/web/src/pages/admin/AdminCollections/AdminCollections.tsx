@@ -118,7 +118,7 @@ export default function AdminCollections() {
                           t("admin.collections.uncategorized")}
                       </span>
                       <span>
-                        {checklist.category?.parent?.name ??
+                        {checklist.subcategory?.name ??
                           t("admin.collections.no_subcategory")}
                       </span>
                     </DataTable.Cell>

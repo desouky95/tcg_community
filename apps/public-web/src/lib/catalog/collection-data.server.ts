@@ -50,8 +50,8 @@ export async function getCollection(
       collection_id: [collection.id],
       ...(region ? { region_id: region } : {}),
       fields: region
-        ? "*variants.calculated_price,+variants.inventory_quantity"
-        : "+variants.inventory_quantity",
+        ? "*variants.calculated_price,+variants.inventory_quantity,+metadata,*type"
+        : "+variants.inventory_quantity,+metadata,*type",
     };
     const priceAvailable = !!region;
     if (requiresFullCollection(filters)) {

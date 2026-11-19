@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { Badge } from "@tcg/ui-web";
 import { notFound } from "next/navigation";
 import { CommerceCustomerLink } from "../commerce-customer-link";
 import { ProductGallery } from "./_components/product-gallery";
 import { PurchasePanel } from "./_components/purchase-panel";
+import { MissingListCardSelector } from "../../../../../src/components/missing-list-card-selector";
 import { getProductDetail } from "#lib/catalog/product-detail.server";
 
 export default async function ProductPage({
@@ -34,6 +36,7 @@ export default async function ProductPage({
       </section>
     );
   const { product, regionId } = result;
+  const isMissingList = product.metadata?.type === "missing_list" && product.type?.value !== "Coming Soon";
   const description = product.description?.trim();
   const images = [
     ...new Set(
@@ -53,46 +56,60 @@ export default async function ProductPage({
         <span aria-hidden="true"> / </span>
         <span>{product.title}</span>
       </nav>
-      <div className="flex flex-col items-start gap-8 md:gap-10 lg:flex-row lg:gap-14 xl:gap-20">
-        <ProductGallery title={product.title} images={images} />
-        <div className="min-w-0 w-full max-w-xl lg:flex-1">
-          <h1 className="font-display text-[clamp(2rem,3vw,3rem)] font-semibold leading-[1.08] tracking-tight wrap-anywhere">
-            {product.title}
-          </h1>
-          <PurchasePanel
-            productId={product.id}
-            variants={product.variants ?? []}
-            regionId={regionId}
-          />
-          {cart === "added" && (
-            <p role="status" className="mt-5 font-semibold">
-              Added to your cart.
-            </p>
-          )}
-          {cart === "error" && (
-            <p role="alert" className="mt-5 font-semibold">
-              We couldn’t add this item. Please check availability and try
-              again.
-            </p>
-          )}
-          {description && (
-            <section
-              aria-labelledby="product-description"
-              className="mt-10 border-t border-wax-line pt-7"
-            >
-              <h2
-                id="product-description"
-                className="font-display text-lg font-semibold"
-              >
-                Description
-              </h2>
-              <p className="mt-4 whitespace-pre-line leading-relaxed text-primary-400 wrap-anywhere">
-                {description}
+      <h1 className="sr-only">{product.title}</h1>
+      {isMissingList && product.type?.value === "Pre-order" && (
+        <Badge tone="warning" className="mb-4">Pre-order — ships when available</Badge>
+      )}
+      {isMissingList ? (
+        <MissingListCardSelector
+          productId={product.id}
+          title={product.title}
+          cover={images[0]}
+          description={description}
+        />
+      ) : (
+        <div className="flex flex-col items-start gap-8 md:gap-10 lg:flex-row lg:gap-14 xl:gap-20">
+          <ProductGallery title={product.title} images={images} />
+          <div className="min-w-0 w-full max-w-xl lg:flex-1">
+            <h2 className="font-display text-[clamp(2rem,3vw,3rem)] font-semibold leading-[1.08] tracking-tight wrap-anywhere">
+              {product.title}
+            </h2>
+            <PurchasePanel
+              productId={product.id}
+              productType={product.type?.value}
+              variants={product.variants ?? []}
+              regionId={regionId}
+            />
+            {cart === "added" && (
+              <p role="status" className="mt-5 font-semibold">
+                Added to your cart.
               </p>
-            </section>
-          )}
+            )}
+            {cart === "error" && (
+              <p role="alert" className="mt-5 font-semibold">
+                We couldn’t add this item. Please check availability and try
+                again.
+              </p>
+            )}
+            {description && (
+              <section
+                aria-labelledby="product-description"
+                className="mt-10 border-t border-wax-line pt-7"
+              >
+                <h3
+                  id="product-description"
+                  className="font-display text-lg font-semibold"
+                >
+                  Description
+                </h3>
+                <p className="mt-4 whitespace-pre-line leading-relaxed text-primary-400 wrap-anywhere">
+                  {description}
+                </p>
+              </section>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

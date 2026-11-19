@@ -86,19 +86,6 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'checklists.update': {
-    methods: ["PUT"]
-    pattern: '/api/v1/checklists/:id'
-    types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/checklist').updateChecklistValidator)>>
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: ExtractQuery<InferInput<(typeof import('#validators/checklist').updateChecklistValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['update']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
-    }
-  }
   'catalogue.archive_checklist': {
     methods: ["DELETE"]
     pattern: '/api/v1/checklists/:id'
@@ -110,6 +97,19 @@ export interface Registry {
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveChecklist']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveChecklist']>>>
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/catalogue_controller').default['archiveChecklist']>>>
+    }
+  }
+  'checklists.update': {
+    methods: ["PUT"]
+    pattern: '/api/v1/checklists/:id'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/checklist').updateChecklistValidator)>>
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: ExtractQuery<InferInput<(typeof import('#validators/checklist').updateChecklistValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['update']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/checklists_controller').default['update']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
   'catalogue.validate_import': {

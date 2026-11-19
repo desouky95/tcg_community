@@ -259,6 +259,9 @@
       "confirm_delete": "Archive Checklist",
       "form": "Details",
       "checklist": "Cards",
+      "cards_loading": "Loading cards…",
+      "cards_error": "The checklist cards could not be loaded. Try again.",
+      "cards_empty": "No cards in this checklist.",
       "table": {
         "checklist": "Checklist"
       },

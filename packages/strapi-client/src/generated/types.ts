@@ -587,6 +587,7 @@ export interface Product {
   handle: string
   imageUrls: unknown | null
   thumbnailUrl: string | null
+  type: 'normal' | 'missing_list'
 }
 
 export interface Permission {
@@ -777,6 +778,7 @@ export interface ProductCreateInput {
   thumbnailUrl?: string | null | undefined
   images?: MultiMediaInput | undefined
   thumbnail?: MediaInput | undefined
+  type?: 'normal' | 'missing_list' | undefined
   variants?: RelationInput<'oneToMany'> | undefined
   options?: RelationInput<'manyToMany'> | undefined
 }
@@ -792,6 +794,7 @@ export interface ProductUpdateInput {
   thumbnailUrl?: string | null | undefined
   images?: MultiMediaInput | undefined
   thumbnail?: MediaInput | undefined
+  type?: 'normal' | 'missing_list' | undefined
   variants?: RelationInput<'oneToMany'> | undefined
   options?: RelationInput<'manyToMany'> | undefined
 }
@@ -2185,6 +2188,7 @@ export interface ProductFilters extends LogicalOperators<ProductFilters> {
   handle?: string | StringFilterOperators
   imageUrls?: any
   thumbnailUrl?: string | StringFilterOperators
+  type?: ('normal' | 'missing_list') | StringFilterOperators
   variants?: {
     id?: number | IdFilterOperators
     documentId?: string | StringFilterOperators

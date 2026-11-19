@@ -1,4 +1,7 @@
+import { Badge } from "@tcg/ui-web";
 import Link from "next/link";
+import { ShopProductCard } from "./shop-product-card";
+import { getMissingListVisuals } from "../lib/catalog/product-card-visuals.server";
 import { lowestProductPrice } from "../lib/catalog/homepage-product-queries";
 import { getProductsByCollection } from "../lib/catalog/homepage-product-data";
 import type { HomepageState } from "../lib/cms/homepage.server";
@@ -23,6 +26,13 @@ export async function ProductSection({
   } catch {
     products = null;
   }
+  const visuals = products
+    ? await getMissingListVisuals(
+        products
+          .filter((product) => product.metadata?.type === "missing_list")
+          .map((product) => product.id),
+      )
+    : {};
 
   return (
     <section
@@ -65,33 +75,56 @@ export async function ProductSection({
             {products.map((product) => {
               const price = lowestProductPrice(product);
               return (
-                <Link
-                  key={product.id}
-                  href={`/shop/${product.id}`}
-                  className={`group focus-ring block overflow-hidden rounded-xl ${dark ? "bg-paper-50" : "bg-paper-200 "} p-2 pb-5 text-primary-500 hover:bg-signature-lime-300`}
-                >
-                  <div className="aspect-square overflow-hidden rounded-[10px] bg-paper-200">
-                    {product.thumbnail && (
-                      <img
-                        src={product.thumbnail}
-                        alt=""
-                        loading="lazy"
-                        className="h-full w-full object-contain transition-transform duration-300 motion-safe:group-hover:scale-105"
-                      />
+                product.metadata?.type === "missing_list" ? (
+                  <ShopProductCard
+                    key={product.id}
+                    href={`/shop/${product.id}`}
+                    title={product.title}
+                    image={product.thumbnail}
+                    price={
+                      price
+                        ? new Intl.NumberFormat("en", {
+                            style: "currency",
+                            currency: price.currency_code!,
+                          }).format(price.calculated_amount!)
+                        : undefined
+                    }
+                    productType={product.type?.value}
+                    isMissingList
+                    missingListVisuals={visuals[product.id]}
+                  />
+                ) : (
+                  <Link
+                    key={product.id}
+                    href={`/shop/${product.id}`}
+                    className={`group focus-ring block overflow-hidden rounded-xl ${dark ? "bg-paper-50" : "bg-paper-200 "} p-2 pb-5 text-primary-500 hover:bg-signature-lime-300`}
+                  >
+                    <div className="aspect-square overflow-hidden rounded-[10px] bg-paper-200">
+                      {product.thumbnail && (
+                        <img
+                          src={product.thumbnail}
+                          alt=""
+                          loading="lazy"
+                          className="h-full w-full object-contain transition-transform duration-300 motion-safe:group-hover:scale-105"
+                        />
+                      )}
+                    </div>
+                    <h3 className="mx-5 mt-4 font-display text-lg font-semibold group-hover:underline">
+                      {product.title}
+                    </h3>
+                    {(product.type?.value === "Coming Soon" || product.type?.value === "Pre-order") && (
+                      <Badge tone="warning" className="mx-5 mt-2">{product.type.value}</Badge>
                     )}
-                  </div>
-                  <h3 className="mx-5 mt-4 font-display text-lg font-semibold group-hover:underline">
-                    {product.title}
-                  </h3>
-                  {price && (
-                    <p className="mx-5 mt-1 text-sm">
-                      {new Intl.NumberFormat("en", {
-                        style: "currency",
-                        currency: price.currency_code!,
-                      }).format(price.calculated_amount!)}
-                    </p>
-                  )}
-                </Link>
+                    {price && (
+                      <p className="mx-5 mt-1 text-sm">
+                        {new Intl.NumberFormat("en", {
+                          style: "currency",
+                          currency: price.currency_code!,
+                        }).format(price.calculated_amount!)}
+                      </p>
+                    )}
+                  </Link>
+                )
               );
             })}
           </div>

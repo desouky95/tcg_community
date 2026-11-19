@@ -20,14 +20,22 @@ export default () => {
         () => import('#controllers/catalogue_controller'),
         'createSubcategory',
       ])
+    })
+    .use(middleware.admin({ allowAdmin: true }))
+
+  router
+    .group(() => {
       router.post('/checklists', [() => import('#controllers/checklists_controller'), 'store'])
-      router.put('/checklists/:id', [() => import('#controllers/checklists_controller'), 'update'])
       router.delete('/checklists/:id', [
         () => import('#controllers/catalogue_controller'),
         'archiveChecklist',
       ])
     })
     .use(middleware.admin())
+
+  router
+    .put('/checklists/:id', [() => import('#controllers/checklists_controller'), 'update'])
+    .use(middleware.admin({ allowAdmin: true }))
 
   router
     .group(() => {

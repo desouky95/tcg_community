@@ -76,6 +76,7 @@ export class ChecklistService {
           c.if(expendedFields.includes('category.parent'), (cp) => cp.preload('parent'))
         )
       )
+      .if(expendedFields.includes('subcategory'), (q) => q.preload('subcategory'))
       .if(expendedFields.includes('userChecklist'), (q) => q.preload('userChecklist'))
 
     const result = await query.firstOrFail()

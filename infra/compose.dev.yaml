@@ -7,6 +7,7 @@ x-workspace-volumes: &workspace-volumes
   - /workspace/node_modules
   - /workspace/apps/backend/node_modules
   - /workspace/apps/public-web/node_modules
+  - /workspace/apps/web/node_modules
   - /workspace/apps/api/node_modules
   - /workspace/apps/cms/node_modules
   - /workspace/packages/api-contracts/node_modules
@@ -72,6 +73,17 @@ services:
       - /workspace/packages/strapi-client/node_modules
       - /workspace/packages/ui-web/node_modules
       - /workspace/apps/public-web/.next
+
+  web:
+    <<: *dev
+    working_dir: /workspace/apps/web
+    command: pnpm dev --host 0.0.0.0 --port 5173
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3333/api/v1}
+      VITE_PUBLIC_WEB_URL: ${VITE_PUBLIC_WEB_URL:-http://localhost:3000}
+    ports:
+      - '5173:5173'
+    volumes: *workspace-volumes
 
   api:
     <<: *dev

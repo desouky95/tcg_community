@@ -25,10 +25,10 @@ export default class ScrappersController {
   }
 
   async start({ request, response }: HttpContext) {
-    const { collections } = await request.validateUsing(startScrapeJobValidator)
+    const { collections, urls } = await request.validateUsing(startScrapeJobValidator)
 
     try {
-      const job = scrapeJobRunner.enqueue(collections)
+      const job = scrapeJobRunner.enqueue(collections, urls)
 
       return response.status(202).json({ data: job })
     } catch (error) {

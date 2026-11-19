@@ -1,9 +1,10 @@
-# 07 — Collector frontend on Cloudflare Pages
+# 07 — Collector frontend
 
 Prerequisites: Git repository connected to Cloudflare, an API domain with HTTPS, and Node/pnpm versions compatible with this workspace. Pages build settings can change; use the [Pages build configuration documentation](https://developers.cloudflare.com/pages/configuration/build-configuration/).
 
-1. In Cloudflare Pages, create a project connected to the repository. Use the monorepo root as root directory. Set the build command to `pnpm install --frozen-lockfile && pnpm --filter @tcg/web build` and output directory to `apps/web/dist`. Set a supported Node version and install the pnpm version pinned by the repository; ensure the Pages build image can run that version. Do not use npm install for this pnpm workspace.
+1. For Cloudflare Pages, create a project connected to the repository. Use the monorepo root as root directory. Set the build command to `pnpm install --frozen-lockfile && pnpm --filter @tcg/web build` and output directory to `apps/web/dist`. Set a supported Node version and install the pnpm version pinned by the repository; ensure the Pages build image can run that version. Do not use npm install for this pnpm workspace. For Docker, use target `web` in `Dockerfile` or `infra/compose.prod.yaml`; the image serves the Vite build with nginx and SPA fallback.
 2. Set production build variables `VITE_API_URL=https://api.example.com/api/v1` and `VITE_PUBLIC_WEB_URL=https://www.example.com`. Never set a secret in a `VITE_` variable: its value is included in browser JavaScript. In particular, do not expose `VITE_SCRAPPER_API_KEY`; implement authenticated server-side authorization for scraper actions instead.
+   Docker accepts these same values as build arguments. Compose publishes collector web at `http://localhost:5173` by default; change the host port to match your proxy setup.
 3. Deploy and attach `app.example.com` under the project's custom domains. Follow Cloudflare's DNS instructions and wait for certificate provisioning. Configure Adonis `WEB_ORIGINS` to allow the exact storefront and collector origins. Ensure credentialed cross-origin requests, secure cookies, and cookie domain settings are compatible with your actual domains.
 4. Verify a fresh browser can load a deep link such as `/login`, refresh it, sign in, and call the API. Confirm SPA fallback behavior and add Pages redirect configuration if needed, without rewriting asset requests. Test logout and expiration.
 

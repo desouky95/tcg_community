@@ -4,15 +4,14 @@ import { CARD_CATALOG_MODULE } from "../../../../modules/card-catalog";
 import CardCatalogService from "../../../../modules/card-catalog/service";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
-  const collectionId = req.params.id;
-  if (!collectionId) {
+  const page = Number(req.query.page ?? 1);
+  const search = String(req.query.search ?? "").trim();
+  if (!Number.isSafeInteger(page) || page < 1 || search.length > 100) {
     throw new MedusaError(
       MedusaError.Types.INVALID_DATA,
-      "Invalid catalog query"
+      "Invalid catalog query",
     );
   }
   const catalog = req.scope.resolve<CardCatalogService>(CARD_CATALOG_MODULE);
-  const result = await catalog.retrieveCollection(String(collectionId));
-
-  res.json(result);
+  res.json(await catalog.listCollections(search, page));
 }
