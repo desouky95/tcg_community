@@ -36,7 +36,9 @@ stop() {
 trap stop EXIT
 trap 'exit 0' TERM INT
 
-(cd /app/.medusa/server; exec setsid env HOST=0.0.0.0 PORT=9000 /app/node_modules/.bin/medusa start) &
+echo "Starting bundle: nginx=8080 storefront=3000 medusa=9000 api=3333 cms=1337"
+
+(cd /app/.medusa/server; exec setsid env HOST=0.0.0.0 PORT=9000 /app/node_modules/.bin/medusa start --port 9000) &
 pids+=("$!")
 (cd /srv/public-web; exec setsid env HOSTNAME=0.0.0.0 PORT=3000 node apps/public-web/server.js) &
 pids+=("$!")
