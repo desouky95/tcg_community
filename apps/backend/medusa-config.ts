@@ -14,6 +14,7 @@ if (
 
 module.exports = defineConfig({
   featureFlags: { view_configurations: true },
+
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     sessionOptions: {
@@ -29,7 +30,7 @@ module.exports = defineConfig({
     },
     databaseDriverOptions: {
       connection: {
-        ssl: false,
+        ssl: { rejectUnauthorized: false },
       },
     },
   },
