@@ -1,10 +1,11 @@
+/// <reference types="node" />
 import { describe, expect, it } from "vitest";
 import { buildLoginUrl } from "@tcg/auth-client";
 import {
   authDestination,
   authQuery,
   destinationPath,
-} from "../../../public-web/src/lib/auth-destination";
+} from "../../../public-web/src/lib/auth/auth-destination";
 
 describe("authentication destinations", () => {
   it("defaults to the public site and only accepts the collector identifier", () => {

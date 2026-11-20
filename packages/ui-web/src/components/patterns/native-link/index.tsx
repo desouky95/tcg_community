@@ -11,11 +11,7 @@ export const NativeLink = ({
   </a>
 );
 
-export const NextLink = ({
-  href,
-  children,
-  ...props
-}: ComponentProps<any>) => (
+export const NextLink = (_props: ComponentProps<"a">) => (
   <></>
   // <Link href={href} {...props}>
   //   {children}

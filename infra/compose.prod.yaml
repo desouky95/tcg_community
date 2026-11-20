@@ -1,61 +1,56 @@
 name: tcg-prod
 
+x-app: &app
+  image: ${APP_IMAGE:?Set APP_IMAGE to your Docker Hub image and release tag}
+  restart: unless-stopped
+
 services:
   backend:
-    build:
-      context: ..
-      target: backend
-    env_file: ${BACKEND_ENV_FILE:?Set BACKEND_ENV_FILE to the production environment file}
-    restart: unless-stopped
+    <<: *app
+    env_file: ${BACKEND_ENV_FILE:-.env.production.backend}
     ports:
       - '9000:9000'
 
   public-web:
-    build:
-      context: ..
-      target: public-web
-      args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
-        NEXT_PUBLIC_STRAPI_API_URL: ${NEXT_PUBLIC_STRAPI_API_URL:-}
-        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-}
-        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-}
-        NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-}
-        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-}
-    env_file: ${PUBLIC_WEB_ENV_FILE:?Set PUBLIC_WEB_ENV_FILE to the production environment file}
-    restart: unless-stopped
+    <<: *app
+    working_dir: /srv/public-web
+    command: ["node", "apps/public-web/server.js"]
+    env_file: ${PUBLIC_WEB_ENV_FILE:-.env.production.public-web}
+    environment:
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?Set NEXT_PUBLIC_API_URL in infra/.env.production}
+      NEXT_PUBLIC_STRAPI_API_URL: ${NEXT_PUBLIC_STRAPI_API_URL:?Set NEXT_PUBLIC_STRAPI_API_URL in infra/.env.production}
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:?Set NEXT_PUBLIC_MEDUSA_BACKEND_URL in infra/.env.production}
+      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:?Set NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY in infra/.env.production}
+      NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-eg}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:?Set NEXT_PUBLIC_APP_URL in infra/.env.production}
     ports:
       - '3000:3000'
 
   web:
-    build:
-      context: ..
-      target: web
-      args:
-        VITE_API_URL: ${VITE_API_URL:-}
-        VITE_PUBLIC_WEB_URL: ${VITE_PUBLIC_WEB_URL:-}
-    restart: unless-stopped
+    <<: *app
+    command: ["nginx", "-g", "daemon off;"]
     ports:
-      - '5173:80'
+      - '5173:8080'
 
   api:
-    build:
-      context: ..
-      target: api
-    env_file: ${API_ENV_FILE:?Set API_ENV_FILE to the production environment file}
-    restart: unless-stopped
+    <<: *app
+    working_dir: /srv/api
+    command: ["node", "bin/server.js"]
+    env_file: ${API_ENV_FILE:-.env.production.api}
     ports:
       - '3333:3333'
 
   cms:
-    build:
-      context: ..
-      target: cms
-    env_file: ${CMS_ENV_FILE:?Set CMS_ENV_FILE to the production environment file}
-    restart: unless-stopped
+    <<: *app
+    working_dir: /srv/cms
+    command: ["./node_modules/.bin/strapi", "start"]
+    env_file: ${CMS_ENV_FILE:-.env.production.cms}
     ports:
       - '1337:1337'
     volumes:
-      - cms-uploads:/app/public/uploads
+      - cms-uploads:/srv/cms/public/uploads
 
 volumes:
   cms-uploads:

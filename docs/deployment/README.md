@@ -1,5 +1,7 @@
 # Deployment runbook
 
+The current Docker Hub single-image deployment is documented in [deployment and recovery](../prds/_shared/deployment-and-recovery.md). Use that guide and `infra/compose.prod.yaml`; the numbered guides below contain older architecture examples and are not the current Compose specification.
+
 - [ ] [01 — Architecture and budget](01-architecture-budget.md)
 - [ ] [02 — Accounts and server setup](02-server-setup.md)
 - [ ] [03 — Application preparation](03-application-preparation.md)

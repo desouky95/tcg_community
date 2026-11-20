@@ -7,6 +7,8 @@ A guest understands the product and can reach storefront, Collector Disk, sign-i
 
 ## Requirements
 
+- Defer shared-layout and homepage service requests until runtime with the Cache Components IO boundary. Production builds must not require a running API, CMS, or commerce service; existing cached loaders and Suspense loading shells remain in use.
+
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.
@@ -24,6 +26,8 @@ A guest understands the product and can reach storefront, Collector Disk, sign-i
 
 ## Acceptance and verification
 
+- Production build verification: `pnpm --filter @tcg/public-web build` completes with the local API and CMS unavailable. Application tests and browser checks were not run.
+
 - The stated outcome succeeds for an eligible actor and is denied for unauthorized access.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
@@ -39,6 +43,7 @@ Existing evidence pointer: apps/web/src/pages/Landing.tsx. This pointer is not a
 - Medusa Store API category listing — storefront navigation hierarchy.
 
 ## Related Files
+- apps/public-web/next-env.d.ts (Next.js-generated production route type imports)
 - apps/api/start/routes/v1/auth.routes.ts
 - apps/api/app/exceptions/handler.ts
 - apps/web/src/main.tsx

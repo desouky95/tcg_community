@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { io } from "next/cache";
 import { Suspense } from "react";
 import { HeroSlider } from "@tcg/ui-web";
 import {
@@ -52,6 +53,7 @@ function renderSection(section: Sections[number]) {
 }
 
 export default async function HomePage() {
+  await io();
   const homepage = await getHomepage();
   if (homepage.kind !== "ready")
     return (

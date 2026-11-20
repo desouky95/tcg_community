@@ -1,6 +1,6 @@
 import { useScrapperList } from "@tcg/react-query";
 import { Button, DataTable, IconButton, PageHeading } from "@tcg/ui-web";
-import { ChevronDown, Link, Plus, X } from "lucide-react";
+import { ChevronDown, Link, Plus } from "lucide-react";
 import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrapperModal } from "../../../components/patterns/ScrapperModal";

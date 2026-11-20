@@ -76,7 +76,6 @@ export const BrandLogo = () => {
   );
 };
 
-const AnimatedLogo = motion.create(BrandLogo);
 
 const pVariants: Variants = {
   initial: {

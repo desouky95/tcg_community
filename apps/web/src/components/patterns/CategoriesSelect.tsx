@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 type CategoriesSelectProps = ComponentPropsWithoutRef<typeof Select.Root>;
 export const CategoriesSelect = forwardRef<
-  ComponentRef<typeof Select.Root>,
+  ComponentRef<typeof Select.Trigger>,
   CategoriesSelectProps
 >(({ ...props }, ref) => {
   const { data, isLoading } = useCategories();
@@ -19,7 +19,7 @@ export const CategoriesSelect = forwardRef<
   const { t } = useTranslation();
   return (
     <Select.Root disabled={isLoading} {...props}>
-      <Select.Trigger>
+      <Select.Trigger ref={ref}>
         <Select.Value
           placeholder={t("admin.collections.category_placeholder")}
         />

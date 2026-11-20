@@ -1,4 +1,4 @@
-import type { Card, Checklist } from "@tcg/api-contracts";
+import type { Card, Category, Checklist } from "@tcg/api-contracts";
 
 export const mockMarketplaceListings = [
   {
@@ -63,18 +63,23 @@ export const mockDashboardSummary = {
   ],
 };
 
-export const mockChecklists = [
+export const mockChecklists: Checklist[] = [
   {
     id: "cl1",
+    slug: "brilliant-stars",
+    needs: 0,
+    holds: 0,
+    offers: 0,
     type: "card" as const,
     name: "Brilliant Stars",
     year: 2022,
     totalCards: 172,
     categoryId: 1,
     subcategoryId: 11,
-    category: { id: "pokemon", name: "Pokémon TCG", parentId: 0, children: [] },
+    category: { id: "pokemon", slug: "pokemon", name: "Pokémon TCG", parentId: 0, children: [] },
     subcategory: {
       id: "brilliant-stars",
+      slug: "brilliant-stars",
       name: "Sword & Shield",
       parentId: 1,
       children: [],
@@ -82,6 +87,10 @@ export const mockChecklists = [
   },
   {
     id: "cl2",
+    slug: "fifa-world-cup-2006",
+    needs: 0,
+    holds: 0,
+    offers: 0,
     type: "card" as const,
     name: "FIFA World Cup 2006",
     year: 2006,
@@ -90,12 +99,14 @@ export const mockChecklists = [
     subcategoryId: 21,
     category: {
       id: "football",
+      slug: "football",
       name: "Football cards",
       parentId: 0,
       children: [],
     },
     subcategory: {
       id: "world-cup",
+      slug: "world-cup",
       name: "World Cup",
       parentId: 2,
       children: [],
@@ -103,15 +114,20 @@ export const mockChecklists = [
   },
   {
     id: "cl3",
+    slug: "legend-of-blue-eyes",
+    needs: 0,
+    holds: 0,
+    offers: 0,
     type: "card" as const,
     name: "Legend of Blue Eyes",
     year: 2002,
     totalCards: 126,
     categoryId: 3,
     subcategoryId: 31,
-    category: { id: "yugioh", name: "Yu-Gi-Oh!", parentId: 0, children: [] },
+    category: { id: "yugioh", slug: "yugioh", name: "Yu-Gi-Oh!", parentId: 0, children: [] },
     subcategory: {
       id: "legend-blue-eyes",
+      slug: "legend-blue-eyes",
       name: "Starter era",
       parentId: 3,
       children: [],
@@ -119,7 +135,7 @@ export const mockChecklists = [
   },
 ];
 
-type CardFixture = Omit<Card, "id" | "checklistId" | "variant" | "baseCardId">;
+type CardFixture = Omit<Card, "id" | "checklistId" | "variant" | "baseCardId" | "order">;
 
 const mockCardsByChecklist: Record<string, CardFixture[]> = {
   cl1: [
@@ -325,20 +341,23 @@ export const mockChecklistDetails = mockChecklists.map((checklist) => ({
   cards: (mockCardsByChecklist[checklist.id] ?? []).map((card, index) => ({
     ...card,
     id: index + 1,
+    order: index + 1,
     checklistId: Number(checklist.id.replace("cl", "")),
     variant: null,
     baseCardId: null,
   })),
 })) satisfies Checklist[];
 
-export const mockCategories = [
+export const mockCategories: Category[] = [
   {
     id: "pokemon",
+    slug: "pokemon",
     name: "Pokémon TCG",
     parentId: 0,
     children: [
       {
         id: "brilliant-stars",
+        slug: "brilliant-stars",
         name: "Sword & Shield",
         parentId: 1,
         children: [],
@@ -347,19 +366,22 @@ export const mockCategories = [
   },
   {
     id: "football",
+    slug: "football",
     name: "Football cards",
     parentId: 0,
     children: [
-      { id: "world-cup", name: "World Cup", parentId: 2, children: [] },
+      { id: "world-cup", slug: "world-cup", name: "World Cup", parentId: 2, children: [] },
     ],
   },
   {
     id: "yugioh",
+    slug: "yugioh",
     name: "Yu-Gi-Oh!",
     parentId: 0,
     children: [
       {
         id: "legend-blue-eyes",
+        slug: "legend-blue-eyes",
         name: "Starter era",
         parentId: 3,
         children: [],

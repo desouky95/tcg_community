@@ -19,7 +19,6 @@ import type {
   User,
   UserChecklist,
   Card,
-  ImportChecklistPayload,
 } from "@tcg/api-contracts";
 import { getQueryKey } from "@tcg/api-contracts";
 import { useApiHooksContext } from "./provider";
@@ -227,7 +226,7 @@ export function useDownloadChecklist(
   id: string | undefined,
   requestOptions?: ApiRequestOptions,
 ) {
-  const { client, defaultQuery, fallbacks } = useApiHooksContext();
+  const { client, defaultQuery } = useApiHooksContext();
   return useMutation<Blob>({
     mutationKey: withQueryKey(
       queryKeys.checklist(id),
@@ -617,7 +616,7 @@ export function useScrapperList(requestOptions?: ApiRequestOptions) {
 }
 
 export function useStartScrapperJob(requestOptions?: ApiRequestOptions) {
-  const { client, defaultQuery } = useApiHooksContext();
+  const { client } = useApiHooksContext();
   return useMutation({
     mutationKey: [],
     mutationFn: async (urls: string[]) =>

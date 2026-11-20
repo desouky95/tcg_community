@@ -19,7 +19,6 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Link,
-  useLocation,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
@@ -27,7 +26,6 @@ import {
 export default function AdminCategories() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const { data: categories, isLoading, isError } = useCategories();
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set());
   const parentCategories =

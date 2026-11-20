@@ -18,6 +18,8 @@ An administrator creates a published category or subcategory visible in taxonomy
 
 ## Acceptance and verification
 
+- Build maintenance: Category creation form schemas use a string category name matching the API payload. Production forms omit development-only React Hook Form debug panels. Verified by the collector production build; scenario tests were not run.
+
 - The stated outcome succeeds for an eligible actor and is denied for unauthorized access.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
@@ -30,6 +32,7 @@ Existing evidence pointer: apps/api CategoriesController.store. This pointer is 
 - POST /api/v1/categories
 
 ## Related Files
+- apps/web/src/components/molecules/CategoryAddForm/CategoryAddForm.hook.ts
 - apps/api/start/routes/v1/admin.routes.ts
 - apps/api/app/middleware/admin_middleware.ts
 - apps/api/app/controllers/catalogue_controller.ts

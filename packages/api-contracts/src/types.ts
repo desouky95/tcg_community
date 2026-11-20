@@ -1,5 +1,3 @@
-import type { AxiosError } from "axios";
-
 export type Id = string | number;
 
 export type FilterItem = {
@@ -111,6 +109,7 @@ export type Card = {
   offerCount?: number;
   ratio?: string;
   order: number;
+  userCard?: { quantity: number; wantedQuantity: number; duplicates: number } | null;
 };
 
 export type CardDetail = {

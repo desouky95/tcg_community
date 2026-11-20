@@ -10,7 +10,6 @@ import { useCollectionAddForm } from "./CollectionAddForm.hook";
 import { Link } from "react-router-dom";
 import { ArrowLeft, FileImage, FileSpreadsheet } from "lucide-react";
 import { Controller } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
 import { CategoriesSelect } from "../../patterns/CategoriesSelect";
 
 export const CollectionAddForm = () => {
@@ -37,7 +36,6 @@ export const CollectionAddForm = () => {
           </Button>
         }
       />
-      <DevTool control={control} />
       <Surface className="rounded-xl p-5 sm:p-7">
         <form onSubmit={handleSubmit} className="grid gap-6">
           <div className="grid gap-6 lg:grid-cols-2">

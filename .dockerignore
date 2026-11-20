@@ -27,3 +27,7 @@ env/
 **/*.key
 
 infra/.bootstrap
+
+# Local SSH deployment keys must never enter image layers.
+next_pull
+next_pull.pub

@@ -86,7 +86,7 @@ export default function Profile() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const currentUser = useStore((state) => state.user);
-  const updatePoints = useStore((state) => state.updatePoints);
+  const setUser = useStore((state) => state.setUser);
 
   // If no ID is provided, assume we want the logged-in user's profile
   const isOwnProfile = !id || id == currentUser?.id;
@@ -162,7 +162,7 @@ export default function Profile() {
 
       // If we are reviewing ourselves, sync store point state
       if (String(currentUser.id) === String(targetId)) {
-        updatePoints(res.data.newPoints);
+        setUser({ ...currentUser, points: res.data.newPoints });
       }
     } catch {
       toast.error("Failed to post review");

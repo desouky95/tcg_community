@@ -14,6 +14,8 @@ A checklist is created under an authorized category. This is an established capa
 
 ## Acceptance and verification
 
+- Build maintenance: The checklist creation form builds without development-only form debug panels. The category selector forwards its focus ref to the select trigger. Verified by the collector production build; scenario tests were not run.
+
 - The stated outcome succeeds for an eligible actor and is denied for unauthorized access.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
@@ -26,6 +28,9 @@ Existing evidence pointer: apps/api ChecklistsController.store. This pointer is 
 - N/A — no HTTP route
 
 ## Related Files
+- apps/web/src/components/molecules/CollectionForms.cover.test.tsx
+- apps/web/src/components/patterns/CategoriesSelect.tsx
+- apps/web/src/components/molecules/CollectionAddForm/CollectionAddForm.tsx
 - apps/api/start/routes/v1/checklists.routes.ts
 - apps/api/app/controllers/checklists_controller.ts
 - apps/web/src/pages/Checklists.tsx

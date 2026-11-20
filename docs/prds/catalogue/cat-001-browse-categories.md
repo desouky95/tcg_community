@@ -14,6 +14,8 @@ Published catalogue categories are listed. This is an established capability; pr
 
 ## Acceptance and verification
 
+- Build maintenance: Category fallback responses retain the API data envelope; typed category fixtures include slugs. Unused admin page location state is removed. Verified by the collector production build; scenario tests were not run.
+
 - The stated outcome succeeds for an eligible actor and is denied for unauthorized access.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
@@ -26,6 +28,9 @@ Existing evidence pointer: apps/web/src/pages/Checklists.tsx. This pointer is no
 - GET /api/v1/categories
 
 ## Related Files
+- apps/web/src/pages/admin/AdminCategories/AdminCategories.tsx
+- apps/web/src/providers/ApiHooksProvider.tsx
+- apps/web/src/lib/mockData.ts
 - apps/api/start/routes/v1/categories.routes.ts
 - apps/api/app/controllers/categories_controller.ts
 - apps/api/app/models/category.ts

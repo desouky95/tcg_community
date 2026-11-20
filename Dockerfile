@@ -93,3 +93,18 @@ FROM nginx:alpine AS web
 COPY --from=web-build /workspace/apps/web/dist /usr/share/nginx/html
 COPY infra/nginx.web.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
+
+# One distributable image; Compose selects the app command per container.
+FROM backend AS all-apps
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends nginx \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=api --chown=node:node /app /srv/api
+COPY --from=public-web --chown=node:node /app /srv/public-web
+COPY --from=cms --chown=node:node /app /srv/cms
+COPY --from=web-build /workspace/apps/web/dist /srv/web
+COPY infra/nginx.bundle.conf /etc/nginx/nginx.conf
+ENV COREPACK_ENABLE_PROJECT_SPEC=0
+USER node
+EXPOSE 8080 3000 3333 1337

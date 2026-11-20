@@ -11,7 +11,6 @@ import { useCollectionEditForm } from "./CollectionEditForm.hook";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, FileImage, FileSpreadsheet } from "lucide-react";
 import { Controller } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
 import type { Checklist } from "@tcg/api-contracts";
 import { useChecklist } from "@tcg/react-query";
 import { useTranslation } from "react-i18next";
@@ -30,7 +29,6 @@ const EditForm = ({ checklist }: { checklist: Checklist }) => {
 
   return (
     <div className="grid gap-8">
-      <DevTool control={control} />
       <Surface className="rounded-xl p-5 sm:p-7">
         <form onSubmit={handleSubmit} className="grid gap-6">
           <div className="grid gap-6 lg:grid-cols-2">

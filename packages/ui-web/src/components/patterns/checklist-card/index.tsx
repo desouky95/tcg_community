@@ -1,7 +1,6 @@
 import { ArrowUpRight, Layers } from "lucide-react";
 import { cn } from "../../../lib/cn";
 import type { CatalogueChecklist, LinkComponent } from "../types";
-import { motion, type Variants } from "motion/react";
 
 export function ChecklistCard({
   checklist,

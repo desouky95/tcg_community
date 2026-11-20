@@ -1,6 +1,6 @@
 import { PublicShell } from "@tcg/ui-web/next";
 import { cookies, headers } from "next/headers";
-import { cacheLife } from "next/cache";
+import { cacheLife, io } from "next/cache";
 import { Suspense } from "react";
 import { SharedPageTransition } from "./shared-page-transition";
 import { createServerApiClient } from "../../src/lib/clients/adonis.server";
@@ -76,6 +76,7 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
+  await io();
   const applink = process.env.NEXT_PUBLIC_APP_URL;
   const [config, page_transition, categories] = await Promise.all([
     getPublicConfig(),

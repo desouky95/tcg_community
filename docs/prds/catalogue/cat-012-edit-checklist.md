@@ -18,6 +18,8 @@ Checklist metadata and version are updated. This is an established capability; p
 
 ## Acceptance and verification
 
+- Build maintenance: The edit form omits development-only form debug panels; existing cover fixtures include the required checklist slug and aggregate counts. Verified by the collector production build; scenario tests were not run.
+
 - The stated outcome succeeds for an eligible actor and is denied for unauthorized access.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
@@ -34,6 +36,8 @@ Existing evidence pointer: apps/api ChecklistsController.update. This pointer is
 - `PUT /api/v1/checklists/:id`
 
 ## Related Files
+- apps/web/src/components/patterns/CategoriesSelect.tsx
+- apps/web/src/components/molecules/CollectionForms.cover.test.tsx
 - `apps/api/start/routes/v1/checklists.routes.ts`
 - `apps/api/start/routes/v1/admin.routes.ts`
 - `apps/api/app/middleware/admin_middleware.ts`

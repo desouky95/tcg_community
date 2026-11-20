@@ -1,8 +1,6 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "../../../lib/cn";
 import { headingStyles, type HeadingSize } from "../../../lib";
-import { Button } from "../button";
-import { Filter, Plus } from "lucide-react";
 export type PageHeadingProps = HTMLAttributes<HTMLElement> & {
   eyebrow?: string;
   title: ReactNode;

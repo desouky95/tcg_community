@@ -49,24 +49,6 @@ const parentVariants: Variants = {
     },
   }),
 };
-const containerVariants: Variants = {
-  initial: {
-    opacity: 1,
-  },
-  animate: {
-    opacity: 1,
-    transition: {
-      when: "beforeChildren",
-      staggerChildren: 0.05,
-    },
-  },
-  exit: {
-    transition: {
-      when: "afterChildren",
-      staggerChildren: 0.05,
-    },
-  },
-};
 const cardVariants: Variants = {
   initial: {
     opacity: 0,
@@ -91,7 +73,6 @@ const cardVariants: Variants = {
 };
 export default function Test() {
   const [animate, setAnimate] = useState(true);
-  const [rows, setRows] = useState<string[]>();
   return (
     <AnimatePresence
       mode="wait"

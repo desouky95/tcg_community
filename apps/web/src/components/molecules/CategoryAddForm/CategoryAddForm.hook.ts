@@ -13,9 +13,7 @@ const createParentSchema = z.object({
 });
 const createSubcategoriesSchema = z.object({
   creationType: z.literal("subcategory"),
-  category: z.array(
-    z.string().min(3, "Category name must be at least 3 characters"),
-  ),
+  category: z.string().min(3, "Category name must be at least 3 characters"),
   subcategories: z.array(z.string()),
   parentId: z.number(),
 });

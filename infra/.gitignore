@@ -4,3 +4,7 @@
 .env.backend
 .env.public-web
 .bootstrap/
+.env.production
+.env.production.*
+!.env.production.example
+!.env.production.*.example

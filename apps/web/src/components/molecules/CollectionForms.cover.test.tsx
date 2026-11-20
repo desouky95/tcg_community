@@ -51,6 +51,10 @@ const updateChecklist = vi.fn();
 
 const checklist: Checklist = {
   id: "10",
+  slug: "existing-set",
+  needs: 0,
+  holds: 0,
+  offers: 0,
   name: "Existing set",
   type: "card",
   year: 2024,

@@ -18,6 +18,8 @@ The authenticated user receives their private profile.
 
 ## Acceptance and verification
 
+- Build maintenance: The collector profile synchronizes returned reputation points through the existing setUser store action. Verified by the collector production build; scenario tests were not run.
+
 - The stated outcome succeeds for an eligible actor and is denied for unauthorized access.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
@@ -31,6 +33,8 @@ Existing evidence pointer: apps/web/src/pages/Profile.tsx. This pointer is not a
 - GET /api/v1/account/profile
 
 ## Related Files
+- apps/web/src/store/useStore.ts
+- apps/web/src/pages/Profile.tsx
 - apps/public-web/app/(shared-layout)/account/account-settings.tsx
 - apps/public-web/app/(shared-layout)/account/account-hub.tsx
 - apps/public-web/app/(shared-layout)/account/commerce-sections.tsx

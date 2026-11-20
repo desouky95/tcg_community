@@ -65,7 +65,7 @@ export function ApiHooksProvider({ children }: { children: ReactNode }) {
       onLoggedOut={() => { clearSession(); useStore.getState().setUser(null); }}
       notify={{ success: toast.success, error: toast.error }}
       fallbacks={{
-        categories: () => mockCategories,
+        categories: () => ({ data: mockCategories }),
         checklists: () => mockChecklists,
         checklist: (id) =>
           mockChecklistDetails.find((checklist) => checklist.id === id),

@@ -13,7 +13,7 @@ export default function SellerDashboard() {
       users: users?.length ?? 0,
       restricted: users?.filter((user) => user.blocked).length ?? 0,
       collections: collections?.length ?? 0,
-      categories: categories?.length ?? 0,
+      categories: categories?.data.length ?? 0,
     }),
     [categories, collections, users],
   );

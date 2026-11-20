@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef } from "react";
 
-function usePreviousValue<T>(value: T): T | undefined {
+export function usePreviousValue<T>(value: T): T | undefined {
   const prevValue = useRef<T | undefined>(undefined);
 
   useEffect(() => {

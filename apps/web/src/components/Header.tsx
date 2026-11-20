@@ -9,9 +9,7 @@ import {
 import {
   Button,
   PublicHeader,
-  type LinkComponent,
-  BrandLogo,
-  AnimatedBrandLogo,
+  type LinkComponent, AnimatedBrandLogo
 } from "@tcg/ui-web";
 import { useStore } from "../store/useStore";
 import UserDrawer from "./UserDrawer";

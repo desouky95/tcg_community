@@ -14,6 +14,8 @@ Checklist metadata and cards are returned. This is an established capability; pr
 
 ## Acceptance and verification
 
+- Build maintenance: Typed checklist fallback fixtures include slugs, aggregate counts, and ordered card rows. Verified by the collector production build; scenario tests were not run.
+
 - The stated outcome succeeds for an eligible actor and is denied for unauthorized access.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
@@ -26,6 +28,9 @@ Existing evidence pointer: apps/api ChecklistsController.show. This pointer is n
 - N/A — no HTTP route
 
 ## Related Files
+- packages/api-contracts/src/types.ts
+- apps/web/src/providers/ApiHooksProvider.tsx
+- apps/web/src/lib/mockData.ts
 - apps/api/start/routes/v1/checklists.routes.ts
 - apps/api/app/controllers/checklists_controller.ts
 - apps/web/src/pages/Checklists.tsx

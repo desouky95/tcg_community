@@ -17,6 +17,8 @@ The owner sees editable card states. This is an established capability; preserve
 
 ## Acceptance and verification
 
+- Build maintenance: The shared Card contract includes the optional userCard relation returned for collector card rows, preserving the existing ownership display. Verified by the collector production build; scenario tests were not run.
+
 - The stated outcome succeeds for an eligible actor and is denied for unauthorized access.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
@@ -29,6 +31,8 @@ Existing evidence pointer: apps/api UserChecklistsController.show. This pointer 
 - N/A — no HTTP route
 
 ## Related Files
+- apps/web/src/pages/Collection/collection.table.tsx
+- packages/api-contracts/src/types.ts
 - apps/api/start/routes/v1/users.routes.ts
 - apps/api/app/controllers/collection_progress_controller.ts
 - apps/api/app/services/collection_progress_service.ts

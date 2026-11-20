@@ -18,7 +18,6 @@ import {
   useCategory,
   useCategoryMutations,
 } from "../../../hooks/useCategories";
-import { DevTool } from "@hookform/devtools";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -132,7 +131,6 @@ function CategoryForm({ category }: { category?: Category }) {
           </Button>
         }
       />
-      <DevTool control={control} />
       <Surface className="rounded-xl p-5 sm:p-7">
         <form onSubmit={handleSubmit} className="grid gap-6">
           {!isEditing && (

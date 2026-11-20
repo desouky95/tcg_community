@@ -1,5 +1,4 @@
 import { ArrowRight } from "lucide-react";
-import { cn } from "../../../lib/cn";
 import type { CatalogueChecklist, LinkComponent } from "../types";
 import { motion, type Variants } from "motion/react";
 
@@ -44,13 +43,9 @@ export function ChecklistListItem({
       </motion.div>
     </motion.div>
   );
-  const linkClass = cn(
-    "focus-ring grid min-h-16 grid-cols-[3.25rem_minmax(0,1fr)_auto] items-center gap-3 border-b border-wax-line px-3.5 py-3 hover:bg-card hover:text-wax-red sm:grid-cols-[4.5rem_minmax(0,1fr)_auto_auto]",
-    className,
-  );
   return Link ? (
-    <Link href={href}>{content}</Link>
+    <Link href={href} className={className}>{content}</Link>
   ) : (
-    <a href={href}>{content}</a>
+    <a href={href} className={className}>{content}</a>
   );
 }

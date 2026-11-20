@@ -13,6 +13,8 @@ Admin can queue a scrape for LastSticker collection URLs without editing saved J
 
 ## Acceptance and verification
 
+- Build maintenance: Unused scraper page imports and hook context fields are removed without changing request behavior. Verified by the collector production build; scenario tests were not run.
+
 - A valid URL request returns a queued job and produces a scrape artifact after completion.
 - Invalid URLs return validation or unsupported-URL errors without queueing.
 - Existing collection-key requests retain their current behavior.
@@ -28,6 +30,7 @@ Admin can queue a scrape for LastSticker collection URLs without editing saved J
 - `POST /v1/scrapper/jobs`
 
 ## Related Files
+- apps/web/src/pages/admin/AdminScrapper/AdminScrapper.tsx
 
 - `apps/api/app/controllers/scrappers_controller.ts`
 - `apps/api/app/validators/scraper.ts`

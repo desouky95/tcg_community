@@ -5,7 +5,6 @@ type UseSearchParamArgs = {
   onChange?: () => void;
 };
 
-const isServer = typeof window === "undefined";
 
 export const useSearchParam = ({
   param,

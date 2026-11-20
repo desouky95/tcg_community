@@ -26,7 +26,6 @@ import type {
   UserChecklist,
   ScrapperCollection,
   Card,
-  ImportChecklistPayload,
 } from "./types";
 
 export type ApiClientOptions = {
