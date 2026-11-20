@@ -1,18 +1,16 @@
 name: tcg-prod
 
-x-app: &app
-  image: ${APP_IMAGE:?Set APP_IMAGE to your Docker Hub image and release tag}
-  restart: unless-stopped
-
 services:
-  backend:
-    <<: *app
+  bundle:
+    image: ${APP_IMAGE:?Set APP_IMAGE to your Docker Hub image and release tag}
+    restart: unless-stopped
+    stop_grace_period: 30s
     environment:
       MEDUSA_ADMIN_ONBOARDING_TYPE: ${MEDUSA_ADMIN_ONBOARDING_TYPE:-}
       STORE_CORS: ${STORE_CORS:-}
       ADMIN_CORS: ${ADMIN_CORS:-}
       AUTH_CORS: ${AUTH_CORS:-}
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      REDIS_URL: ${REDIS_URL:?Set REDIS_URL to an external Redis URL}
       JWT_SECRET: ${JWT_SECRET:-}
       COOKIE_SECRET: ${COOKIE_SECRET:-}
       AUTH_MFA_ENCRYPTION_KEY: ${AUTH_MFA_ENCRYPTION_KEY:-}
@@ -23,35 +21,10 @@ services:
       DB_NAME: ${DB_NAME:-}
       STRAPI_SYNC_URL: ${STRAPI_SYNC_URL:-}
       STRAPI_SYNC_TOKEN: ${STRAPI_SYNC_TOKEN:-}
-      EVENTS_REDIS_URL: ${EVENTS_REDIS_URL:-redis://redis:6379}
-      NODE_ENV: ${NODE_ENV:-}
+      EVENTS_REDIS_URL: ${EVENTS_REDIS_URL:-}
+      NODE_ENV: production
       CARD_CATALOG_API_KEY: ${CARD_CATALOG_API_KEY:-}
       NEXT_PULL_SERVICE_KEY: ${NEXT_PULL_SERVICE_KEY:-}
-      HOST: 0.0.0.0
-      PORT: 9000
-    depends_on:
-      redis:
-        condition: service_healthy
-    ports:
-      - '9000:9000'
-
-  redis:
-    image: redis:7-alpine
-    restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes"]
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    volumes:
-      - redis-data:/data
-
-  public-web:
-    <<: *app
-    working_dir: /srv/public-web
-    command: ["node", "apps/public-web/server.js"]
-    environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-}
       NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-}
@@ -61,7 +34,6 @@ services:
       NEXT_PUBLIC_STRIPE_KEY: ${NEXT_PUBLIC_STRIPE_KEY:-}
       MEDUSA_CLOUD_S3_HOSTNAME: ${MEDUSA_CLOUD_S3_HOSTNAME:-}
       MEDUSA_CLOUD_S3_PATHNAME: ${MEDUSA_CLOUD_S3_PATHNAME:-}
-      NODE_ENV: ${NODE_ENV:-}
       AUTH_COOKIE_NAME: ${AUTH_COOKIE_NAME:-}
       NEXT_PUBLIC_STRAPI_API_URL: ${NEXT_PUBLIC_STRAPI_API_URL:-}
       STRAPI_API_TOKEN: ${STRAPI_API_TOKEN:-}
@@ -72,26 +44,7 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
       FACEBOOK_CLIENT_ID: ${FACEBOOK_CLIENT_ID:-}
       FACEBOOK_CLIENT_SECRET: ${FACEBOOK_CLIENT_SECRET:-}
-      API_URL: ${API_URL:-}
-      HOSTNAME: ${HOSTNAME:-}
-      PORT: ${PORT:-}
-    ports:
-      - '3000:3000'
-
-  web:
-    <<: *app
-    command: ["nginx", "-g", "daemon off;"]
-    ports:
-      - '5173:8080'
-
-  api:
-    <<: *app
-    working_dir: /srv/api
-    command: ["node", "bin/server.js"]
-    environment:
-      NODE_ENV: ${NODE_ENV:-}
-      HOST: 0.0.0.0
-      PORT: 3333
+      API_URL: ${API_URL:-http://127.0.0.1:3333/api/v1}
       LOG_LEVEL: ${LOG_LEVEL:-}
       APP_KEY: ${APP_KEY:-}
       APP_URL: ${APP_URL:-}
@@ -107,36 +60,19 @@ services:
       DRIVE_DISK: ${DRIVE_DISK:-}
       WEB_ORIGINS: ${WEB_ORIGINS:-}
       SESSION_COOKIE_DOMAIN: ${SESSION_COOKIE_DOMAIN:-}
-      MEDUSA_INTERNAL_URL: ${MEDUSA_INTERNAL_URL:-}
+      MEDUSA_INTERNAL_URL: ${MEDUSA_INTERNAL_URL:-http://127.0.0.1:9000}
       MEDUSA_SERVICE_KEY: ${MEDUSA_SERVICE_KEY:-}
       SCRAPER_TRIGGER_TOKEN: ${SCRAPER_TRIGGER_TOKEN:-}
       FIRECRAWL_API_KEY: ${FIRECRAWL_API_KEY:-}
       SWAPS_ENABLED: ${SWAPS_ENABLED:-}
       COLLECTOR_DISK_ENABLED: ${COLLECTOR_DISK_ENABLED:-}
       I_KEY: ${I_KEY:-}
-      CARD_CATALOG_API_KEY: ${CARD_CATALOG_API_KEY:-}
-      FACEBOOK_CLIENT_ID: ${FACEBOOK_CLIENT_ID:-}
-      FACEBOOK_CLIENT_SECRET: ${FACEBOOK_CLIENT_SECRET:-}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
-      SOCIAL_AUTH_BRIDGE_SECRET: ${SOCIAL_AUTH_BRIDGE_SECRET:-}
       PUBLIC_WEB_URL: ${PUBLIC_WEB_URL:-}
       COLLECTOR_APP_URL: ${COLLECTOR_APP_URL:-}
       MEDUSA_PUBLISHABLE_KEY: ${MEDUSA_PUBLISHABLE_KEY:-}
-    ports:
-      - '3333:3333'
-
-  cms:
-    <<: *app
-    working_dir: /srv/cms
-    command: ["./node_modules/.bin/strapi", "start"]
-    environment:
-      HOST: 0.0.0.0
-      PORT: 1337
       APP_KEYS: ${APP_KEYS:-}
       API_TOKEN_SALT: ${API_TOKEN_SALT:-}
       ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-}
-      JWT_SECRET: ${JWT_SECRET:-}
       TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT:-}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:-}
       DATABASE_CLIENT: ${DATABASE_CLIENT:-}
@@ -148,15 +84,17 @@ services:
       DATABASE_SSL: ${DATABASE_SSL:-}
       DATABASE_FILENAME: ${DATABASE_FILENAME:-}
       MEDUSA_BACKEND_URL: ${MEDUSA_BACKEND_URL:-}
-      MEDUSA_PUBLISHABLE_KEY: ${MEDUSA_PUBLISHABLE_KEY:-}
-      NODE_ENV: ${NODE_ENV:-}
       DATABASE_SSL_CA: ${DATABASE_SSL_CA:-}
       DATABASE_SSL_REJECT_UNAUTHORIZED: ${DATABASE_SSL_REJECT_UNAUTHORIZED:-}
+      STOREFRONT_HOST: ${STOREFRONT_HOST:-walrus-app-6o72x.ondigitalocean.app}
+      COLLECTOR_HOST: ${COLLECTOR_HOST:?Set COLLECTOR_HOST to your collector subdomain}
+      API_HOST: ${API_HOST:?Set API_HOST to your API subdomain}
+      MEDUSA_HOST: ${MEDUSA_HOST:?Set MEDUSA_HOST to your Medusa subdomain}
+      CMS_HOST: ${CMS_HOST:?Set CMS_HOST to your CMS subdomain}
     ports:
-      - '1337:1337'
+      - '8080:8080'
     volumes:
       - cms-uploads:/srv/cms/public/uploads
 
 volumes:
   cms-uploads:
-  redis-data:

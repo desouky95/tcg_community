@@ -68,7 +68,21 @@ For later releases, publish a new image tag, update `APP_IMAGE` on the Droplet, 
 
 Verification: both Compose configurations parse successfully and `docker compose --env-file .env -f infra/compose.build.yaml build --check bundle` passes without warnings. This checks the Dockerfile configuration, not image compilation or runtime behavior. No full image build, registry push, migrations, application tests, or live Droplet deployment were performed.
 
+## Single-container DigitalOcean App Platform deployment
+
+The `app-platform` Dockerfile target starts Medusa, Next.js, AdonisJS, Strapi, and Nginx together. `infra/compose.build.yaml` and the existing GitHub publication workflow now build this target. Production Compose continues to select individual commands, including an explicit Medusa command. A child process exit stops the entire App Platform container so the platform can restart it. All apps share scaling and restart behavior.
+
+For Walrus-app, deploy the published image as one web service, clear any Run Command override, and set HTTP port to `8080`. Set `STOREFRONT_HOST`, `COLLECTOR_HOST`, `API_HOST`, `MEDUSA_HOST`, and `CMS_HOST` to distinct bare hostnames. Add all five domains to the app and route them to this same component, preserving the original Host header. Configure DNS using DigitalOcean's supplied records; DigitalOcean terminates HTTPS. Nginx routes by hostname to local ports 3000, 3333, 9000, and 1337, and serves the collector directly. The default App Platform hostname serves the storefront. The HTTPS forwarded-protocol setting assumes traffic arrives through DigitalOcean's TLS ingress.
+
+Each process inherits the flat environment variables, with its own fixed PORT and bind address. Shared key names such as `JWT_SECRET` must be compatible across apps. Set `API_URL=http://127.0.0.1:3333/api/v1`, `MEDUSA_INTERNAL_URL=http://127.0.0.1:9000`, and browser-facing URLs to the appropriate HTTPS domains. Configure CORS, OAuth callbacks, and cookie domains accordingly. Public frontend configuration still requires a rebuild with the matching GitHub variables. Do not point browser traffic at localhost.
+
+Set `REDIS_URL` to an external Redis service; `EVENTS_REDIS_URL` defaults to that URL. Compose's `redis` hostname and persistent volumes are unavailable in App Platform. Use external PostgreSQL and object storage for uploads; container filesystem data is lost on replacement. Database TLS requirements noted above still apply. This change does not configure upload providers, run migrations, or deploy Walrus-app.
+
+Acceptance: after deployment, visit each domain, verify it reaches its intended app, and check container logs for all four application servers. Builds, process lifecycle behavior, and live routing have not been tested for this target.
+
 ## Related Files
+- infra/start-app-platform.sh
+- infra/nginx.app-platform.conf.template
 - .github/workflows/deploy.yml
 - Dockerfile
 - infra/compose.dev.yaml

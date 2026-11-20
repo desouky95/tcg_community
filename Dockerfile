@@ -108,3 +108,15 @@ COPY infra/nginx.bundle.conf /etc/nginx/nginx.conf
 ENV COREPACK_ENABLE_PROJECT_SPEC=0
 USER node
 EXPOSE 8080 3000 3333 1337
+
+# Single App Platform component; all application processes share one lifecycle.
+FROM all-apps AS app-platform
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gettext-base tini util-linux \
+    && rm -rf /var/lib/apt/lists/*
+COPY infra/start-app-platform.sh /usr/local/bin/start-app-platform
+COPY infra/nginx.app-platform.conf.template /etc/nginx/app-platform.conf.template
+RUN chmod +x /usr/local/bin/start-app-platform
+USER node
+CMD ["/usr/bin/tini", "--", "/usr/local/bin/start-app-platform"]

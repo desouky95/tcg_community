@@ -6,7 +6,7 @@ services:
     platform: ${APP_PLATFORM:-linux/amd64}
     build:
       context: ..
-      target: all-apps
+      target: app-platform
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?Set NEXT_PUBLIC_API_URL}
         NEXT_PUBLIC_STRAPI_API_URL: ${NEXT_PUBLIC_STRAPI_API_URL:?Set NEXT_PUBLIC_STRAPI_API_URL}
