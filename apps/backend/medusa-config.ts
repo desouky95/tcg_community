@@ -2,15 +2,15 @@ import { loadEnv, defineConfig } from "@medusajs/framework/utils";
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
-if (
-  process.env.NODE_ENV === "production" &&
-  process.env.STRAPI_SYNC_URL &&
-  !process.env.EVENTS_REDIS_URL
-) {
-  throw new Error(
-    "EVENTS_REDIS_URL is required for durable Strapi synchronization in production",
-  );
-}
+// if (
+//   process.env.NODE_ENV === "production" &&
+//   process.env.STRAPI_SYNC_URL &&
+//   !process.env.EVENTS_REDIS_URL
+// ) {
+//   throw new Error(
+//     "EVENTS_REDIS_URL is required for durable Strapi synchronization in production",
+//   );
+// }
 
 module.exports = defineConfig({
   featureFlags: { view_configurations: true },
