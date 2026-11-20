@@ -24,7 +24,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push combined image
         env:
-          IMAGE_REPOSITORY: ${{ vars.DOCKERHUB_IMAGE }}
+          IMAGE_REPOSITORY: ${{ vars.DOCKERHUB_IMAGE || '5715/nextpull' }}
           PUBLIC_WEB_NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
           PUBLIC_WEB_NEXT_PUBLIC_STRAPI_API_URL: ${{ vars.NEXT_PUBLIC_STRAPI_API_URL }}
           PUBLIC_WEB_NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${{ vars.NEXT_PUBLIC_MEDUSA_BACKEND_URL }}
