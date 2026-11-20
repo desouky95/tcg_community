@@ -31,8 +31,8 @@ const configuredOrigin = (value: string | undefined, developmentDefault: string)
     throw new Error('Social sign-in application origins are not configured')
   return new URL(value || developmentDefault).origin
 }
-const publicUrl = () => configuredOrigin(env.get('PUBLIC_WEB_URL'), 'http://localhost:3000')
-const appUrl = () => configuredOrigin(env.get('COLLECTOR_APP_URL'), 'http://localhost:5173')
+const publicUrl = () => configuredOrigin(env.get('API_PUBLIC_WEB_URL'), 'http://localhost:3000')
+const appUrl = () => configuredOrigin(env.get('API_COLLECTOR_APP_URL'), 'http://localhost:5173')
 const failure = (
   provider: SocialProvider,
   reason: string,
@@ -55,7 +55,7 @@ export default class FacebookAuthController {
     const { request, session, response } = ctx
     const provider = getProvider(ctx)
     if (!provider) return response.notFound()
-    const secret = env.get('SOCIAL_AUTH_BRIDGE_SECRET')
+    const secret = env.get('API_SOCIAL_AUTH_BRIDGE_SECRET')
     if (!secret || secret.length < 32)
       return response.redirect(
         failure(provider, 'unavailable', request.input('returnTo'), request.input('destination'))
@@ -103,7 +103,7 @@ export default class FacebookAuthController {
         session.get('facebook_return_to'),
         session.get('social_destination')
       )
-    const secret = env.get('SOCIAL_AUTH_BRIDGE_SECRET')
+    const secret = env.get('API_SOCIAL_AUTH_BRIDGE_SECRET')
     const assertion = request.input('assertion')
     const nonce = session.get('facebook_pending_nonce')
     const payload = verifySocialAssertion(assertion, secret, nonce, provider)

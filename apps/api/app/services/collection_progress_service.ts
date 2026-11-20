@@ -391,7 +391,7 @@ export async function importPreviewToken(
   const digest = createHash('sha256')
     .update(await readFile(file.tmpPath))
     .digest('hex')
-  return createHmac('sha256', env.get('APP_KEY').release())
+  return createHmac('sha256', env.get('API_APP_KEY').release())
     .update(`${userId}:${checklistId}:${version}:${emptyAsMissing}:${digest}`)
     .digest('hex')
 }

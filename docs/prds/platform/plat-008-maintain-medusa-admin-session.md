@@ -6,6 +6,8 @@ Medusa admins remain signed in during normal use, with reauthentication required
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `BACKEND_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - Use Medusa's session cookie authentication for the admin dashboard.
 - Renew the session cookie during activity and expire it after 30 days without activity.
 - Preserve explicit logout and server-side session validation.

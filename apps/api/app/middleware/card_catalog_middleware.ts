@@ -5,7 +5,7 @@ import { timingSafeEqual } from 'node:crypto'
 
 export default class CardCatalogMiddleware {
   async handle({ request, response }: HttpContext, next: NextFn) {
-    const expected = env.get('CARD_CATALOG_API_KEY')
+    const expected = env.get('API_CARD_CATALOG_API_KEY')
     if (!expected) return response.serviceUnavailable({ error: 'Card catalog is not configured' })
     const header = request.header('authorization') ?? ''
     const actual = header.startsWith('Bearer ') ? header.slice(7) : ''

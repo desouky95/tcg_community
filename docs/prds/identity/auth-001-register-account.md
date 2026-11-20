@@ -7,6 +7,8 @@ A guest creates an unverified account and a signup verification challenge, then 
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `API_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - Storefront login and signup do not offer social sign-in or code-based sign-in; existing backend routes remain available. Registration and recovery verification codes remain supported.
 
 - Collect full name, username, email, Egyptian mobile number, password and confirmation, and governorate. Enforce the server's validation and uniqueness constraints, including an 8–32 character password.

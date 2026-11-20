@@ -6,6 +6,8 @@ A user can authenticate with their AdonisJS account across the storefront and Co
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `API_*`, `BACKEND_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - AdonisJS is the identity authority; define a secure, verified integration to Medusa customer accounts without sharing passwords or creating duplicate identities. Token exchange and session details require technical design.
 - Storefront commerce actions resolve the Medusa customer through the persisted Adonis user mapping; matching email alone never claims an existing guest customer without email verification.
 - Authorize each action against its resource and actor; reject invalid or stale operations without partial effects.

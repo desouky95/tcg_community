@@ -1,11 +1,23 @@
+import { resolve } from "node:path";
 import { loadEnv, defineConfig } from "@medusajs/framework/utils";
 
-loadEnv(process.env.NODE_ENV || "development", process.cwd());
+loadEnv(process.env.NODE_ENV || "development", resolve(process.cwd(), "../.."));
+
+// Medusa internals read these native names directly.
+if (process.env.BACKEND_AUTH_MFA_ENCRYPTION_KEY !== undefined) {
+  process.env.AUTH_MFA_ENCRYPTION_KEY = process.env.BACKEND_AUTH_MFA_ENCRYPTION_KEY;
+}
+if (process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_TYPE !== undefined) {
+  process.env.MEDUSA_ADMIN_ONBOARDING_TYPE = process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_TYPE;
+}
+if (process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIRECTORY !== undefined) {
+  process.env.MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIRECTORY = process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIRECTORY;
+}
 
 // if (
 //   process.env.NODE_ENV === "production" &&
-//   process.env.STRAPI_SYNC_URL &&
-//   !process.env.EVENTS_REDIS_URL
+//   process.env.BACKEND_STRAPI_SYNC_URL &&
+//   !process.env.BACKEND_EVENTS_REDIS_URL
 // ) {
 //   throw new Error(
 //     "EVENTS_REDIS_URL is required for durable Strapi synchronization in production",
@@ -16,17 +28,18 @@ module.exports = defineConfig({
   featureFlags: { view_configurations: true },
 
   projectConfig: {
-    databaseUrl: process.env.DATABASE_URL,
+    databaseUrl: process.env.BACKEND_DATABASE_URL,
+    redisUrl: process.env.BACKEND_REDIS_URL,
     sessionOptions: {
       ttl: 30 * 24 * 60 * 60 * 1000,
       rolling: true,
     },
     http: {
-      storeCors: process.env.STORE_CORS!,
-      adminCors: process.env.ADMIN_CORS!,
-      authCors: process.env.AUTH_CORS!,
-      jwtSecret: process.env.JWT_SECRET,
-      cookieSecret: process.env.COOKIE_SECRET,
+      storeCors: process.env.BACKEND_STORE_CORS!,
+      adminCors: process.env.BACKEND_ADMIN_CORS!,
+      authCors: process.env.BACKEND_AUTH_CORS!,
+      jwtSecret: process.env.BACKEND_JWT_SECRET,
+      cookieSecret: process.env.BACKEND_COOKIE_SECRET,
     },
     databaseDriverOptions: {
       connection: {
@@ -66,7 +79,7 @@ module.exports = defineConfig({
         },
       },
     },
-    ...(process.env.EVENTS_REDIS_URL
+    ...(process.env.BACKEND_EVENTS_REDIS_URL
       ? [
           {
             resolve: "@medusajs/medusa/locking",
@@ -76,7 +89,7 @@ module.exports = defineConfig({
                   resolve: "@medusajs/medusa/locking-redis",
                   id: "strapi-sync-redis",
                   is_default: true,
-                  options: { redisUrl: process.env.EVENTS_REDIS_URL },
+                  options: { redisUrl: process.env.BACKEND_EVENTS_REDIS_URL },
                 },
               ],
             },
@@ -84,7 +97,7 @@ module.exports = defineConfig({
           {
             resolve: "@medusajs/medusa/event-bus-redis",
             options: {
-              redisUrl: process.env.EVENTS_REDIS_URL,
+              redisUrl: process.env.BACKEND_EVENTS_REDIS_URL,
               jobOptions: {
                 attempts: 8,
                 backoff: { type: "exponential", delay: 5000 },
@@ -108,15 +121,15 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/card-catalog",
       options: {
-        baseUrl: process.env.VITE_CARD_CATALOG_URL,
-        apiKey: process.env.VITE_CARD_CATALOG_API_KEY,
+        baseUrl: process.env.BACKEND_VITE_CARD_CATALOG_URL,
+        apiKey: process.env.BACKEND_VITE_CARD_CATALOG_API_KEY,
       },
     },
     {
       resolve: "./src/modules/collection-sale",
       options: {
-        baseUrl: process.env.VITE_CARD_CATALOG_URL,
-        apiKey: process.env.VITE_CARD_CATALOG_API_KEY,
+        baseUrl: process.env.BACKEND_VITE_CARD_CATALOG_URL,
+        apiKey: process.env.BACKEND_VITE_CARD_CATALOG_API_KEY,
       },
     },
     {

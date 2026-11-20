@@ -1,5 +1,5 @@
 const { loadEnv } = require("@medusajs/utils");
-loadEnv("test", process.cwd());
+loadEnv("test", require("node:path").resolve(process.cwd(), "../.."));
 
 module.exports = {
   transform: {

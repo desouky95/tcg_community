@@ -1,9 +1,9 @@
 import { CookieJar } from 'tough-cookie'
 
-const apiUrl = new URL(process.env.TCG_API_URL ?? 'http://localhost:3333/api/v1/')
+const apiUrl = new URL(process.env.MCP_TCG_API_URL ?? 'http://localhost:3333/api/v1/')
 if (!apiUrl.pathname.endsWith('/')) apiUrl.pathname += '/'
 if (apiUrl.protocol !== 'https:' && !(apiUrl.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(apiUrl.hostname))) {
-  throw new Error('TCG_API_URL must use HTTPS unless it points to localhost')
+  throw new Error('MCP_TCG_API_URL must use HTTPS unless it points to localhost')
 }
 
 let jar = new CookieJar()

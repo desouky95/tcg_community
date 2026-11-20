@@ -31,3 +31,7 @@ Workspace packages are private and source-consumed so Vite development reflects 
 Use Node 24 as declared by `.nvmrc`; the current AdonisJS TypeScript execution stack requires it.
 
 Local read-only catalogue MCP setup: [apps/mcp/README.md](apps/mcp/README.md).
+
+## Environment configuration
+
+Use the root `.env` and `.env.example` for all applications. Server settings use `API_*`, `BACKEND_*`, `CMS_*`, `PUBLIC_WEB_*`, or `MCP_*`; browser settings retain `NEXT_PUBLIC_*` and `VITE_*`. Local app scripts preload the root file, and deployment supplies the same names as environment variables. Never put server secrets in public prefixes. See [deployment and environment guidance](docs/prds/_shared/deployment-and-recovery.md).

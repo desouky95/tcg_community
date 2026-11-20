@@ -12,7 +12,7 @@ export default async function syncStrapiProduct({ event, container }: Subscriber
       const { data } = await query.graph({ entity: 'product_variant', fields: ['product_id'], filters: { id: item.id }, withDeleted: true });
       productId = data[0]?.product_id ?? undefined;
       if (!productId) {
-        const url = process.env.STRAPI_SYNC_URL; const token = process.env.STRAPI_SYNC_TOKEN;
+        const url = process.env.BACKEND_STRAPI_SYNC_URL; const token = process.env.BACKEND_STRAPI_SYNC_TOKEN;
         if (!url || !token) throw new Error('Strapi synchronization is not configured');
         const variants = await strapiClient(url, token).find('product-variants', 'medusaId', item.id, true);
         productId = variants[0]?.product?.medusaId;

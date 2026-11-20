@@ -16,19 +16,19 @@ Add this server to a stdio-compatible MCP client, replacing the path and key:
   "mcpServers": {
     "tcg-catalogues": {
       "command": "node",
-      "args": ["/absolute/path/to/tcg_community/apps/mcp/dist/index.js"],
+      "args": ["--env-file-if-exists=/absolute/path/to/tcg_community/.env", "/absolute/path/to/tcg_community/apps/mcp/dist/index.js"],
       "env": {
-        "TCG_API_URL": "http://localhost:3333/api/v1/",
-        "MEDUSA_BACKEND_URL": "http://localhost:9000",
-        "MEDUSA_PUBLISHABLE_KEY": "your-publishable-key",
-        "MEDUSA_REGION_ID": "reg_your-region-id"
+        "MCP_TCG_API_URL": "http://localhost:3333/api/v1/",
+        "MCP_MEDUSA_BACKEND_URL": "http://localhost:9000",
+        "MCP_MEDUSA_PUBLISHABLE_KEY": "your-publishable-key",
+        "MCP_MEDUSA_REGION_ID": "reg_your-region-id"
       }
     }
   }
 }
 ```
 
-`TCG_API_URL` and `MEDUSA_BACKEND_URL` default to the addresses shown. `MEDUSA_REGION_ID` is optional; without it products may not include calculated prices. Use HTTPS for any non-local TCG API URL. Configure the publishable key for the sales channel containing the products.
+`MCP_TCG_API_URL` and `MCP_MEDUSA_BACKEND_URL` default to the addresses shown. `MCP_MEDUSA_REGION_ID` is optional; without it products may not include calculated prices. Use HTTPS for any non-local TCG API URL. Configure the publishable key for the sales channel containing the products.
 
 Call `browser_login` to open the local sign-in page before accessing checklists or cards. Sign in using an existing verified account. The server keeps the session only in memory; sign in again after a restart or session expiry. The page expires after five minutes and permits retries until successful. The server does not expose credentials or cookies as tool results. Card results follow the API's existing account and collection access rules.
 

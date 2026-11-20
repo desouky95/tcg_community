@@ -7,6 +7,8 @@ An authorized editor publishes storefront content.
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `BACKEND_*`, `CMS_*`, `PUBLIC_WEB_* / NEXT_PUBLIC_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - Native Medusa product types `Coming Soon` and `Pre-order` are created idempotently by `seed-product-availability-types.ts` during `medusa db:migrate`; the same file can be run with `medusa exec ./src/migration-scripts/seed-product-availability-types.ts`. Assign these exact type values in Medusa Admin product organization. Product publication remains separate: publish and assign the sales channel to make a product visible. Pre-order variants require available stock or enabled backorders. CMS missing-list metadata and media remain independent of these availability types.
 
 - Medusa search and workflow integrations retain typed query and logger dependencies during production builds.

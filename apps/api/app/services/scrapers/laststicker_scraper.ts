@@ -100,7 +100,7 @@ export default class LastStickerScraper implements CollectionScraper<LastSticker
       throw new Error(`Refusing to scrape an untrusted LastSticker URL: ${config.url}`)
     }
 
-    const apiKey = env.get('FIRECRAWL_API_KEY')
+    const apiKey = env.get('API_FIRECRAWL_API_KEY')
     const response = await axios.post<unknown>(
       'https://api.firecrawl.dev/v2/scrape',
       {

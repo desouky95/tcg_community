@@ -88,8 +88,8 @@ export async function syncProduct(
   productId: string,
   container: MedusaContainer,
 ): Promise<void> {
-  const url = process.env.STRAPI_SYNC_URL;
-  const token = process.env.STRAPI_SYNC_TOKEN;
+  const url = process.env.BACKEND_STRAPI_SYNC_URL;
+  const token = process.env.BACKEND_STRAPI_SYNC_TOKEN;
   if (!url || !token)
     throw new Error("Strapi synchronization is not configured");
   const api = strapiClient(url, token);

@@ -14,7 +14,7 @@ function matchesToken(actual: string, expected: string): boolean {
 
 export default class ScraperTriggerMiddleware {
   async handle({ request, response }: HttpContext, next: NextFn) {
-    const expected = env.get('SCRAPER_TRIGGER_TOKEN')
+    const expected = env.get('API_SCRAPER_TRIGGER_TOKEN')
     if (!expected) {
       return response.status(503).json({
         error: {

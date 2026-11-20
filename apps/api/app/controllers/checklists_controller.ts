@@ -94,7 +94,7 @@ export default class ChecklistsController {
 
     // External commerce listings refer to these IDs. Until an explicit
     // reconciliation flow exists, never replace an existing catalog in place.
-    if (env.get('CARD_CATALOG_API_KEY') && await Card.query({ client: trx }).where('checklistId', checklist.id).first()) {
+    if (env.get('API_CARD_CATALOG_API_KEY') && await Card.query({ client: trx }).where('checklistId', checklist.id).first()) {
       throw new Error('Cannot replace cards while the commerce catalog is enabled')
     }
     await Card.query({ client: trx }).where('checklistId', checklist.id).delete()
@@ -244,7 +244,7 @@ export default class ChecklistsController {
 
   async destroy({ params, response }: HttpContext) {
     const checklist = await Checklist.findOrFail(params.id)
-    if (env.get('CARD_CATALOG_API_KEY') && await Card.query().where('checklistId', checklist.id).first()) {
+    if (env.get('API_CARD_CATALOG_API_KEY') && await Card.query().where('checklistId', checklist.id).first()) {
       return response.conflict({ error: 'Cannot delete a checklist with cards while the commerce catalog is enabled' })
     }
     await Card.query().where('checklistId', checklist.id).delete()

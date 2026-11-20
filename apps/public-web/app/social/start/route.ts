@@ -29,9 +29,9 @@ export async function GET(request: NextRequest) {
     request.url,
   );
   try {
-    if (!process.env.BETTER_AUTH_URL)
+    if (!process.env.PUBLIC_WEB_BETTER_AUTH_URL)
       throw new Error("Social authentication URL is not configured");
-    const callback = new URL("/social/bridge", process.env.BETTER_AUTH_URL);
+    const callback = new URL("/social/bridge", process.env.PUBLIC_WEB_BETTER_AUTH_URL);
     callback.searchParams.set("attempt", attempt);
     callback.searchParams.set("provider", provider);
     callback.searchParams.set("destination", destination);

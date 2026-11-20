@@ -11,8 +11,8 @@ module.exports = {
   controllers: {
     collections: {
       async list(ctx) {
-        const baseUrl = process.env.MEDUSA_BACKEND_URL;
-        const publishableKey = process.env.MEDUSA_PUBLISHABLE_KEY;
+        const baseUrl = process.env.CMS_MEDUSA_BACKEND_URL;
+        const publishableKey = process.env.CMS_MEDUSA_PUBLISHABLE_KEY;
         if (!baseUrl || !publishableKey) return ctx.serviceUnavailable('Medusa collection search is not configured.');
         const limit = 20;
         const offset = Math.max(0, Number.parseInt(String(ctx.query.offset || '0'), 10) || 0);

@@ -7,6 +7,8 @@ A guest understands the product and can reach storefront, Collector Disk, sign-i
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `CMS_*`, `PUBLIC_WEB_* / NEXT_PUBLIC_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - Defer shared-layout and homepage service requests until runtime with the Cache Components IO boundary. Production builds must not require a running API, CMS, or commerce service; existing cached loaders and Suspense loading shells remain in use.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.

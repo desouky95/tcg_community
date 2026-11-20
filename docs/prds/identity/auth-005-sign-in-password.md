@@ -7,6 +7,8 @@ Valid credentials create an authenticated session.
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `API_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - Storefront login and signup do not offer social sign-in or code-based sign-in; existing backend routes remain available. Registration and recovery verification codes remain supported.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.

@@ -7,6 +7,8 @@ Owned quantity changes atomically. This is an established capability; preserve c
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `API_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - The shared collection service rejects entry updates when the collection has no owner or checklist.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.

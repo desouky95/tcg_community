@@ -7,6 +7,8 @@ The owner sees editable card states. This is an established capability; preserve
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `API_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - The shared collection service rejects entry updates when the collection has no owner or checklist.
 
 - Return the owner's collection version, visibility, and per-card quantities through the owner-authorized details endpoint.

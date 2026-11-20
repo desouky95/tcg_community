@@ -7,6 +7,8 @@ A visibility-filtered collection is shown without private notes. This is an esta
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `API_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - The shared collection service rejects entry updates when the collection has no owner or checklist.
 
 - Show missing items and duplicates with their quantities, ordered by the card or sticker's checklist order rather than its number.

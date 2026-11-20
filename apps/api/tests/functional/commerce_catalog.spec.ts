@@ -7,7 +7,7 @@ test.group('Commerce catalog service authentication', () => {
   })
 
   test('validates the batch request and accepts an empty batch', async ({ client, assert }) => {
-    const key = process.env.CARD_CATALOG_API_KEY!
+    const key = process.env.API_CARD_CATALOG_API_KEY!
     const invalid = await client.post('/api/v1/internal/card-catalog/cards/batch')
       .header('authorization', `Bearer ${key}`).json({ ids: ['invalid'] })
     invalid.assertStatus(400)
@@ -18,7 +18,7 @@ test.group('Commerce catalog service authentication', () => {
   })
 
   test('rejects invalid collection IDs and pagination', async ({ client }) => {
-    const key = process.env.CARD_CATALOG_API_KEY!
+    const key = process.env.API_CARD_CATALOG_API_KEY!
     const badId = await client.get('/api/v1/internal/card-catalog/collections/nope')
       .header('authorization', `Bearer ${key}`)
     badId.assertStatus(400)

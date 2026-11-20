@@ -8,14 +8,14 @@ import { defineConfig } from '@adonisjs/core/http'
  * The encryption module will fail to decrypt data if the key is lost or
  * changed. Therefore it is recommended to keep the app key secure.
  */
-export const appKey = env.get('APP_KEY')
+export const appKey = env.get('API_APP_KEY')
 
 /**
  * The app URL can be used in various places where you want to create absolute
  * URLs to your application. For example, when sending emails, images should
  * use absolute URLs.
  */
-export const appUrl = env.get('APP_URL')
+export const appUrl = env.get('API_APP_URL')
 
 /**
  * The configuration settings used by the HTTP server
@@ -47,7 +47,7 @@ export const http = defineConfig({
     maxAge: '2h',
     httpOnly: true,
     // secure: app.inProduction,
-    secure: process.env.NODE_ENV === 'production' && process.env.HTTPS === 'true',
+    secure: process.env.NODE_ENV === 'production' && process.env.API_HTTPS === 'true',
     sameSite: 'lax',
   },
 })

@@ -6,6 +6,8 @@ A customer can identify each of their orders with a customer-scoped number and r
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `API_*`, `BACKEND_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - Order panels use the shared storefront surface components.
 
 - The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.

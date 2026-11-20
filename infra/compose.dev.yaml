@@ -23,6 +23,7 @@ x-dev: &dev
     context: ..
     target: dev
   image: tcg-dev-workspace
+  env_file: ../.env
   restart: unless-stopped
   volumes: *workspace-volumes
 
@@ -31,7 +32,11 @@ services:
     <<: *dev
     working_dir: /workspace/apps/backend
     command: pnpm dev
-    env_file: .env.backend
+    environment:
+      NODE_ENV: development
+      HOST: 0.0.0.0
+      PORT: 9000
+      BACKEND_VITE_CARD_CATALOG_URL: http://api:3333/api/v1/internal/card-catalog
     ports:
       - '9000:9000'
       - '24678:24678'
@@ -55,7 +60,9 @@ services:
     <<: *dev
     working_dir: /workspace/apps/public-web
     command: pnpm dev --hostname 0.0.0.0 --port 3000
-    env_file: .env.public-web
+    environment:
+      NODE_ENV: development
+      PUBLIC_WEB_API_URL: http://api:3333/api/v1
     ports:
       - '3000:3000'
     volumes:
@@ -89,7 +96,11 @@ services:
     <<: *dev
     working_dir: /workspace/apps/api
     command: pnpm dev
-    env_file: .env.api
+    environment:
+      NODE_ENV: development
+      HOST: 0.0.0.0
+      PORT: 3333
+      API_MEDUSA_INTERNAL_URL: http://backend:9000
     ports:
       - '3333:3333'
 
@@ -97,7 +108,11 @@ services:
     <<: *dev
     working_dir: /workspace/apps/cms
     command: pnpm dev
-    env_file: .env.cms
+    environment:
+      NODE_ENV: development
+      HOST: 0.0.0.0
+      PORT: 1337
+      CMS_MEDUSA_BACKEND_URL: http://backend:9000
     ports:
       - '1337:1337'
     volumes:

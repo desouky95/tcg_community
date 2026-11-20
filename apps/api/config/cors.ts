@@ -22,7 +22,7 @@ const corsConfig = defineConfig({
   origin: app.inDev
     ? true
     : (env
-        .get('WEB_ORIGINS')
+        .get('API_WEB_ORIGINS')
         ?.split(',')
         .map((origin) => origin.trim())
         .filter(Boolean) ?? []),

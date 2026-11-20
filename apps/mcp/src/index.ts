@@ -8,8 +8,8 @@ import { browserLogin } from './login.js'
 const Medusa = createRequire(import.meta.url)('@medusajs/js-sdk').default
 const server = new McpServer({ name: 'tcg-catalogues', version: '1.0.0' })
 const medusa = new Medusa({
-  baseUrl: process.env.MEDUSA_BACKEND_URL ?? 'http://localhost:9000',
-  publishableKey: process.env.MEDUSA_PUBLISHABLE_KEY,
+  baseUrl: process.env.MCP_MEDUSA_BACKEND_URL ?? 'http://localhost:9000',
+  publishableKey: process.env.MCP_MEDUSA_PUBLISHABLE_KEY,
 })
 const id = z.string().trim().min(1).max(200)
 const pagination = { limit: z.number().int().min(1).max(100).default(20), offset: z.number().int().min(0).default(0) }
@@ -28,10 +28,10 @@ server.registerTool('get_checklist', { description: 'Get a TCG checklist by ID o
 server.registerTool('list_checklist_cards', { description: 'List cards for a checklist by ID or slug. Requires browser login; results follow the account’s collection access.', inputSchema: { id } }, ({ id }) => result(() => apiGet(`checklists/${encodeURIComponent(id)}/cards`)))
 server.registerTool('list_store_collections', { description: 'List store collections.', inputSchema: pagination }, (query) => result(() => medusa.store.collection.list(query)))
 server.registerTool('list_store_categories', { description: 'List store product categories.', inputSchema: pagination }, (query) => result(() => medusa.store.category.list(query)))
-const region = process.env.MEDUSA_REGION_ID?.trim()
+const region = process.env.MCP_MEDUSA_REGION_ID?.trim()
 const fields = region ? '+description,*variants.calculated_price,+variants.inventory_quantity,*images' : '+description,+variants.inventory_quantity,*images'
-server.registerTool('search_store_products', { description: 'Search store products. Prices require MEDUSA_REGION_ID.', inputSchema: { ...pagination, q: z.string().max(200).optional() } }, ({ q, ...page }) => result(() => medusa.store.product.list({ ...page, ...(q ? { q } : {}), ...(region ? { region_id: region } : {}), fields })))
-server.registerTool('get_store_product', { description: 'Find a store product by ID or handle. Prices require MEDUSA_REGION_ID.', inputSchema: { id } }, ({ id }) => result(async () => {
+server.registerTool('search_store_products', { description: 'Search store products. Prices require MCP_MEDUSA_REGION_ID.', inputSchema: { ...pagination, q: z.string().max(200).optional() } }, ({ q, ...page }) => result(() => medusa.store.product.list({ ...page, ...(q ? { q } : {}), ...(region ? { region_id: region } : {}), fields })))
+server.registerTool('get_store_product', { description: 'Find a store product by ID or handle. Prices require MCP_MEDUSA_REGION_ID.', inputSchema: { id } }, ({ id }) => result(async () => {
   const query = id.startsWith('prod_') ? { id: [id] } : { handle: [id] }
   const response = await medusa.store.product.list({ ...query, limit: 1, ...(region ? { region_id: region } : {}), fields })
   return response.products[0] ?? null

@@ -6,6 +6,8 @@ Admin can queue a scrape for LastSticker collection URLs without editing saved J
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `API_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - Accept 1–20 HTTPS URLs for `www.laststicker.com/cards/...` in a scrape job request.
 - Reject invalid or unsupported URLs before queueing.
 - Preserve saved collection-key requests and existing job status and artifact behavior.

@@ -80,17 +80,17 @@ const run = async (
 
 describe("private account bridge", () => {
   beforeEach(() => {
-    process.env.NEXT_PULL_SERVICE_KEY = "secret";
+    process.env.BACKEND_NEXT_PULL_SERVICE_KEY = "secret";
   });
   afterEach(() => {
-    delete process.env.NEXT_PULL_SERVICE_KEY;
+    delete process.env.BACKEND_NEXT_PULL_SERVICE_KEY;
   });
   it("rejects missing or invalid service credentials", async () => {
     expect(
       (await run({ operation: "addresses", customer_id: "cus_a" }, "wrong")).res
         .statusCode,
     ).toBe(401);
-    delete process.env.NEXT_PULL_SERVICE_KEY;
+    delete process.env.BACKEND_NEXT_PULL_SERVICE_KEY;
     expect(
       (await run({ operation: "addresses", customer_id: "cus_a" })).res
         .statusCode,

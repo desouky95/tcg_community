@@ -7,6 +7,8 @@ A shopper can inspect a product before purchase.
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `BACKEND_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - Use the native Medusa product type (`product.type.value`) for availability: `Coming Soon` disables purchasing and quantity controls; `Pre-order` labels the purchase action and explains that shipping occurs when available. Pre-orders retain normal pricing, region, and inventory validation; enable variant backorders in Medusa Admin when accepting orders without stock. Missing-list products marked Coming Soon use the non-purchasable product detail panel.
 
 - Medusa search and workflow integrations retain typed query and logger dependencies during production builds.

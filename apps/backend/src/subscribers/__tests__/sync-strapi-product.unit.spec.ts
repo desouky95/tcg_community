@@ -4,8 +4,8 @@ jest.mock('../../integrations/strapi/product-sync', () => ({ strapiClient: jest.
 const logger = { error: jest.fn() };
 const graph = jest.fn();
 const container = { resolve: (name: string) => name === 'query' ? { graph } : logger } as any;
-beforeEach(() => { jest.resetAllMocks(); process.env.STRAPI_SYNC_URL = 'http://cms.test'; process.env.STRAPI_SYNC_TOKEN = 'token'; });
-afterEach(() => { delete process.env.STRAPI_SYNC_URL; delete process.env.STRAPI_SYNC_TOKEN; });
+beforeEach(() => { jest.resetAllMocks(); process.env.BACKEND_STRAPI_SYNC_URL = 'http://cms.test'; process.env.BACKEND_STRAPI_SYNC_TOKEN = 'token'; });
+afterEach(() => { delete process.env.BACKEND_STRAPI_SYNC_URL; delete process.env.BACKEND_STRAPI_SYNC_TOKEN; });
 test('product creation including missing lists synchronizes product ID', async () => {
   await handler({ event: { name: 'product.created', data: { id: 'p1' } }, container } as any);
   expect(syncProduct).toHaveBeenCalledWith('p1', container);

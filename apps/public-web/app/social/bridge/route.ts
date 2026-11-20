@@ -15,7 +15,7 @@ import {
 export async function GET(request: NextRequest) {
   const provider = request.nextUrl.searchParams.get("provider");
   const attempt = request.nextUrl.searchParams.get("attempt");
-  const secret = process.env.SOCIAL_AUTH_BRIDGE_SECRET;
+  const secret = process.env.PUBLIC_WEB_SOCIAL_AUTH_BRIDGE_SECRET;
   const destination = authDestination(
     request.nextUrl.searchParams.get("destination"),
   );

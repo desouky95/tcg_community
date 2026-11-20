@@ -8,7 +8,7 @@
 
 ## Backend image
 
-`infra/Dockerfile.backend` builds only `apps/backend` from the root workspace with the frozen pnpm lockfile. PostgreSQL and Redis remain external. Compose loads runtime configuration from `apps/backend/.env`; it adds no services, volumes, proxy, start command, or automatic migration.
+`infra/Dockerfile.backend` builds only `apps/backend` from the root workspace with the frozen pnpm lockfile. PostgreSQL and Redis remain external. Compose loads runtime configuration from the root `.env`; it adds no services, volumes, proxy, start command, or automatic migration.
 
 Build: `docker compose -f infra/compose.yaml build backend`.
 
@@ -16,7 +16,7 @@ Migrate manually: `docker compose -f infra/compose.yaml run --rm backend pnpm ex
 
 ## Root Docker targets
 
-Build each image from the repository root with `docker build --target backend -t tcg-backend .`, replacing `backend` with `public-web`, `web`, `api`, or `cms` for the other targets. The images listen on ports 9000, 3000, 80, 3333, and 1337 respectively. Provide each app's runtime environment with an environment file or deployment secrets; databases and Redis are external. Run Medusa migrations separately before starting an updated service; Strapi runs its internal migrations on startup. Medusa also requires `VITE_CARD_CATALOG_URL` and `VITE_CARD_CATALOG_API_KEY` at runtime.
+Build each image from the repository root with `docker build --target backend -t tcg-backend .`, replacing `backend` with `public-web`, `web`, `api`, or `cms` for the other targets. The images listen on ports 9000, 3000, 80, 3333, and 1337 respectively. Provide each app's runtime environment with an environment file or deployment secrets; databases and Redis are external. Run Medusa migrations separately before starting an updated service; Strapi runs its internal migrations on startup. Medusa also requires `BACKEND_VITE_CARD_CATALOG_URL` and `BACKEND_VITE_CARD_CATALOG_API_KEY` at runtime.
 
 The storefront embeds public configuration at build time. Pass `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_STRAPI_API_URL`, `NEXT_PUBLIC_MEDUSA_BACKEND_URL`, `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY`, `NEXT_PUBLIC_DEFAULT_REGION`, and `NEXT_PUBLIC_APP_URL` using `--build-arg` as needed. Collector web embeds `VITE_API_URL` and `VITE_PUBLIC_WEB_URL`; never pass secrets as Vite build arguments. Keep server-only tokens and secrets in runtime environment variables, not build arguments.
 
@@ -24,7 +24,9 @@ Mount persistent storage at `/app/public/uploads` for CMS uploads when using loc
 
 ## Compose environments
 
-Development: `docker compose -f infra/compose.dev.yaml up --build`. All five services share the `dev` Dockerfile target and run each app's dev script with hot reload; collector web runs Vite on port 5173. The repository is bind-mounted into `/workspace`; container `node_modules` and build directories are masked by anonymous volumes, so after dependency or lockfile changes run `docker compose -f infra/compose.dev.yaml up --build -V`. Each server reads its matching environment file. Compose passes `VITE_API_URL` and `VITE_PUBLIC_WEB_URL` to collector web, defaulting to `http://localhost:3333/api/v1` and `http://localhost:3000`; override through `infra/.env` or the shell. Use `NODE_ENV=development` and bind servers to `HOST=0.0.0.0`. Set backend `PORT=9000`, `HMR_PORT=24678`, `HMR_BIND_HOST=0.0.0.0`, and `VITE_CARD_CATALOG_URL=http://api:3333/api/v1/internal/card-catalog`; API `PORT=3333` and `MEDUSA_INTERNAL_URL=http://backend:9000`; CMS `PORT=1337` and `MEDUSA_BACKEND_URL=http://backend:9000`; public-web `API_URL=http://api:3333/api/v1` for Next server requests plus browser-facing `NEXT_PUBLIC_API_URL=http://localhost:3333/api/v1`. Keep the local API session cookie host-only (`SESSION_COOKIE_DOMAIN` empty); allow browser origins `http://localhost:3000` and `http://localhost:5173` in `WEB_ORIGINS`. Run Medusa migrations separately: `docker compose -f infra/compose.dev.yaml run --rm backend pnpm medusa db:migrate`. The databases and Redis remain external: use container-reachable hosts such as `host.docker.internal` for services on the host. Browser-facing `NEXT_PUBLIC_*` and `VITE_*` URLs must be reachable from the browser; internal server URLs use Compose service names. CMS uploads persist in the development Compose volume.
+Development: `docker compose --env-file .env -f infra/compose.dev.yaml up --build`. All services use the root `.env`; per-app infrastructure env files are no longer consumed. Compose overrides native `NODE_ENV`, `HOST`, and `PORT`, plus internal service URLs (`PUBLIC_WEB_API_URL`, `API_MEDUSA_INTERNAL_URL`, `BACKEND_VITE_CARD_CATALOG_URL`, and `CMS_MEDUSA_BACKEND_URL`) for its network. Choose browser-facing localhost URLs in the root file when running locally; the production domains are not automatically rewritten. Databases and Redis remain external. Use container-reachable database hosts. CMS uploads persist in the development volume. After lockfile changes use `up --build -V` to refresh anonymous dependency volumes.
+
+Direct local scripts for API, Medusa, CMS, storefront, and MCP preload `../../.env` with Node's `--env-file-if-exists`; externally injected variables take precedence. Collector Vite uses the repository root as `envDir` and only exposes `VITE_*` variables to browsers. Mock API has no custom env reads. Run scripts through `pnpm --filter <package> ...` from the repository root. For a compiled API started from its build directory, load root env explicitly: `node --env-file=../../../.env bin/server.js`; deployed images use injected variables. Existing per-app env files are retained, but application settings now use root-prefixed names. Native framework controls such as `NODE_ENV`, `HOST`, and `PORT` remain unprefixed. API environment validation reads the repository root in source mode, including the root `.env.test` override for tests. Medusa Jest also resolves root env files. Test overrides must point to dedicated test services before integration tests are run. No tests were run during this migration.
 
 ## Single-container DigitalOcean App Platform deployment
 
@@ -40,17 +42,18 @@ Set these GitHub repository variables before building: `NEXT_PUBLIC_API_URL`, `N
 
 Copy `.env.example` to `.env` only if no root `.env` exists. Preserve existing credentials and signing keys. The root file is ignored by Git and excluded from image builds. Keep permissions at `0600`. Local production Compose reads this file; App Platform does not read repository env files, so import the runtime values into the component settings and mark credentials as encrypted secrets.
 
-`infra/run-app.sh` translates app-specific variables into their framework-native names before executing each server:
+Applications read root variable names directly:
 
-| Root / App Platform variable | App process receives |
+| Application | Configuration names |
 | --- | --- |
-| `API_APP_KEY`, `API_DB_HOST`, `API_SESSION_DRIVER` | Adonis `APP_KEY`, `DB_HOST`, `SESSION_DRIVER` |
-| `BACKEND_DATABASE_URL`, `BACKEND_JWT_SECRET` | Medusa `DATABASE_URL`, `JWT_SECRET` |
-| `CMS_DATABASE_HOST`, `CMS_JWT_SECRET` | Strapi `DATABASE_HOST`, `JWT_SECRET` |
-| `PUBLIC_WEB_BETTER_AUTH_SECRET`, `PUBLIC_WEB_API_URL` | Next `BETTER_AUTH_SECRET`, `API_URL` |
-| `NEXT_PUBLIC_*` | Next public configuration |
+| Adonis API | `API_APP_KEY`, `API_DB_HOST`, `API_SESSION_DRIVER`, and other `API_*` keys |
+| Medusa | `BACKEND_DATABASE_URL`, `BACKEND_JWT_SECRET`, and other `BACKEND_*` keys |
+| Strapi | `CMS_DATABASE_HOST`, `CMS_JWT_SECRET`, and other `CMS_*` keys |
+| Next storefront server | `PUBLIC_WEB_BETTER_AUTH_SECRET`, `PUBLIC_WEB_API_URL`, and other `PUBLIC_WEB_*` keys |
+| Browser bundles | Existing `NEXT_PUBLIC_*` and `VITE_*` public names |
+| Local MCP | `MCP_TCG_API_URL`, `MCP_MEDUSA_BACKEND_URL`, `MCP_MEDUSA_PUBLISHABLE_KEY`, `MCP_MEDUSA_REGION_ID` |
 
-The mapping applies to every variable with the owning prefix, allowing existing framework configuration to stay unchanged. Other applications' credentials are not inherited by the child process. This is configuration isolation, not a security boundary between processes sharing one container and OS user. Unprefixed server secrets are no longer accepted by the bundle. Local development keeps its existing per-app env files. The production launcher fixes `NODE_ENV`, bind addresses, and ports regardless of prefixed overrides.
+`infra/run-app.sh` filters other applications' namespaces but no longer strips prefixes. This is configuration isolation, not a security boundary between processes sharing one container and OS user. Medusa config bridges only framework-owned onboarding/MFA keys to their required native names. Strapi explicitly configures its JWT secret from `CMS_JWT_SECRET`. Adonis retains validation under the new `API_*` names. Native Node/Vite/framework controls keep their existing names; the production launcher fixes bind addresses and ports. Do not widen Vite's public prefix to include backend namespaces.
 
 Integration values must agree: `API_SOCIAL_AUTH_BRIDGE_SECRET` equals `PUBLIC_WEB_SOCIAL_AUTH_BRIDGE_SECRET`; `API_MEDUSA_SERVICE_KEY` equals `BACKEND_NEXT_PULL_SERVICE_KEY`; and the card catalog key used by Medusa must match `API_CARD_CATALOG_API_KEY`. Keep the CMS sync token aligned with the receiving Strapi integration. Configure public HTTPS origins, OAuth callbacks, and cookies for the chosen domains. Leave `API_SESSION_COOKIE_DOMAIN` empty for a host-only API cookie unless cross-subdomain cookies are explicitly needed.
 
@@ -94,13 +97,23 @@ The current Medusa PostgreSQL connection enables TLS with certificate verificati
 
 ### Acceptance and verification
 
-Static checks cover shell and JavaScript syntax, Compose configuration, environment-key uniqueness, and diff whitespace. The focused `infra/verify-bundle.py` check uses the actual `bundle-runtime` image and launcher with fixture HTTP servers, not production applications or credentials. Run `docker build --target bundle-runtime -t tcg-bundle-runtime:audit .` followed by `python3 infra/verify-bundle.py` to verify routing, readiness failure/recovery, crashes, and shutdown. Verified locally on Linux ARM64: the shared runtime image builds; all five hostname routes pass; an unresponsive app makes readiness return 503 and recovery restores 200; each of the four server exits and Nginx exit stop the container with status 1; graceful shutdown exits 0 and terminates descendant processes. These checks use fixtures, so a full application image build, registry publication, migrations, and cloud deployment remain separate verification steps.
+Static checks cover shell and JavaScript syntax, Compose configuration, environment-key uniqueness, and diff whitespace. The root-name migration passed typechecks for API, Medusa, CMS, storefront, collector, and MCP; a configuration self-check confirmed namespace filtering keeps original root names. Application tests were not run for that migration. The focused `infra/verify-bundle.py` check uses the actual `bundle-runtime` image and launcher with fixture HTTP servers, not production applications or credentials. Run `docker build --target bundle-runtime -t tcg-bundle-runtime:audit .` followed by `python3 infra/verify-bundle.py` to verify routing, readiness failure/recovery, crashes, and shutdown. Verified locally on Linux ARM64: the shared runtime image builds; all five hostname routes pass; an unresponsive app makes readiness return 503 and recovery restores 200; each of the four server exits and Nginx exit stop the container with status 1; graceful shutdown exits 0 and terminates descendant processes. These checks use fixtures, so a full application image build, registry publication, migrations, and cloud deployment remain separate verification steps.
 
 After deployment, visit all five domains and verify the intended application, authentication redirects, CORS, and API access. Inspect logs for all four servers. `/healthz` proxies to a loopback-only readiness service on port 8081. It checks storefront `/`, API `/`, Medusa `/health`, and Strapi `/_health` concurrently with three-second deadlines. Connection failures, timeouts, and HTTP 5xx produce 503; responding 4xx are accepted because the API root may legitimately return 404. This checks HTTP responsiveness, not database correctness or authenticated business flows. Confirm those separately before accepting production traffic. Check external storage persistence across a replacement deployment.
 
 References: [DigitalOcean app specification](https://docs.digitalocean.com/products/app-platform/reference/app-spec/) and [domain setup](https://docs.digitalocean.com/products/app-platform/how-to/manage-domains/).
 
 ## Related Files
+- apps/api/start/env.ts
+- apps/api/package.json
+- apps/backend/medusa-config.ts
+- apps/backend/package.json
+- apps/cms/config
+- apps/cms/package.json
+- apps/public-web/package.json
+- apps/mcp/package.json
+- apps/mcp/README.md
+- apps/web/vite.config.ts
 - .env.example
 - .do/app.yaml
 - infra/run-app.sh

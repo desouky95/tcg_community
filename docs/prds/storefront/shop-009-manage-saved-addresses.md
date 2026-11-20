@@ -6,6 +6,8 @@ A signed-in customer can view and manage the delivery addresses saved to their M
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `API_*`, `BACKEND_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - Deleting a saved address requires confirmation in an accessible dialog; cancellation leaves the address intact.
 
 - The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.

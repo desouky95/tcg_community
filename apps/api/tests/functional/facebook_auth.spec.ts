@@ -276,9 +276,9 @@ test.group('Better Auth social handoff', (group) => {
   group.each.setup(() => testUtils.db().wrapInGlobalTransaction())
   const secret = 'test-bridge-secret-with-at-least-32-characters'
   group.each.setup(() => {
-    const original = env.get('SOCIAL_AUTH_BRIDGE_SECRET')
-    env.set('SOCIAL_AUTH_BRIDGE_SECRET', secret)
-    return () => env.set('SOCIAL_AUTH_BRIDGE_SECRET', original ?? '')
+    const original = env.get('API_SOCIAL_AUTH_BRIDGE_SECRET')
+    env.set('API_SOCIAL_AUTH_BRIDGE_SECRET', secret)
+    return () => env.set('API_SOCIAL_AUTH_BRIDGE_SECRET', original ?? '')
   })
   function assertion(provider: string, attempt: string) {
     const iv = randomBytes(12)

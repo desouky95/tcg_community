@@ -15,7 +15,7 @@ const inputSchema = z
   .strict();
 
 function hasValidServiceKey(value: string | undefined) {
-  const expected = process.env.NEXT_PULL_SERVICE_KEY;
+  const expected = process.env.BACKEND_NEXT_PULL_SERVICE_KEY;
   if (!expected || !value) return false;
   const expectedBuffer = Buffer.from(expected);
   const providedBuffer = Buffer.from(value);

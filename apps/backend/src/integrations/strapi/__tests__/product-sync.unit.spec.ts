@@ -23,13 +23,13 @@ function container(product: unknown = payload) {
   } as any;
 }
 beforeEach(() => {
-  process.env.STRAPI_SYNC_URL = "http://cms.test";
-  process.env.STRAPI_SYNC_TOKEN = "secret";
+  process.env.BACKEND_STRAPI_SYNC_URL = "http://cms.test";
+  process.env.BACKEND_STRAPI_SYNC_TOKEN = "secret";
 });
 afterEach(() => {
   jest.restoreAllMocks();
-  delete process.env.STRAPI_SYNC_URL;
-  delete process.env.STRAPI_SYNC_TOKEN;
+  delete process.env.BACKEND_STRAPI_SYNC_URL;
+  delete process.env.BACKEND_STRAPI_SYNC_TOKEN;
 });
 
 test("upserts by Medusa ID, relates variants, and removes stale variants", async () => {

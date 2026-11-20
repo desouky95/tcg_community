@@ -9,9 +9,9 @@
     "./registry": "./.adonisjs/client/registry/index.ts"
   },
   "scripts": {
-    "start": "node bin/server.js",
-    "build": "node ace build",
-    "dev": "node ace serve --hmr",
+    "start": "NODE_ENV=production node --env-file-if-exists=../../.env bin/server.js",
+    "build": "node --env-file-if-exists=../../.env ace build",
+    "dev": "NODE_ENV=development node --env-file-if-exists=../../.env ace serve --hmr",
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",

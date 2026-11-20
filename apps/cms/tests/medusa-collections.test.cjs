@@ -11,7 +11,7 @@ const plugin = require('../src/plugins/medusa-collections/strapi-server.js');
 Module._load = original;
 test('collection endpoint requires admin policy and passes bounded search and pagination', async () => {
   assert.deepEqual(plugin.routes.admin.routes[0].config.policies, ['admin::isAuthenticatedAdmin']);
-  process.env.MEDUSA_BACKEND_URL = 'http://localhost:9000'; process.env.MEDUSA_PUBLISHABLE_KEY = 'test';
+  process.env.CMS_MEDUSA_BACKEND_URL = 'http://localhost:9000'; process.env.CMS_MEDUSA_PUBLISHABLE_KEY = 'test';
   const ctx = { query: { q: 'Cards', offset: '20' } };
   await plugin.controllers.collections.list(ctx);
   assert.deepEqual(query, { q: 'Cards', offset: 20, limit: 20 });
@@ -21,7 +21,7 @@ test('lookup by id and missing configuration', async () => {
   const ctx = { query: { id: 'pcol_1' } };
   await plugin.controllers.collections.list(ctx);
   assert.deepEqual(query.id, ['pcol_1']);
-  delete process.env.MEDUSA_PUBLISHABLE_KEY;
+  delete process.env.CMS_MEDUSA_PUBLISHABLE_KEY;
   const missing = { query: {}, serviceUnavailable: (message) => message };
   assert.match(await plugin.controllers.collections.list(missing), /not configured/);
 });

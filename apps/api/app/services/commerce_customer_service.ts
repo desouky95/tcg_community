@@ -5,9 +5,9 @@ import User from '#models/user'
 
 export class CommerceCustomerService {
   async resolveForUser(user: User, cartId?: string) {
-    const baseUrl = env.get('MEDUSA_INTERNAL_URL')
-    const serviceKey = env.get('MEDUSA_SERVICE_KEY')
-    const publisableKey = env.get('MEDUSA_PUBLISHABLE_KEY')
+    const baseUrl = env.get('API_MEDUSA_INTERNAL_URL')
+    const serviceKey = env.get('API_MEDUSA_SERVICE_KEY')
+    const publisableKey = env.get('API_MEDUSA_PUBLISHABLE_KEY')
     if (!baseUrl || !serviceKey || !publisableKey)
       return { linked: false, customerId: null, available: false }
     try {
@@ -80,9 +80,9 @@ export class CommerceCustomerService {
 
   async account(user: User, payload: Record<string, unknown>) {
     const link = await this.resolveForUser(user)
-    const baseUrl = env.get('MEDUSA_INTERNAL_URL')
-    const key = env.get('MEDUSA_SERVICE_KEY')
-    const publisableKey = env.get('MEDUSA_PUBLISHABLE_KEY')
+    const baseUrl = env.get('API_MEDUSA_INTERNAL_URL')
+    const key = env.get('API_MEDUSA_SERVICE_KEY')
+    const publisableKey = env.get('API_MEDUSA_PUBLISHABLE_KEY')
 
     if (!link.customerId || !baseUrl || !key || !publisableKey)
       return { status: 503, body: { error: 'Commerce is temporarily unavailable' } }

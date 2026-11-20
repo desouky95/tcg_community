@@ -29,6 +29,7 @@ const config = ({
   "users-permissions": {
     config: {
       jwtManagement: "refresh",
+      jwtSecret: env("CMS_JWT_SECRET"),
       sessions: {
         httpOnly: true,
       },

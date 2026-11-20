@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 /** Server-only proxy: browser code never receives the Medusa service credential. */
 export async function POST(request: NextRequest) {
-  const authCookie = process.env.AUTH_COOKIE_NAME;
+  const authCookie = process.env.PUBLIC_WEB_AUTH_COOKIE_NAME;
   if (!authCookie || !request.cookies.has(authCookie))
     return NextResponse.json({ data: { authenticated: false } });
 
-  const apiUrl = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.PUBLIC_WEB_API_URL ?? process.env.NEXT_PUBLIC_API_URL;
   if (!apiUrl)
     return NextResponse.json(
       { data: { linked: false, available: false } },

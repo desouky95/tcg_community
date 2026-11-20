@@ -7,6 +7,8 @@ A single owned collection is created for the checklist. This is an established c
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `API_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - The shared collection service rejects entry updates when the collection has no owner or checklist.
 
 - Accept comma-separated card or sticker identifiers, optionally followed by a quantity in parentheses, such as `1,2(2),3(4)`, for missing or duplicate entries.

@@ -6,6 +6,8 @@ An authorized Medusa operator identifies linked products in the original invento
 
 ## Requirements
 
+- Referenced application configuration reads root `.env` names directly: `BACKEND_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
+
 - Enable Medusa’s experimental `view_configurations` feature and configure the Settings module’s `InventoryItem` entity with a computed `Product` column on the original inventory table. Default column order is title, SKU, Product, reserved, stocked. Existing saved views may need Product enabled through the table’s column settings.
 - Register the `inventory_products` renderer through Medusa’s native `src/admin/cell-renderers.tsx` entry. Fetch linked variant product IDs and titles with the inventory rows, show each linked product once with a product-details link, and show “No linked product” for unlinked inventory. Do not enable unsupported Product sorting or filtering.
 - Configurable views apply to other supported Admin tables as well; this feature remains experimental. The native inventory table retains stock-editing actions and item pagination. Product grouping remains available through the separate grouped view.

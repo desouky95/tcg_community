@@ -2,7 +2,7 @@ import env from '#start/env'
 import { defineConfig, drivers } from '@adonisjs/queue'
 
 export default defineConfig({
-  default: env.get('QUEUE_DRIVER', 'database'),
+  default: env.get('API_QUEUE_DRIVER', 'database'),
 
   adapters: {
     database: drivers.database({

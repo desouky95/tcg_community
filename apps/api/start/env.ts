@@ -11,63 +11,68 @@
 
 import { Env } from '@adonisjs/core/env'
 
-export default await Env.create(new URL('../', import.meta.url), {
+// Native server controls remain unprefixed; application settings use API_ names.
+process.env.NODE_ENV ??= 'development'
+process.env.HOST ??= '0.0.0.0'
+process.env.PORT ??= '3333'
+
+export default await Env.create(new URL('../../../', import.meta.url), {
   // Node
   NODE_ENV: Env.schema.enum(['development', 'production', 'test'] as const),
   PORT: Env.schema.number(),
   HOST: Env.schema.string({ format: 'host' }),
-  LOG_LEVEL: Env.schema.string(),
+  API_LOG_LEVEL: Env.schema.string(),
 
   // App
-  APP_KEY: Env.schema.secret(),
-  APP_URL: Env.schema.string({ format: 'url', tld: false }),
-  SOCIAL_AUTH_BRIDGE_SECRET: Env.schema.string.optional(),
-  PUBLIC_WEB_URL: Env.schema.string.optional({ format: 'url', tld: false }),
-  COLLECTOR_APP_URL: Env.schema.string.optional({ format: 'url', tld: false }),
-  WEB_ORIGINS: Env.schema.string.optional(),
-  SESSION_COOKIE_DOMAIN: Env.schema.string.optional(),
-  MEDUSA_INTERNAL_URL: Env.schema.string.optional(),
-  MEDUSA_SERVICE_KEY: Env.schema.secret.optional(),
-  MEDUSA_PUBLISHABLE_KEY: Env.schema.secret.optional(),
-  CARD_CATALOG_API_KEY: Env.schema.string.optional(),
-  SCRAPER_TRIGGER_TOKEN: Env.schema.string.optional(),
-  FIRECRAWL_API_KEY: Env.schema.string.optional(),
+  API_APP_KEY: Env.schema.secret(),
+  API_APP_URL: Env.schema.string({ format: 'url', tld: false }),
+  API_SOCIAL_AUTH_BRIDGE_SECRET: Env.schema.string.optional(),
+  API_PUBLIC_WEB_URL: Env.schema.string.optional({ format: 'url', tld: false }),
+  API_COLLECTOR_APP_URL: Env.schema.string.optional({ format: 'url', tld: false }),
+  API_WEB_ORIGINS: Env.schema.string.optional(),
+  API_SESSION_COOKIE_DOMAIN: Env.schema.string.optional(),
+  API_MEDUSA_INTERNAL_URL: Env.schema.string.optional(),
+  API_MEDUSA_SERVICE_KEY: Env.schema.secret.optional(),
+  API_MEDUSA_PUBLISHABLE_KEY: Env.schema.secret.optional(),
+  API_CARD_CATALOG_API_KEY: Env.schema.string.optional(),
+  API_SCRAPER_TRIGGER_TOKEN: Env.schema.string.optional(),
+  API_FIRECRAWL_API_KEY: Env.schema.string.optional(),
 
   // Session
-  SESSION_DRIVER: Env.schema.enum(['cookie', 'memory', 'database'] as const),
+  API_SESSION_DRIVER: Env.schema.enum(['cookie', 'memory', 'database'] as const),
 
   // Database
-  DB_HOST: Env.schema.string({ format: 'host' }),
-  DB_PORT: Env.schema.number(),
-  DB_USER: Env.schema.string(),
-  DB_PASSWORD: Env.schema.string.optional(),
-  DB_DATABASE: Env.schema.string(),
-  TEXT_BEE_API_KEY: Env.schema.string(),
-  TEXT_BEE_DEVICE_ID: Env.schema.string(),
-  COLLECTOR_DISK_ENABLED: Env.schema.boolean(),
-  SWAPS_ENABLED: Env.schema.boolean.optional(),
+  API_DB_HOST: Env.schema.string({ format: 'host' }),
+  API_DB_PORT: Env.schema.number(),
+  API_DB_USER: Env.schema.string(),
+  API_DB_PASSWORD: Env.schema.string.optional(),
+  API_DB_DATABASE: Env.schema.string(),
+  API_TEXT_BEE_API_KEY: Env.schema.string(),
+  API_TEXT_BEE_DEVICE_ID: Env.schema.string(),
+  API_COLLECTOR_DISK_ENABLED: Env.schema.boolean(),
+  API_SWAPS_ENABLED: Env.schema.boolean.optional(),
 
   /*
   |----------------------------------------------------------
   | Variables for configuring @adonisjs/queue
   |----------------------------------------------------------
   */
-  QUEUE_DRIVER: Env.schema.enum(['redis', 'database', 'sync'] as const),
+  API_QUEUE_DRIVER: Env.schema.enum(['redis', 'database', 'sync'] as const),
 
   /*
   |----------------------------------------------------------
   | Variables for configuring the drive package
   |----------------------------------------------------------
   */
-  DRIVE_DISK: Env.schema.enum(['fs'] as const),
+  API_DRIVE_DISK: Env.schema.enum(['fs'] as const),
 
   /*
   |----------------------------------------------------------
   | Variables for configuring ally package
   |----------------------------------------------------------
   */
-  GOOGLE_CLIENT_ID: Env.schema.string.optional(),
-  GOOGLE_CLIENT_SECRET: Env.schema.string.optional(),
-  FACEBOOK_CLIENT_ID: Env.schema.string(),
-  FACEBOOK_CLIENT_SECRET: Env.schema.string()
+  API_GOOGLE_CLIENT_ID: Env.schema.string.optional(),
+  API_GOOGLE_CLIENT_SECRET: Env.schema.string.optional(),
+  API_FACEBOOK_CLIENT_ID: Env.schema.string(),
+  API_FACEBOOK_CLIENT_SECRET: Env.schema.string()
 })

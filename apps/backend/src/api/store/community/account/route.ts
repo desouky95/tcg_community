@@ -80,7 +80,7 @@ const orderSelect = [
 ] as const;
 
 function authorized(value: string | undefined) {
-  const expected = process.env.NEXT_PULL_SERVICE_KEY;
+  const expected = process.env.BACKEND_NEXT_PULL_SERVICE_KEY;
   if (!expected || !value) return false;
   const a = Buffer.from(expected);
   const b = Buffer.from(value);

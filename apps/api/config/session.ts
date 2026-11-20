@@ -39,7 +39,7 @@ const sessionConfig = defineConfig({
      * Prevent JavaScript access to the cookie in the browser.
      */
     httpOnly: true,
-    domain: env.get('SESSION_COOKIE_DOMAIN'),
+    domain: env.get('API_SESSION_COOKIE_DOMAIN'),
 
     /**
      * Send cookies only over HTTPS in production.
@@ -57,7 +57,7 @@ const sessionConfig = defineConfig({
    * variable in order to infer the store name without any
    * errors.
    */
-  store: env.get('SESSION_DRIVER'),
+  store: env.get('API_SESSION_DRIVER'),
 
   /**
    * List of configured stores. Refer documentation to see

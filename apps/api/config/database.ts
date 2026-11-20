@@ -56,11 +56,11 @@ const dbConfig = defineConfig({
     pg: {
       client: 'pg',
       connection: {
-        host: env.get('DB_HOST'),
-        port: env.get('DB_PORT'),
-        user: env.get('DB_USER'),
-        password: env.get('DB_PASSWORD'),
-        database: env.get('DB_DATABASE'),
+        host: env.get('API_DB_HOST'),
+        port: env.get('API_DB_PORT'),
+        user: env.get('API_DB_USER'),
+        password: env.get('API_DB_PASSWORD'),
+        database: env.get('API_DB_DATABASE'),
       },
       migrations: {
         naturalSort: true,
@@ -76,11 +76,11 @@ const dbConfig = defineConfig({
     // mysql: {
     //   client: 'mysql2',
     //   connection: {
-    //     host: env.get('DB_HOST'),
-    //     port: env.get('DB_PORT'),
-    //     user: env.get('DB_USER'),
-    //     password: env.get('DB_PASSWORD'),
-    //     database: env.get('DB_DATABASE'),
+    //     host: env.get('API_DB_HOST'),
+    //     port: env.get('API_DB_PORT'),
+    //     user: env.get('API_DB_USER'),
+    //     password: env.get('API_DB_PASSWORD'),
+    //     database: env.get('API_DB_DATABASE'),
     //   },
     //   migrations: {
     //     naturalSort: true,
@@ -96,11 +96,11 @@ const dbConfig = defineConfig({
     // mssql: {
     //   client: 'mssql',
     //   connection: {
-    //     server: env.get('DB_HOST'),
-    //     port: env.get('DB_PORT'),
-    //     user: env.get('DB_USER'),
-    //     password: env.get('DB_PASSWORD'),
-    //     database: env.get('DB_DATABASE'),
+    //     server: env.get('API_DB_HOST'),
+    //     port: env.get('API_DB_PORT'),
+    //     user: env.get('API_DB_USER'),
+    //     password: env.get('API_DB_PASSWORD'),
+    //     database: env.get('API_DB_DATABASE'),
     //   },
     //   migrations: {
     //     naturalSort: true,
@@ -116,8 +116,8 @@ const dbConfig = defineConfig({
     // libsql: {
     //   client: 'libsql',
     //   connection: {
-    //     url: env.get('LIBSQL_URL'),
-    //     authToken: env.get('LIBSQL_AUTH_TOKEN'),
+    //     url: env.get('API_LIBSQL_URL'),
+    //     authToken: env.get('API_LIBSQL_AUTH_TOKEN'),
     //   },
     //   useNullAsDefault: true,
     //   migrations: {
