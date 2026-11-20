@@ -12,7 +12,7 @@ services:
       STORE_CORS: ${STORE_CORS:-}
       ADMIN_CORS: ${ADMIN_CORS:-}
       AUTH_CORS: ${AUTH_CORS:-}
-      REDIS_URL: ${REDIS_URL:-}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       JWT_SECRET: ${JWT_SECRET:-}
       COOKIE_SECRET: ${COOKIE_SECRET:-}
       AUTH_MFA_ENCRYPTION_KEY: ${AUTH_MFA_ENCRYPTION_KEY:-}
@@ -23,14 +23,29 @@ services:
       DB_NAME: ${DB_NAME:-}
       STRAPI_SYNC_URL: ${STRAPI_SYNC_URL:-}
       STRAPI_SYNC_TOKEN: ${STRAPI_SYNC_TOKEN:-}
-      EVENTS_REDIS_URL: ${EVENTS_REDIS_URL:-}
+      EVENTS_REDIS_URL: ${EVENTS_REDIS_URL:-redis://redis:6379}
       NODE_ENV: ${NODE_ENV:-}
       CARD_CATALOG_API_KEY: ${CARD_CATALOG_API_KEY:-}
       NEXT_PULL_SERVICE_KEY: ${NEXT_PULL_SERVICE_KEY:-}
       HOST: 0.0.0.0
       PORT: 9000
+    depends_on:
+      redis:
+        condition: service_healthy
     ports:
       - '9000:9000'
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - redis-data:/data
 
   public-web:
     <<: *app
@@ -144,3 +159,4 @@ services:
 
 volumes:
   cms-uploads:
+  redis-data:

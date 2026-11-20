@@ -28,7 +28,7 @@ Development: `docker compose -f infra/compose.dev.yaml up --build`. All five ser
 
 ### Production on a DigitalOcean Droplet
 
-Production uses one Docker Hub image for all five apps. Use the root `.env` as the single production configuration file. Compose maps `API_*`, `BACKEND_*`, `CMS_*`, and `PUBLIC_WEB_*` keys to each container's original variable names; credentials are passed only to their owning service. No application source changes are required. Development Compose still uses its existing development env files.
+Production uses one Docker Hub image for all five apps plus a Redis 7 service with AOF persistence in a named volume. Medusa uses the Compose Redis service by default for its event bus and locks; `REDIS_URL` and `EVENTS_REDIS_URL` can override it. Redis is internal to Compose and has a health check. Use the root `.env` as the single production configuration file. Compose passes flat DigitalOcean environment keys to each owning app; credentials are passed only to their owning service. No application source changes are required. Development Compose still uses its existing development env files.
 
 Set `APP_IMAGE=YOUR_DOCKERHUB_USER/nextpull:RELEASE_TAG` in `.env`. Use immutable release tags. Builds default to `linux/amd64`; override `APP_PLATFORM` for an ARM Droplet.
 
@@ -42,7 +42,7 @@ Each successful publication pushes the full Git commit SHA tag, then updates `la
 
 Use public HTTPS URLs for browser traffic. Configure DNS and a TLS reverse proxy to route the storefront to port 3000, collector app to 5173, API to 3333, commerce to 9000, and CMS to 1337. This change does not install a proxy or configure the Droplet firewall. Internal server calls use `http://api:3333` and `http://backend:9000`; `localhost` inside a container means that container. Keep CORS origins, OAuth redirect URLs, and cookie domain aligned with the actual public domains.
 
-PostgreSQL and Redis remain external. Use hosts reachable from the Droplet containers. CMS configuration supports database TLS and a CA certificate. **The current Medusa configuration explicitly disables PostgreSQL TLS, and the API database configuration exposes no TLS env option. DigitalOcean Managed PostgreSQL requires separate application TLS configuration before use; setting credentials alone does not resolve this.**
+PostgreSQL remains external. Use hosts reachable from the Droplet containers. Redis persists in the Compose `redis-data` volume; back it up when retaining event jobs matters. CMS configuration supports database TLS and a CA certificate. **The current Medusa configuration explicitly disables PostgreSQL TLS, and the API database configuration exposes no TLS env option. DigitalOcean Managed PostgreSQL requires separate application TLS configuration before use; setting credentials alone does not resolve this.**
 
 On the build machine, log into Docker Hub, build the combined image, and publish it. All public frontend build variables must be set before building. These values must match the runtime values on the Droplet. Runtime secrets are excluded from the build context, as are the local `next_pull` SSH key files.
 
