@@ -1,0 +1,56 @@
+# Reference only: retain your existing App Platform image connection and deployment settings.
+# Match registry/repository to DOCKERHUB_IMAGE if you override the workflow default.
+# Confirm the next-pull.com domains and select the region/size appropriate for your databases.
+# Set runtime variables from .env.example as component env vars in App Platform.
+# Mark credentials SECRET; do not commit their values here.
+name: nextpull
+region: fra
+services:
+  - name: bundle
+    image:
+      registry_type: DOCKER_HUB
+      registry: "5715"
+      repository: nextpull
+      tag: latest
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: apps-s-2vcpu-4gb
+    health_check:
+      http_path: /healthz
+      port: 8080
+      initial_delay_seconds: 120
+    envs:
+      - key: STOREFRONT_DOMAIN
+        value: next-pull.com
+        scope: RUN_TIME
+      - key: COLLECTOR_DOMAIN
+        value: app.next-pull.com
+        scope: RUN_TIME
+      - key: API_DOMAIN
+        value: api.next-pull.com
+        scope: RUN_TIME
+      - key: MEDUSA_DOMAIN
+        value: commerce.next-pull.com
+        scope: RUN_TIME
+      - key: CMS_DOMAIN
+        value: cms.next-pull.com
+        scope: RUN_TIME
+domains:
+  - domain: next-pull.com
+    type: PRIMARY
+  - domain: app.next-pull.com
+    type: ALIAS
+  - domain: api.next-pull.com
+    type: ALIAS
+  - domain: commerce.next-pull.com
+    type: ALIAS
+  - domain: cms.next-pull.com
+    type: ALIAS
+ingress:
+  rules:
+    - component:
+        name: bundle
+        preserve_path_prefix: true
+      match:
+        path:
+          prefix: /

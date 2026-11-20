@@ -1,12 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-export STOREFRONT_HOST=${STOREFRONT_HOST:-walrus-app-6o72x.ondigitalocean.app}
-export API_URL=${API_URL:-http://127.0.0.1:3333/api/v1}
-export MEDUSA_INTERNAL_URL=${MEDUSA_INTERNAL_URL:-http://127.0.0.1:9000}
-
 declare -A seen_hosts=()
-for key in STOREFRONT_HOST COLLECTOR_HOST API_HOST MEDUSA_HOST CMS_HOST; do
+for key in STOREFRONT_DOMAIN COLLECTOR_DOMAIN API_DOMAIN MEDUSA_DOMAIN CMS_DOMAIN; do
   value=${!key:-}
   if [[ ! $value =~ ^[a-zA-Z0-9][a-zA-Z0-9.-]*$ ]]; then
     echo "$key must be a hostname without a scheme, path, or port" >&2
@@ -19,11 +15,11 @@ for key in STOREFRONT_HOST COLLECTOR_HOST API_HOST MEDUSA_HOST CMS_HOST; do
   seen_hosts[${value,,}]=1
   export "$key"
 done
-: "${REDIS_URL:?Set REDIS_URL to an external Redis connection URL}"
-export EVENTS_REDIS_URL=${EVENTS_REDIS_URL:-$REDIS_URL}
+: "${BACKEND_REDIS_URL:?Set BACKEND_REDIS_URL to an external Redis connection URL}"
+export BACKEND_EVENTS_REDIS_URL=${BACKEND_EVENTS_REDIS_URL:-$BACKEND_REDIS_URL}
 export NODE_ENV=production
 # Restrict substitution to public hostnames; preserve Nginx request variables.
-envsubst '${STOREFRONT_HOST} ${COLLECTOR_HOST} ${API_HOST} ${MEDUSA_HOST} ${CMS_HOST}' \
+envsubst '${STOREFRONT_DOMAIN} ${COLLECTOR_DOMAIN} ${API_DOMAIN} ${MEDUSA_DOMAIN} ${CMS_DOMAIN}' \
   < /etc/nginx/app-platform.conf.template > /tmp/nginx.app-platform.conf
 nginx -t -c /tmp/nginx.app-platform.conf
 
@@ -38,13 +34,15 @@ trap 'exit 0' TERM INT
 
 echo "Starting bundle: nginx=8080 storefront=3000 medusa=9000 api=3333 cms=1337"
 
-(cd /app/.medusa/server; exec setsid env HOST=0.0.0.0 PORT=9000 /app/node_modules/.bin/medusa start --port 9000) &
+(cd /app/.medusa/server; exec setsid /usr/local/bin/run-app BACKEND env NODE_ENV=production HOST=127.0.0.1 PORT=9000 /app/node_modules/.bin/medusa start --port 9000) &
 pids+=("$!")
-(cd /srv/public-web; exec setsid env HOSTNAME=0.0.0.0 PORT=3000 node apps/public-web/server.js) &
+(cd /srv/public-web; exec setsid /usr/local/bin/run-app PUBLIC_WEB env NODE_ENV=production HOSTNAME=127.0.0.1 PORT=3000 node apps/public-web/server.js) &
 pids+=("$!")
-(cd /srv/api; exec setsid env HOST=0.0.0.0 PORT=3333 node bin/server.js) &
+(cd /srv/api; exec setsid /usr/local/bin/run-app API env NODE_ENV=production HOST=127.0.0.1 PORT=3333 node bin/server.js) &
 pids+=("$!")
-(cd /srv/cms; exec setsid env HOST=0.0.0.0 PORT=1337 ./node_modules/.bin/strapi start) &
+(cd /srv/cms; exec setsid /usr/local/bin/run-app CMS env NODE_ENV=production HOST=127.0.0.1 PORT=1337 ./node_modules/.bin/strapi start) &
+pids+=("$!")
+setsid node /usr/local/bin/bundle-readiness.mjs &
 pids+=("$!")
 setsid nginx -c /tmp/nginx.app-platform.conf -g 'daemon off;' &
 pids+=("$!")

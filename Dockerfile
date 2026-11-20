@@ -5,15 +5,18 @@ ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 ENV CI=true
 RUN corepack enable
+# Cache downloads independently of application source, as in infra/Dockerfile.backend.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+RUN pnpm fetch
 COPY . .
 
 FROM base AS dev
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile \
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile \
     --filter @tcg/medusa... --filter @tcg/public-web... --filter @tcg/api... --filter @tcg/strapi... --filter @tcg/web...
 ENV NODE_ENV=development
 
 FROM base AS backend-build
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @tcg/medusa...
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/medusa...
 RUN pnpm --filter @tcg/medusa... --if-present run build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm --filter @tcg/medusa --prod deploy --legacy /prod/backend
 
@@ -33,7 +36,7 @@ EXPOSE 9000
 CMD ["/app/node_modules/.bin/medusa", "start"]
 
 FROM base AS public-web-build
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @tcg/public-web...
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/public-web...
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_STRAPI_API_URL
 ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL
@@ -53,7 +56,7 @@ EXPOSE 3000
 CMD ["node", "apps/public-web/server.js"]
 
 FROM base AS api-build
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @tcg/api...
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/api...
 RUN pnpm --filter @tcg/api... --if-present run build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm --filter @tcg/api --prod deploy --legacy /prod/api
 
@@ -67,7 +70,7 @@ EXPOSE 3333
 CMD ["node", "bin/server.js"]
 
 FROM base AS cms-build
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @tcg/strapi...
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/strapi...
 RUN pnpm --filter @tcg/strapi... --if-present run build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm --filter @tcg/strapi --prod deploy --legacy /prod/cms
 
@@ -84,7 +87,7 @@ EXPOSE 1337
 CMD ["./node_modules/.bin/strapi", "start"]
 
 FROM base AS web-build
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @tcg/web...
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/web...
 ARG VITE_API_URL
 ARG VITE_PUBLIC_WEB_URL
 RUN pnpm --filter @tcg/web... --if-present run build
@@ -94,29 +97,33 @@ COPY --from=web-build /workspace/apps/web/dist /usr/share/nginx/html
 COPY infra/nginx.web.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
-# One distributable image; Compose selects the app command per container.
-FROM backend AS all-apps
-USER root
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends nginx \
+# Shared process runtime has no application-specific working directory or command.
+FROM node:24-bookworm-slim AS bundle-runtime
+ENV NODE_ENV=production COREPACK_HOME=/opt/corepack COREPACK_ENABLE_PROJECT_SPEC=0
+WORKDIR /srv
+RUN corepack enable \
+    && corepack prepare pnpm@12.15.0 --activate \
+    && chown -R node:node /opt/corepack \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends nginx gettext-base tini util-linux \
     && rm -rf /var/lib/apt/lists/*
+COPY infra/start-app-platform.sh /usr/local/bin/start-app-platform
+COPY infra/run-app.sh /usr/local/bin/run-app
+COPY infra/bundle-readiness.mjs /usr/local/bin/bundle-readiness.mjs
+COPY infra/nginx.app-platform.conf.template /etc/nginx/app-platform.conf.template
+RUN chmod +x /usr/local/bin/start-app-platform /usr/local/bin/run-app
+USER node
+EXPOSE 8080
+CMD ["/usr/bin/tini", "--", "/usr/local/bin/start-app-platform"]
+
+# One distributable image; each application contributes only its runtime files.
+FROM bundle-runtime AS all-apps
+COPY --from=backend --chown=node:node /app /app
 COPY --from=api --chown=node:node /app /srv/api
 COPY --from=public-web --chown=node:node /app /srv/public-web
 COPY --from=cms --chown=node:node /app /srv/cms
 COPY --from=web-build /workspace/apps/web/dist /srv/web
-COPY infra/nginx.bundle.conf /etc/nginx/nginx.conf
-ENV COREPACK_ENABLE_PROJECT_SPEC=0
-USER node
-EXPOSE 8080 3000 3333 1337
 
 # Single App Platform component; all application processes share one lifecycle.
 FROM all-apps AS app-platform
-USER root
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gettext-base tini util-linux \
-    && rm -rf /var/lib/apt/lists/*
-COPY infra/start-app-platform.sh /usr/local/bin/start-app-platform
-COPY infra/nginx.app-platform.conf.template /etc/nginx/app-platform.conf.template
-RUN chmod +x /usr/local/bin/start-app-platform
-USER node
 CMD ["/usr/bin/tini", "--", "/usr/local/bin/start-app-platform"]

@@ -26,61 +26,86 @@ Mount persistent storage at `/app/public/uploads` for CMS uploads when using loc
 
 Development: `docker compose -f infra/compose.dev.yaml up --build`. All five services share the `dev` Dockerfile target and run each app's dev script with hot reload; collector web runs Vite on port 5173. The repository is bind-mounted into `/workspace`; container `node_modules` and build directories are masked by anonymous volumes, so after dependency or lockfile changes run `docker compose -f infra/compose.dev.yaml up --build -V`. Each server reads its matching environment file. Compose passes `VITE_API_URL` and `VITE_PUBLIC_WEB_URL` to collector web, defaulting to `http://localhost:3333/api/v1` and `http://localhost:3000`; override through `infra/.env` or the shell. Use `NODE_ENV=development` and bind servers to `HOST=0.0.0.0`. Set backend `PORT=9000`, `HMR_PORT=24678`, `HMR_BIND_HOST=0.0.0.0`, and `VITE_CARD_CATALOG_URL=http://api:3333/api/v1/internal/card-catalog`; API `PORT=3333` and `MEDUSA_INTERNAL_URL=http://backend:9000`; CMS `PORT=1337` and `MEDUSA_BACKEND_URL=http://backend:9000`; public-web `API_URL=http://api:3333/api/v1` for Next server requests plus browser-facing `NEXT_PUBLIC_API_URL=http://localhost:3333/api/v1`. Keep the local API session cookie host-only (`SESSION_COOKIE_DOMAIN` empty); allow browser origins `http://localhost:3000` and `http://localhost:5173` in `WEB_ORIGINS`. Run Medusa migrations separately: `docker compose -f infra/compose.dev.yaml run --rm backend pnpm medusa db:migrate`. The databases and Redis remain external: use container-reachable hosts such as `host.docker.internal` for services on the host. Browser-facing `NEXT_PUBLIC_*` and `VITE_*` URLs must be reachable from the browser; internal server URLs use Compose service names. CMS uploads persist in the development Compose volume.
 
-### Production on a DigitalOcean Droplet
+## Single-container DigitalOcean App Platform deployment
 
-Production uses one Docker Hub image for all five apps plus a Redis 7 service with AOF persistence in a named volume. Medusa uses the Compose Redis service by default for its event bus and locks; `REDIS_URL` and `EVENTS_REDIS_URL` can override it. Redis is internal to Compose and has a health check. Use the root `.env` as the single production configuration file. Compose passes flat DigitalOcean environment keys to each owning app; credentials are passed only to their owning service. No application source changes are required. Development Compose still uses its existing development env files.
+### Outcome and scope
 
-Set `APP_IMAGE=YOUR_DOCKERHUB_USER/nextpull:RELEASE_TAG` in `.env`. Use immutable release tags. Builds default to `linux/amd64`; override `APP_PLATFORM` for an ARM Droplet.
+One published Node 24 image runs the existing Medusa, Next.js, AdonisJS, and Strapi production artifacts plus Nginx serving the collector SPA. The root Dockerfile reuses its existing per-app build stages and copies their outputs into a neutral Node 24 `bundle-runtime` through `all-apps` and `app-platform`; publishing separate intermediate images is unnecessary. Medusa is explicitly copied alongside the other apps, not inherited as the runtime base. The final command always launches the whole bundle. Dependency downloads use a manifest/lockfile-only `pnpm fetch` layer before source copying; per-app installation then runs offline. Source changes still rerun installation/linking and compilation, but do not invalidate the download layer. PostgreSQL, Redis, and durable uploads remain external. No cloud resources are created by this repository change.
 
-The storefront build consumes `NEXT_PUBLIC_*` values, and collector builds consume `VITE_API_URL` and `VITE_PUBLIC_WEB_URL` directly from the root `.env` or GitHub Actions variables. These public names are also used by the storefront at runtime. Other `WEB_VITE_*` entries are not automatically embedded. Never pass private credentials as build arguments. Rebuild the image when public build values change.
+### Requirements
 
-Provision `/opt/tcg/.env` and `/opt/tcg/infra/compose.prod.yaml` on the Droplet. The root env file contains secrets: keep it ignored by Git, excluded from Docker contexts, and restricted with `chmod 600 .env`. Preserve application keys between deployments. The old per-app production files are no longer read by production Compose. Fill required production values before launch; configuration parsing does not validate application credentials.
+GitHub Actions retains the existing Docker Hub publication flow: commit-SHA tags plus the rolling `latest` tag. Existing secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` remain in use. Repository variable `DOCKERHUB_IMAGE` overrides the default `5715/nextpull`. Keep the current App Platform image connection and deployment mechanism; no registry migration or DigitalOcean API token is required. The workflow uses the existing Compose build definition and frozen workspace lockfile. It never runs database migrations.
 
-GitHub Actions (`.github/workflows/deploy.yml`) only builds the combined image and pushes it to Docker Hub on pushes to `main` or manual dispatch. DigitalOcean owns deployment; the workflow does not use SSH or run migrations. Configure repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (write access), and optionally repository variable `DOCKERHUB_IMAGE` without a tag. If unset or empty, the workflow publishes to `5715/nextpull`. Keep the existing `NEXT_PUBLIC_*` and `VITE_*` repository variables for public build configuration. The job passes them directly to Compose without needing a committed `.env`.
+Set these GitHub repository variables before building: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_STRAPI_API_URL`, `NEXT_PUBLIC_MEDUSA_BACKEND_URL`, `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY`, `NEXT_PUBLIC_DEFAULT_REGION`, `NEXT_PUBLIC_APP_URL`, `VITE_API_URL`, and `VITE_PUBLIC_WEB_URL`. They are public build inputs. Private tokens must never be added as build arguments. A frontend URL change requires a new image; runtime variables cannot rewrite already-built browser JavaScript.
 
-Each successful publication pushes the full Git commit SHA tag, then updates `latest`. Select `latest` in DigitalOcean for the rolling image, or a commit SHA for a pinned release. Existing `DEPLOY_*` secrets are unused and can be removed. Docker Hub publication itself does not trigger an App Platform redeployment; configure or initiate deployment through DigitalOcean. Runtime credentials belong in DigitalOcean's component settings (App Platform) or the root `.env` (Droplet).
+Copy `.env.example` to `.env` only if no root `.env` exists. Preserve existing credentials and signing keys. The root file is ignored by Git and excluded from image builds. Keep permissions at `0600`. Local production Compose reads this file; App Platform does not read repository env files, so import the runtime values into the component settings and mark credentials as encrypted secrets.
 
-Use public HTTPS URLs for browser traffic. Configure DNS and a TLS reverse proxy to route the storefront to port 3000, collector app to 5173, API to 3333, commerce to 9000, and CMS to 1337. This change does not install a proxy or configure the Droplet firewall. Internal server calls use `http://api:3333` and `http://backend:9000`; `localhost` inside a container means that container. Keep CORS origins, OAuth redirect URLs, and cookie domain aligned with the actual public domains.
+`infra/run-app.sh` translates app-specific variables into their framework-native names before executing each server:
 
-PostgreSQL remains external. Use hosts reachable from the Droplet containers. Redis persists in the Compose `redis-data` volume; back it up when retaining event jobs matters. CMS configuration supports database TLS and a CA certificate. **The current Medusa configuration explicitly disables PostgreSQL TLS, and the API database configuration exposes no TLS env option. DigitalOcean Managed PostgreSQL requires separate application TLS configuration before use; setting credentials alone does not resolve this.**
+| Root / App Platform variable | App process receives |
+| --- | --- |
+| `API_APP_KEY`, `API_DB_HOST`, `API_SESSION_DRIVER` | Adonis `APP_KEY`, `DB_HOST`, `SESSION_DRIVER` |
+| `BACKEND_DATABASE_URL`, `BACKEND_JWT_SECRET` | Medusa `DATABASE_URL`, `JWT_SECRET` |
+| `CMS_DATABASE_HOST`, `CMS_JWT_SECRET` | Strapi `DATABASE_HOST`, `JWT_SECRET` |
+| `PUBLIC_WEB_BETTER_AUTH_SECRET`, `PUBLIC_WEB_API_URL` | Next `BETTER_AUTH_SECRET`, `API_URL` |
+| `NEXT_PUBLIC_*` | Next public configuration |
 
-On the build machine, log into Docker Hub, build the combined image, and publish it. All public frontend build variables must be set before building. These values must match the runtime values on the Droplet. Runtime secrets are excluded from the build context, as are the local `next_pull` SSH key files.
+The mapping applies to every variable with the owning prefix, allowing existing framework configuration to stay unchanged. Other applications' credentials are not inherited by the child process. This is configuration isolation, not a security boundary between processes sharing one container and OS user. Unprefixed server secrets are no longer accepted by the bundle. Local development keeps its existing per-app env files. The production launcher fixes `NODE_ENV`, bind addresses, and ports regardless of prefixed overrides.
+
+Integration values must agree: `API_SOCIAL_AUTH_BRIDGE_SECRET` equals `PUBLIC_WEB_SOCIAL_AUTH_BRIDGE_SECRET`; `API_MEDUSA_SERVICE_KEY` equals `BACKEND_NEXT_PULL_SERVICE_KEY`; and the card catalog key used by Medusa must match `API_CARD_CATALOG_API_KEY`. Keep the CMS sync token aligned with the receiving Strapi integration. Configure public HTTPS origins, OAuth callbacks, and cookies for the chosen domains. Leave `API_SESSION_COOKIE_DOMAIN` empty for a host-only API cookie unless cross-subdomain cookies are explicitly needed.
+
+Internal server URLs use the same container's loopback network: `PUBLIC_WEB_API_URL=http://127.0.0.1:3333/api/v1`, `API_MEDUSA_INTERNAL_URL=http://127.0.0.1:9000`, `BACKEND_VITE_CARD_CATALOG_URL=http://127.0.0.1:3333/api/v1/internal/card-catalog`, and `CMS_MEDUSA_BACKEND_URL=http://127.0.0.1:9000`. Public browser URLs use HTTPS domains, never these loopback URLs. `BACKEND_EVENTS_REDIS_URL` defaults to required `BACKEND_REDIS_URL`.
+
+### Initial deployment
+
+1. Retain the existing Docker Hub secrets and repository setting. Configure public build variables and run the workflow to publish the updated image.
+2. Use `.do/app.yaml` as a reference for the existing app: domains, port 8080, environment keys, and health check. Do not replace the existing app wholesale. Match its image repository to the workflow. For a new app, customize region and instance size; the 4 GB size is a starting allocation, not a measured capacity guarantee.
+3. Add all runtime values from the root environment to the existing App Platform component before deploying. Retain its Docker Hub connection and registry credentials. Leave Run Command unset so the image command starts the entire bundle.
+4. Set five distinct bare hostnames: `STOREFRONT_DOMAIN`, `COLLECTOR_DOMAIN`, `API_DOMAIN`, `MEDUSA_DOMAIN`, and `CMS_DOMAIN`. Register all five domains on the app. Follow DigitalOcean's DNS records and certificate verification instructions. Every domain routes to the same component; Nginx uses the incoming Host header.
+5. Back up databases and run required migrations separately before accepting traffic. Strapi runs its internal migrations on startup.
+
+App Platform pulls the finished image; it does not rebuild it. The user reports that the existing deployment already pulls the image published by the old workflow; preserve that setup. The reference spec does not add the DOCR-only `deploy_on_push` setting to a Docker Hub source. The existing deployment trigger was not inspected or changed. Do not add a GitHub source to the same component. Use a SHA tag when pinning a release or rolling back. Schema compatibility still determines whether an image rollback is safe.
+
+The existing Bash supervisor and Tini start all four servers, the readiness service, and Nginx. Any child exit stops the group with a failure status so App Platform can restart it. Shutdown signals reach each process group. All apps share memory, CPU, deployments, and scaling. Nginx exposes port 8080; internal app ports are 3000, 3333, 9000, and 1337. The default App Platform domain serves the storefront. Forwarded HTTPS assumes DigitalOcean terminates TLS.
+
+### Local production commands
 
 ```bash
-docker login
 docker compose --env-file .env -f infra/compose.build.yaml build bundle
-docker compose --env-file .env -f infra/compose.build.yaml push bundle
-```
-
-Compose tags the build using `APP_IMAGE`; see [Docker's build reference](https://docs.docker.com/reference/cli/docker/compose/build/).
-
-On the Droplet, use `docker login` if the repository is private. Validate configuration, pull the release, back up databases, run migrations, then start services:
-
-```bash
-docker compose --env-file .env -f infra/compose.prod.yaml config --quiet
-docker compose --env-file .env -f infra/compose.prod.yaml pull
-docker compose --env-file .env -f infra/compose.prod.yaml run --rm backend /app/node_modules/.bin/medusa db:migrate
-docker compose --env-file .env -f infra/compose.prod.yaml run --rm api node ace migration:run --force
 docker compose --env-file .env -f infra/compose.prod.yaml up -d
 ```
 
-For later releases, publish a new image tag, update `APP_IMAGE` on the Droplet, pull it, run required migrations, and run `up -d`. Do not use `up --build` on the Droplet. Roll back by restoring the previous image tag only when database migrations remain compatible. Back up databases before migrations. Strapi runs its internal migrations on startup. CMS uploads persist in the production Compose volume; back it up with the external databases. API filesystem uploads and background queue workers still require deployment-specific storage and worker setup; this environment change does not provision them.
+Set `APP_IMAGE` to the desired registry image/tag first. To use a published image, run `pull` before `up`. Local production Compose keeps CMS uploads in a named volume; this volume is not available on App Platform.
 
-Verification: both Compose configurations parse successfully and `docker compose --env-file .env -f infra/compose.build.yaml build --check bundle` passes without warnings. This checks the Dockerfile configuration, not image compilation or runtime behavior. No full image build, registry push, migrations, application tests, or live Droplet deployment were performed.
+For one-off migrations using the same isolated variables:
 
-## Single-container DigitalOcean App Platform deployment
+```bash
+docker compose --env-file .env -f infra/compose.prod.yaml run --rm --workdir /app/.medusa/server bundle /usr/local/bin/run-app BACKEND /app/node_modules/.bin/medusa db:migrate
+docker compose --env-file .env -f infra/compose.prod.yaml run --rm --workdir /srv/api bundle /usr/local/bin/run-app API node ace migration:run --force
+```
 
-The `app-platform` Dockerfile target starts Medusa, Next.js, AdonisJS, Strapi, and Nginx together. `infra/compose.build.yaml` and the existing GitHub publication workflow now build this target. Production Compose continues to select individual commands, including an explicit Medusa command. A child process exit stops the entire App Platform container so the platform can restart it. All apps share scaling and restart behavior.
+Inside an App Platform console use the corresponding `run-app` command from the same working directory. Do not run migrations concurrently on multiple instances.
 
-For Walrus-app, deploy the published image as one web service, clear any Run Command override, and set HTTP port to `8080`. Set `STOREFRONT_HOST`, `COLLECTOR_HOST`, `API_HOST`, `MEDUSA_HOST`, and `CMS_HOST` to distinct bare hostnames. Add all five domains to the app and route them to this same component, preserving the original Host header. Configure DNS using DigitalOcean's supplied records; DigitalOcean terminates HTTPS. Nginx routes by hostname to local ports 3000, 3333, 9000, and 1337, and serves the collector directly. The default App Platform hostname serves the storefront. The HTTPS forwarded-protocol setting assumes traffic arrives through DigitalOcean's TLS ingress.
+### Storage and database limitations
 
-Each process inherits the flat environment variables, with its own fixed PORT and bind address. Shared key names such as `JWT_SECRET` must be compatible across apps. Set `API_URL=http://127.0.0.1:3333/api/v1`, `MEDUSA_INTERNAL_URL=http://127.0.0.1:9000`, and browser-facing URLs to the appropriate HTTPS domains. Configure CORS, OAuth callbacks, and cookie domains accordingly. Public frontend configuration still requires a rebuild with the matching GitHub variables. Do not point browser traffic at localhost.
+App Platform container filesystems are ephemeral. External PostgreSQL and Redis must be reachable from the component; do not use Compose service names or localhost for them. Configure external upload storage before relying on uploaded files. Current API `DRIVE_DISK=fs` and default Strapi local uploads do not survive replacement. This change does not install storage providers or start an Adonis background queue worker.
 
-Set `REDIS_URL` to an external Redis service; `EVENTS_REDIS_URL` defaults to that URL. Compose's `redis` hostname and persistent volumes are unavailable in App Platform. Use external PostgreSQL and object storage for uploads; container filesystem data is lost on replacement. Database TLS requirements noted above still apply. This change does not configure upload providers, run migrations, or deploy Walrus-app.
+The current Medusa PostgreSQL connection enables TLS with certificate verification disabled. Adonis database configuration has no TLS option; a managed PostgreSQL connection requiring TLS needs a separate application configuration change. Strapi already accepts database TLS/CA variables. Root environment migration does not resolve those existing database limitations.
 
-Acceptance: after deployment, visit each domain, verify it reaches its intended app, and check container logs for all four application servers. Builds, process lifecycle behavior, and live routing have not been tested for this target.
+### Acceptance and verification
+
+Static checks cover shell and JavaScript syntax, Compose configuration, environment-key uniqueness, and diff whitespace. The focused `infra/verify-bundle.py` check uses the actual `bundle-runtime` image and launcher with fixture HTTP servers, not production applications or credentials. Run `docker build --target bundle-runtime -t tcg-bundle-runtime:audit .` followed by `python3 infra/verify-bundle.py` to verify routing, readiness failure/recovery, crashes, and shutdown. Verified locally on Linux ARM64: the shared runtime image builds; all five hostname routes pass; an unresponsive app makes readiness return 503 and recovery restores 200; each of the four server exits and Nginx exit stop the container with status 1; graceful shutdown exits 0 and terminates descendant processes. These checks use fixtures, so a full application image build, registry publication, migrations, and cloud deployment remain separate verification steps.
+
+After deployment, visit all five domains and verify the intended application, authentication redirects, CORS, and API access. Inspect logs for all four servers. `/healthz` proxies to a loopback-only readiness service on port 8081. It checks storefront `/`, API `/`, Medusa `/health`, and Strapi `/_health` concurrently with three-second deadlines. Connection failures, timeouts, and HTTP 5xx produce 503; responding 4xx are accepted because the API root may legitimately return 404. This checks HTTP responsiveness, not database correctness or authenticated business flows. Confirm those separately before accepting production traffic. Check external storage persistence across a replacement deployment.
+
+References: [DigitalOcean app specification](https://docs.digitalocean.com/products/app-platform/reference/app-spec/) and [domain setup](https://docs.digitalocean.com/products/app-platform/how-to/manage-domains/).
 
 ## Related Files
+- .env.example
+- .do/app.yaml
+- infra/run-app.sh
+- infra/bundle-readiness.mjs
+- infra/verify-bundle.py
 - infra/start-app-platform.sh
 - infra/nginx.app-platform.conf.template
 - .github/workflows/deploy.yml

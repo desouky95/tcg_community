@@ -2,7 +2,7 @@ name: tcg-build
 
 services:
   bundle:
-    image: ${APP_IMAGE:?Set APP_IMAGE to your Docker Hub image and release tag}
+    image: ${APP_IMAGE:?Set APP_IMAGE to your registry image and release tag}
     platform: ${APP_PLATFORM:-linux/amd64}
     build:
       context: ..

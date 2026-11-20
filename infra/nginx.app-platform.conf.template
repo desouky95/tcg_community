@@ -22,7 +22,13 @@ http {
     client_max_body_size 20m;
     server {
         listen 8080 default_server;
-        server_name ${STOREFRONT_HOST};
+        server_name ${STOREFRONT_DOMAIN};
+        # Readiness requires every application server to answer an HTTP request.
+        location = /healthz {
+            access_log off;
+            proxy_pass http://127.0.0.1:8081;
+            proxy_read_timeout 5s;
+        }
         location / {
             proxy_pass http://127.0.0.1:3000;
             proxy_buffering off;
@@ -30,7 +36,7 @@ http {
     }
     server {
         listen 8080;
-        server_name ${API_HOST};
+        server_name ${API_DOMAIN};
         location / {
             proxy_pass http://127.0.0.1:3333;
             proxy_buffering off;
@@ -38,7 +44,7 @@ http {
     }
     server {
         listen 8080;
-        server_name ${MEDUSA_HOST};
+        server_name ${MEDUSA_DOMAIN};
         location / {
             proxy_pass http://127.0.0.1:9000;
             proxy_buffering off;
@@ -46,7 +52,7 @@ http {
     }
     server {
         listen 8080;
-        server_name ${CMS_HOST};
+        server_name ${CMS_DOMAIN};
         location / {
             proxy_pass http://127.0.0.1:1337;
             proxy_buffering off;
@@ -54,7 +60,7 @@ http {
     }
     server {
         listen 8080;
-        server_name ${COLLECTOR_HOST};
+        server_name ${COLLECTOR_DOMAIN};
         root /srv/web;
         index index.html;
         location / { try_files $uri $uri/ /index.html; }
