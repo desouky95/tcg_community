@@ -1,4 +1,8 @@
 import http from 'node:http';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+
+const execFileAsync = promisify(execFile);
 
 // A 404 at the API root still proves its HTTP stack is responding; 5xx does not.
 const targets = [
@@ -21,8 +25,17 @@ function check([name, port, path]) {
   });
 }
 
+async function checkRedis() {
+  try {
+    const { stdout } = await execFileAsync('redis-cli', ['-h', '127.0.0.1', 'ping'], { timeout: 2000 });
+    return stdout.trim() === 'PONG' ? null : 'redis';
+  } catch {
+    return 'redis';
+  }
+}
+
 http.createServer(async (_request, response) => {
-  const failed = (await Promise.all(targets.map(check))).filter(Boolean);
+  const failed = (await Promise.all([...targets.map(check), checkRedis()])).filter(Boolean);
   response.writeHead(failed.length ? 503 : 200, { 'Content-Type': 'text/plain' });
   response.end(failed.length ? `Unavailable: ${failed.join(', ')}\n` : 'ok\n');
 }).listen(8081, '127.0.0.1');

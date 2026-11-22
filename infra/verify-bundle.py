@@ -72,7 +72,7 @@ http.createServer((req, res) => {
         target.chmod(0o755)
     (root / 'app/.medusa/server').mkdir(parents=True)
 
-    for scenario in ['shutdown', 'crash-3000', 'crash-3333', 'crash-9000', 'crash-1337', 'crash-nginx']:
+    for scenario in ['shutdown', 'crash-3000', 'crash-3333', 'crash-9000', 'crash-1337', 'crash-nginx', 'crash-redis']:
         args = ['run', '-d', '--network', 'none']
         for source, target in [('app', '/app'), ('api', '/srv/api'), ('cms', '/srv/cms'),
                                ('public-web', '/srv/public-web'), ('web', '/srv/web'), ('.', '/fixtures')]:
@@ -88,6 +88,7 @@ http.createServer((req, res) => {
             eventually(lambda: all(f'child-ready:{port}' in docker('logs', container)
                                    for port in [3000, 3333, 9000, 1337]))
             eventually(lambda: fetch(container, '/healthz')[0] == 200)
+            assert docker('exec', container, 'redis-cli', 'ping') == 'PONG'
             if scenario == 'shutdown':
                 for host, body in [('shop.example.com', '3000'), ('api.example.com', '3333'),
                                    ('commerce.example.com', '9000'), ('cms.example.com', '1337'),
@@ -101,7 +102,9 @@ http.createServer((req, res) => {
                 docker('stop', '--time', '10', container)
                 assert docker('inspect', '-f', '{{.State.ExitCode}}', container) == '0'
             else:
-                if scenario == 'crash-nginx':
+                if scenario == 'crash-redis':
+                    docker('exec', container, 'redis-cli', 'shutdown', 'nosave')
+                elif scenario == 'crash-nginx':
                     docker('exec', container, 'sh', '-c', 'kill -TERM "$(cat /tmp/nginx.pid)"')
                 else:
                     port = int(scenario.split('-')[1])

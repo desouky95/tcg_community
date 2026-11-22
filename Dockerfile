@@ -105,7 +105,7 @@ RUN corepack enable \
     && corepack prepare pnpm@12.15.0 --activate \
     && chown -R node:node /opt/corepack \
     && apt-get update \
-    && apt-get install -y --no-install-recommends nginx gettext-base tini util-linux \
+    && apt-get install -y --no-install-recommends nginx gettext-base tini util-linux redis-server \
     && rm -rf /var/lib/apt/lists/*
 COPY infra/start-app-platform.sh /usr/local/bin/start-app-platform
 COPY infra/run-app.sh /usr/local/bin/run-app
