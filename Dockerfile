@@ -17,6 +17,7 @@ ENV NODE_ENV=development
 
 FROM base AS backend-build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/medusa...
+ARG ADMIN_AUTH_TYPE=session
 RUN pnpm --filter @tcg/medusa... --if-present run build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm --filter @tcg/medusa --prod deploy --legacy /prod/backend
 

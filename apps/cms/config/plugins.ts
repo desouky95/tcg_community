@@ -41,14 +41,14 @@ const config = ({
       providerOptions: {
         s3Options: {
           credentials: {
-            accessKeyId: env("DO_SPACE_ACCESS_KEY"),
-            secretAccessKey: env("DO_SPACE_SECRET_KEY"),
+            accessKeyId: env("CMS_DO_SPACE_ACCESS_KEY"),
+            secretAccessKey: env("CMS_DO_SPACE_SECRET_KEY"),
           },
-          endpoint: env("DO_SPACE_ENDPOINT"),
-          region: env("DO_SPACE_REGION"),
+          endpoint: env("CMS_DO_SPACE_ENDPOINT"),
+          region: env("CMS_DO_SPACE_REGION"),
           forcePathStyle : false,
           params: {
-            Bucket: env("DO_SPACE_BUCKET"),
+            Bucket: env("CMS_DO_SPACE_BUCKET"),
           },
         },
       },
