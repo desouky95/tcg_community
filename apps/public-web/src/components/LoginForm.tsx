@@ -115,7 +115,7 @@ export function LoginForm({
         />
       </AuthField>
 
-      <div className="flex flex-wrap justify-between gap-3 text-sm">
+      {/* <div className="flex flex-wrap justify-between gap-3 text-sm">
         {process.env.NEXT_PUBLIC_APP_URL && (
           <a
             href={new URL(
@@ -126,8 +126,8 @@ export function LoginForm({
             Forgot password?
           </a>
         )}
-      </div>
-      {process.env.NEXT_PUBLIC_APP_URL && (
+      </div> */}
+      {/* {process.env.NEXT_PUBLIC_APP_URL && (
         <a
           href={new URL(
             "/delete-deactivated",
@@ -137,7 +137,7 @@ export function LoginForm({
         >
           Delete a deactivated account
         </a>
-      )}
+      )} */}
       <Button type="submit" loading={loading} className="w-full">
         Sign in
       </Button>
