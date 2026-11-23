@@ -14,6 +14,7 @@ A shopper can inspect a product before purchase.
 - Medusa search and workflow integrations retain typed query and logger dependencies during production builds.
 
 - Show product images, description, selected variant, region-calculated price and availability from Medusa. Product IDs and handles both resolve; unknown products return 404.
+- Request `+variants.metadata` with product details so Medusa Variant Images can read per-variant image metadata.
 - Present product images in a swipeable gallery with a selectable, horizontally scrollable thumbnail strip. Size the gallery to keep the image and thumbnails together in the initial viewport when space permits.
 - Group the product title and purchase controls beside the gallery on wide screens and below it on smaller screens; place the full description after the purchase controls.
 - Display a nonempty product description with its line breaks; omit the section when the description is blank.

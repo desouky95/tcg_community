@@ -34,14 +34,12 @@ module.exports = defineConfig({
 
   projectConfig: {
     databaseUrl: process.env.BACKEND_DATABASE_URL,
-    redisUrl: process.env.BACKEND_REDIS_URL,
     sessionOptions: {
       ttl: 30 * 24 * 60 * 60 * 1000,
       rolling: true,
     },
     cookieOptions: {
       sameSite: "none",
-      secure: true,
     },
     http: {
       storeCors: process.env.BACKEND_STORE_CORS!,
@@ -147,6 +145,26 @@ module.exports = defineConfig({
         isQueryable: true,
       },
     },
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-s3",
+            id: "s3",
+            options: {
+              // file_url: process.env.S3_FILE_URL,
+              access_key_id: process.env.DO_SPACE_ACCESS_KEY,
+              secret_access_key: process.env.DO_SPACE_SECRET_KEY,
+              region: process.env.DO_SPACE_REGION,
+              bucket: process.env.DO_SPACE_BUCKET,
+              endpoint: process.env.DO_SPACE_ENDPOINT,
+              // other options...
+            },
+          },
+        ],
+      },
+    },
   ],
   plugins: [
     {
@@ -168,10 +186,10 @@ module.exports = defineConfig({
         allowGuestWishlist: true,
       },
     },
-    {
-      resolve: "medusa-variant-images",
-      options: {},
-    },
+    // {
+    //   resolve: "medusa-variant-images",
+    //   options: {},
+    // },
     {
       resolve: "@alphabite/medusa-category-images",
       options: {},

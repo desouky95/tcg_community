@@ -1,8 +1,18 @@
+import {
+  ContainerRegistrationKeys,
+  MedusaError,
+} from "@medusajs/framework/utils";
 import type { ExecArgs } from "@medusajs/framework/types";
 import { syncProduct } from "../integrations/strapi/product-sync";
 export default async function retryStrapiProduct({ container }: ExecArgs) {
   const id = process.env.BACKEND_STRAPI_SYNC_PRODUCT_ID;
-  if (!id) throw new Error("Set BACKEND_STRAPI_SYNC_PRODUCT_ID to a Medusa product ID");
+  if (!id)
+    throw new MedusaError(
+      MedusaError.Types.CONFLICT,
+      "Set BACKEND_STRAPI_SYNC_PRODUCT_ID to a Medusa product ID",
+    );
   await syncProduct(id, container);
-  container.resolve("logger").info(`Strapi product sync completed for ${id}`);
+  container
+    .resolve(ContainerRegistrationKeys.LOGGER)
+    .info(`Strapi product sync completed for ${id}`);
 }

@@ -4,7 +4,7 @@ import { ContainerRegistrationKeys, MedusaError } from '@medusajs/framework/util
 import { uploadFilesWorkflow, updateProductsWorkflow } from '@medusajs/medusa/core-flows';
 
 type Input = { productId: string; filename: string; content: string };
-const readProduct = createStep('read-avif-product', async (productId: string, { container }) => {
+const readProduct = createStep('read-product', async (productId: string, { container }) => {
   const query = container.resolve<SearchTypes.SearchIngestionContext['container']['query']>(ContainerRegistrationKeys.QUERY);
   const { data } = await query.graph({ entity: 'product', fields: ['id', 'images.id', 'images.url'], filters: { id: productId } });
   if (!data.length) throw new MedusaError(MedusaError.Types.NOT_FOUND, 'Product not found');

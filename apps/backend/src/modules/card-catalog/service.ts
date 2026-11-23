@@ -1,4 +1,5 @@
 import { logger } from "@medusajs/framework";
+import { MedusaError } from "@medusajs/framework/utils";
 
 export default class CardCatalogService {
   constructor(
@@ -6,7 +7,7 @@ export default class CardCatalogService {
     private options: {
       baseUrl: string;
       apiKey?: string;
-    }
+    },
   ) {}
 
   async getCollection(id: string) {
@@ -26,7 +27,7 @@ export default class CardCatalogService {
       search?: string;
       page?: number;
       limit?: number;
-    }
+    },
   ) {
     const params = new URLSearchParams();
 
@@ -97,11 +98,14 @@ export default class CardCatalogService {
 
           ...init?.headers,
         },
-      }
+      },
     );
 
     if (!response.ok) {
-      throw new Error(`Catalog API error ${response.status}`);
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `Catalog API error ${response.status}`,
+      );
     }
 
     return response.json() as Promise<T>;

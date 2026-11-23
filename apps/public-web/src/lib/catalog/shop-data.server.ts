@@ -40,8 +40,8 @@ export async function listProducts(categoryId?: string) {
       ...(categoryId ? { category_id: [categoryId] } : {}),
       ...(region ? { region_id: region } : {}),
       fields: region
-        ? "*variants.calculated_price,+variants.inventory_quantity,+metadata,*type"
-        : "+variants.inventory_quantity,+metadata,*type",
+        ? "*variants.calculated_price,+variants.inventory_quantity,+variants.metadata,+metadata,*type"
+        : "+variants.inventory_quantity,+variants.metadata,+metadata,*type",
       limit: 100,
       offset,
     });

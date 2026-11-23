@@ -42,6 +42,7 @@ Existing evidence pointer: apps/web/src/pages/Landing.tsx. This pointer is not a
 ## Backend API Route Used
 - `GET /api/homepage` — published Strapi homepage and populated sections.
 - Medusa Store API product listing — selected product data.
+- Storefront product fields include `+variants.metadata` for variant images.
 - Medusa Store API category listing — storefront navigation hierarchy.
 
 ## Related Files
