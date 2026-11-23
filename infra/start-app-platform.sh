@@ -35,6 +35,13 @@ trap 'exit 0' TERM INT
 
 echo "Starting bundle: nginx=8080 storefront=3000 medusa=9000 api=3333 cms=1337 redis=6379"
 
+start_labeled_app() {
+  local label=$1 directory=$2
+  shift 2
+  (cd "$directory"; exec setsid bash -o pipefail -c 'label=$1; shift; "$@" 2>&1 | sed -u "s/^/[$label] /"' _ "$label" "$@") &
+  pids+=("$!")
+}
+
 # shortcut: Redis state is ephemeral, use external durable Redis before scaling or retaining queued jobs.
 setsid redis-server --bind 127.0.0.1 --port 6379 --protected-mode yes \
   --daemonize no --dir /tmp --save "" --appendonly no &
@@ -52,14 +59,10 @@ if [[ $(timeout 1 redis-cli -h 127.0.0.1 ping 2>/dev/null) != PONG ]]; then
   exit 1
 fi
 
-(cd /app/.medusa/server; exec setsid /usr/local/bin/run-app BACKEND env NODE_ENV=production HOST=127.0.0.1 PORT=9000 /app/node_modules/.bin/medusa start --port 9000) &
-pids+=("$!")
-(cd /srv/public-web; exec setsid /usr/local/bin/run-app PUBLIC_WEB env NODE_ENV=production HOSTNAME=127.0.0.1 PORT=3000 node apps/public-web/server.js) &
-pids+=("$!")
-(cd /srv/api; exec setsid /usr/local/bin/run-app API env NODE_ENV=production HOST=127.0.0.1 PORT=3333 node bin/server.js) &
-pids+=("$!")
-(cd /srv/cms; exec setsid /usr/local/bin/run-app CMS env NODE_ENV=production HOST=127.0.0.1 PORT=1337 ./node_modules/.bin/strapi start) &
-pids+=("$!")
+start_labeled_app MEDUSA /app/.medusa/server /usr/local/bin/run-app BACKEND env NODE_ENV=production HOST=127.0.0.1 PORT=9000 /app/node_modules/.bin/medusa start --port 9000
+start_labeled_app STOREFRONT /srv/public-web /usr/local/bin/run-app PUBLIC_WEB env NODE_ENV=production HOSTNAME=127.0.0.1 PORT=3000 node apps/public-web/server.js
+start_labeled_app API /srv/api /usr/local/bin/run-app API env NODE_ENV=production HOST=127.0.0.1 PORT=3333 node bin/server.js
+start_labeled_app CMS /srv/cms /usr/local/bin/run-app CMS env NODE_ENV=production HOST=127.0.0.1 PORT=1337 ./node_modules/.bin/strapi start
 setsid node /usr/local/bin/bundle-readiness.mjs &
 pids+=("$!")
 setsid nginx -c /tmp/nginx.app-platform.conf -g 'daemon off;' &

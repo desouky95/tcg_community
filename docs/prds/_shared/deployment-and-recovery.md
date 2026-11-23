@@ -69,7 +69,7 @@ Internal server URLs use the same container's loopback network: `PUBLIC_WEB_API_
 
 App Platform pulls the finished image; it does not rebuild it. The user reports that the existing deployment already pulls the image published by the old workflow; preserve that setup. The reference spec does not add the DOCR-only `deploy_on_push` setting to a Docker Hub source. The existing deployment trigger was not inspected or changed. Do not add a GitHub source to the same component. Use a SHA tag when pinning a release or rolling back. Schema compatibility still determines whether an image rollback is safe.
 
-The existing Bash supervisor and Tini start Redis, all four servers, the readiness service, and Nginx. Any child exit stops the group with a failure status so App Platform can restart it. Shutdown signals reach each process group. All apps share memory, CPU, deployments, and scaling. Nginx exposes port 8080; internal app ports are 3000, 3333, 9000, and 1337. The default App Platform domain serves the storefront. Forwarded HTTPS assumes DigitalOcean terminates TLS.
+The existing Bash supervisor and Tini start Redis, all four servers, the readiness service, and Nginx. Any child exit stops the group with a failure status so App Platform can restart it. Shutdown signals reach each process group. Medusa, storefront, API, and CMS output is streamed to container logs with `[MEDUSA]`, `[STOREFRONT]`, `[API]`, and `[CMS]` line prefixes. All apps share memory, CPU, deployments, and scaling. Nginx exposes port 8080; internal app ports are 3000, 3333, 9000, and 1337. The default App Platform domain serves the storefront. Forwarded HTTPS assumes DigitalOcean terminates TLS.
 
 ### Local production commands
 

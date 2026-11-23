@@ -11,7 +11,18 @@ export function proxy(request: NextRequest) {
       status: 410,
       headers: { "content-type": "text/plain; charset=utf-8" },
     });
-    
+
+  console.log(
+    JSON.stringify({
+      type: "incoming_request",
+      method: request.method,
+      path: request.nextUrl.pathname,
+      userAgent: request.headers.get("user-agent"),
+    }),
+  );
+
+  return NextResponse.next()
+
   // return createProxy(i18nConfig);
 }
 export const config = {
