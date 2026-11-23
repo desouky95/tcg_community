@@ -5,13 +5,18 @@ loadEnv(process.env.NODE_ENV || "development", resolve(process.cwd(), "../.."));
 
 // Medusa internals read these native names directly.
 if (process.env.BACKEND_AUTH_MFA_ENCRYPTION_KEY !== undefined) {
-  process.env.AUTH_MFA_ENCRYPTION_KEY = process.env.BACKEND_AUTH_MFA_ENCRYPTION_KEY;
+  process.env.AUTH_MFA_ENCRYPTION_KEY =
+    process.env.BACKEND_AUTH_MFA_ENCRYPTION_KEY;
 }
 if (process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_TYPE !== undefined) {
-  process.env.MEDUSA_ADMIN_ONBOARDING_TYPE = process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_TYPE;
+  process.env.MEDUSA_ADMIN_ONBOARDING_TYPE =
+    process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_TYPE;
 }
-if (process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIRECTORY !== undefined) {
-  process.env.MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIRECTORY = process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIRECTORY;
+if (
+  process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIRECTORY !== undefined
+) {
+  process.env.MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIRECTORY =
+    process.env.BACKEND_MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIRECTORY;
 }
 
 // if (
@@ -33,6 +38,10 @@ module.exports = defineConfig({
     sessionOptions: {
       ttl: 30 * 24 * 60 * 60 * 1000,
       rolling: true,
+    },
+    cookieOptions: {
+      sameSite: "none",
+      secure: true,
     },
     http: {
       storeCors: process.env.BACKEND_STORE_CORS!,
