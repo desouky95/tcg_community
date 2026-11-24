@@ -156,10 +156,10 @@ module.exports = defineConfig({
               // file_url: process.env.S3_FILE_URL,
               access_key_id: process.env.BACKEND_DO_SPACE_ACCESS_KEY,
               secret_access_key: process.env.BACKEND_DO_SPACE_SECRET_KEY,
-              region: process.env.DO_SPACE_REGION,
-              bucket: process.env.DO_SPACE_BUCKET,
-              endpoint: process.env.DO_SPACE_ENDPOINT,
-              // other options...
+              region: process.env.BACKEND_DO_SPACE_REGION,
+              bucket: process.env.BACKEND_DO_SPACE_BUCKET,
+              endpoint: process.env.BACKEND_DO_SPACE_ENDPOINT,
+              
             },
           },
         ],
