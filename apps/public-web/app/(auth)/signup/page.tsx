@@ -29,7 +29,7 @@ export default async function SignupPage({
       asideItems={[
         "A profile made for collecting",
         "Local context, global community",
-        "Mobile verification for trust",
+        "Sign in with your password",
       ]}
       footer={
         <>

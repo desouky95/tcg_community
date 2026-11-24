@@ -14,9 +14,6 @@ import {
   errorBody,
   issueOtp,
   requestMeta,
-  createOtpChallenge,
-  deliverMockOtp,
-  ensureOtpDeliveryAvailable,
   OtpCooldownError,
   OTP_RESEND_COOLDOWN_SECONDS,
   sessionFingerprint,
@@ -26,6 +23,15 @@ import app from '@adonisjs/core/services/app'
 import { pendingFacebook } from '#services/facebook_identity_service'
 
 export default class AuthController {
+  async mobileVerificationDisabled({ response }: HttpContext) {
+    return response.status(410).json(errorBody('otp_disabled', 'Mobile verification is temporarily disabled. Use password sign-in.'))
+  }
+
+  async csrf({ response }: HttpContext) {
+    response.header('Cache-Control', 'no-store')
+    return response.status(204).send(null)
+  }
+
   /**
    * Request OTP for Mobile Login
    */
@@ -80,13 +86,8 @@ export default class AuthController {
   async signup({ request, response, serialize }: HttpContext) {
     const data = await request.validateUsing(signupValidator)
 
-    if (app.inProduction)
-      return response
-        .status(503)
-        .json(errorBody('delivery_unavailable', 'Verification delivery is unavailable'))
-    ensureOtpDeliveryAvailable()
     try {
-      const { user, challenge } = await db.transaction(async (trx) => {
+      const user = await db.transaction(async (trx) => {
         const user = await User.create(
           {
             fullName: data.fullName,
@@ -106,14 +107,10 @@ export default class AuthController {
           },
           { client: trx }
         )
-        const challenge = await createOtpChallenge(trx, data.mobile, 'signup', user.id)
-        return { user, challenge }
+        return user
       })
-      deliverMockOtp(data.mobile, 'signup', challenge.code)
-      return response.status(202).send(
+      return response.status(201).send(
         await serialize({
-          challenge: 'issued',
-          expiresInSeconds: challenge.expiresInSeconds,
           user: UserTransformer.transform(user),
           ...requestMeta(request),
         })
@@ -203,14 +200,6 @@ export default class AuthController {
       return response
         .status(403)
         .json(errorBody('account_unavailable', 'This account is not available'))
-    }
-
-    if (!user.isVerified) {
-      return response.status(403).json({
-        error: 'Account not verified. Please verify your mobile number.',
-        mobile: user.mobile,
-        unverified: true,
-      })
     }
 
     user.lastLoginAt = DateTime.now()

@@ -284,7 +284,6 @@ export default class IdentityController {
     }
     if (data.mobile && data.mobile !== user.mobile) {
       user.isVerified = false
-      await issueOtp(data.mobile, 'mobile_change', user.id)
     }
     user.merge({ ...data, version: user.version + 1 })
     await user.save()

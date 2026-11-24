@@ -271,8 +271,6 @@ export type LoginInput = { uid: string; password: string };
 export type AuthSession = { user: ExtendedUser | User; token?: string };
 export type AuthResponse = APIResponse<AuthSession>;
 export type SignupResponse = APIResponse<{
-  challenge: "issued";
-  expiresInSeconds: number;
   user: Pick<User, "id" | "fullName" | "username" | "email" | "mobile" | "role" | "blocked" | "governorate" | "lastLoginAt">;
   requestId: string;
   serverTimestamp: string;

@@ -46,24 +46,13 @@ export function LoginForm({
       toast.success("Welcome back to Next Pull!");
       window.location.assign(destinationUrl(destination, returnTo));
     } catch (err: unknown) {
-      if (
-        err instanceof AxiosError &&
-        err.response?.status === 403 &&
-        err.response?.data?.unverified
-      ) {
-        toast.error("Account not verified. Please verify your mobile.");
-        window.location.assign(
-          `/verify-otp?${authQuery(destination, returnTo)}&mobile=${encodeURIComponent(err.response.data.mobile)}`,
-        );
-      } else {
-        const message =
-          err instanceof AxiosError ? err.response?.data?.error : undefined;
-        toast.error(
-          typeof message === "string"
-            ? message
-            : message?.message || "Invalid credentials",
-        );
-      }
+      const message =
+        err instanceof AxiosError ? err.response?.data?.error : undefined;
+      toast.error(
+        typeof message === "string"
+          ? message
+          : message?.message || "Invalid credentials",
+      );
     }
   };
 

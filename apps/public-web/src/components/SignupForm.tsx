@@ -66,7 +66,7 @@ export function SignupForm({
         governorate: data.governorate!,
       });
       window.location.assign(
-        `/verify-otp?${authQuery(destination, returnTo)}&mobile=${encodeURIComponent(data.mobile!)}`,
+        `/login?${authQuery(destination, returnTo)}`,
       );
     } catch (cause) {
       const body =

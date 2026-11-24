@@ -62,16 +62,9 @@ export default function ProfileEdit() {
 
   const onSubmit = async (data: ProfileFormData) => {
     try {
-      const result = await updateProfile.mutateAsync(data);
-      const updatedUser = result.data.user;
-
-      if (!updatedUser.isVerified && data.mobile !== currentUser?.data.mobile) {
-        toast.success("Phone number updated. Please verify it.");
-        navigate(`/verify-otp?mobile=${data.mobile}`);
-      } else {
-        toast.success("Profile updated successfully!");
-        navigate("/profile");
-      }
+      await updateProfile.mutateAsync(data);
+      toast.success("Profile updated successfully!");
+      navigate("/profile");
     } catch {
       toast.error("Could not update your profile. Check your details and try again.");
     }

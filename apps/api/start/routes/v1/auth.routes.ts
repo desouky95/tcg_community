@@ -4,13 +4,14 @@ import router from '@adonisjs/core/services/router'
 export default () => {
   router
     .group(() => {
-      router.post('request-otp', [() => import('#controllers/auth_controller'), 'requestOtp'])
+      router.get('csrf', [() => import('#controllers/auth_controller'), 'csrf'])
+      router.post('request-otp', [() => import('#controllers/auth_controller'), 'mobileVerificationDisabled'])
       router.get('me', [() => import('#controllers/auth_controller'), 'me'])
       router
         .post('commerce/customer', [() => import('#controllers/commerce_controller'), 'customer'])
         .use(middleware.auth())
       router.post('signup', [() => import('#controllers/auth_controller'), 'signup'])
-      router.post('verify-otp', [() => import('#controllers/auth_controller'), 'verifyOtp'])
+      router.post('verify-otp', [() => import('#controllers/auth_controller'), 'mobileVerificationDisabled'])
       router.post('login', [() => import('#controllers/auth_controller'), 'login'])
       router.get('oauth/:provider/redirect', [
         () => import('#controllers/facebook_auth_controller'),
@@ -25,12 +26,12 @@ export default () => {
         'callback',
       ])
       router.post('oauth/:provider/signup', [
-        () => import('#controllers/facebook_auth_controller'),
-        'signup',
+        () => import('#controllers/auth_controller'),
+        'mobileVerificationDisabled',
       ])
       router.post('oauth/:provider/verify', [
-        () => import('#controllers/facebook_auth_controller'),
-        'verify',
+        () => import('#controllers/auth_controller'),
+        'mobileVerificationDisabled',
       ])
       router.get('oauth/:provider/pending', [
         () => import('#controllers/facebook_auth_controller'),
@@ -43,15 +44,15 @@ export default () => {
         ])
         .use(middleware.auth())
       //! otp-login not needed as login redirects to verify-otp
-      router.post('otp-login', [() => import('#controllers/identity_controller'), 'otpLogin'])
+      router.post('otp-login', [() => import('#controllers/auth_controller'), 'mobileVerificationDisabled'])
       //? Not tested manually
       router.post('deactivated-privacy-deletion', [
         () => import('#controllers/identity_controller'),
         'deleteDeactivatedAccount',
       ])
       router.post('password-recovery', [
-        () => import('#controllers/identity_controller'),
-        'recoverPassword',
+        () => import('#controllers/auth_controller'),
+        'mobileVerificationDisabled',
       ])
       router
         .post('logout', [() => import('#controllers/auth_controller'), 'logout'])

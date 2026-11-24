@@ -32,6 +32,7 @@ const shieldConfig = defineConfig({
       domain: env.get('API_SESSION_COOKIE_DOMAIN'),
       sameSite: 'lax',
       secure: env.get('NODE_ENV') === 'production',
+      path : '/'
     },
     /**
      * Enable CSRF token verification for state-changing requests.

@@ -119,12 +119,6 @@ function ProfileForm({
         mobile,
         ...(governorate ? { governorate } : {}),
       });
-      if (mobile !== user.mobile && !result.data.user.isVerified) {
-        window.location.assign(
-          `/verify-otp?${authQuery("public", "/account")}&mobile=${encodeURIComponent(mobile)}`,
-        );
-        return;
-      }
       setEditing(false);
       setNotice("Your profile has been updated.");
       onSaved(result.data.user);

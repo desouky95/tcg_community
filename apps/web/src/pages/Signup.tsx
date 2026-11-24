@@ -34,7 +34,7 @@ export default function Signup() {
     clearErrors("root");
     try {
       await signup.mutateAsync(data);
-      navigate("/verify-otp", { state: { mobile: data.mobile } });
+      navigate("/login");
     } catch (error: unknown) {
       const body = error instanceof AxiosError ? error.response?.data?.error : undefined;
       const fields = ["fullName", "username", "email", "mobile", "password", "passwordConfirmation", "governorate"] as const;
