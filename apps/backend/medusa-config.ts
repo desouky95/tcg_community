@@ -153,7 +153,7 @@ module.exports = defineConfig({
             resolve: "@medusajs/medusa/file-s3",
             id: "s3",
             options: {
-              // file_url: process.env.S3_FILE_URL,
+              file_url: process.env.BACKEND_S3_FILE_URL,
               access_key_id: process.env.BACKEND_DO_SPACE_ACCESS_KEY,
               secret_access_key: process.env.BACKEND_DO_SPACE_SECRET_KEY,
               region: process.env.BACKEND_DO_SPACE_REGION,

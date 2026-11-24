@@ -44,7 +44,6 @@ describe("collector card stories", () => {
     const { container } = render(<main data-journey-root><FeaturedCard anchor={0} />{chapters.map(([variant, title]) => <CollectorFeature key={variant} id={variant} title={title} description="Coming soon" variant={variant} dark={false} />)}<CardJourney /></main>);
     expect(container.querySelectorAll("[data-featured-anchor]")).toHaveLength(4);
     expect(container.querySelectorAll("[data-scene]")).toHaveLength(3);
-    expect(screen.getAllByText("Illustrative preview")).toHaveLength(3);
     expect(screen.getByText(/payment reaches the seller’s wallet/i)).toBeInTheDocument();
     expect(container.querySelectorAll("button, input, [data-story-motion]")).toHaveLength(0);
     expect(state.transforms.some(({ output }) => output.includes("inset(0 100% 0 0)"))).toBe(true);

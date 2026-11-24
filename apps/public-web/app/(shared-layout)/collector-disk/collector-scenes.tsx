@@ -29,7 +29,8 @@ export function journeySegment(
 ) {
   if (!ranges.length) return { from: 0, to: 0, progress: 0 };
   const firstStart = ranges[0].start;
-  if (scroll <= firstStart - viewportHeight) return { from: 0, to: 0, progress: 0 };
+  if (scroll <= firstStart - viewportHeight)
+    return { from: 0, to: 0, progress: 0 };
   if (scroll < firstStart)
     return {
       from: 0,
@@ -98,10 +99,7 @@ function measureCard(anchor: HTMLElement): Box {
 
 export function FeaturedCard({ anchor }: { anchor?: number }) {
   return (
-    <span
-      className={styles.featuredCard}
-      data-featured-anchor={anchor}
-    >
+    <span className={styles.featuredCard} data-featured-anchor={anchor}>
       <span className={styles.featuredSpark} />
     </span>
   );
@@ -210,7 +208,6 @@ export function CollectorScene({
   const paymentOpacity = useTransform(progress, [0.63, 0.88], [0, 1]);
   return (
     <div className={`${styles.scene} ${styles[variant]}`} data-scene={variant}>
-      <p className={styles.previewLabel}>Illustrative preview</p>
       <div className={styles.storyStage} aria-hidden="true">
         {variant === "collection" && (
           <div className={styles.collectionStory}>
@@ -329,14 +326,25 @@ export function CollectorScene({
           : variant === "swap"
             ? "A collector searches for a missing card, sees matches, and exchanges cards."
             : "A buyer purchases a listed card and a payment reaches the seller’s wallet."}{" "}
-        This is a concept preview.
       </p>
     </div>
   );
 }
 
-type Handoff = { from: Box; to: Box; start: number; end: number; visible: boolean };
-const emptyHandoff: Handoff = { from: { left: 0, top: 0, width: 0, height: 0 }, to: { left: 0, top: 0, width: 0, height: 0 }, start: 0, end: 1, visible: false };
+type Handoff = {
+  from: Box;
+  to: Box;
+  start: number;
+  end: number;
+  visible: boolean;
+};
+const emptyHandoff: Handoff = {
+  from: { left: 0, top: 0, width: 0, height: 0 },
+  to: { left: 0, top: 0, width: 0, height: 0 },
+  start: 0,
+  end: 1,
+  visible: false,
+};
 
 /** Scene cards remain in control while pinned; this card only bridges sections. */
 export function CardJourney() {
@@ -346,23 +354,38 @@ export function CardJourney() {
   const handoff = useMotionValue<Handoff>(emptyHandoff);
   const position = useTransform(() => {
     const route = handoff.get();
-    const progress = Math.max(0, Math.min(1, (scrollY.get() - route.start) / Math.max(1, route.end - route.start)));
-    return journeyPosition(route.from, route.to, { left: 0, top: 0, width: 0, height: 0 }, progress);
+    const progress = Math.max(
+      0,
+      Math.min(
+        1,
+        (scrollY.get() - route.start) / Math.max(1, route.end - route.start),
+      ),
+    );
+    return journeyPosition(
+      route.from,
+      route.to,
+      { left: 0, top: 0, width: 0, height: 0 },
+      progress,
+    );
   });
   const x = useTransform(() => position.get().x);
   const y = useTransform(() => position.get().y);
   const width = useTransform(() => position.get().width);
   const height = useTransform(() => position.get().height);
   const rotate = useTransform(() => position.get().rotation);
-  const opacity = useTransform(() => handoff.get().visible ? 1 : 0);
+  const opacity = useTransform(() => (handoff.get().visible ? 1 : 0));
   const onScrollRef = useRef<(scroll: number) => void>(() => {});
-  useMotionValueEvent(scrollY, "change", value => onScrollRef.current(value));
+  useMotionValueEvent(scrollY, "change", (value) => onScrollRef.current(value));
   useEffect(() => {
     const root = ref.current?.closest<HTMLElement>("[data-journey-root]");
     if (!root || reduced !== false) return;
-    const anchors = Array.from(root.querySelectorAll<HTMLElement>("[data-featured-anchor]"));
-    const sections = anchors.slice(1).map(anchor => anchor.closest<HTMLElement>("section"));
-    if (anchors.length !== 4 || sections.some(section => !section)) return;
+    const anchors = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-featured-anchor]"),
+    );
+    const sections = anchors
+      .slice(1)
+      .map((anchor) => anchor.closest<HTMLElement>("section"));
+    if (anchors.length !== 4 || sections.some((section) => !section)) return;
     let ranges: JourneyRange[] = [];
     let viewport = window.innerHeight;
     let pair = "";
@@ -378,46 +401,84 @@ export function CardJourney() {
       const scroll = window.scrollY;
       if (needsMeasure) {
         viewport = window.innerHeight;
-        ranges = sections.map(section => {
+        ranges = sections.map((section) => {
           const element = section!;
           const rect = element.getBoundingClientRect();
           const top = rect.top + scroll;
-          if (element.dataset.storyMotion === "true") return { start: top, end: Math.max(top, top + rect.height - viewport) };
+          if (element.dataset.storyMotion === "true")
+            return {
+              start: top,
+              end: Math.max(top, top + rect.height - viewport),
+            };
           const center = top + rect.height / 2 - viewport / 2;
           return { start: center, end: center };
         });
       }
       const segment = journeySegment(scroll, ranges, viewport);
-      if (segment.from === segment.to) { needsMeasure = false; clear(); return; }
+      if (segment.from === segment.to) {
+        needsMeasure = false;
+        clear();
+        return;
+      }
       const nextPair = `${segment.from} ${segment.to}`;
       if (nextPair === pair && !needsMeasure) return;
       const rootRect = root.getBoundingClientRect();
       const from = measureCard(anchors[segment.from]);
       const to = measureCard(anchors[segment.to]);
-      if (!from.width || !from.height || !to.width || !to.height) { clear(); return; }
-      const local = (box: Box): Box => ({ ...box, left: box.left - rootRect.left, top: box.top - rootRect.top });
-      const start = segment.from === 0 ? ranges[0].start - viewport : ranges[segment.from - 1].end;
+      if (!from.width || !from.height || !to.width || !to.height) {
+        clear();
+        return;
+      }
+      const local = (box: Box): Box => ({
+        ...box,
+        left: box.left - rootRect.left,
+        top: box.top - rootRect.top,
+      });
+      const start =
+        segment.from === 0
+          ? ranges[0].start - viewport
+          : ranges[segment.from - 1].end;
       const end = ranges[segment.to - 1].start;
-      handoff.set({ from: local(from), to: local(to), start, end, visible: true });
+      handoff.set({
+        from: local(from),
+        to: local(to),
+        start,
+        end,
+        visible: true,
+      });
       pair = nextPair;
       needsMeasure = false;
       root.setAttribute("data-journey-pair", pair);
     };
     const schedule = () => frame.postRender(update);
-    const invalidate = () => { needsMeasure = true; schedule(); };
-    onScrollRef.current = scroll => {
+    const invalidate = () => {
+      needsMeasure = true;
+      schedule();
+    };
+    onScrollRef.current = (scroll) => {
       const segment = journeySegment(scroll, ranges, viewport);
-      const nextPair = segment.from === segment.to ? "" : `${segment.from} ${segment.to}`;
+      const nextPair =
+        segment.from === segment.to ? "" : `${segment.from} ${segment.to}`;
       if (nextPair !== pair || needsMeasure) schedule();
     };
-    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(invalidate);
+    const observer =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(invalidate);
     observer?.observe(root);
-    sections.forEach(section => observer?.observe(section!));
+    sections.forEach((section) => observer?.observe(section!));
     const mutations = new MutationObserver(invalidate);
-    sections.forEach(section => mutations.observe(section!, { attributes: true, attributeFilter: ["data-story-motion"] }));
+    sections.forEach((section) =>
+      mutations.observe(section!, {
+        attributes: true,
+        attributeFilter: ["data-story-motion"],
+      }),
+    );
     window.addEventListener("resize", invalidate);
     window.visualViewport?.addEventListener("resize", invalidate);
-    document.fonts?.ready.then(() => { if (!disposed) invalidate(); });
+    document.fonts?.ready.then(() => {
+      if (!disposed) invalidate();
+    });
     invalidate();
     return () => {
       disposed = true;
@@ -430,5 +491,14 @@ export function CardJourney() {
       clear();
     };
   }, [reduced, handoff]);
-  return <motion.div ref={ref} aria-hidden="true" className={styles.journeyCard} style={{ x, y, width, height, rotate, opacity }}><FeaturedCard /></motion.div>;
+  return (
+    <motion.div
+      ref={ref}
+      aria-hidden="true"
+      className={styles.journeyCard}
+      style={{ x, y, width, height, rotate, opacity }}
+    >
+      <FeaturedCard />
+    </motion.div>
+  );
 }
