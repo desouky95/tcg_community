@@ -119,5 +119,5 @@ export async function getPageTransition(): Promise<PageTransitionState> {
 }
 
 export function getStrapiURL(path = "") {
-  return `${cmsURL}${path}`;
+  return process.env.NODE_ENV === "development" ? `${cmsURL}${path}` : path;
 }
