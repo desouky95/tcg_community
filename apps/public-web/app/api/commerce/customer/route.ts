@@ -19,13 +19,20 @@ export async function POST(request: NextRequest) {
       headers: {
         cookie: request.headers.get("cookie") ?? "",
         "content-type": "application/json",
+        "x-xsrf-token": request.headers.get("x-xsrf-token") ?? "",
       },
       body: JSON.stringify({
         cart_id: request.cookies.get("next_pull_cart")?.value,
       }),
       cache: "no-store",
+      redirect: "manual",
     },
   );
+  if (response.status >= 300 && response.status < 400)
+    return NextResponse.json(
+      { data: { linked: false, available: false } },
+      { status: 502 },
+    );
   if (response.status === 401)
     return NextResponse.json(
       {

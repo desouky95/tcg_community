@@ -15,6 +15,7 @@ A shopper submits delivery and payment details for a NextPull order.
 - Use React Hook Form for stage-specific validation and accessible field errors; retain entered values during navigation and invalidate delivery and payment selections when the address changes.
 - Handle unavailable carts and options, invalid details, changed totals, payment failures, and uncertain order completion without inviting duplicate orders.
 - Link a signed-in shopper’s Medusa customer to the active cart before continuing checkout and before order completion; resolve customers only by the Adonis user mapping, never by matching an unverified email.
+- Send the browser's `X-XSRF-TOKEN` header through the storefront customer-link proxy for Adonis Shield validation. Treat upstream redirects as checkout errors.
 - Authorize each action against its resource and actor; reject invalid or stale operations without partial effects.
 - Show relevant progress, confirmation, empty and failure states, including a clear next action.
 - Use the service ownership and security boundaries in the shared contracts.
@@ -27,6 +28,7 @@ A shopper submits delivery and payment details for a NextPull order.
 - Verify all three payment methods in Egypt / EGP, hide InstaPay until both settings are valid, hide the offline providers outside Egypt / EGP, and check transfer/COD instructions. Verify Admin Capture and Refund ledger changes after offline settlement.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
 - Verify integration with the owning service and its persisted state.
+- With production CSRF protection enabled, verify that a signed-in shopper can pass Contact and submit an order, a guest can continue, and an invalid CSRF token produces a customer-link failure.
 
 ## UI Page Used
 
@@ -40,6 +42,7 @@ A shopper submits delivery and payment details for a NextPull order.
 - GET /store/payment-instructions?region_id=… — returns valid InstaPay URL and WhatsApp number for Egypt / EGP only.
 - GET /admin/payment-settings and POST /admin/payment-settings — authenticated Admin settings for Egypt / EGP region metadata.
 - POST /api/commerce/customer — links the authenticated Adonis account to its Medusa customer and current cart.
+- `POST /api/v1/auth/commerce/customer` — validates the session and CSRF token and links the account to the Medusa customer and cart.
 - GET /api/v1/account/commerce/addresses — optional saved addresses.
 
 ## Related Files

@@ -54,8 +54,10 @@ A shopper can inspect a product before purchase.
 - `POST /admin/products/:id/avif` — authenticated AVIF upload and product media update.
 - `GET /store/products`, `GET /store/regions`, `POST /store/carts` and `POST /store/carts/:id/line-items` — product details, regional pricing and add to cart.
 - `GET /store/missing-lists/:product_id/cards` — validated, searchable missing-list variants with optional catalog imagery.
+- `POST /api/commerce/customer` links the signed-in shopper's account in the background using the browser's CSRF header.
 
 ## Related Files
+- apps/public-web/app/(shared-layout)/(store)/shop/commerce-customer-link.tsx
 - apps/backend/src/workflows/hooks/product-availability.ts
 - apps/backend/src/api/store/missing-lists/[product_id]/cards/route.ts
 - apps/public-web/src/lib/catalog/product-detail.server.ts

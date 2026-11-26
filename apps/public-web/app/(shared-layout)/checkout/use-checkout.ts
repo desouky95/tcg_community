@@ -8,6 +8,7 @@ import {
   type FormEvent,
 } from "react";
 import type { HttpTypes } from "@medusajs/types";
+import axios from "axios";
 import { useForm, useWatch } from "react-hook-form";
 import { api } from "../../../src/lib/clients/adonis";
 import { checkoutReview } from "../../../src/lib/commerce/checkout-review";
@@ -94,14 +95,9 @@ type CheckoutForm = {
 };
 
 async function syncCheckoutCustomer() {
-  const response = await fetch("/api/commerce/customer", {
-    method: "POST",
-    credentials: "same-origin",
-  });
-  if (!response.ok) throw new Error("Customer link unavailable");
-  const result = (await response.json()) as {
+  const { data: result } = await axios.post<{
     data?: { authenticated?: boolean; available?: boolean; linked?: boolean };
-  };
+  }>("/api/commerce/customer");
   if (
     result.data?.authenticated !== false &&
     (!result.data?.available || !result.data.linked)
