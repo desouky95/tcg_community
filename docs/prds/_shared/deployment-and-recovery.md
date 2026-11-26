@@ -46,6 +46,8 @@ One published Node 24 image runs the existing Medusa, Next.js, AdonisJS, and Str
 
 GitHub Actions retains the existing Docker Hub publication flow: commit-SHA tags plus the rolling `latest` tag. Existing secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` remain in use. Repository variable `DOCKERHUB_IMAGE` overrides the default `5715/nextpull`. Keep the current App Platform image connection and deployment mechanism; no registry migration or DigitalOcean API token is required. The workflow uses the existing Compose build definition and frozen workspace lockfile. It never runs database migrations.
 
+The workflow removes unused SDKs and cached tools from the GitHub-hosted runner before the combined image build. The `Free disk space for Docker build` step reports available space before and after cleanup. If the build log ends mid-step, check the run summary annotations for `No space left on device`.
+
 Set these GitHub repository variables before building: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_STRAPI_API_URL`, `NEXT_PUBLIC_MEDUSA_BACKEND_URL`, `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY`, `NEXT_PUBLIC_DEFAULT_REGION`, `NEXT_PUBLIC_APP_URL`, `VITE_API_URL`, and `VITE_PUBLIC_WEB_URL`. They are public build inputs. Private tokens must never be added as build arguments. A frontend URL change requires a new image; runtime variables cannot rewrite already-built browser JavaScript.
 
 Copy `.env.example` to `.env` only if no root `.env` exists. Preserve existing credentials and signing keys. The root file is ignored by Git and excluded from image builds. Keep permissions at `0600`. Local production Compose reads this file; App Platform does not read repository env files, so import the runtime values into the component settings and mark credentials as encrypted secrets.
