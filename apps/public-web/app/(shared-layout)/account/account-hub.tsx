@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { useUpdateProfile } from "@tcg/react-query";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../../src/lib/clients/adonis";
 import {
   Button,
@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import type { User } from "@tcg/api-contracts";
 import { authQuery } from "../../../src/lib/auth/auth-destination";
+import { useStorefrontLogout } from "../../../src/lib/auth/use-storefront-logout";
 import { OrdersSection, AddressesSection } from "./commerce-sections";
 import { PreferencesSection, PrivacySection } from "./account-settings";
 
@@ -285,21 +286,7 @@ export function AccountHub() {
     setActiveTab(tab.value);
   }
   const queryClient = useQueryClient();
-  const logout = useMutation({
-    mutationFn: async () => {
-      try {
-        await api.logout();
-      } catch (error) {
-        const status = (error as { response?: { status?: number } })?.response
-          ?.status;
-        if (status !== 401) throw error;
-      }
-    },
-    onSuccess: () => {
-      queryClient.clear();
-      window.location.assign(`/login?${authQuery("public", "/account")}`);
-    },
-  });
+  const logout = useStorefrontLogout();
 
   const profile = useQuery({
     queryKey: ["storefront-account-profile"],

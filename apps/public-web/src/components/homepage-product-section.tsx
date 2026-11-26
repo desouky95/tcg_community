@@ -109,7 +109,7 @@ export async function ProductSection({
                         />
                       )}
                     </div>
-                    <h3 className="mx-5 mt-4 font-display text-lg font-semibold group-hover:underline">
+                    <h3 className="mx-2 mt-3 text-base leading-tight max-sm:h-[4lh] max-sm:overflow-y-auto sm:mx-5 sm:mt-4 sm:text-lg sm:leading-7 font-display font-semibold [overflow-wrap:anywhere] group-hover:underline">
                       {product.title}
                     </h3>
                     {(product.type?.value === "Coming Soon" || product.type?.value === "Pre-order") && (

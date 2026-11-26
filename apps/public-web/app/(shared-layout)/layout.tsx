@@ -7,6 +7,8 @@ import { createServerApiClient } from "../../src/lib/clients/adonis.server";
 import { getPageTransition, getStrapiURL } from "#lib/cms/homepage.server";
 import { CartButton } from "../../src/providers/CartProvider";
 import { getShopNavigation } from "../../src/lib/catalog/shop-navigation.server";
+import type { APIResponse, User } from "@tcg/api-contracts";
+import { StorefrontAccountMenu } from "../../src/components/storefront-account-menu";
 
 async function getPublicConfig() {
   // "use cache";
@@ -22,6 +24,7 @@ const links = [
 
 type ShellProps = {
   authenticated: boolean;
+  username?: string;
   applink?: string;
   config: Awaited<ReturnType<typeof getPublicConfig>>;
   categories: Awaited<ReturnType<typeof getShopNavigation>>;
@@ -31,6 +34,7 @@ type ShellProps = {
 
 function SharedShell({
   authenticated,
+  username,
   applink,
   config,
   categories,
@@ -46,6 +50,9 @@ function SharedShell({
       storeNavigation
       categories={categories}
       cartAction={<CartButton />}
+      accountAction={
+        authenticated ? <StorefrontAccountMenu username={username} /> : undefined
+      }
       links={links}
     >
       <SharedPageTransition images={images}>{children}</SharedPageTransition>
@@ -56,19 +63,25 @@ function SharedShell({
 async function AuthenticatedShell(props: Omit<ShellProps, "authenticated">) {
   const cookieStore = await cookies();
   let authenticated = false;
+  let username: string | undefined;
 
   try {
-    await createServerApiClient().http.get("/auth/me", {
+    const { data } = await createServerApiClient().http.get<
+      APIResponse<Pick<User, "username">>
+    >("/auth/me", {
       headers: {
         Cookie: cookieStore.toString(),
       },
     });
     authenticated = true;
+    username = data.data?.username;
   } catch {
     // A missing, expired, or invalid session renders the public header.
   }
 
-  return <SharedShell {...props} authenticated={authenticated} />;
+  return (
+    <SharedShell {...props} authenticated={authenticated} username={username} />
+  );
 }
 
 export default async function Layout({

@@ -19,10 +19,12 @@ function CategoryLinks({
   categories,
   onNavigate,
   onPreview,
+  showArrow = false,
 }: {
   categories: ShopCategory[];
   onNavigate: () => void;
   onPreview?: (category: ShopCategory) => void;
+  showArrow?: boolean;
 }) {
   const _Link = ({ disabled }: { disabled: boolean }) =>
     disabled ? "span" : Link;
@@ -37,16 +39,33 @@ function CategoryLinks({
               category?.metadata?.disabled || onPreview?.(category)
             }
             onFocus={() => onPreview?.(category)}
-            className="focus-ring font-display text-base font-semibold hover:text-accent-500"
+            className={
+              showArrow
+                ? "group/category-link focus-ring inline-flex min-h-11 items-center gap-2 font-sans text-[0.9375rem] font-normal leading-snug [overflow-wrap:anywhere] hover:text-accent-500"
+                : "focus-ring font-display text-base font-semibold hover:text-accent-500"
+            }
           >
+            {showArrow && (
+              <ArrowUpRight
+                aria-hidden="true"
+                className={`size-3.5 shrink-0 opacity-0 ${category.metadata?.disabled ? "invisible" : "group-hover/category-link:opacity-100 group-focus-visible/category-link:opacity-100 motion-safe:transition-opacity motion-safe:duration-160"}`}
+              />
+            )}
             {category.name}
           </Link>
           {category.children.length > 0 && (
-            <div className="mt-3 grid gap-3 border-s border-wax-line ps-4">
+            <div
+              className={
+                showArrow
+                  ? "mt-1 grid"
+                  : "mt-3 grid gap-3 border-s border-wax-line ps-4"
+              }
+            >
               <CategoryLinks
                 categories={category.children}
                 onNavigate={onNavigate}
                 onPreview={onPreview}
+                showArrow={showArrow}
               />
             </div>
           )}
@@ -159,13 +178,43 @@ export function ShopMenu({ categories }: { categories: ShopCategory[] }) {
                 </Link>
               </div>
               {categories.length ? (
-                <div className="grid grid-cols-3 gap-x-8 gap-y-7 xl:grid-cols-4">
-                  <CategoryLinks
-                    categories={categories}
-                    onNavigate={closeNow}
-                    onPreview={setFeature}
-                  />
-                </div>
+                <ul className="grid list-none grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-6 motion-safe:[&_a]:transition-[translate,color] motion-safe:[&_a:is(:hover,:focus-visible)]:ltr:translate-x-0.5 motion-safe:[&_a:is(:hover,:focus-visible)]:rtl:-translate-x-0.5 motion-safe:[&_a]:duration-160 motion-safe:[&_a]:ease-out">
+                  {categories.map((category) => (
+                    <li
+                      key={category.id}
+                      className="min-w-0 border-t border-wax-line pt-1"
+                    >
+                      {category.metadata?.disabled ? (
+                        <span className="flex min-h-11 items-center font-display font-semibold text-wax-muted ps-[1.375rem] [overflow-wrap:anywhere]">
+                          {category.name}
+                        </span>
+                      ) : (
+                        <Link
+                          href={category.href}
+                          onClick={closeNow}
+                          onMouseEnter={() => setFeature(category)}
+                          onFocus={() => setFeature(category)}
+                          className="focus-ring inline-flex min-h-11 items-center gap-2 font-display font-semibold ps-[1.375rem] hover:text-accent-500"
+                        >
+                          <span className="min-w-0 [overflow-wrap:anywhere]">
+                            {category.name}
+                          </span>
+                          <ArrowUpRight aria-hidden="true" className="size-4 shrink-0" />
+                        </Link>
+                      )}
+                      {category.children.length > 0 && (
+                        <div className="mt-1 grid">
+                          <CategoryLinks
+                            categories={category.children}
+                            onNavigate={closeNow}
+                            onPreview={setFeature}
+                            showArrow
+                          />
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               ) : (
                 <p className="text-wax-muted">
                   Categories are not available right now. Explore all products

@@ -16,6 +16,7 @@ An authorized editor publishes storefront content.
 - Strapi owns editorial content and publication; Next.js displays published content only.
 - If optional page-transition content is unavailable, the shared storefront layout still renders without transition images.
 - Editors arrange hero and selected-product sections in the homepage dynamic zone. Product details and prices remain owned by Medusa.
+- Standard cards in homepage collection sections use a four-line scrollable title area at phone widths and wrap the full title at wider widths.
 - Authorize each action against its resource and actor; reject invalid or stale operations without partial effects.
 - Show relevant progress, confirmation, empty and failure states, including a clear next action.
 - Use the service ownership and security boundaries in the shared contracts.
