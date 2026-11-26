@@ -26,13 +26,13 @@ A consumed login challenge creates a session without a password.
 - The stated outcome succeeds for an eligible actor and is denied for unauthorized access.
 - Verify input and failure handling and the existing behavior through focused backend and client tests appropriate to the scenario.
 
-Existing evidence pointer: No dedicated route. This pointer is not a fresh implementation audit.
+The dedicated OTP sign-in route returns 410 during the suspension.
 
 ## UI Page Used
 - `/login/otp` (public storefront) shows that mobile verification is disabled. Its password sign-in link preserves the login destination and return path.
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- POST `/api/v1/auth/otp-login` (Tuyau: `auth.otp_login`; returns 410 during the suspension).
 
 ## Related Files
 - apps/api/start/routes/v1/auth.routes.ts

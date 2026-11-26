@@ -11,6 +11,8 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import { PageAnimatePresence } from "@tcg/ui-web/next";
 import "./globals.css";
+import { sdk } from "#lib/clients/medusa";
+import { RegionProvider } from "../src/providers/RegionProvider";
 initServerI18next(i18nConfig);
 
 export const metadata: Metadata = {
@@ -36,6 +38,17 @@ async function I18nBoundary({ children }: { children: React.ReactNode }) {
       <Providers>{children}</Providers>
     </I18nProvider>
   );
+}
+
+async function RegionsServerProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { regions } = await sdk.store.region.list();
+
+  console.log({regions})
+  return <RegionProvider regions={regions}>{children}</RegionProvider>;
 }
 
 export default function RootLayout({
@@ -64,7 +77,9 @@ export default function RootLayout({
             </main>
           }
         >
-          <I18nBoundary>{children}</I18nBoundary>
+          <I18nBoundary>
+            <RegionsServerProvider>{children}</RegionsServerProvider>
+          </I18nBoundary>
         </Suspense>
       </body>
     </html>

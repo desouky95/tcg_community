@@ -1,4 +1,6 @@
 import "server-only";
+export const instant = false;
+
 import type { HttpTypes } from "@medusajs/types";
 import { sdk } from "../clients/medusa";
 import {
@@ -112,6 +114,7 @@ export async function listProductResults(
   } catch {
     /* Keep browsing available. */
   }
+  console.log("LIST PRODUCT",region)
   const pricingUnavailable = !region;
   const invalidRange =
     !!filters.min && !!filters.max && Number(filters.min) > Number(filters.max);
@@ -149,10 +152,7 @@ export async function listProductResults(
     const unique = [
       ...new Map(all.map((product) => [product.id, product])).values(),
     ];
-    const matched = filterCollectionProducts(
-      unique,
-      effective,
-    );
+    const matched = filterCollectionProducts(unique, effective);
     const page = Math.min(
       effective.page,
       Math.max(1, Math.ceil(matched.length / PAGE_SIZE)),

@@ -32,10 +32,15 @@ export interface ApiDefinition {
   }
   auth: {
     csrf: typeof routes['auth.csrf']
-    mobileVerificationDisabled: typeof routes['auth.mobile_verification_disabled']
+    requestOtp: typeof routes['auth.request_otp']
     me: typeof routes['auth.me']
     signup: typeof routes['auth.signup']
+    verifyOtp: typeof routes['auth.verify_otp']
     login: typeof routes['auth.login']
+    oauthSignup: typeof routes['auth.oauth_signup']
+    oauthVerify: typeof routes['auth.oauth_verify']
+    otpLogin: typeof routes['auth.otp_login']
+    passwordRecovery: typeof routes['auth.password_recovery']
     logout: typeof routes['auth.logout']
   }
   commerce: {

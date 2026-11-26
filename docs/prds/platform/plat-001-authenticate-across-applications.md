@@ -30,6 +30,7 @@ A user can authenticate with their AdonisJS account across the storefront and Co
 ## Backend API Route Used
 
 - `/api/v1/auth/oauth/{facebook,google}/{redirect,callback,pending,signup,verify,link}`
+- The disabled social signup and verification POST routes use Tuyau names `auth.oauth_signup` and `auth.oauth_verify`.
 - `/api/v1/auth/commerce/customer`
 - N/A — no HTTP route
 

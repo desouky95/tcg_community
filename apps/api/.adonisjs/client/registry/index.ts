@@ -86,11 +86,11 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"csrf"]],
     types: placeholder as Registry['auth.csrf']['types'],
   },
-  'auth.mobile_verification_disabled': {
+  'auth.request_otp': {
     methods: ["POST"],
     pattern: '/api/v1/auth/request-otp',
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"request-otp"]],
-    types: placeholder as Registry['auth.mobile_verification_disabled']['types'],
+    types: placeholder as Registry['auth.request_otp']['types'],
   },
   'auth.me': {
     methods: ["GET","HEAD"],
@@ -110,11 +110,11 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"signup"]],
     types: placeholder as Registry['auth.signup']['types'],
   },
-  'auth.mobile_verification_disabled': {
+  'auth.verify_otp': {
     methods: ["POST"],
     pattern: '/api/v1/auth/verify-otp',
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"verify-otp"]],
-    types: placeholder as Registry['auth.mobile_verification_disabled']['types'],
+    types: placeholder as Registry['auth.verify_otp']['types'],
   },
   'auth.login': {
     methods: ["POST"],
@@ -140,17 +140,17 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"callback"]],
     types: placeholder as Registry['facebook_auth.callback']['types'],
   },
-  'auth.mobile_verification_disabled': {
+  'auth.oauth_signup': {
     methods: ["POST"],
     pattern: '/api/v1/auth/oauth/:provider/signup',
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"signup"]],
-    types: placeholder as Registry['auth.mobile_verification_disabled']['types'],
+    types: placeholder as Registry['auth.oauth_signup']['types'],
   },
-  'auth.mobile_verification_disabled': {
+  'auth.oauth_verify': {
     methods: ["POST"],
     pattern: '/api/v1/auth/oauth/:provider/verify',
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"verify"]],
-    types: placeholder as Registry['auth.mobile_verification_disabled']['types'],
+    types: placeholder as Registry['auth.oauth_verify']['types'],
   },
   'facebook_auth.pending': {
     methods: ["GET","HEAD"],
@@ -164,11 +164,11 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"oauth"],[1,"provider"],[0,"link"]],
     types: placeholder as Registry['facebook_auth.link']['types'],
   },
-  'auth.mobile_verification_disabled': {
+  'auth.otp_login': {
     methods: ["POST"],
     pattern: '/api/v1/auth/otp-login',
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"otp-login"]],
-    types: placeholder as Registry['auth.mobile_verification_disabled']['types'],
+    types: placeholder as Registry['auth.otp_login']['types'],
   },
   'identity.delete_deactivated_account': {
     methods: ["POST"],
@@ -176,11 +176,11 @@ const routes = {
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"deactivated-privacy-deletion"]],
     types: placeholder as Registry['identity.delete_deactivated_account']['types'],
   },
-  'auth.mobile_verification_disabled': {
+  'auth.password_recovery': {
     methods: ["POST"],
     pattern: '/api/v1/auth/password-recovery',
     tokens: [[0,"api"],[0,"v1"],[0,"auth"],[0,"password-recovery"]],
-    types: placeholder as Registry['auth.mobile_verification_disabled']['types'],
+    types: placeholder as Registry['auth.password_recovery']['types'],
   },
   'auth.logout': {
     methods: ["POST"],

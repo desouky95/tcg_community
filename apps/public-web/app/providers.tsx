@@ -10,7 +10,6 @@ import { api } from "../src/lib/clients/adonis";
 import { useDefaultApiQuery } from "../src/lib/request-query";
 import { Toaster } from "react-hot-toast";
 import { CartProvider } from "../src/providers/CartProvider";
-import { RegionProvider } from "../src/providers/RegionProvider";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -53,10 +52,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         defaultQuery={defaultQuery}
         isAuthenticated={false}
       >
-        <RegionProvider>
           <Toaster position="top-right" />
           <CartProvider>{children}</CartProvider>
-        </RegionProvider>
       </TcgApiProvider>
     </QueryClientProvider>
   );

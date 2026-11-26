@@ -1,9 +1,8 @@
 "use client"; // include with Next.js 13+
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { HttpTypes } from "@medusajs/types";
+import { HttpTypes, StoreRegion } from "@medusajs/types";
 import { sdk } from "../lib/clients/medusa";
-
 
 type RegionContextType = {
   region?: HttpTypes.StoreRegion;
@@ -16,9 +15,10 @@ const RegionContext = createContext<RegionContextType | null>(null);
 
 type RegionProviderProps = {
   children: React.ReactNode;
+  regions: StoreRegion[];
 };
 
-export const RegionProvider = ({ children }: RegionProviderProps) => {
+export const RegionProvider = ({ children, regions }: RegionProviderProps) => {
   const [region, setRegion] = useState<HttpTypes.StoreRegion>();
 
   useEffect(() => {
@@ -30,16 +30,10 @@ export const RegionProvider = ({ children }: RegionProviderProps) => {
     }
 
     const regionId = localStorage.getItem("region_id");
-    if (!regionId) {
-      // retrieve regions and select the first one
-      sdk.store.region.list().then(({ regions }) => {
-        setRegion(regions[0]);
-      });
+    if (!regionId && regions.length > 0) {
+      setRegion(regions[0]);
     } else {
       // retrieve selected region
-      sdk.store.region.retrieve(regionId).then(({ region: dataRegion }) => {
-        setRegion(dataRegion);
-      });
     }
   }, [region]);
 

@@ -177,7 +177,7 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['csrf']>>>
     }
   }
-  'auth.mobile_verification_disabled': {
+  'auth.request_otp': {
     methods: ["POST"]
     pattern: '/api/v1/auth/request-otp'
     types: {
@@ -229,7 +229,7 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['signup']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'auth.mobile_verification_disabled': {
+  'auth.verify_otp': {
     methods: ["POST"]
     pattern: '/api/v1/auth/verify-otp'
     types: {
@@ -294,7 +294,7 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['callback']>>>
     }
   }
-  'auth.mobile_verification_disabled': {
+  'auth.oauth_signup': {
     methods: ["POST"]
     pattern: '/api/v1/auth/oauth/:provider/signup'
     types: {
@@ -307,7 +307,7 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
     }
   }
-  'auth.mobile_verification_disabled': {
+  'auth.oauth_verify': {
     methods: ["POST"]
     pattern: '/api/v1/auth/oauth/:provider/verify'
     types: {
@@ -346,7 +346,7 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['link']>>>
     }
   }
-  'auth.mobile_verification_disabled': {
+  'auth.otp_login': {
     methods: ["POST"]
     pattern: '/api/v1/auth/otp-login'
     types: {
@@ -372,7 +372,7 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deleteDeactivatedAccount']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'auth.mobile_verification_disabled': {
+  'auth.password_recovery': {
     methods: ["POST"]
     pattern: '/api/v1/auth/password-recovery'
     types: {

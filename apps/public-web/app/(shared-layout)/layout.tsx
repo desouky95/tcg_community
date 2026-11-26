@@ -9,8 +9,8 @@ import { CartButton } from "../../src/providers/CartProvider";
 import { getShopNavigation } from "../../src/lib/catalog/shop-navigation.server";
 
 async function getPublicConfig() {
-  "use cache";
-  cacheLife("hours");
+  // "use cache";
+  // cacheLife("hours");
   return (await createServerApiClient().getConfig()).data;
 }
 

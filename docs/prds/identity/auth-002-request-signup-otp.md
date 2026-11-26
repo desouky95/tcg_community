@@ -30,7 +30,7 @@ Existing evidence pointer: apps/api AuthController.requestOtp. This pointer is n
 - N/A — no dedicated UI page
 
 ## Backend API Route Used
-- POST /api/v1/auth/request-otp
+- POST `/api/v1/auth/request-otp` (Tuyau: `auth.request_otp`; returns 410 during the suspension).
 
 ## Related Files
 - apps/api/start/routes/v1/auth.routes.ts

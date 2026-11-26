@@ -38,8 +38,8 @@ async function fetchHomepage() {
 }
 
 async function fetchPageTransition() {
-  "use cache";
-  cacheLife("hours");
+  // "use cache";
+  // cacheLife("hours");
   return strapiClient.pageTransition.find(
     {
       status: "published",
@@ -67,10 +67,12 @@ export type PageTransitionState = PageTransition | null;
 export async function getHomepage(): Promise<HomepageState> {
   try {
     const homepage = await fetchHomepage();
+    console.log({ homepage });
     return homepage
       ? { kind: "ready", sections: homepage.sections ?? [] }
       : { kind: "setup" };
   } catch (error) {
+    console.log({ error });
     return error instanceof StrapiError && error.status === 404
       ? { kind: "setup" }
       : { kind: "unavailable" };
@@ -119,5 +121,8 @@ export async function getPageTransition(): Promise<PageTransitionState> {
 }
 
 export function getStrapiURL(path = "") {
-  return process.env.NODE_ENV === "development" ? `${cmsURL}${path}` : path;
+  return process.env.NODE_ENV === "development" &&
+    path.includes("nextpullstorage")
+    ? `${cmsURL}${path}`
+    : path;
 }

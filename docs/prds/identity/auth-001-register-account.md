@@ -42,6 +42,7 @@ A guest creates an unverified account and a signup verification challenge, then 
 ## Backend API Route Used
 - GET /api/v1/auth/csrf
 - `/api/v1/auth/oauth/{facebook,google}/{redirect,callback,pending,signup,verify,link}`
+- The disabled social signup and verification POST routes use Tuyau names `auth.oauth_signup` and `auth.oauth_verify`.
 - POST /api/v1/auth/signup
 
 ## Related Files

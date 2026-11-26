@@ -28,7 +28,7 @@ Existing evidence pointer: No current implementation. This pointer is not a fres
 - N/A — no dedicated UI page
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- POST `/api/v1/auth/password-recovery` (Tuyau: `auth.password_recovery`; returns 410 during the suspension).
 
 ## Related Files
 - apps/api/start/routes/v1/auth.routes.ts

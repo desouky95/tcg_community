@@ -125,24 +125,23 @@ async function ShopProducts({
 }: {
   filters: ReturnType<typeof parseCollectionFilters>;
 }) {
-  try {
-    return (
-      <ProductListing
-        result={await listProductResults(filters)}
-        filters={filters}
-      />
-    );
-  } catch {
-    return (
-      <div className="mt-6 border-y border-wax-line py-12">
-        <p>Products are temporarily unavailable. Please try again later.</p>
-        <a
-          href="/shop"
-          className="focus-ring mt-4 inline-block font-semibold underline underline-offset-4"
-        >
-          Try again
-        </a>
-      </div>
-    );
+  const result = await listProductResults(filters);
+
+  if (result) {
+    return <ProductListing result={result} filters={filters} />;
   }
+
+  return (
+    <div className="mt-6 border-y border-wax-line py-12">
+      <p>Products are temporarily unavailable. Please try again later.</p>
+      <a
+        href="/shop"
+        className="focus-ring mt-4 inline-block font-semibold underline underline-offset-4"
+      >
+        Try again
+      </a>
+    </div>
+  );
 }
+
+export const instant = false;

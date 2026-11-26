@@ -87,3 +87,5 @@ export default async function HomePage() {
     </>
   );
 }
+
+export const instant = false

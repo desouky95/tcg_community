@@ -34,7 +34,8 @@ Existing evidence pointer: apps/web/src/pages/VerifyOTP.tsx; apps/api AuthContro
 
 ## Backend API Route Used
 - `/api/v1/auth/oauth/{facebook,google}/{redirect,callback,pending,signup,verify,link}`
-- POST /api/v1/auth/verify-otp
+- The disabled social signup and verification POST routes use Tuyau names `auth.oauth_signup` and `auth.oauth_verify`.
+- POST `/api/v1/auth/verify-otp` (Tuyau: `auth.verify_otp`; returns 410 during the suspension).
 
 ## Related Files
 - apps/api/start/routes/v1/auth.routes.ts

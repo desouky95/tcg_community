@@ -40,8 +40,8 @@ function toMenuCategory(
 }
 
 export async function getShopNavigation(): Promise<MenuCategory[]> {
-  "use cache";
-  cacheLife("hours");
+  // "use cache";
+  // cacheLife("hours");
 
   try {
     const categories: MenuCategory[] = [];

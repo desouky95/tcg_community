@@ -42,6 +42,7 @@ Existing evidence pointer: apps/web/src/pages/Login.tsx; apps/api AuthController
 ## Backend API Route Used
 - GET /api/v1/auth/csrf
 - `/api/v1/auth/oauth/{facebook,google}/{redirect,callback,pending,signup,verify,link}`
+- The disabled social signup and verification POST routes use Tuyau names `auth.oauth_signup` and `auth.oauth_verify`.
 - POST /api/v1/auth/login
 
 ## Related Files
