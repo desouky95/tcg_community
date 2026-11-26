@@ -38,6 +38,7 @@ export type PublicHeaderProps = ComponentPropsWithoutRef<"header"> & {
   storeNavigation?: boolean;
   categories?: ShopCategory[];
   cartAction?: React.ReactNode;
+  accountAction?: React.ReactNode;
 };
 
 export function PublicHeader({
@@ -51,6 +52,7 @@ export function PublicHeader({
   storeNavigation = false,
   categories = [],
   cartAction,
+  accountAction,
   ...props
 }: PublicHeaderProps) {
   const Link = NextLink;
@@ -114,15 +116,17 @@ export function PublicHeader({
             <Link href="/login">Sign in</Link>
           </Button>
         )}
-        {authenticated && storeNavigation && (
-          <Link
-            href="/account"
-            aria-label="Your account"
-            className="focus-ring hidden size-11 items-center justify-center rounded-md bg-wax-navy text-wax-paper sm:inline-flex"
-          >
-            <UserRound aria-hidden="true" className="size-5" />
-          </Link>
-        )}
+        {authenticated &&
+          storeNavigation &&
+          (accountAction ?? (
+            <Link
+              href="/account"
+              aria-label="Your account"
+              className="focus-ring hidden size-11 items-center justify-center rounded-md bg-wax-navy text-wax-paper sm:inline-flex"
+            >
+              <UserRound aria-hidden="true" className="size-5" />
+            </Link>
+          ))}
 
         <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
           <Dialog.Trigger asChild>

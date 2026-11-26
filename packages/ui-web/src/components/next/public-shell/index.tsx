@@ -16,6 +16,7 @@ export type PublicShellProps = ComponentPropsWithoutRef<"div"> &
     | "storeNavigation"
     | "categories"
     | "cartAction"
+    | "accountAction"
   > & { mainClassName?: string };
 
 export function PublicShell({
@@ -31,6 +32,7 @@ export function PublicShell({
   storeNavigation = false,
   categories = [],
   cartAction,
+  accountAction,
   ...props
 }: PublicShellProps) {
   return (
@@ -52,6 +54,7 @@ export function PublicShell({
         storeNavigation={storeNavigation}
         categories={categories}
         cartAction={cartAction}
+        accountAction={accountAction}
       />
       <main className={mainClassName}>{children}</main>
       <PublicFooter />

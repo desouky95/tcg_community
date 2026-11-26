@@ -16,10 +16,10 @@ api.http.interceptors.request.use(async (config) => {
     ["post", "put", "patch", "delete"].includes(config.method ?? "")
   ) {
     // Await browser cookie delivery before Axios reads the XSRF token.
-    csrfRequest ??= api.http.get("/auth/csrf").finally(() => {
-      csrfRequest = undefined;
-    });
-    await csrfRequest;
+    // csrfRequest ??= api.http.get("/auth/csrf").finally(() => {
+    //   csrfRequest = undefined;
+    // });
+    // await csrfRequest;
   }
   return config;
 });
