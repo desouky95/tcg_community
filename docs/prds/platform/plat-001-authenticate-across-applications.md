@@ -16,6 +16,8 @@ A user can authenticate with their AdonisJS account across the storefront and Co
 
 ## Acceptance and verification
 
+- Verify that completing sign-in on the storefront refreshes the visible session after Next.js navigation and that Collector Disk destinations still load through a full browser navigation.
+
 - The outcome is achieved for an eligible actor and unauthorized actors cannot access or change the resource.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
 - Verify integration with the owning service and its persisted state.

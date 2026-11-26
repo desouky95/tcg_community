@@ -10,6 +10,8 @@ A consumed login challenge creates a session without a password.
 
 ## Requirements
 
+- During the suspension, the code entry pages link back to password sign-in and preserve `destination` and `returnTo`. When a code request is available, its success navigates to verification through Next.js.
+
 - Storefront login and signup do not offer social sign-in or code-based sign-in; existing backend routes remain available. Registration and recovery verification codes remain supported.
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
@@ -27,7 +29,7 @@ A consumed login challenge creates a session without a password.
 Existing evidence pointer: No dedicated route. This pointer is not a fresh implementation audit.
 
 ## UI Page Used
-- N/A — no dedicated UI page
+- `/login/otp` (public storefront) shows that mobile verification is disabled. Its password sign-in link preserves the login destination and return path.
 
 ## Backend API Route Used
 - N/A — no HTTP route

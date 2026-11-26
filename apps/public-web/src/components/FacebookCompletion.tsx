@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { AxiosError, type FacebookPendingResponse } from "@tcg/api-contracts";
-import { authDestination, destinationUrl } from "../lib/auth/auth-destination";
+import { authDestination } from "../lib/auth/auth-destination";
+import { useAuthRedirect } from "../lib/auth/use-auth-redirect";
 import { Button } from "@tcg/ui-web";
 import { api } from "../lib/clients/adonis";
 
@@ -10,6 +12,7 @@ const governorates = ["Cairo", "Alexandria", "Giza", "Dakahlia", "Red Sea", "Beh
 const fieldClass = "w-full rounded border border-current bg-transparent px-3 py-2 focus-ring";
 
 export function FacebookCompletion() {
+  const redirectAfterAuth = useAuthRedirect();
   const [provider, setProvider] = useState<"facebook" | "google">("facebook");
   const providerName = provider === "google" ? "Google" : "Facebook";
   const [pending, setPending] = useState<FacebookPendingResponse | null>(null);
@@ -24,7 +27,7 @@ export function FacebookCompletion() {
     setProvider(current);
     api.http.get<FacebookPendingResponse>(`/auth/oauth/${current}/pending`).then(({ data }) => { setPending(data); if (data.signupStarted && data.mobile) { setMobile(data.mobile); setMode("verify"); } }).catch(() => setError("Social sign-in expired. Please start again."));
   }, []);
-  const finish = () => window.location.assign(destinationUrl(authDestination(pending?.destination), pending?.returnTo ?? "/"));
+  const finish = () => redirectAfterAuth(authDestination(pending?.destination), pending?.returnTo ?? "/");
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError(""); setBusy(true);
     const data = Object.fromEntries(new FormData(event.currentTarget).entries());
@@ -47,7 +50,7 @@ export function FacebookCompletion() {
   }
   const input = (name: string, label: string, type = "text", extra?: { defaultValue?: string; autoComplete?: string }) => <label className="grid gap-1 text-sm">{label}<input className={fieldClass} name={name} type={type} required {...extra} /></label>;
   return <div className="grid gap-4">
-    {error && <p role="alert" className="text-sm text-wax-red">{error} <a className="underline" href="/login">Return to sign in</a></p>}
+    {error && <p role="alert" className="text-sm text-wax-red">{error} <Link className="underline" href="/login">Return to sign in</Link></p>}
     {!pending && !error && <p role="status">Loading your social sign-in…</p>}
     {pending && mode === "choose" && <><p>Choose how to continue. Your account will never be linked by email alone.</p><Button onClick={() => setMode("signup")}>Create a new account</Button><Button onClick={() => setMode("login")}>Connect an existing account</Button></>}
     {pending && mode !== "choose" && <form onSubmit={submit} className="grid gap-4">

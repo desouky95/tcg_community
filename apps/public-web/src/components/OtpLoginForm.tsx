@@ -1,5 +1,6 @@
 "use client";
 import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@tcg/react-query";
 import { AuthField, AuthInput, Button } from "@tcg/ui-web";
 import { authQuery, type AuthDestination } from "../lib/auth/auth-destination";
@@ -12,6 +13,7 @@ export function OtpLoginForm({
   returnTo: string;
 }) {
   const { requestOtp } = useAuth();
+  const router = useRouter();
   const [error, setError] = useState("");
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -21,7 +23,7 @@ export function OtpLoginForm({
     ).replace(/\s/g, "");
     try {
       await requestOtp.mutateAsync(mobile);
-      window.location.assign(
+      router.push(
         `/verify-otp?${authQuery(destination, returnTo)}&mobile=${encodeURIComponent(mobile)}`,
       );
     } catch {

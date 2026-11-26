@@ -31,10 +31,10 @@ export interface ApiDefinition {
     listUsers: typeof routes['admin.list_users']
   }
   auth: {
-    requestOtp: typeof routes['auth.request_otp']
+    csrf: typeof routes['auth.csrf']
+    mobileVerificationDisabled: typeof routes['auth.mobile_verification_disabled']
     me: typeof routes['auth.me']
     signup: typeof routes['auth.signup']
-    verifyOtp: typeof routes['auth.verify_otp']
     login: typeof routes['auth.login']
     logout: typeof routes['auth.logout']
   }
@@ -51,15 +51,11 @@ export interface ApiDefinition {
     redirect: typeof routes['facebook_auth.redirect']
     finish: typeof routes['facebook_auth.finish']
     callback: typeof routes['facebook_auth.callback']
-    signup: typeof routes['facebook_auth.signup']
-    verify: typeof routes['facebook_auth.verify']
     pending: typeof routes['facebook_auth.pending']
     link: typeof routes['facebook_auth.link']
   }
   identity: {
-    otpLogin: typeof routes['identity.otp_login']
     deleteDeactivatedAccount: typeof routes['identity.delete_deactivated_account']
-    recoverPassword: typeof routes['identity.recover_password']
     getPreferences: typeof routes['identity.get_preferences']
     preferences: typeof routes['identity.preferences']
     deactivate: typeof routes['identity.deactivate']

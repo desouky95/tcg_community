@@ -8,14 +8,20 @@ RUN corepack enable
 # Cache downloads independently of application source, as in infra/Dockerfile.backend.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 RUN pnpm fetch
+
+FROM base AS source
 COPY . .
 
-FROM base AS dev
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile \
+FROM base AS dev-dependencies
+COPY --parents apps/*/package.json packages/*/package.json ./
+RUN mkdir -p .agents/skills && pnpm install --offline --frozen-lockfile \
     --filter @tcg/medusa... --filter @tcg/public-web... --filter @tcg/api... --filter @tcg/strapi... --filter @tcg/web...
+
+FROM dev-dependencies AS dev
+COPY . .
 ENV NODE_ENV=development
 
-FROM base AS backend-build
+FROM source AS backend-build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/medusa...
 ARG ADMIN_AUTH_TYPE=session
 RUN pnpm --filter @tcg/medusa... --if-present run build
@@ -36,7 +42,7 @@ USER node
 EXPOSE 9000
 CMD ["/app/node_modules/.bin/medusa", "start"]
 
-FROM base AS public-web-build
+FROM source AS public-web-build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/public-web...
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_STRAPI_API_URL
@@ -56,7 +62,7 @@ USER node
 EXPOSE 3000
 CMD ["node", "apps/public-web/server.js"]
 
-FROM base AS api-build
+FROM source AS api-build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/api...
 RUN pnpm --filter @tcg/api... --if-present run build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm --filter @tcg/api --prod deploy --legacy /prod/api
@@ -70,7 +76,7 @@ USER node
 EXPOSE 3333
 CMD ["node", "bin/server.js"]
 
-FROM base AS cms-build
+FROM source AS cms-build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/strapi...
 RUN pnpm --filter @tcg/strapi... --if-present run build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm --filter @tcg/strapi --prod deploy --legacy /prod/cms
@@ -87,7 +93,7 @@ USER node
 EXPOSE 1337
 CMD ["./node_modules/.bin/strapi", "start"]
 
-FROM base AS web-build
+FROM source AS web-build
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --offline --frozen-lockfile --filter @tcg/web...
 ARG VITE_API_URL
 ARG VITE_PUBLIC_WEB_URL

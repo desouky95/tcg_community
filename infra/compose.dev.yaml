@@ -1,29 +1,33 @@
 name: tcg-dev
 
-# Hot-reload dev: repo bind-mounted, host node_modules/build dirs masked by anonymous volumes.
-# After lockfile changes: docker compose -f infra/compose.dev.yaml up --build -V
+# Hot-reload dev: repo bind-mounted, with dependency volumes shared across services.
+# Refresh dependency volumes after manifest or lockfile changes (see deployment-and-recovery.md).
+x-dependency-volume: &dependency-volume
+  labels:
+    nextpull.dev.dependencies: 'true'
+
 x-workspace-volumes: &workspace-volumes
   - ..:/workspace
-  - /workspace/node_modules
-  - /workspace/apps/backend/node_modules
-  - /workspace/apps/public-web/node_modules
-  - /workspace/apps/web/node_modules
-  - /workspace/apps/api/node_modules
-  - /workspace/apps/cms/node_modules
-  - /workspace/packages/api-contracts/node_modules
-  - /workspace/packages/auth-client/node_modules
-  - /workspace/packages/design-tokens/node_modules
-  - /workspace/packages/locale/node_modules
-  - /workspace/packages/react-query/node_modules
-  - /workspace/packages/strapi-client/node_modules
-  - /workspace/packages/ui-web/node_modules
+  - deps-workspace:/workspace/node_modules
+  - deps-backend:/workspace/apps/backend/node_modules
+  - deps-public-web:/workspace/apps/public-web/node_modules
+  - deps-web:/workspace/apps/web/node_modules
+  - deps-api:/workspace/apps/api/node_modules
+  - deps-cms:/workspace/apps/cms/node_modules
+  - deps-api-contracts:/workspace/packages/api-contracts/node_modules
+  - deps-auth-client:/workspace/packages/auth-client/node_modules
+  - deps-design-tokens:/workspace/packages/design-tokens/node_modules
+  - deps-locale:/workspace/packages/locale/node_modules
+  - deps-react-query:/workspace/packages/react-query/node_modules
+  - deps-strapi-client:/workspace/packages/strapi-client/node_modules
+  - deps-ui-web:/workspace/packages/ui-web/node_modules
 
 x-dev: &dev
   build:
     context: ..
     target: dev
   image: tcg-dev-workspace
-  env_file: ../.env
+  env_file: ../.env.dev
   restart: unless-stopped
   volumes: *workspace-volumes
 
@@ -42,18 +46,18 @@ services:
       - '24678:24678'
     volumes:
       - ..:/workspace
-      - /workspace/node_modules
-      - /workspace/apps/backend/node_modules
-      - /workspace/apps/public-web/node_modules
-      - /workspace/apps/api/node_modules
-      - /workspace/apps/cms/node_modules
-      - /workspace/packages/api-contracts/node_modules
-      - /workspace/packages/auth-client/node_modules
-      - /workspace/packages/design-tokens/node_modules
-      - /workspace/packages/locale/node_modules
-      - /workspace/packages/react-query/node_modules
-      - /workspace/packages/strapi-client/node_modules
-      - /workspace/packages/ui-web/node_modules
+      - deps-workspace:/workspace/node_modules
+      - deps-backend:/workspace/apps/backend/node_modules
+      - deps-public-web:/workspace/apps/public-web/node_modules
+      - deps-api:/workspace/apps/api/node_modules
+      - deps-cms:/workspace/apps/cms/node_modules
+      - deps-api-contracts:/workspace/packages/api-contracts/node_modules
+      - deps-auth-client:/workspace/packages/auth-client/node_modules
+      - deps-design-tokens:/workspace/packages/design-tokens/node_modules
+      - deps-locale:/workspace/packages/locale/node_modules
+      - deps-react-query:/workspace/packages/react-query/node_modules
+      - deps-strapi-client:/workspace/packages/strapi-client/node_modules
+      - deps-ui-web:/workspace/packages/ui-web/node_modules
       - /workspace/apps/backend/.medusa
 
   public-web:
@@ -67,18 +71,18 @@ services:
       - '3000:3000'
     volumes:
       - ..:/workspace
-      - /workspace/node_modules
-      - /workspace/apps/backend/node_modules
-      - /workspace/apps/public-web/node_modules
-      - /workspace/apps/api/node_modules
-      - /workspace/apps/cms/node_modules
-      - /workspace/packages/api-contracts/node_modules
-      - /workspace/packages/auth-client/node_modules
-      - /workspace/packages/design-tokens/node_modules
-      - /workspace/packages/locale/node_modules
-      - /workspace/packages/react-query/node_modules
-      - /workspace/packages/strapi-client/node_modules
-      - /workspace/packages/ui-web/node_modules
+      - deps-workspace:/workspace/node_modules
+      - deps-backend:/workspace/apps/backend/node_modules
+      - deps-public-web:/workspace/apps/public-web/node_modules
+      - deps-api:/workspace/apps/api/node_modules
+      - deps-cms:/workspace/apps/cms/node_modules
+      - deps-api-contracts:/workspace/packages/api-contracts/node_modules
+      - deps-auth-client:/workspace/packages/auth-client/node_modules
+      - deps-design-tokens:/workspace/packages/design-tokens/node_modules
+      - deps-locale:/workspace/packages/locale/node_modules
+      - deps-react-query:/workspace/packages/react-query/node_modules
+      - deps-strapi-client:/workspace/packages/strapi-client/node_modules
+      - deps-ui-web:/workspace/packages/ui-web/node_modules
       - /workspace/apps/public-web/.next
 
   web:
@@ -117,21 +121,34 @@ services:
       - '1337:1337'
     volumes:
       - ..:/workspace
-      - /workspace/node_modules
-      - /workspace/apps/backend/node_modules
-      - /workspace/apps/public-web/node_modules
-      - /workspace/apps/api/node_modules
-      - /workspace/apps/cms/node_modules
-      - /workspace/packages/api-contracts/node_modules
-      - /workspace/packages/auth-client/node_modules
-      - /workspace/packages/design-tokens/node_modules
-      - /workspace/packages/locale/node_modules
-      - /workspace/packages/react-query/node_modules
-      - /workspace/packages/strapi-client/node_modules
-      - /workspace/packages/ui-web/node_modules
+      - deps-workspace:/workspace/node_modules
+      - deps-backend:/workspace/apps/backend/node_modules
+      - deps-public-web:/workspace/apps/public-web/node_modules
+      - deps-api:/workspace/apps/api/node_modules
+      - deps-cms:/workspace/apps/cms/node_modules
+      - deps-api-contracts:/workspace/packages/api-contracts/node_modules
+      - deps-auth-client:/workspace/packages/auth-client/node_modules
+      - deps-design-tokens:/workspace/packages/design-tokens/node_modules
+      - deps-locale:/workspace/packages/locale/node_modules
+      - deps-react-query:/workspace/packages/react-query/node_modules
+      - deps-strapi-client:/workspace/packages/strapi-client/node_modules
+      - deps-ui-web:/workspace/packages/ui-web/node_modules
       - /workspace/apps/cms/.strapi
       - /workspace/apps/cms/dist
       - cms-uploads:/workspace/apps/cms/public/uploads
 
 volumes:
+  deps-workspace: *dependency-volume
+  deps-backend: *dependency-volume
+  deps-public-web: *dependency-volume
+  deps-web: *dependency-volume
+  deps-api: *dependency-volume
+  deps-cms: *dependency-volume
+  deps-api-contracts: *dependency-volume
+  deps-auth-client: *dependency-volume
+  deps-design-tokens: *dependency-volume
+  deps-locale: *dependency-volume
+  deps-react-query: *dependency-volume
+  deps-strapi-client: *dependency-volume
+  deps-ui-web: *dependency-volume
   cms-uploads:

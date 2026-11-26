@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { authDestination, authQuery, destinationPath } from "../../../src/lib/auth/auth-destination";
 import { AuthShell } from "@tcg/ui-web";
 import { LoginForm } from "../../../src/components/LoginForm";
@@ -25,12 +26,12 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       footer={
         <>
           New to Next Pull?{" "}
-          <a
+          <Link
             href={`/signup?${authQuery(destination, returnTo)}`}
             className="font-mono text-utility uppercase text-wax-red hover:underline focus-ring"
           >
             Create an account
-          </a>
+          </Link>
         </>
       }
     >

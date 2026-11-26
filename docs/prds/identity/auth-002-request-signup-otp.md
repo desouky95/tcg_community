@@ -10,6 +10,8 @@ A bounded-lifetime verification challenge is issued.
 
 ## Requirements
 
+- With OTP suspended, successful password signup navigates to `/login` through the Next.js router and preserves `destination` and `returnTo`.
+
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.

@@ -10,6 +10,8 @@ The challenge is consumed, the account is verified, and a session is issued.
 
 ## Requirements
 
+- When verification has signed the user in, use Next.js navigation for storefront destinations and a full browser navigation for Collector Disk. During the suspension, the verification page links back to password sign-in and preserves the destination.
+
 - Referenced application configuration reads root `.env` names directly: `API_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
 
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
@@ -28,7 +30,7 @@ Existing evidence pointer: apps/web/src/pages/VerifyOTP.tsx; apps/api AuthContro
 
 ## UI Page Used
 - `/login` and `/login/facebook` (public storefront)
-- /verify-otp
+- `/verify-otp` (public storefront) shows that mobile verification is disabled. Its password sign-in link preserves the login destination and return path.
 
 ## Backend API Route Used
 - `/api/v1/auth/oauth/{facebook,google}/{redirect,callback,pending,signup,verify,link}`

@@ -10,6 +10,8 @@ A replacement challenge is issued subject to cooldown limits.
 
 ## Requirements
 
+- During the suspension, `/verify-otp` links back to password sign-in through Next.js and preserves `destination` and `returnTo`.
+
 - Authorize access according to the actor and resource visibility; private data is visible only to permitted users.
 - Present the relevant result and actionable loading, empty, validation and failure states in the owning client.
 - Persist changes through the owning backend; reject invalid or unauthorized requests without partial effects.

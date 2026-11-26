@@ -10,6 +10,8 @@ Valid credentials create an authenticated session.
 
 ## Requirements
 
+- After storefront sign-in, use Next.js navigation and refresh session-dependent content. For a Collector Disk destination, navigate the browser to the collector application.
+
 - Before browser auth mutations, the storefront Axios client awaits `GET /api/v1/auth/csrf`. Concurrent submissions share an in-flight bootstrap; bootstrap failures prevent the mutation. Shield issues the XSRF cookie through its normal middleware.
 - Production requires credentialed CORS for the storefront origin and `API_SESSION_COOKIE_DOMAIN=next-pull.com` so storefront JavaScript can read the XSRF cookie.
 

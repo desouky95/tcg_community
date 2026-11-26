@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { AxiosError } from "@tcg/api-contracts";
 import { useAuth } from "@tcg/react-query";
 import { AuthField, AuthInput, AuthSelect, Button } from "@tcg/ui-web";
@@ -44,6 +45,7 @@ export function SignupForm({
   returnTo: string;
 }) {
   const { signup } = useAuth();
+  const router = useRouter();
   const [error, setError] = useState("");
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,9 +67,7 @@ export function SignupForm({
         passwordConfirmation: data.passwordConfirmation!,
         governorate: data.governorate!,
       });
-      window.location.assign(
-        `/login?${authQuery(destination, returnTo)}`,
-      );
+      router.push(`/login?${authQuery(destination, returnTo)}`);
     } catch (cause) {
       const body =
         cause instanceof AxiosError ? cause.response?.data?.error : undefined;

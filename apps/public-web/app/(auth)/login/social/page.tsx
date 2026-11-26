@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AuthShell } from "@tcg/ui-web";
 import { FacebookCompletion } from "../../../../src/components/FacebookCompletion";
 
@@ -15,9 +16,9 @@ export default function FacebookPage() {
       asideDescription="Your collection, your community."
       asideItems={["Track your collection", "Connect with collectors"]}
       footer={
-        <a href="/login" className="underline focus-ring">
+        <Link href="/login" className="underline focus-ring">
           Back to sign in
-        </a>
+        </Link>
       }
     >
       <FacebookCompletion />

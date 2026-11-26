@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AuthShell } from "@tcg/ui-web";
 import {
   authDestination,
@@ -18,10 +19,21 @@ export default async function VerifyOtpPage({
   const destination = authDestination(params.destination);
   const returnTo = destinationPath(destination, params.returnTo);
   return (
-    <AuthShell quiet title="Use password sign-in" description="Mobile verification is temporarily disabled." asideTitle="Your account" asideDescription="Sign in with your password." asideItems={[]}>
-      <a href={`/login?${authQuery(destination, returnTo)}`} className="underline focus-ring">
-        Continue to sign in
-      </a>
+    <AuthShell
+      quiet
+      eyebrow="Your account"
+      title="Use password sign-in"
+      description="Mobile verification is temporarily disabled."
+      asideTitle="Your account"
+      asideDescription="Sign in with your password."
+      asideItems={[]}
+      footer={
+        <Link href={`/login?${authQuery(destination, returnTo)}`} className="underline focus-ring">
+          Continue to sign in
+        </Link>
+      }
+    >
+      {null}
     </AuthShell>
   );
 }

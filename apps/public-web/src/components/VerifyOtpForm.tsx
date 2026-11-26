@@ -2,7 +2,8 @@
 import { useState, type FormEvent } from "react";
 import { useAuth } from "@tcg/react-query";
 import { Button, AuthField, AuthInput } from "@tcg/ui-web";
-import { destinationUrl, type AuthDestination } from "../lib/auth/auth-destination";
+import type { AuthDestination } from "../lib/auth/auth-destination";
+import { useAuthRedirect } from "../lib/auth/use-auth-redirect";
 
 export function VerifyOtpForm({
   mobile,
@@ -14,6 +15,7 @@ export function VerifyOtpForm({
   returnTo: string;
 }) {
   const { verifyOtp, requestOtp } = useAuth();
+  const redirectAfterAuth = useAuthRedirect();
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -22,7 +24,7 @@ export function VerifyOtpForm({
     const otp = String(new FormData(event.currentTarget).get("otp") ?? "");
     try {
       await verifyOtp.mutateAsync({ mobile, otp });
-      window.location.assign(destinationUrl(destination, returnTo));
+      redirectAfterAuth(destination, returnTo);
     } catch {
       setError("Invalid or expired verification code. Please try again.");
     }

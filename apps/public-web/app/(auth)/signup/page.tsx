@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AuthShell } from "@tcg/ui-web";
 import { SignupForm } from "../../../src/components/SignupForm";
 import {
@@ -34,12 +35,12 @@ export default async function SignupPage({
       footer={
         <>
           Already have a vault?{" "}
-          <a
+          <Link
             href={`/login?${authQuery(destination, returnTo)}`}
             className="underline focus-ring"
           >
             Sign in
-          </a>
+          </Link>
         </>
       }
     >

@@ -164,17 +164,30 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/admin_controller').default['blockUser']>>>
     }
   }
-  'auth.request_otp': {
+  'auth.csrf': {
+    methods: ["GET","HEAD"]
+    pattern: '/api/v1/auth/csrf'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['csrf']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['csrf']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['csrf']>>>
+    }
+  }
+  'auth.mobile_verification_disabled': {
     methods: ["POST"]
     pattern: '/api/v1/auth/request-otp'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/user').requestOtpValidator)>>
+      body: {}
       paramsTuple: []
       params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/user').requestOtpValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['requestOtp']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['requestOtp']>>> | { status: 422; response: { errors: SimpleError[] } }
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['requestOtp']>>> | { status: 422; response: { errors: SimpleError[] } }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
     }
   }
   'auth.me': {
@@ -216,17 +229,17 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['signup']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'auth.verify_otp': {
+  'auth.mobile_verification_disabled': {
     methods: ["POST"]
     pattern: '/api/v1/auth/verify-otp'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/user').verifyOtpValidator)>>
+      body: {}
       paramsTuple: []
       params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/user').verifyOtpValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['verifyOtp']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['verifyOtp']>>> | { status: 422; response: { errors: SimpleError[] } }
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['verifyOtp']>>> | { status: 422; response: { errors: SimpleError[] } }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
     }
   }
   'auth.login': {
@@ -281,30 +294,30 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['callback']>>>
     }
   }
-  'facebook_auth.signup': {
+  'auth.mobile_verification_disabled': {
     methods: ["POST"]
     pattern: '/api/v1/auth/oauth/:provider/signup'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/user').signupValidator)>>
+      body: {}
       paramsTuple: [ParamValue]
       params: { provider: ParamValue }
-      query: ExtractQuery<InferInput<(typeof import('#validators/user').signupValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['signup']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['signup']>>> | { status: 422; response: { errors: SimpleError[] } }
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['signup']>>> | { status: 422; response: { errors: SimpleError[] } }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
     }
   }
-  'facebook_auth.verify': {
+  'auth.mobile_verification_disabled': {
     methods: ["POST"]
     pattern: '/api/v1/auth/oauth/:provider/verify'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/user').verifyOtpValidator)>>
+      body: {}
       paramsTuple: [ParamValue]
       params: { provider: ParamValue }
-      query: ExtractQuery<InferInput<(typeof import('#validators/user').verifyOtpValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['verify']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['verify']>>> | { status: 422; response: { errors: SimpleError[] } }
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['verify']>>> | { status: 422; response: { errors: SimpleError[] } }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
     }
   }
   'facebook_auth.pending': {
@@ -333,17 +346,17 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/facebook_auth_controller').default['link']>>>
     }
   }
-  'identity.otp_login': {
+  'auth.mobile_verification_disabled': {
     methods: ["POST"]
     pattern: '/api/v1/auth/otp-login'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/identity').otpLoginValidator)>>
+      body: {}
       paramsTuple: []
       params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/identity').otpLoginValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['otpLogin']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['otpLogin']>>> | { status: 422; response: { errors: SimpleError[] } }
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['otpLogin']>>> | { status: 422; response: { errors: SimpleError[] } }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
     }
   }
   'identity.delete_deactivated_account': {
@@ -359,17 +372,17 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['deleteDeactivatedAccount']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'identity.recover_password': {
+  'auth.mobile_verification_disabled': {
     methods: ["POST"]
     pattern: '/api/v1/auth/password-recovery'
     types: {
-      body: ExtractBody<InferInput<(typeof import('#validators/identity').passwordRecoveryValidator)>>
+      body: {}
       paramsTuple: []
       params: {}
-      query: ExtractQuery<InferInput<(typeof import('#validators/identity').passwordRecoveryValidator)>>
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['recoverPassword']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['recoverPassword']>>> | { status: 422; response: { errors: SimpleError[] } }
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/identity_controller').default['recoverPassword']>>> | { status: 422; response: { errors: SimpleError[] } }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/auth_controller').default['mobileVerificationDisabled']>>>
     }
   }
   'auth.logout': {

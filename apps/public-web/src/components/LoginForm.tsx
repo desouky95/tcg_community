@@ -1,11 +1,8 @@
 "use client";
 
 import { AxiosError } from "@tcg/api-contracts";
-import {
-  authQuery,
-  destinationUrl,
-  type AuthDestination,
-} from "../lib/auth/auth-destination";
+import type { AuthDestination } from "../lib/auth/auth-destination";
+import { useAuthRedirect } from "../lib/auth/use-auth-redirect";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useAuth } from "@tcg/react-query";
@@ -33,6 +30,7 @@ export function LoginForm({
   socialError: boolean;
 }) {
   const { login } = useAuth();
+  const redirectAfterAuth = useAuthRedirect();
 
   const {
     register,
@@ -44,7 +42,7 @@ export function LoginForm({
     try {
       await login.mutateAsync(data);
       toast.success("Welcome back to Next Pull!");
-      window.location.assign(destinationUrl(destination, returnTo));
+      redirectAfterAuth(destination, returnTo);
     } catch (err: unknown) {
       const message =
         err instanceof AxiosError ? err.response?.data?.error : undefined;
