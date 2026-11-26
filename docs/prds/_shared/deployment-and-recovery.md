@@ -24,14 +24,18 @@ Mount persistent storage at `/app/public/uploads` for CMS uploads when using loc
 
 ## Compose environments
 
-Development: `docker compose --env-file .env -f infra/compose.dev.yaml up --build`. All services use the root `.env`; per-app infrastructure env files are no longer consumed. Compose overrides native `NODE_ENV`, `HOST`, and `PORT`, plus internal service URLs (`PUBLIC_WEB_API_URL`, `API_MEDUSA_INTERNAL_URL`, `BACKEND_VITE_CARD_CATALOG_URL`, and `CMS_MEDUSA_BACKEND_URL`) for its network. Choose browser-facing localhost URLs in the root file when running locally; the production domains are not automatically rewritten. Databases and Redis remain external. Use container-reachable database hosts. Dev services share named `node_modules` volumes populated from the dev image. CMS uploads persist in a separate volume.
+Development uses the root `.env.dev`. Run `pnpm dev:all` to build and start the stack. Compose overrides native `NODE_ENV`, `HOST`, and `PORT`, plus internal service URLs (`PUBLIC_WEB_API_URL`, `API_MEDUSA_INTERNAL_URL`, `BACKEND_VITE_CARD_CATALOG_URL`, and `CMS_MEDUSA_BACKEND_URL`) for its network. Use localhost for browser-facing URLs. Databases and Redis run outside Dev Compose. Dev services share named `node_modules` volumes populated from the dev image. CMS uploads persist in a separate volume.
+
+Dev Compose sets `PUBLIC_WEB_STRAPI_API_URL=http://cms:1337` for server-side CMS requests. Set `NEXT_PUBLIC_STRAPI_API_URL=http://localhost:1337` in `.env.dev` so the browser loads media through Strapi's published port. Other environments can leave `PUBLIC_WEB_STRAPI_API_URL` unset to use the public origin for both.
+
+For PostgreSQL running on the Docker Desktop host, use `host.docker.internal` for `API_DB_HOST`, `CMS_DATABASE_HOST`, and the hostname in `BACKEND_DATABASE_URL`. If the local server runs without SSL, set `API_DB_SSL=false` and `CMS_DATABASE_SSL=false` in `.env.dev`, and set the Medusa URL query parameter `sslmode=disable`. If you use `CMS_DATABASE_URL`, update its hostname and SSL mode too. Apply env changes with `docker compose --env-file .env.dev -f infra/compose.dev.yaml up -d api backend cms`.
 
 After changing a dependency manifest or the lockfile, refresh the shared volumes for the default `tcg-dev` project. Use the actual project name in the filter if you run Compose with a different project name. The prune filter selects only unused dependency volumes for that project and preserves CMS uploads.
 
 ```sh
-docker compose --env-file .env -f infra/compose.dev.yaml down
+docker compose --env-file .env.dev -f infra/compose.dev.yaml down
 docker volume prune --all --filter 'label=com.docker.compose.project=tcg-dev' --filter 'label=nextpull.dev.dependencies=true'
-docker compose --env-file .env -f infra/compose.dev.yaml up --build
+docker compose --env-file .env.dev -f infra/compose.dev.yaml up --build
 ```
 
 Direct local scripts for API, Medusa, CMS, and MCP preload `../../.env` with Node's `--env-file-if-exists`; externally injected variables take precedence. Storefront scripts instead use `--import ./load-root-env.mjs`, which loads root `.env` through Node's `loadEnvFile` when present. This avoids passing `--env-file-if-exists` into Next.js worker `NODE_OPTIONS`, where Node rejects it. Missing root env files are expected in Docker builds; injected build arguments remain authoritative. Collector Vite uses the repository root as `envDir` and only exposes `VITE_*` variables to browsers. Mock API has no custom env reads. Run scripts through `pnpm --filter <package> ...` from the repository root. For a compiled API started from its build directory, load root env explicitly: `node --env-file=../../../.env bin/server.js`; deployed images use injected variables. Existing per-app env files are retained, but application settings now use root-prefixed names. Native framework controls such as `NODE_ENV`, `HOST`, and `PORT` remain unprefixed. API environment validation reads the repository root in source mode, including the root `.env.test` override for tests. Medusa Jest also resolves root env files. Test overrides must point to dedicated test services before integration tests are run. No tests were run during this migration.

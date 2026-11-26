@@ -44,6 +44,7 @@ export default await Env.create(new URL('../../../', import.meta.url), {
   // Database
   API_DB_HOST: Env.schema.string({ format: 'host' }),
   API_DB_PORT: Env.schema.number(),
+  API_DB_SSL: Env.schema.boolean.optional(),
   API_DB_USER: Env.schema.string(),
   API_DB_PASSWORD: Env.schema.string.optional(),
   API_DB_DATABASE: Env.schema.string(),

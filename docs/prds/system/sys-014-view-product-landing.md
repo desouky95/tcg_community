@@ -23,6 +23,7 @@ A guest understands the product and can reach storefront, Collector Disk, sign-i
 - Show a setup state when no homepage is published, and preserve other sections when product data is unavailable.
 - The shared sticker-pack page transition uses responsive pack sizing across mobile, tablet and desktop without adding a background color, and honors reduced-motion preferences.
 - The shared storefront layout loads API configuration using the server-side API address, while browser requests use the public API address.
+- In Dev Compose, use the browser-facing Strapi origin for homepage and transition media paths.
 - Signed-in storefront shoppers can open the account menu from the header to see their username, visit their account, or sign out.
 - The shared storefront header exposes Shop categories in a desktop mega menu and mobile disclosure; category service failures leave Shop all accessible, and the desktop panel remains open while moving the pointer into it.
 
@@ -34,6 +35,7 @@ A guest understands the product and can reach storefront, Collector Disk, sign-i
 ## Acceptance and verification
 
 - Verify the desktop Shop menu keeps parent and child categories grouped as columns reflow, and keeps the Shop all link available.
+- Open the localhost homepage and verify that the hero, banner strip and page transition can load local Strapi uploads.
 - Production build verification: `pnpm --filter @tcg/public-web build` completes with the local API and CMS unavailable. Application tests and browser checks were not run.
 
 - The stated outcome succeeds for an eligible actor and is denied for unauthorized access.

@@ -3,17 +3,11 @@ import { cacheLife } from "next/cache";
 import type { HeroSlideItem } from "@tcg/ui-web";
 
 import { StrapiError } from "@tcg/strapi-client";
-import { strapiClient } from "../clients/strapi.server";
-
-const cmsURL = (
-  process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337"
-)
-  .replace(/\/$/, "")
-  .replace(/\/api$/, "");
+import { strapiClient, strapiPublicOrigin } from "../clients/strapi.server";
 
 async function fetchHomepage() {
-  "use cache";
-  cacheLife("hours");
+  // "use cache";
+  // cacheLife("hours");
   return strapiClient.homepage.find(
     {
       status: "published",
@@ -82,7 +76,7 @@ export async function getHomepage(): Promise<HomepageState> {
 export function mediaURL(media: Media | undefined): string | undefined {
   if (!media?.url) return;
   try {
-    return new URL(media.url, cmsURL).toString();
+    return new URL(media.url, strapiPublicOrigin).toString();
   } catch {
     return;
   }
@@ -122,7 +116,8 @@ export async function getPageTransition(): Promise<PageTransitionState> {
 
 export function getStrapiURL(path = "") {
   return process.env.NODE_ENV === "development" &&
-    path.includes("nextpullstorage")
-    ? `${cmsURL}${path}`
+    path.startsWith("/") &&
+    !path.startsWith("//")
+    ? `${strapiPublicOrigin}${path}`
     : path;
 }

@@ -30,6 +30,7 @@
     "motion": "catalog:",
     "next": "catalog:",
     "next-i18next": "catalog:",
+    "qrcode.react": "catalog:",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-hook-form": "catalog:",

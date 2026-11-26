@@ -99,6 +99,7 @@ export default async function Layout({
 
   const images = (page_transition?.packs ?? []).map((_) => getStrapiURL(_.url));
 
+  console.log({images})
   return (
     <Suspense
       fallback={

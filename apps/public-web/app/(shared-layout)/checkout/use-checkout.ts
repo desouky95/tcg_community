@@ -146,6 +146,10 @@ export function useCheckout() {
     instapay_url: string;
     whatsapp_number: string;
   } | null>(null);
+  const [instapayHandoff, setInstapayHandoff] = useState<{
+    total: number;
+    whatsappNumber: string;
+  } | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [uncertain, setUncertain] = useState(false);
@@ -232,7 +236,8 @@ export function useCheckout() {
             setCart(result.cart);
             setStep(1);
           }
-        } catch {
+        } catch (error) {
+          console.log("DEBUG", error);
           setError(
             "We couldn’t connect your account to this order. Please try again.",
           );
@@ -320,6 +325,11 @@ export function useCheckout() {
     providers,
     providerId,
     instapay,
+    instapayTotalChange:
+      instapayHandoff && cart?.total !== instapayHandoff.total
+        ? instapayHandoff
+        : null,
+    setInstapayHandoff,
     error,
     busy,
     uncertain,

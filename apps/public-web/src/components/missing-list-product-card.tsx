@@ -20,6 +20,7 @@ export function MissingListProductCard({
   soldOut?: boolean;
   imageLoading?: "eager" | "lazy";
 }) {
+  console.log({image})
   const canOpen = !!image && stickers.length > 0;
 
   return (

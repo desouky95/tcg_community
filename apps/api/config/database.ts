@@ -61,9 +61,7 @@ const dbConfig = defineConfig({
         user: env.get('API_DB_USER'),
         password: env.get('API_DB_PASSWORD'),
         database: env.get('API_DB_DATABASE'),
-        ssl: {
-          rejectUnauthorized: false,
-        },
+        ssl: env.get('API_DB_SSL', true) && { rejectUnauthorized: false },
       },
       migrations: {
         naturalSort: true,

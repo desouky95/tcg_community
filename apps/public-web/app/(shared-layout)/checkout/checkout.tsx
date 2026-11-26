@@ -34,6 +34,8 @@ export function Checkout() {
     providers,
     providerId,
     instapay,
+    instapayTotalChange,
+    setInstapayHandoff,
     error,
     busy,
     uncertain,
@@ -46,6 +48,7 @@ export function Checkout() {
   } = state;
   const shopLink = <Link href="/shop">Continue shopping</Link>;
   const currency = cart?.currency_code ?? "egp";
+  const cartTotal = cart?.total;
   if (load === "loading")
     return (
       <main className="mx-auto max-w-6xl px-gutter py-16">
@@ -163,15 +166,34 @@ export function Checkout() {
                 error={errors.providerId?.message}
                 empty="No supported payment methods are currently available. Please try again later or contact support."
               />
-              {providerId === "pp_instapay_offline" && instapay && (
-                <div className="mt-5 rounded-md border border-wax-line p-4" role="status">
-                  <p>Transfer {money(cart?.total, currency)} using InstaPay:</p>
-                  <a className="break-all font-semibold underline" href={instapay.instapay_url} target="_blank" rel="noreferrer">
-                    Open InstaPay payment link
-                  </a>
-                  <p className="mt-2">After placing your order, send a screenshot of the transfer by WhatsApp.</p>
-                </div>
-              )}
+              {providerId === "pp_instapay_offline" &&
+                instapay &&
+                !instapayTotalChange &&
+                cartTotal != null &&
+                cartTotal > 0 && (
+                  <div className="mt-5 space-y-3 rounded-md border border-wax-line p-4">
+                    <p>Transfer {money(cartTotal, currency)} using InstaPay.</p>
+                    <Button asChild variant="outline">
+                      <a
+                        href={`/checkout/instapay?total=${encodeURIComponent(cartTotal)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Pay with InstaPay (opens in a new tab)"
+                        onClick={() =>
+                          setInstapayHandoff({
+                            total: cartTotal,
+                            whatsappNumber: instapay.whatsapp_number,
+                          })
+                        }
+                      >
+                        Pay with InstaPay
+                      </a>
+                    </Button>
+                    <p className="text-sm text-muted-foreground">
+                      After placing your order, send your receipt on WhatsApp.
+                    </p>
+                  </div>
+                )}
               {providerId === "pp_cod_offline" && (
                 <p className="mt-5 rounded-md border border-wax-line p-4" role="status">
                   Pay the courier in cash when your order arrives.
@@ -180,6 +202,20 @@ export function Checkout() {
             </>
           )}
           {step === 3 && <CheckoutReview email={email} address={address} />}
+          {instapayTotalChange && (
+            <p role="alert" className="mt-6 text-sm">
+              Your total changed after you opened InstaPay. If you already
+              transferred,{" "}
+              <TextLink
+                href={`https://wa.me/${instapayTotalChange.whatsappNumber.replace(/\D/g, "")}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                contact us on WhatsApp
+              </TextLink>{" "}
+              before paying again.
+            </p>
+          )}
           {error && (
             <p
               role="alert"

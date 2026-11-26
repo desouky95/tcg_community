@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife } from "next/cache";
-import { strapiClient } from "../clients/strapi.server";
+import { strapiClient, strapiPublicOrigin } from "../clients/strapi.server";
 
 export type MissingListVisual = {
   thumbnail?: string;
@@ -9,11 +9,8 @@ export type MissingListVisual = {
 
 function mediaURL(url: string | null | undefined) {
   if (!url) return undefined;
-  const baseURL = (process.env.NEXT_PUBLIC_STRAPI_API_URL || "http://localhost:1337")
-    .replace(/\/$/, "")
-    .replace(/\/api$/, "");
   try {
-    const resolved = new URL(url, baseURL);
+    const resolved = new URL(url, strapiPublicOrigin);
     return ["https:", "http:"].includes(resolved.protocol)
       ? resolved.toString()
       : undefined;

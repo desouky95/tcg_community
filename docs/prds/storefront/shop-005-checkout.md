@@ -12,6 +12,8 @@ A shopper submits delivery and payment details for a NextPull order.
 
 - Guide guests and signed-in shoppers through contact, delivery, payment, review, and confirmation; offer available saved addresses and account email when accessible.
 - Medusa validates cart, shipping, totals and payment before order placement; show final charges before confirmation. Delivery options and prices come from Medusa. The system Manual provider remains available. InstaPay and Cash on delivery are offline providers for the Egypt / EGP region; both authorize at order placement and use Admin Capture and Refund as manual ledger actions after staff verify settlement or refund outside Medusa.
+- From the InstaPay option at the payment step, open a standalone Next Pull payment page on desktop in a separate tab. Show the active cart’s EGP total, a QR and copy action for the configured merchant link, and official app-store links. On phones and tablets, send the shopper directly to the configured link. Keep the original checkout open so the shopper can place the order after transferring and send the receipt with the order reference on WhatsApp.
+- Recheck cart eligibility, payment settings, and the displayed total before showing payment instructions. If the amount changes after the shopper opens InstaPay, prompt them to contact support before paying again. Offer a manual copy option when clipboard access is unavailable.
 - Use React Hook Form for stage-specific validation and accessible field errors; retain entered values during navigation and invalidate delivery and payment selections when the address changes.
 - Handle unavailable carts and options, invalid details, changed totals, payment failures, and uncertain order completion without inviting duplicate orders.
 - Link a signed-in shopper’s Medusa customer to the active cart before continuing checkout and before order completion; resolve customers only by the Adonis user mapping, never by matching an unverified email.
@@ -26,6 +28,7 @@ A shopper submits delivery and payment details for a NextPull order.
 
 - The outcome is achieved for an eligible actor and unauthorized actors cannot access or change the resource.
 - Verify all three payment methods in Egypt / EGP, hide InstaPay until both settings are valid, hide the offline providers outside Egypt / EGP, and check transfer/COD instructions. Verify Admin Capture and Refund ledger changes after offline settlement.
+- For an eligible cart, open the payment link on desktop and verify the QR and copy action use the same configured URL, the app-store links work, and the checkout tab retains its progress. Verify direct handoff on a phone, manual copy when clipboard access is denied, and recovery when settings or a valid cart are missing or the total changes.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
 - Verify integration with the owning service and its persisted state.
 - With production CSRF protection enabled, verify that a signed-in shopper can pass Contact and submit an order, a guest can continue, and an invalid CSRF token produces a customer-link failure.
@@ -33,6 +36,7 @@ A shopper submits delivery and payment details for a NextPull order.
 ## UI Page Used
 
 - apps/public-web/app/(shared-layout)/checkout/page.tsx
+- apps/public-web/app/checkout/instapay/page.tsx
 - apps/backend/src/admin/routes/payment-settings/page.tsx
 
 ## Backend API Route Used
@@ -51,6 +55,7 @@ A shopper submits delivery and payment details for a NextPull order.
 - apps/public-web/app/(shared-layout)/checkout/checkout.tsx
 - apps/public-web/app/(shared-layout)/checkout/use-checkout.ts
 - apps/public-web/app/(shared-layout)/checkout/checkout-bindings.ts
+- apps/public-web/app/checkout/instapay/payment-link.tsx
 - packages/ui-web/src/components/patterns/checkout/index.tsx
 - apps/public-web/src/lib/commerce/checkout-actions.ts
 - apps/backend/src/modules/offline-payment/service.ts

@@ -14,6 +14,7 @@ An authorized editor publishes storefront content.
 - Medusa search and workflow integrations retain typed query and logger dependencies during production builds.
 
 - Strapi owns editorial content and publication; Next.js displays published content only.
+- In Dev Compose, the storefront fetches Strapi content over the Compose network and serves browser-facing media URLs using the public Strapi origin.
 - If optional page-transition content is unavailable, the shared storefront layout still renders without transition images.
 - Editors arrange hero and selected-product sections in the homepage dynamic zone. Product details and prices remain owned by Medusa.
 - Standard cards in homepage collection sections use a four-line scrollable title area at phone widths and wrap the full title at wider widths.
@@ -35,6 +36,7 @@ An authorized editor publishes storefront content.
 - The outcome is achieved for an eligible actor and unauthorized actors cannot access or change the resource.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
 - Verify integration with the owning service and its persisted state.
+- Open the localhost storefront and verify that local hero, banner and transition images load through the published Strapi port. Verify absolute storage URLs still load from their original hosts.
 
 ## UI Page Used
 - Medusa Admin product details — native product type selection under organization.

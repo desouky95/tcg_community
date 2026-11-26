@@ -43,6 +43,36 @@ export async function checkoutCart() {
   }
 }
 
+export async function getInstapayHandoff() {
+  const result = await checkoutCart();
+  if (result.kind !== "ready") return null;
+
+  const { cart } = result;
+  if (
+    !cart.region_id ||
+    cart.currency_code !== "egp" ||
+    cart.shipping_address?.country_code?.toLowerCase() !== "eg" ||
+    !cart.shipping_methods?.length ||
+    cart.total == null ||
+    !Number.isFinite(cart.total) ||
+    cart.total <= 0
+  )
+    return null;
+
+  try {
+    const [settings, { payment_providers }] = await Promise.all([
+      instapaySettings(cart.region_id),
+      sdk.store.payment.listPaymentProviders({ region_id: cart.region_id }),
+    ]);
+    if (!settings || !payment_providers.some(({ id }) => id === INSTAPAY))
+      return null;
+
+    return { total: cart.total, ...settings };
+  } catch {
+    return null;
+  }
+}
+
 export async function saveContact(input: unknown) {
   const id = await cartId();
   const email = typeof input === "string" ? input.trim() : "";

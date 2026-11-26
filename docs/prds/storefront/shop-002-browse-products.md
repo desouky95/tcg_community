@@ -37,6 +37,7 @@ A shopper can discover Medusa collections and categories, browse products, compa
 
 - The outcome is achieved for an eligible actor and unauthorized actors cannot access or change the resource.
 - Missing-list pack previews open inline; their open button is visible on touch screens and revealed on desktop hover or keyboard focus.
+- In Dev Compose, verify that Strapi pack thumbnails and stickers with relative URLs load through the browser-facing Strapi origin.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
 - Verify integration with the owning service and its persisted state.
 
