@@ -84,6 +84,7 @@ export class CommerceCustomerService {
     const key = env.get('API_MEDUSA_SERVICE_KEY')
     const publisableKey = env.get('API_MEDUSA_PUBLISHABLE_KEY')
 
+    console.log({ link, baseUrl, key, publisableKey })
     if (!link.customerId || !baseUrl || !key || !publisableKey)
       return { status: 503, body: { error: 'Commerce is temporarily unavailable' } }
     try {
