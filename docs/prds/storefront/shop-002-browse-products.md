@@ -53,7 +53,7 @@ A shopper can discover Medusa collections and categories, browse products, compa
 - Medusa Store API: `GET /store/collections`, `GET /store/product-categories` and `GET /store/products`, plus `GET /store/regions` for country-to-region resolution.
 - Medusa Store API: `GET /store/products` includes product metadata for card classification.
 - Strapi Content API: `GET /api/products` provides pack thumbnails and sticker images for the Medusa product IDs.
-- `POST /api/commerce/customer` links the signed-in shopper's account in the background using the browser's CSRF header.
+- `POST /api/commerce/customer` checks the Adonis session and links the signed-in shopper's account in the background using the browser's CSRF header.
 
 ## Related Files
 - apps/public-web/src/components/homepage-product-section.tsx

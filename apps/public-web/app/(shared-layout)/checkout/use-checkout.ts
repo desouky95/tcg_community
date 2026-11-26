@@ -95,14 +95,20 @@ type CheckoutForm = {
 };
 
 async function syncCheckoutCustomer() {
-  const { data: result } = await axios.post<{
-    data?: { authenticated?: boolean; available?: boolean; linked?: boolean };
-  }>("/api/commerce/customer");
-  if (
-    result.data?.authenticated !== false &&
-    (!result.data?.available || !result.data.linked)
-  )
-    throw new Error("Customer link unavailable");
+  try {
+    const { data: result } = await axios.post<{
+      data?: { authenticated?: boolean; available?: boolean; linked?: boolean };
+    }>("/api/commerce/customer");
+    if (
+      result.data?.authenticated === false ||
+      (result.data?.available && result.data.linked)
+    )
+      return;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 409)
+      return "Sign back in to continue checkout with this cart.";
+  }
+  return "We couldn’t connect your account to this order. Please try again.";
 }
 
 export function useCheckout() {
@@ -227,20 +233,19 @@ export function useCheckout() {
     setBusy(true);
     setError("");
     try {
+      if (step === 0 || step === 3) {
+        const customerError = await syncCheckoutCustomer();
+        if (customerError) {
+          setError(customerError);
+          return;
+        }
+      }
       if (step === 0) {
-        try {
-          await syncCheckoutCustomer();
-          const result = await saveContact(getValues("email"));
-          if (result.kind === "error") setError(result.message);
-          else {
-            setCart(result.cart);
-            setStep(1);
-          }
-        } catch (error) {
-          console.log("DEBUG", error);
-          setError(
-            "We couldn’t connect your account to this order. Please try again.",
-          );
+        const result = await saveContact(getValues("email"));
+        if (result.kind === "error") setError(result.message);
+        else {
+          setCart(result.cart);
+          setStep(1);
         }
       } else if (step === 1 && !shipping.length) {
         const result = await saveAddress(getValues("address"));
@@ -275,14 +280,6 @@ export function useCheckout() {
           setStep(3);
         }
       } else if (cart?.total != null && cart.currency_code) {
-        try {
-          await syncCheckoutCustomer();
-        } catch {
-          setError(
-            "We couldn’t connect your account to this order. Please try again.",
-          );
-          return;
-        }
         const result = await placeOrder(
           cart.total,
           cart.currency_code,

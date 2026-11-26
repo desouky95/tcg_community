@@ -24,7 +24,7 @@ A guest understands the product and can reach storefront, Collector Disk, sign-i
 - The shared sticker-pack page transition uses responsive pack sizing across mobile, tablet and desktop without adding a background color, and honors reduced-motion preferences.
 - The shared storefront layout loads API configuration using the server-side API address, while browser requests use the public API address.
 - In Dev Compose, use the browser-facing Strapi origin for homepage and transition media paths.
-- Signed-in storefront shoppers can open the account menu from the header to see their username, visit their account, or sign out.
+- Signed-in storefront shoppers can open the account menu from the header to see their username, visit their account, or sign out and clear the storefront cart cookie.
 - The shared storefront header exposes Shop categories in a desktop mega menu and mobile disclosure; category service failures leave Shop all accessible, and the desktop panel remains open while moving the pointer into it.
 
 - The desktop Shop menu groups category links by parent in responsive columns, with descendants listed beneath their parents.

@@ -5,6 +5,11 @@ import { resolveStoreRegion } from "../catalog/product-detail.server";
 import { sdk } from "../clients/medusa";
 
 const CART_COOKIE = "next_pull_cart";
+
+export async function clearStorefrontCart() {
+  (await cookies()).delete(CART_COOKIE);
+}
+
 function isNotFound(error: unknown) {
   return (
     typeof error === "object" &&

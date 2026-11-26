@@ -17,6 +17,7 @@ A shopper submits delivery and payment details for a NextPull order.
 - Use React Hook Form for stage-specific validation and accessible field errors; retain entered values during navigation and invalidate delivery and payment selections when the address changes.
 - Handle unavailable carts and options, invalid details, changed totals, payment failures, and uncertain order completion without inviting duplicate orders.
 - Link a signed-in shopper’s Medusa customer to the active cart before continuing checkout and before order completion; resolve customers only by the Adonis user mapping, never by matching an unverified email.
+- Use the current Adonis session to distinguish guests from signed-in shoppers, even when a signed-out browser still sends a session cookie. Guests can complete checkout with an unlinked cart or a Medusa guest customer. If the cart belongs to an account, require the matching signed-in account before completing the order.
 - Send the browser's `X-XSRF-TOKEN` header through the storefront customer-link proxy for Adonis Shield validation. Treat upstream redirects as checkout errors.
 - Authorize each action against its resource and actor; reject invalid or stale operations without partial effects.
 - Show relevant progress, confirmation, empty and failure states, including a clear next action.
@@ -32,6 +33,7 @@ A shopper submits delivery and payment details for a NextPull order.
 - Verify the main flow, validation and failure handling, including retries and concurrent changes where applicable.
 - Verify integration with the owning service and its persisted state.
 - With production CSRF protection enabled, verify that a signed-in shopper can pass Contact and submit an order, a guest can continue, and an invalid CSRF token produces a customer-link failure.
+- Place an order in a clean guest browser and in a browser with a leftover signed-out session cookie. Expire the session after linking a cart and verify checkout asks the shopper to sign back in without creating an order. Verify a signed-in order appears under the linked account, and a real customer-link service failure blocks checkout.
 
 ## UI Page Used
 
@@ -45,7 +47,8 @@ A shopper submits delivery and payment details for a NextPull order.
 - Medusa Store API: cart retrieval and update, shipping options and calculation, shipping method selection, payment provider and session, and cart completion.
 - GET /store/payment-instructions?region_id=… — returns valid InstaPay URL and WhatsApp number for Egypt / EGP only.
 - GET /admin/payment-settings and POST /admin/payment-settings — authenticated Admin settings for Egypt / EGP region metadata.
-- POST /api/commerce/customer — links the authenticated Adonis account to its Medusa customer and current cart.
+- POST /api/commerce/customer — checks the session, returns guest status for a guest cart, and links signed-in shoppers to their Medusa customers.
+- GET /api/v1/auth/me — resolves the current session when linking a customer or completing an account-linked cart.
 - `POST /api/v1/auth/commerce/customer` — validates the session and CSRF token and links the account to the Medusa customer and cart.
 - GET /api/v1/account/commerce/addresses — optional saved addresses.
 
@@ -58,6 +61,8 @@ A shopper submits delivery and payment details for a NextPull order.
 - apps/public-web/app/checkout/instapay/payment-link.tsx
 - packages/ui-web/src/components/patterns/checkout/index.tsx
 - apps/public-web/src/lib/commerce/checkout-actions.ts
+- apps/public-web/src/lib/commerce/cart-customer.server.ts
+- apps/public-web/src/lib/clients/adonis.server.ts
 - apps/backend/src/modules/offline-payment/service.ts
 - apps/backend/medusa-config.ts
 - apps/backend/src/api/middlewares.ts

@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 import { checkoutReview } from "./checkout-review";
 import type { HttpTypes } from "@medusajs/types";
 import { sdk } from "../clients/medusa";
+import { getStorefrontUserId } from "../clients/adonis.server";
+import { retrieveCartWithCustomer } from "./cart-customer.server";
 
 const COOKIE = "next_pull_cart";
 const MANUAL = "pp_system_default";
@@ -279,7 +281,19 @@ export async function placeOrder(
       message: "Your cart is unavailable. Return to the shop and try again.",
     };
   try {
-    const { cart } = await sdk.store.cart.retrieve(id);
+    const { customer, ...cart } = await retrieveCartWithCustomer(id);
+    if (customer && customer.has_account !== false) {
+      const userId = await getStorefrontUserId((await cookies()).toString());
+      if (
+        userId === null ||
+        customer.metadata?.next_pull_user_id !== String(userId)
+      )
+        return {
+          kind: "error" as const,
+          message:
+            "Sign back in to the account linked to this cart to place your order.",
+        };
+    }
     if (
       cart.total !== expectedTotal ||
       cart.currency_code !== expectedCurrency ||

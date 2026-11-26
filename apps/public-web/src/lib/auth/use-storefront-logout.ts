@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../clients/adonis";
+import { clearStorefrontCart } from "../commerce/cart-actions";
 import { authQuery } from "./auth-destination";
 
 export function useStorefrontLogout() {
@@ -15,6 +16,7 @@ export function useStorefrontLogout() {
           ?.status;
         if (status !== 401) throw error;
       }
+      await clearStorefrontCart();
     },
     onSuccess: () => {
       queryClient.clear();
