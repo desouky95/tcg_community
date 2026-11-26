@@ -29,7 +29,7 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database 
           rejectUnauthorized: env.bool('CMS_DATABASE_SSL_REJECT_UNAUTHORIZED', true),
         },
       },
-      pool: { min: env.int('CMS_DATABASE_POOL_MIN', 2), max: env.int('CMS_DATABASE_POOL_MAX', 10) },
+      pool: { min: env.int('CMS_DATABASE_POOL_MIN', 2), max: env.int('CMS_DATABASE_POOL_MAX', 5) },
     },
     postgres: {
       client: 'postgres',
