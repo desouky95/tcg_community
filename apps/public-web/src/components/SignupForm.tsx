@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AxiosError } from "@tcg/api-contracts";
 import { useAuth } from "@tcg/react-query";
 import { AuthField, AuthInput, AuthSelect, Button } from "@tcg/ui-web";
+import { LegalLinks } from "./legal-links";
 import { authQuery, type AuthDestination } from "../lib/auth/auth-destination";
 
 const governorates = [
@@ -178,6 +179,7 @@ export function SignupForm({
             {error}
           </p>
         )}
+        <LegalLinks slugs={["terms-and-conditions", "privacy-policy"]} className="flex flex-wrap gap-4 text-sm" />
         <Button
           type="submit"
           loading={signup.isPending}

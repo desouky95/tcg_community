@@ -7,6 +7,8 @@ Login is disabled while legally required records remain retained.
 
 ## Requirements
 
+- Account privacy settings link to published privacy and deletion policies; draft documents remain hidden.
+
 - Account action panels use shared storefront surface components.
 
 - The storefront account hub presents this feature in its corresponding linkable account tab, using sidebar navigation on desktop and scrollable tabs on mobile.

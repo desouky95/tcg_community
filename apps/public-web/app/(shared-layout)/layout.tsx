@@ -1,3 +1,4 @@
+import { LegalLinks } from "../../src/components/legal-links";
 import { PublicShell } from "@tcg/ui-web/next";
 import { cookies, headers } from "next/headers";
 import { cacheLife, io } from "next/cache";
@@ -54,6 +55,7 @@ function SharedShell({
         authenticated ? <StorefrontAccountMenu username={username} /> : undefined
       }
       links={links}
+      legalLinks={<LegalLinks  className="flex flex-wrap gap-x-5 gap-y-2" />}
     >
       <SharedPageTransition images={images}>{children}</SharedPageTransition>
     </PublicShell>
@@ -99,7 +101,6 @@ export default async function Layout({
 
   const images = (page_transition?.packs ?? []).map((_) => getStrapiURL(_.url));
 
-  console.log({images})
   return (
     <Suspense
       fallback={

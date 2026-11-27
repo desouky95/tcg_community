@@ -14,6 +14,7 @@ import {
   CheckoutStatus,
   CheckoutSummary,
 } from "@tcg/ui-web";
+import { LegalLinks } from "../../../src/components/legal-links";
 import { money, steps, useCheckout } from "./use-checkout";
 import { checkoutBindings } from "./checkout-bindings";
 
@@ -101,6 +102,7 @@ export function Checkout() {
         {providerId === "pp_cod_offline" && (
           <p className="text-sm">Pay the courier in cash when your order arrives.</p>
         )}
+        <LegalLinks slugs={["privacy-policy", "refund-and-return-policy", "shipping-and-delivery-policy"]} className="flex flex-wrap gap-4 text-sm" />
         <TextLink asChild>{shopLink}</TextLink>
       </CheckoutStatus>
     );
@@ -201,7 +203,7 @@ export function Checkout() {
               )}
             </>
           )}
-          {step === 3 && <CheckoutReview email={email} address={address} />}
+          {step === 3 && <><CheckoutReview email={email} address={address} /><LegalLinks slugs={["terms-and-conditions", "privacy-policy", "refund-and-return-policy", "shipping-and-delivery-policy"]} className="mt-5 flex flex-wrap gap-4 text-sm" /></>}
           {instapayTotalChange && (
             <p role="alert" className="mt-6 text-sm">
               Your total changed after you opened InstaPay. If you already

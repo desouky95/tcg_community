@@ -2,15 +2,15 @@ import env from '#start/env'
 import { defineConfig, transports } from '@adonisjs/mail'
 
 const mailConfig = defineConfig({
-  default: env.get('API_MAIL_MAILER'),
+  default : 'resend',
 
   /**
    * The default sender's email address and name. It is used when
    * no sender is explicitly defined for an email.
    */
   from: {
-    address: env.get('API_MAIL_FROM_ADDRESS'),
-    name: env.get('API_MAIL_FROM_NAME'),
+    address: env.get('API_MAIL_FROM_ADDRESS',''),
+    name: env.get('API_MAIL_FROM_NAME',''),
   },
 
   /**
@@ -31,7 +31,7 @@ const mailConfig = defineConfig({
    */
   mailers: {      
     resend: transports.resend({
-      key: env.get('API_RESEND_API_KEY'),
+      key: env.get('API_RESEND_API_KEY',''),
       baseUrl: 'https://api.resend.com',
     }),
      

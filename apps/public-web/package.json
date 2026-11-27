@@ -36,6 +36,7 @@
     "react-hook-form": "catalog:",
     "react-hot-toast": "^2.6.1",
     "react-i18next": "^17.0.15",
+    "react-markdown": "9.1.0",
     "react-use": "catalog:",
     "strapi-typed-client": "^2.4.0",
     "zod": "^4.6.5"

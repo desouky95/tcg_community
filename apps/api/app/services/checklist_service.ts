@@ -12,6 +12,7 @@ import { MultipartFile } from '@adonisjs/core/bodyparser'
 import * as xlsx from 'xlsx'
 import Card from '#models/card'
 import UserChecklistCard from '#models/user_checklist_card'
+import User from '#models/user'
 xlsx.set_fs(fs)
 @inject()
 export class ChecklistService {

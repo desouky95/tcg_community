@@ -3,8 +3,9 @@ import { cn } from "../../../lib/cn";
 
 export function PublicFooter({
   className,
+  legalLinks,
   ...props
-}: ComponentPropsWithoutRef<"footer">) {
+}: ComponentPropsWithoutRef<"footer"> & { legalLinks?: React.ReactNode }) {
   return (
     <footer
       {...props}
@@ -15,6 +16,7 @@ export function PublicFooter({
     >
       <img src="/brand/next-pull-logo-white.svg" alt="Next Pull" className="h-auto w-32" />
       <span>Every card has a next move.</span>
+      {legalLinks}
       <span>© 2026 · Egypt first, collectors everywhere.</span>
     </footer>
   );

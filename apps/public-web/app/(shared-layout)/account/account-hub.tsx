@@ -1,4 +1,5 @@
 "use client";
+import { LegalLinks } from "../../../src/components/legal-links";
 
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { useUpdateProfile } from "@tcg/react-query";
@@ -456,6 +457,7 @@ export function AccountHub() {
                 icon={<ShieldCheck className="size-4" aria-hidden="true" />}
               >
                 <PrivacySection userId={String(user.id)} />
+                <LegalLinks slugs={["privacy-policy", "account-deletion-policy"]} className="mt-6 flex flex-wrap gap-4 text-sm" />
               </Section>
             </Tabs.Content>
             <Tabs.Content

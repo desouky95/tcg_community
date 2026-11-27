@@ -17,7 +17,7 @@ export type PublicShellProps = ComponentPropsWithoutRef<"div"> &
     | "categories"
     | "cartAction"
     | "accountAction"
-  > & { mainClassName?: string };
+  > & { mainClassName?: string; legalLinks?: React.ReactNode };
 
 export function PublicShell({
   children,
@@ -27,6 +27,7 @@ export function PublicShell({
   authenticated,
   className,
   mainClassName,
+  legalLinks,
   isNext = true,
   config = {},
   storeNavigation = false,
@@ -57,7 +58,7 @@ export function PublicShell({
         accountAction={accountAction}
       />
       <main className={mainClassName}>{children}</main>
-      <PublicFooter />
+      <PublicFooter legalLinks={legalLinks} />
     </div>
   );
 }

@@ -6,6 +6,8 @@ A shopper submits delivery and payment details for a NextPull order.
 
 ## Requirements
 
+- Show published legal links at review and confirmation. Draft links stay hidden. Version-aware contractual acceptance requires the backend work in `docs/legal/implementation/backend-requirements.md`.
+
 - Referenced application configuration reads root `.env` names directly: `API_*`, `BACKEND_*`, `PUBLIC_WEB_* / NEXT_PUBLIC_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
 
 - Before order creation and payment authorization, re-read the current Medusa product type for cart variants and reject carts containing `Coming Soon` products, including products whose type changed after cart addition. `Pre-order` products use the standard checkout and payment flow, with no deposits or deferred-payment system.

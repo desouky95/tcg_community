@@ -10,6 +10,8 @@ A guest creates an unverified account and a signup verification challenge, then 
 
 ## Requirements
 
+- Show published legal links during registration. Draft links stay hidden. Version-aware terms acceptance requires the backend work in `docs/legal/implementation/backend-requirements.md`.
+
 - After successful password signup, navigate to `/login` through the Next.js router and preserve `destination` and `returnTo`.
 
 - Before browser auth mutations, the storefront Axios client awaits `GET /api/v1/auth/csrf`. Concurrent submissions share an in-flight bootstrap; bootstrap failures prevent the mutation. Shield issues the XSRF cookie through its normal middleware.

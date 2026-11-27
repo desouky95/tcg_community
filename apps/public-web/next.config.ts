@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   // outputFileTracingRoot: path.resolve(process.cwd(), "../.."),
   outputFileTracingRoot: path.join(__dirname, "../../"),
+  outputFileTracingIncludes: { "/*": ["../../docs/legal/policies/**/*.md"] },
   transpilePackages: [
     "@tcg/api-contracts",
     "@tcg/auth-client",

@@ -951,6 +951,9 @@ importers:
       react-i18next:
         specifier: ^17.0.15
         version: 17.1.9(i18next@26.5.11(typescript@5.9.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)
+      react-markdown:
+        specifier: 9.1.0
+        version: 9.1.0(@types/react@19.0.5)(react@19.3.1)(supports-color@10.2.2)
       react-use:
         specifier: 'catalog:'
         version: 17.6.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -33441,7 +33444,6 @@ snapshots:
       vfile-message: 4.0.3
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   hast-util-to-jsx-runtime@2.3.6(supports-color@5.5.0):
     dependencies:
@@ -37619,6 +37621,24 @@ snapshots:
       mdast-util-to-hast: 13.2.1
       react: 18.3.1
       remark-parse: 11.0.0(supports-color@5.5.0)
+      remark-rehype: 11.1.2
+      unified: 11.0.5
+      unist-util-visit: 5.2.0
+      vfile: 6.0.3
+    transitivePeerDependencies:
+      - supports-color
+
+  react-markdown@9.1.0(@types/react@19.0.5)(react@19.3.1)(supports-color@10.2.2):
+    dependencies:
+      '@types/hast': 3.0.5
+      '@types/mdast': 4.0.4
+      '@types/react': 19.0.5
+      devlop: 1.1.0
+      hast-util-to-jsx-runtime: 2.3.6(supports-color@10.2.2)
+      html-url-attributes: 3.0.1
+      mdast-util-to-hast: 13.2.1
+      react: 19.3.1
+      remark-parse: 11.0.0(supports-color@10.2.2)
       remark-rehype: 11.1.2
       unified: 11.0.5
       unist-util-visit: 5.2.0
