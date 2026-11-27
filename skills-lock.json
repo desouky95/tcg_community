@@ -262,6 +262,13 @@
       "skillPath": "skills/security-audit/SKILL.md",
       "computedHash": "8513eb3b2c39b8d05ef4f47b32ef4d18280b93a5efb91d8df6272f7435034af5"
     },
+    "security-best-practices": {
+      "source": "openai/skills",
+      "commit": "49f948faa9258a0c61caceaf225e179651397431",
+      "sourceType": "github",
+      "skillPath": "skills/.curated/security-best-practices/SKILL.md",
+      "computedHash": "f3a018deca655724357a5576d36026b78f174a97094d42d3ef5f7ff08c9c1f27"
+    },
     "setup-pre-commit": {
       "source": "mattpocock/skills",
       "sourceType": "github",
