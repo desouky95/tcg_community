@@ -3,7 +3,7 @@
 
 ## Outcome and scope
 
-Published reviews are paginated without private moderation data.
+Published reviews expose only the reviewer’s public username and ID, without contact or private account data.
 
 ## Requirements
 
@@ -19,11 +19,13 @@ Published reviews are paginated without private moderation data.
 
 Existing evidence pointer: apps/api ReviewsController.index. This pointer is not a fresh implementation audit.
 
+- Anonymous review responses include only public reviewer identity fields.
+
 ## UI Page Used
 - N/A — no dedicated UI page
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- `GET /api/v1/users/:id/reviews`
 
 ## Related Files
 - apps/api/start/routes/v1/users.routes.ts

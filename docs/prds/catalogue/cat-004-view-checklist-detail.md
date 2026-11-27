@@ -5,6 +5,8 @@
 
 Checklist metadata and cards are returned. This is an established capability; preserve current collection and checklist behavior rather than redesign it.
 
+Checklist details never include collectors’ private collection rows.
+
 ## Requirements
 
 - Referenced application configuration reads root `.env` names directly: `API_*`. See [shared environment guidance](../_shared/deployment-and-recovery.md).
@@ -23,11 +25,13 @@ Checklist metadata and cards are returned. This is an established capability; pr
 
 Existing evidence pointer: apps/api ChecklistsController.show. This pointer is not a fresh implementation audit.
 
+- Checklist detail expansion does not serialize user collection records.
+
 ## UI Page Used
 - N/A — no dedicated UI page
 
 ## Backend API Route Used
-- N/A — no HTTP route
+- `GET /api/v1/checklists/:id`
 
 ## Related Files
 - packages/api-contracts/src/types.ts

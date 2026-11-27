@@ -29,6 +29,7 @@ export default defineConfig({
     () => import('@adonisjs/lucid/commands'),
     () => import('@adonisjs/session/commands'),
     () => import('@adonisjs/queue/commands'),
+    () => import('@adonisjs/mail/commands')
   ],
 
   /*
@@ -57,7 +58,8 @@ export default defineConfig({
     () => import('@adonisjs/queue/queue_provider'),
     () => import('#providers/app_provider'),
     () => import('@adonisjs/drive/drive_provider'),
-    () => import('@adonisjs/ally/ally_provider')
+    () => import('@adonisjs/ally/ally_provider'),
+    () => import('@adonisjs/mail/mail_provider')
   ],
 
   /*

@@ -55,8 +55,7 @@ export default class ChecklistsController {
   async show({ params, auth, response, request }: HttpContext) {
     const id = params.id
     const qs = request.qs()
-    const user = auth.user
-    const checklist = await this.service.get(id, qs, user)
+    const checklist = await this.service.get(id, qs)
 
     return response.api(checklist)
   }

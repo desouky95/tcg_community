@@ -10,7 +10,6 @@ import drive from '@adonisjs/drive/services/main'
 import ExcelJS from 'exceljs'
 import { MultipartFile } from '@adonisjs/core/bodyparser'
 import * as xlsx from 'xlsx'
-import User from '#models/user'
 import Card from '#models/card'
 import UserChecklistCard from '#models/user_checklist_card'
 xlsx.set_fs(fs)
@@ -64,7 +63,7 @@ export class ChecklistService {
     return result
   }
 
-  async get(slug: string, qs: Record<string, any>, _user?: User) {
+  async get(slug: string, qs: Record<string, any>) {
     const expand = qs.expand ?? ''
     const expendedFields = expand.split(',') as string[]
     const query = Checklist.query()
@@ -77,7 +76,6 @@ export class ChecklistService {
         )
       )
       .if(expendedFields.includes('subcategory'), (q) => q.preload('subcategory'))
-      .if(expendedFields.includes('userChecklist'), (q) => q.preload('userChecklist'))
 
     const result = await query.firstOrFail()
     return result

@@ -63,6 +63,7 @@
     "@adonisjs/cors": "catalog:",
     "@adonisjs/drive": "catalog:",
     "@adonisjs/lucid": "catalog:",
+    "@adonisjs/mail": "^10.4.1",
     "@adonisjs/queue": "catalog:",
     "@adonisjs/session": "catalog:",
     "@adonisjs/shield": "catalog:",

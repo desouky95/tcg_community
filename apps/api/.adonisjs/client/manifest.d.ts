@@ -11,3 +11,4 @@
 /// <reference path="../../config/logger.ts" />
 /// <reference path="../../config/queue.ts" />
 /// <reference path="../../config/scrapers.ts" />
+/// <reference path="../../config/mail.ts" />

@@ -7,7 +7,7 @@ export default class ReviewsController {
   async index({ params }: HttpContext) {
     return await Review.query()
       .where('targetUserId', params.id)
-      .preload('reviewer')
+      .preload('reviewer', (reviewer) => reviewer.select(['id', 'username']))
   }
 
   async store({ request, auth, response }: HttpContext) {

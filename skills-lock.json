@@ -164,11 +164,25 @@
       "skillPath": "skills/investigate-first/SKILL.md",
       "computedHash": "129b1eba6d106c1d095baefd30578c6303b93119fcd21bd5583ebd34592f3acc"
     },
+    "launch-checklist": {
+      "source": "amajorai/skills",
+      "commit": "43ca865c14d494d9f204e0a66dd88d3fad14e831",
+      "sourceType": "github",
+      "skillPath": "skills/others/launch-checklist/SKILL.md",
+      "computedHash": "658d39659b6401d7c234ea87c1627bc2458354b281d67c62d35ce255fda43d6b"
+    },
     "lean-build": {
       "source": "JuliusBrussee/caveman",
       "sourceType": "github",
       "skillPath": "skills/lean-build/SKILL.md",
       "computedHash": "aee8fbb86c5e1e5066089293423f71dd6a87ab37486c360cd4488ef2fe96c7a7"
+    },
+    "legal-policy-drafter": {
+      "source": "lassejlv/skills",
+      "commit": "73fdd591041c5ae3e64812e8b16af8223026b37b",
+      "sourceType": "github",
+      "skillPath": "skills/legal-policy-drafter/SKILL.md",
+      "computedHash": "169470ffb86be594f6f2a5a11e328b996eff0d12591265996e8d2a9fabc314ba"
     },
     "loop-me": {
       "source": "mattpocock/skills",
@@ -240,6 +254,13 @@
       "sourceType": "github",
       "skillPath": "skills/safe-refactor/SKILL.md",
       "computedHash": "709db1dfde3fe3baa362ecdb3f1f3c0be27587358242737dfa4ca82a23744269"
+    },
+    "security-audit": {
+      "source": "cloudflare/security-audit-skill",
+      "commit": "c1c8a8c1471069fb0e188eeaff69b8e8db6564a8",
+      "sourceType": "github",
+      "skillPath": "skills/security-audit/SKILL.md",
+      "computedHash": "8513eb3b2c39b8d05ef4f47b32ef4d18280b93a5efb91d8df6272f7435034af5"
     },
     "setup-pre-commit": {
       "source": "mattpocock/skills",
